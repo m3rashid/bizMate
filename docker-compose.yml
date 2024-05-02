@@ -1,0 +1,43 @@
+name: bizmate
+
+networks:
+  default:
+    name: bizmate
+
+services:
+  webserver:
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    ports:
+      - 4000:4000
+    command: air -c air.toml
+    depends_on:
+      - database
+
+  database:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: genos
+      POSTGRES_PASSWORD: genos
+      POSTGRES_DB: bizmatedb
+    ports:
+      - 5432:5432
+    volumes:
+      - ./data/postgresDb:/var/lib/postgresql/data
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:latest
+    restart: always
+    volumes:
+      - ./data:/data
+    ports:
+      - 6379:6379
