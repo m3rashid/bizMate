@@ -18,15 +18,6 @@ type createTenantStruct struct {
 	TenantUrl     string `json:"tenantUrl" validate:"required"`
 }
 
-// var _sampleCreateTenant = createTenantStruct{
-// 	OwnerName:     "Owner Localhost 5173",
-// 	OwnerEmail:    "owner@localhost5173.com",
-// 	OwnerPassword: "localhost:5173",
-// 	DbName:        "localhost5173",
-// 	TenantName:    "localhost_5173",
-// 	TenantUrl:     "localhost:5173",
-// }
-
 func createTenant(props createTenantStruct) error {
 	db := utils.GetHostDB()
 	hashedPassword, err := auth.HashPassword(props.OwnerPassword)
@@ -47,16 +38,16 @@ func createTenant(props createTenantStruct) error {
 		return err
 	}
 
-	dbUrl, err := utils.CreateDatabase(props.DbName, db)
+	dbUrl, err := utils.CreateTenantDatabase(props.DbName, db)
 	if err != nil {
 		return err
 	}
 
 	tenant := models.Tenant{
-		Name:                     props.TenantName,
-		TenantUrl:                props.TenantUrl,
-		TenantDBConnectionString: dbUrl,
-		TenantOwnerID:            tenantOwner.ID,
+		Name:          props.TenantName,
+		TenantUrl:     props.TenantUrl,
+		DbUri:         dbUrl,
+		TenantOwnerID: tenantOwner.ID,
 	}
 	err = db.Create(&tenant).Error
 	if err != nil {

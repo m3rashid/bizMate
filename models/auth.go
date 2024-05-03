@@ -5,13 +5,14 @@ const PROFILE_MODEL_NAME = "profiles"
 
 type User struct {
 	BaseModel
-	Name        string `json:"name" gorm:"column:name;not null" validate:"required"`
-	Email       string `json:"email" gorm:"column:email;unique;not null" validate:"required,email"`
-	Phone       string `json:"phone,omitempty" gorm:"column:phone" validate:""`
-	Avatar      string `json:"avatar,omitempty" gorm:"column:avatar" validate:""`
-	Deactivated bool   `json:"deactivated" gorm:"column:deactivated" validate:""`
-	Provider    string `json:"provider" gorm:"column:provider" validate:""` // credentials | google
-	Password    string `json:"password" gorm:"column:password;not null" validate:"required"`
+	Name         string `json:"name" gorm:"column:name;not null" validate:"required"`
+	Email        string `json:"email" gorm:"column:email;unique;not null" validate:"required,email"`
+	Phone        string `json:"phone,omitempty" gorm:"column:phone" validate:""`
+	Avatar       string `json:"avatar,omitempty" gorm:"column:avatar" validate:""`
+	Deactivated  bool   `json:"deactivated" gorm:"column:deactivated" validate:""`
+	Provider     string `json:"provider" gorm:"column:provider" validate:""` // credentials | google
+	Password     string `json:"password" gorm:"column:password;not null" validate:"required"`
+	RefreshToken string `gorm:"refreshToken"`
 }
 
 type Profile struct {

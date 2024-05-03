@@ -44,6 +44,18 @@ func main() {
 		},
 	})
 
+	app.Use(func(ctx *fiber.Ctx) error {
+		fmt.Println("Middleware intercept")
+		fmt.Println("queries: ", ctx.Queries())
+		fmt.Println("params: ", ctx.AllParams())
+		return ctx.Next()
+	})
+
+	utils.TenantModels = []interface{}{
+		models.User{},
+		models.Profile{},
+	}
+
 	auth.Setup(app)
 	scripts.Setup(app)
 

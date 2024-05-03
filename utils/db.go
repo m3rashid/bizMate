@@ -12,7 +12,6 @@ import (
 
 	"github.com/Pacific73/gorm-cache/cache"
 	"github.com/Pacific73/gorm-cache/config"
-	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -20,8 +19,9 @@ import (
 
 const CONNECTION_REFRESH_INTERVAL = 1 * time.Hour
 
+var TenantModels []interface{}
+
 var db *gorm.DB
-var redisClient *redis.Client
 
 type TenantConnection struct {
 	Connection *gorm.DB
@@ -31,17 +31,14 @@ type TenantConnection struct {
 // map of tenantUrl to tenant db connection
 var tenantsDBMap = make(map[string]TenantConnection)
 
-func GetRedisClient() *redis.Client {
-	if redisClient == nil {
-		fmt.Println("Creating new redis client")
-		newRedisClient := redis.NewClient(&redis.Options{
-			Addr: os.Getenv("REDIS_URL"),
-		})
-
-		redisClient = newRedisClient
-	}
-
-	return redisClient
+func getDbString(dbName string) string {
+	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		os.Getenv("POSTGRES_USER"),
+		os.Getenv("POSTGRES_PASSWORD"),
+		os.Getenv("POSTGRES_HOST"),
+		os.Getenv("POSTGRES_PORT"),
+		dbName,
+	)
 }
 
 func GetDbConnection(connectionString string) (*gorm.DB, error) {
@@ -86,8 +83,8 @@ func GetDbConnection(connectionString string) (*gorm.DB, error) {
 func GetHostDB() *gorm.DB {
 	if db == nil {
 		fmt.Println("Creating new host db connection")
-		dbStr := os.Getenv("HOST_DB_URL")
-		gormDB, err := GetDbConnection(dbStr)
+
+		gormDB, err := GetDbConnection(getDbString(os.Getenv("HOST_DB_NAME")))
 		if err != nil {
 			fmt.Println("Error initializing host db: ", err)
 			panic(err)
@@ -112,22 +109,23 @@ func GetTenantDBFromTenantUrl(tenantUrl string) (*gorm.DB, error) {
 			return nil, err
 		}
 
-		if tenant.TenantDBConnectionString == "" {
-			return nil, fmt.Errorf("tenantDBConnectionString is empty")
+		if tenant.DbUri == "" {
+			return nil, fmt.Errorf("DbUri is empty")
 		}
 
 		regex := regexp.MustCompile(`^postgres:\/\/(?:[A-Za-z0-9]+):(?:[A-Za-z0-9]+)@[\w\.-]+(?::\d+)?\/[\w\-]+(\?.*)?$`)
-		if !regex.MatchString(tenant.TenantDBConnectionString) {
-			return nil, fmt.Errorf("invalid tenantDBConnectionString")
+		if !regex.MatchString(tenant.DbUri) {
+			return nil, fmt.Errorf("invalid DbUri")
 		}
 
 		fmt.Println("Creating new tenant db connection for", tenantUrl)
-		gormDB, err := GetDbConnection(tenant.TenantDBConnectionString)
+		gormDB, err := GetDbConnection(tenant.DbUri)
 		if err != nil {
 			fmt.Println("Error initializing tenant db: ", err)
 			return nil, err
 		}
 
+		GormMigrate(gormDB, TenantModels)
 		tenantsDBMap[tenantUrl] = TenantConnection{
 			Connection: gormDB,
 			CreatedAt:  time.Now(),
@@ -137,7 +135,7 @@ func GetTenantDBFromTenantUrl(tenantUrl string) (*gorm.DB, error) {
 	return tenantsDBMap[tenantUrl].Connection, nil
 }
 
-func CreateDatabase(tenantName string, gormDB *gorm.DB) (string, error) {
+func CreateTenantDatabase(tenantName string, gormDB *gorm.DB) (string, error) {
 	regex := regexp.MustCompile("[^a-zA-Z0-9]+")
 	dbName := strings.ToLower(regex.ReplaceAllString(tenantName, ""))
 
@@ -146,13 +144,16 @@ func CreateDatabase(tenantName string, gormDB *gorm.DB) (string, error) {
 		return "", err
 	}
 
-	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
-		os.Getenv("POSTGRES_USER"),
-		os.Getenv("POSTGRES_PASSWORD"),
-		os.Getenv("POSTGRES_HOST"),
-		os.Getenv("POSTGRES_PORT"),
-		dbName,
-	), nil
+	dbUri := getDbString(dbName)
+	db, err := GetDbConnection(dbUri)
+	if err != nil {
+		fmt.Println("unable to connect to tenant database")
+		// Point of error
+		return "", nil
+	}
+
+	GormMigrate(db, TenantModels)
+	return dbUri, nil
 }
 
 func GormMigrate(gormDB *gorm.DB, Models []interface{}) error {

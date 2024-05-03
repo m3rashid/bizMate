@@ -7,7 +7,7 @@ export const Route = createLazyFileRoute('/')({
 
 function Index() {
   function login() {
-    window.location.href = `${baseUrl}/auth/google?tenant=${window.location.host}`;
+    window.location.href = `${baseUrl}/auth/google?state=${window.location.host}`;
   }
 
   return (
