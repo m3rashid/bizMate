@@ -18,8 +18,6 @@ import (
 	"gorm.io/gorm"
 )
 
-var Models []interface{}
-
 const CONNECTION_REFRESH_INTERVAL = 1 * time.Hour
 
 var db *gorm.DB
@@ -94,14 +92,13 @@ func GetHostDB() *gorm.DB {
 			fmt.Println("Error initializing host db: ", err)
 			panic(err)
 		}
-
 		db = gormDB
 	}
 
 	return db
 }
 
-func GetTenantDB(tenantUrl string) (*gorm.DB, error) {
+func GetTenantDBFromTenantUrl(tenantUrl string) (*gorm.DB, error) {
 	if tenantUrl == "" {
 		return nil, errors.New("tenantUrl is empty")
 	}
@@ -158,7 +155,7 @@ func CreateDatabase(tenantName string, gormDB *gorm.DB) (string, error) {
 	), nil
 }
 
-func GormMigrate(gormDB *gorm.DB) error {
+func GormMigrate(gormDB *gorm.DB, Models []interface{}) error {
 	fmt.Println("Migrating models...")
 	err := gormDB.AutoMigrate(Models...)
 	if err != nil {
@@ -170,6 +167,6 @@ func GormMigrate(gormDB *gorm.DB) error {
 	return nil
 }
 
-func GetDbFromRequestOrigin(ctx *fiber.Ctx) (*gorm.DB, error) {
-	return GetTenantDB(ctx.GetReqHeaders()["Origin"][0])
+func GetTenantDbFromCtx(ctx *fiber.Ctx) (*gorm.DB, error) {
+	return GetTenantDBFromTenantUrl(ctx.GetReqHeaders()["Origin"][0])
 }

@@ -11,7 +11,7 @@ func Includes[SliceType constraints.Ordered](array []SliceType, element SliceTyp
 	return false
 }
 
-func Conditional(trueVal interface{}, falseVal interface{}, condition bool) interface{} {
+func Conditional[T interface{}](trueVal T, falseVal T, condition bool) T {
 	if condition {
 		return trueVal
 	}

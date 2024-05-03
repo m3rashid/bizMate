@@ -10,6 +10,7 @@ type User struct {
 	Phone       string `json:"phone,omitempty" gorm:"column:phone" validate:""`
 	Avatar      string `json:"avatar,omitempty" gorm:"column:avatar" validate:""`
 	Deactivated bool   `json:"deactivated" gorm:"column:deactivated" validate:""`
+	Provider    string `json:"provider" gorm:"column:provider" validate:""` // credentials | google
 	Password    string `json:"password" gorm:"column:password;not null" validate:"required"`
 }
 
@@ -25,4 +26,8 @@ func (*User) TableName() string {
 
 func (*Profile) TableName() string {
 	return PROFILE_MODEL_NAME
+}
+
+func (u *User) Validate() error {
+	return nil
 }

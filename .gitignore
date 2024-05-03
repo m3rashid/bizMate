@@ -3,6 +3,6 @@
 bin/*
 !bin/.gitkeep
 .env
-data/*
-!data/.gitkeep
+.data/*
+!.data/.gitkeep
 tmp/*

@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bizmate/auth"
 	"bizmate/models"
+	"bizmate/scripts"
 	"bizmate/utils"
 	"fmt"
 	"log"
@@ -10,19 +12,21 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-
-	// "github.com/gofiber/fiber/v2/middleware/favicon"
+	"github.com/gofiber/fiber/v2/middleware/favicon"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/joho/godotenv"
 )
 
-func main() {
+func init() {
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
+	fmt.Println("Environment Variables Loaded")
+}
 
+func main() {
 	app := fiber.New(fiber.Config{
 		CaseSensitive:         true,
 		PassLocalsToViews:     true,
@@ -40,6 +44,9 @@ func main() {
 		},
 	})
 
+	auth.Setup(app)
+	scripts.Setup(app)
+
 	app.Use(cors.New())
 
 	app.Static("/public", "./public", fiber.Static{
@@ -47,10 +54,10 @@ func main() {
 		CacheDuration: 10 * time.Second,
 	})
 
-	// app.Use(favicon.New(favicon.Config{
-	// 	File: "./public/icons/favicon.ico",
-	// 	URL:  "/favicon.ico",
-	// }))
+	app.Use(favicon.New(favicon.Config{
+		File: "./public/icons/favicon.ico",
+		URL:  "/favicon.ico",
+	}))
 
 	if os.Getenv("SERVER_MODE") == "production" {
 		app.Use(limiter.New(limiter.Config{
@@ -67,8 +74,7 @@ func main() {
 	}
 
 	db := utils.GetHostDB()
-	db.AutoMigrate(&models.Tenant{}, &models.TenantOwner{})
-	fmt.Println("Database Migrated")
+	utils.GormMigrate(db, []interface{}{&models.Tenant{}, &models.TenantOwner{}})
 
 	log.Println("Server is running")
 	app.Listen(":" + os.Getenv("SERVER_PORT"))

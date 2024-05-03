@@ -30,7 +30,7 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - ./data/postgresDb:/var/lib/postgresql/data
+      - ./.data/postgresDb:/var/lib/postgresql/data
     depends_on:
       - redis
 
@@ -38,6 +38,6 @@ services:
     image: redis:latest
     restart: always
     volumes:
-      - ./data:/data
+      - ./.data:/data
     ports:
       - 6379:6379

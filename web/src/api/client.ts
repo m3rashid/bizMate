@@ -24,7 +24,7 @@ function defaultErrorHandler(error: unknown) {
   throw error;
 }
 
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
+export const baseUrl = import.meta.env.VITE_API_BASE_URL;
 async function apiClient(endpoint: string, requestOptions?: RequestInit) {
   return fetch(baseUrl + endpoint, {
     ...(requestOptions || {}),
