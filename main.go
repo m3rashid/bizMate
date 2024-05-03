@@ -44,12 +44,17 @@ func main() {
 		},
 	})
 
-	app.Use(func(ctx *fiber.Ctx) error {
-		fmt.Println("Middleware intercept")
-		fmt.Println("queries: ", ctx.Queries())
-		fmt.Println("params: ", ctx.AllParams())
-		return ctx.Next()
-	})
+	app.Use(cors.New(cors.Config{
+		AllowOrigins:     "http://localhost:5173",
+		AllowCredentials: true,
+	}))
+
+	// app.Use(func(ctx *fiber.Ctx) error {
+	// 	fmt.Println("Middleware intercept")
+	// 	fmt.Println("queries: ", ctx.Queries())
+	// 	fmt.Println("params: ", ctx.AllParams())
+	// 	return ctx.Next()
+	// })
 
 	utils.TenantModels = []interface{}{
 		models.User{},
@@ -58,8 +63,6 @@ func main() {
 
 	auth.Setup(app)
 	scripts.Setup(app)
-
-	app.Use(cors.New())
 
 	app.Static("/public", "./public", fiber.Static{
 		MaxAge:        3600,

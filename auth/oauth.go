@@ -90,3 +90,12 @@ func logout(ctx *fiber.Ctx) error {
 
 	return ctx.SendString("logout")
 }
+
+func checkAuth(ctx *fiber.Ctx) error {
+	jwtToken, err := GenerateJWT(ctx.Locals("userId").(uint), ctx.Locals("email").(string))
+	if err != nil {
+		return ctx.SendStatus(fiber.StatusInternalServerError)
+	}
+
+	return ctx.JSON(fiber.Map{"token": jwtToken})
+}

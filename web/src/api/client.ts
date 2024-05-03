@@ -31,6 +31,7 @@ async function apiClient(endpoint: string, requestOptions?: RequestInit) {
     headers: {
       method: 'POST',
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
       ...(requestOptions?.headers || {}),
     },
   })
