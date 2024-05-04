@@ -7,7 +7,7 @@ export type HeaderProps = {
 }
 
 function Header() {
-	const { auth: user, logout } = useAuth()
+	const { auth, logout } = useAuth()
 
 	return (
 		<>
@@ -23,10 +23,13 @@ function Header() {
 				</div>
 
 				<div className="flex gap-2 p-2">
-					{user.isAuthenticated ? (
-						<p onClick={logout} className="cursor-pointer [&.active]:font-bold">
-							Logout
-						</p>
+					{auth.isAuthenticated ? (
+						<div className="flex gap-2">
+							<p onClick={logout} className="m-0 cursor-pointer p-0 [&.active]:font-bold">
+								Logout
+							</p>
+							{auth.user?.avatar ? <img className="h-7 w-7 rounded-full" src={auth.user.avatar} /> : null}
+						</div>
 					) : (
 						<Link to="/auth/login" className="[&.active]:font-bold">
 							Login

@@ -31,7 +31,3 @@ func (*User) TableName() string {
 func (*Profile) TableName() string {
 	return PROFILE_MODEL_NAME
 }
-
-func (u *User) Validate() error {
-	return nil
-}
