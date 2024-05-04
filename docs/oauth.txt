@@ -1,0 +1,29 @@
+Backend OAUTH Explicit Flow
+
+Server := Our backend server
+Provider := Provider's server (google, github etc)
+
+1. Client makes a call to the server to start the auth flow
+2. Server Makes a call to the provider's backend
+3. User selects the account to be used for OAUTH (from the provider's domain)
+4. After selection, the provider generates (IdToken, AccessToken and RefreshToken) among things mentioned in the scope
+5. With these data, the provider makes a call to the server's callback url
+6. The server does its things with the data (like validation etc.), saves the RefreshToken in its database and return JWT to the Client
+7. On Getting the response from the server, the user is authenticated
+
+
+===============================================================================================================================================
+
+
+Frontend OAUTH Explicit Flow
+
+1. Client opens a new window, with the URL of the server (to initiate the process)
+2. The client keeps a reference of the original window and adds an event Listener for any message events
+3. The domain is changed to the provider's and all things are on the more secure back channel
+4. The user selects an account and the server redirects to the client's expected callback url
+5. The newly opened window's last url contains the JWT token and other details
+6. The client extracts the data from the token and makes a postMessage to the original window
+7. The newly opened window is now closed
+8. On getting the data, the eventListener runs and sets the JWT token in the browser's localStorage
+9. The client then makes a call to the backend to get the user info
+10. On getting the user info, the client logs the user in by setting the app's local state

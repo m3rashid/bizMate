@@ -3,6 +3,7 @@ package main
 import (
 	"bizmate/auth"
 	"bizmate/models"
+	"bizmate/notifications"
 	"bizmate/scripts"
 	"bizmate/utils"
 	"fmt"
@@ -57,6 +58,7 @@ func main() {
 
 	auth.Setup(app)
 	scripts.Setup(app)
+	notifications.Setup(app)
 
 	app.Static("/public", "./public", fiber.Static{
 		MaxAge:        3600,
