@@ -22,13 +22,13 @@ function PhoneNumberInput(props: PhoneNumberInputProps) {
 	return (
 		<div>
 			{props.label ? (
-				<label htmlFor="phone" className={twMerge('text-labelColor block text-sm font-medium leading-6', props.labelClassName)}>
+				<label htmlFor="phone" className={twMerge('block text-sm font-medium leading-6 text-labelColor', props.labelClassName)}>
 					{props.label}&nbsp;
 					<span className="text-red-500">{props.required ? '*' : ''}</span>
 				</label>
 			) : null}
 
-			<div className="flex items-center gap-2">
+			<div className="flex w-full items-center justify-stretch gap-2">
 				<SingleSelectInput
 					name="_ext"
 					options={phoneNumberOptions}
@@ -44,6 +44,7 @@ function PhoneNumberInput(props: PhoneNumberInputProps) {
 					name="_phone"
 					type="number"
 					placeholder="XXXXXXXXXX"
+					className="flex-1"
 					errorText={props.errorText}
 					labelClassName={props.labelClassName}
 					descriptionText={props.descriptionText}

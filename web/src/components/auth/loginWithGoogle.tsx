@@ -51,7 +51,7 @@ function LoginWithGoogle(props: LoginWithGoogleProps) {
 			if (props.onSuccess) props.onSuccess()
 			windowRef.current?.close()
 		} catch (err: unknown) {
-			window.alert((err as Error).message)
+			// window.alert((err as Error).message)
 			if (props.onFailure) props.onFailure()
 		} finally {
 			window.removeEventListener('message', receiveMessage)

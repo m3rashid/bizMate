@@ -15,7 +15,7 @@ function TextInput(props: TextInputProps) {
 	const [inputType, setInputType] = useState(props.type)
 
 	return (
-		<div>
+		<div className="w-full">
 			{props.label ? (
 				<label htmlFor={props.name} className={twMerge('block text-sm font-medium leading-6 text-gray-900', props.labelClassName)}>
 					{props.label}&nbsp;
