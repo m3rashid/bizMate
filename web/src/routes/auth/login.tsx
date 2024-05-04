@@ -1,49 +1,51 @@
-import { useState } from 'react'
-import { Navigate, createFileRoute } from '@tanstack/react-router'
-import LockClosedIcon from '@heroicons/react/20/solid/LockClosedIcon'
+import { useEffect, useRef, useState } from 'react'
+import { Navigate, createFileRoute, useNavigate } from '@tanstack/react-router'
 
-import Button from '../../components/lib/button'
+import { useAuth } from '../../hooks/auth'
 import BrandLogo from '../../components/lib/brandLogo'
-import TextInput from '../../components/lib/textInput'
-import LoginWithGoogle from '../../components/loginWithGoogle'
-import { useAuth } from '../../contexts/auth'
+import LoginWithGoogle from '../../components/auth/loginWithGoogle'
+import LoginWithCredentials, { LoginWithCredentialsProps } from '../../components/auth/credentials'
 
 export const Route = createFileRoute('/auth/login')({ component: Login })
 
-type LoginBody = { email: string; password: string }
-type LoginErrors = LoginBody
-
 function Login() {
-	const { isAuthenticated } = useAuth()
-	const [errors, setErrors] = useState<LoginErrors>({ email: '', password: '' })
+	const navigate = useNavigate()
+	const transitionStartedRef = useRef(false)
+	const { auth: user, checkAuth } = useAuth()
+	const [type, setType] = useState<LoginWithCredentialsProps['type']>('register')
 
-	if (isAuthenticated) {
+	async function onSuccess() {
+		await checkAuth()
+		transitionStartedRef.current = true
+	}
+
+	useEffect(() => {
+		if (transitionStartedRef?.current) navigate({ to: '/' })
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
+
+	if (user.isAuthenticated) {
 		return <Navigate to="/" /> // handle redirects and protected routes
 	}
 
 	return (
 		<div className="flex h-screen items-center justify-center bg-pageBg">
-			<div className="flex w-full max-w-80 flex-col gap-4 rounded-lg bg-white px-8 py-12">
+			<div className="flex w-full max-w-80 flex-col gap-4 rounded-lg bg-white px-6 py-12">
 				<BrandLogo className="" />
-				<h2 className="pb-4 text-center text-xl font-semibold">Login to Continue</h2>
+				<h2 className="pb-4 text-center text-xl font-semibold">{type === 'login' ? 'Login to Continue' : 'Register to get Started'}</h2>
 
-				<TextInput
-					name="email"
-					type="email"
-					label="Email"
-					placeholder="rashid@bizmate.com"
-					required
-					descriptionText="We will never share your email."
-					errorText={errors.email}
-				/>
-				<TextInput placeholder="Shhh..." required name="password" type="password" label="Password" errorText={errors.password} />
+				<LoginWithCredentials type={type} />
+				<p
+					onClick={() => setType((prev) => (prev === 'login' ? 'register' : 'login'))}
+					className="mb-1 cursor-pointer text-center text-sm text-primary hover:text-danger"
+				>
+					{type === 'login' ? "Don't have an account? Register Instead" : 'Already have an account? Login Instead'}
+				</p>
 
-				<Button className="mt-2" leftIcon={LockClosedIcon}>
-					Login
-				</Button>
-
-				<p className="text-center text-sm text-gray-500">Login in with a different method</p>
-				<LoginWithGoogle />
+				<div className="flex w-full flex-col">
+					<p className="mb-1 text-center text-sm text-gray-500">Login in with a different method</p>
+					<LoginWithGoogle onSuccess={onSuccess} />
+				</div>
 			</div>
 		</div>
 	)

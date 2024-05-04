@@ -1,10 +1,9 @@
 import { Suspense, useEffect, useRef } from 'react'
 import { useRouterState } from '@tanstack/react-router'
 
-import Button from './lib/button'
-import Loader from './lib/loader'
-import { baseUrl } from '../api/client'
-import { useAuth } from '../contexts/auth'
+import Button from '../lib/button'
+import Loader from '../lib/loader'
+import { baseUrl } from '../../api/client'
 
 function googleIcon() {
 	return (
@@ -30,24 +29,30 @@ function googleIcon() {
 }
 
 const windowTarget = 'bizmateLoginCallback'
-function LoginWithGoogle() {
-	const { setAuth } = useAuth()
+const windowBaseUrl = import.meta.env.VITE_APP_BASE_URL
+
+type LoginWithGoogleProps = {
+	onSuccess?: () => void
+	onFailure?: () => void
+}
+
+function LoginWithGoogle(props: LoginWithGoogleProps) {
 	const { location } = useRouterState()
-	const windowObjectReference = useRef<Window | null>(null)
-	const previousUrl = useRef<string | null>(null)
+	const windowRef = useRef<Window | null>(null)
+	const previousUrlRef = useRef<string | null>(null)
 
 	function receiveMessage(event: MessageEvent) {
 		try {
-			const windowBaseUrl = import.meta.env.VITE_APP_BASE_URL
-			console.log({ data: event.data })
 			if (!windowBaseUrl || event.origin !== windowBaseUrl) throw new Error('Request has been forged')
 			if (!event.source || (event.source as any).name !== windowTarget) throw new Error('Invalid event source')
 			if (!event.data.success || !event.data.token) throw new Error('Login failed')
 
 			localStorage.setItem('token', event.data.token)
-			setAuth((prev) => ({ ...prev, isAuthenticated: true }))
+			if (props.onSuccess) props.onSuccess()
+			windowRef.current?.close()
 		} catch (err: unknown) {
 			window.alert((err as Error).message)
+			if (props.onFailure) props.onFailure()
 		} finally {
 			window.removeEventListener('message', receiveMessage)
 		}
@@ -56,17 +61,17 @@ function LoginWithGoogle() {
 	function openSignInWindow(url: string, name: string) {
 		window.removeEventListener('message', receiveMessage)
 		const strWindowFeatures = 'toolbar=no, menubar=no, width=600, height=700, top=100, left=100'
-		if (windowObjectReference.current === null || windowObjectReference.current.closed) {
-			windowObjectReference.current = window.open(url, name, strWindowFeatures)
-		} else if (previousUrl.current !== url) {
-			windowObjectReference.current = window.open(url, name, strWindowFeatures)
-			windowObjectReference.current?.focus()
+		if (windowRef.current === null || windowRef.current.closed) {
+			windowRef.current = window.open(url, name, strWindowFeatures)
+		} else if (previousUrlRef.current !== url) {
+			windowRef.current = window.open(url, name, strWindowFeatures)
+			windowRef.current?.focus()
 		} else {
-			windowObjectReference.current.focus()
+			windowRef.current.focus()
 		}
 
 		window.addEventListener('message', receiveMessage, false)
-		previousUrl.current = url
+		previousUrlRef.current = url
 	}
 
 	useEffect(() => {

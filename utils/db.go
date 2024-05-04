@@ -169,5 +169,11 @@ func GormMigrate(gormDB *gorm.DB, Models []interface{}) error {
 }
 
 func GetTenantDbFromCtx(ctx *fiber.Ctx) (*gorm.DB, error) {
-	return GetTenantDBFromTenantUrl(ctx.GetReqHeaders()["Origin"][0])
+	tenantOrigin := ctx.GetReqHeaders()["Origin"][0]
+	if tenantOrigin == "" {
+		return nil, errors.New("tenantOrigin is empty")
+	}
+	tenantOrigin = strings.Replace(tenantOrigin, "http://", "", 1)
+	tenantOrigin = strings.Replace(tenantOrigin, "https://", "", 1)
+	return GetTenantDBFromTenantUrl(tenantOrigin)
 }

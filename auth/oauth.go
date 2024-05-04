@@ -48,7 +48,7 @@ func authCallback(ctx *fiber.Ctx) error {
 			Name:         user.Name,
 			Email:        user.Email,
 			Avatar:       user.AvatarURL,
-			Provider:     "google",
+			Provider:     models.PROVIDER_GOOGLE,
 			Password:     "",
 			RefreshToken: user.RefreshToken,
 		}
