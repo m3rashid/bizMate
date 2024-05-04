@@ -34,7 +34,11 @@ func Setup(app *fiber.App) {
 		),
 	)
 
+	app.Get("/auth/user", utils.CheckAuthMiddleware, getUser)
 	app.Get("/auth/check", utils.CheckAuthMiddleware, checkAuth)
+	app.Post("/auth/login", credentialsLogin)
+	app.Post("/auth/register", credentialsRegister)
+
 	app.Get("/auth/:provider", beginAuth)
 	app.Get("/auth/:provider/callback", authCallback)
 	app.Get("/auth/logout", logout)

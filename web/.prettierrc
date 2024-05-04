@@ -1,0 +1,10 @@
+{
+	"arrowParens": "always",
+	"printWidth": 150,
+	"semi": false,
+	"singleQuote": true,
+	"tabWidth": 2,
+	"useTabs": true,
+	"quoteProps": "preserve",
+	"plugins": ["prettier-plugin-tailwindcss"]
+}

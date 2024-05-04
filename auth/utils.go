@@ -1,13 +1,17 @@
 package auth
 
 import (
+	"bizmate/models"
 	"bizmate/utils"
+	"errors"
+	"fmt"
 	"os"
 	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 func HashPassword(password string) (string, error) {
@@ -47,4 +51,12 @@ func GenerateJWT(userId uint, email string) (string, error) {
 	}
 
 	return tokenString, nil
+}
+
+func createUser(db *gorm.DB, user *models.User) error {
+	if err := db.Create(user).Error; err != nil {
+		fmt.Println(err)
+		return errors.New("error=cant_create_user")
+	}
+	return nil
 }
