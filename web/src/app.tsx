@@ -19,13 +19,18 @@ function App() {
 
   useEffect(() => {
     async function checkAuth() {
-      const res = await fetch(baseUrl + '/auth/check', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-      const data = await res.json();
-      if (data.token) setAuth({ isAuthenticated: true, user: null });
+      try {
+        const res = await fetch(baseUrl + '/auth/check', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        const data = await res.json();
+        if (!data.token) throw new Error('No token');
+        setAuth({ isAuthenticated: true, user: null, setAuth });
+      } catch (err: unknown) {
+        setAuth({ isAuthenticated: false, user: null, setAuth });
+      }
     }
     checkAuth().catch(console.log);
   }, []);

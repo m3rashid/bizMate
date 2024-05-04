@@ -91,6 +91,6 @@ func main() {
 	db := utils.GetHostDB()
 	utils.GormMigrate(db, []interface{}{&models.Tenant{}, &models.TenantOwner{}})
 
-	log.Println("Server is running")
+	log.Println("Server is running in " + os.Getenv("SERVER_MODE") + " mode.")
 	app.Listen(":" + os.Getenv("SERVER_PORT"))
 }
