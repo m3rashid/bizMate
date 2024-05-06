@@ -20,6 +20,9 @@ function Header() {
 					<Link to="/about" className="[&.active]:font-bold">
 						About
 					</Link>
+					<Link to="/apps/forms/builder" className="[&.active]:font-bold">
+						Form Builder
+					</Link>
 				</div>
 
 				<div className="flex gap-2 p-2">

@@ -14,6 +14,8 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as AuthLoginImport } from './routes/auth/login'
+import { Route as AppsFormsIndexImport } from './routes/apps/forms/index'
+import { Route as AppsFormsBuilderImport } from './routes/apps/forms/builder'
 
 // Create Virtual Routes
 
@@ -37,6 +39,16 @@ const AuthLoginRoute = AuthLoginImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AppsFormsIndexRoute = AppsFormsIndexImport.update({
+  path: '/apps/forms/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AppsFormsBuilderRoute = AppsFormsBuilderImport.update({
+  path: '/apps/forms/builder',
+  getParentRoute: () => rootRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -53,6 +65,14 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginImport
       parentRoute: typeof rootRoute
     }
+    '/apps/forms/builder': {
+      preLoaderRoute: typeof AppsFormsBuilderImport
+      parentRoute: typeof rootRoute
+    }
+    '/apps/forms/': {
+      preLoaderRoute: typeof AppsFormsIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -62,6 +82,8 @@ export const routeTree = rootRoute.addChildren([
   IndexLazyRoute,
   AboutLazyRoute,
   AuthLoginRoute,
+  AppsFormsBuilderRoute,
+  AppsFormsIndexRoute,
 ])
 
 /* prettier-ignore-end */

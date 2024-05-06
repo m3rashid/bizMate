@@ -1,3 +1,5 @@
+export type UnionOfObject<T> = T[keyof T]
+
 export type User = {
 	id: number
 	name: string
