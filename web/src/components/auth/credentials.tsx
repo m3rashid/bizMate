@@ -47,15 +47,16 @@ function LoginWithCredentials(props: LoginWithCredentialsProps) {
 		e.stopPropagation()
 
 		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any
+		console.log(formData)
 		if (props.type === 'login') {
 			handleLogin({ email: formData.email, password: formData.password }, { onError, onSuccess })
 		} else {
 			handleRegister(
 				{
+					name: formData.name,
+					phone: formData.phone,
 					email: formData.email,
 					password: formData.password,
-					name: formData.name,
-					phone: `${formData._ext} ${formData._phone}`,
 				},
 				{ onError, onSuccess },
 			)
@@ -78,13 +79,17 @@ function LoginWithCredentials(props: LoginWithCredentialsProps) {
 				errorText={errors.email}
 			/>
 
-			{props.type === 'register' ? <PhoneNumberInput label="Phone" errorText={errors.phone} /> : null}
+			{props.type === 'register' ? <PhoneNumberInput name="phone" label="Phone" errorText={errors.phone} /> : null}
 
 			<TextInput placeholder="Shhh..." required name="password" type="password" label="Password" errorText={errors.password} />
 
-			<Button className="mt-2" leftIcon={LockClosedIcon} type="submit" {...(isLoginPending || isRegisterPending ? { rightIcon: Loader } : {})}>
-				{props.type === 'register' ? 'Register' : 'Login'}
-			</Button>
+			<Button
+				type="submit"
+				className="mt-2"
+				leftIcon={LockClosedIcon}
+				label={props.type === 'register' ? 'Register' : 'Login'}
+				{...(isLoginPending || isRegisterPending ? { rightIcon: Loader } : {})}
+			/>
 		</form>
 	)
 }

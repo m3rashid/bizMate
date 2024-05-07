@@ -11,27 +11,35 @@ export type Option = {
 }
 
 export type SelectInputProps = {
-	options: Array<Option>
-	label?: string
-	render: FC<{ option: Option; selected: boolean; active: boolean }>
 	name?: string
+	label?: string
+	value?: string
 	default: Option
+	options: Array<Option>
+	onChange?: (value: string) => void
+	render: FC<{ option: Option; selected: boolean; active: boolean }>
 }
 
 function SingleSelectInput(props: SelectInputProps) {
-	const [selectedOptionValue, setSelectedOptionValue] = useState<string>(props.default.value)
+	const [selectedOptionValue, setSelectedOptionValue] = useState<string>(props.value || props.default.value)
 
 	return (
-		<Listbox name={props.name} value={selectedOptionValue} onChange={setSelectedOptionValue}>
+		<Listbox
+			name={props.name}
+			value={selectedOptionValue}
+			onChange={(val) =>
+				props.onChange ? props.onChange((val as unknown as Option).value) : setSelectedOptionValue((val as unknown as Option).value)
+			}
+		>
 			{({ open }) => (
-				<>
-					{props.label ? <Listbox.Label className="text-labelColor block text-sm font-medium leading-6">{props.label}</Listbox.Label> : null}
+				<Fragment>
+					{props.label ? <Listbox.Label className="block text-sm font-medium leading-6 text-labelColor">{props.label}</Listbox.Label> : null}
 					<div className="relative">
-						<Listbox.Button className="text-labelColor relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm sm:leading-6">
+						<Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-labelColor shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm sm:leading-6">
 							<props.render
-								option={props.options.find((option) => option.value === selectedOptionValue) || props.default}
 								active={false}
 								selected={false}
+								option={props.options.find((option) => option.value === (props.value ? props.value : selectedOptionValue)) || props.default}
 							/>
 
 							<span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
@@ -50,21 +58,21 @@ function SingleSelectInput(props: SelectInputProps) {
 										}
 									>
 										{({ selected, active }) => (
-											<>
+											<Fragment>
 												<props.render {...{ option, selected, active }} />
 												{selected ? (
 													<span className={twMerge('absolute inset-y-0 right-0 flex items-center pr-4', active ? 'text-white' : 'text-primary')}>
 														<CheckIcon className="h-5 w-5" aria-hidden="true" />
 													</span>
 												) : null}
-											</>
+											</Fragment>
 										)}
 									</Listbox.Option>
 								))}
 							</Listbox.Options>
 						</Transition>
 					</div>
-				</>
+				</Fragment>
 			)}
 		</Listbox>
 	)

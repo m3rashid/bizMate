@@ -1,7 +1,7 @@
 import { twMerge } from 'tailwind-merge'
 import EyeOpen from '@heroicons/react/20/solid/EyeIcon'
-import { FC, InputHTMLAttributes, useState } from 'react'
 import EyeClosed from '@heroicons/react/20/solid/EyeSlashIcon'
+import { ChangeEvent, FC, InputHTMLAttributes, useState } from 'react'
 
 export type TextInputProps = InputHTMLAttributes<HTMLInputElement> & {
 	label?: string
@@ -9,6 +9,7 @@ export type TextInputProps = InputHTMLAttributes<HTMLInputElement> & {
 	labelClassName?: string
 	descriptionText?: string
 	errorText?: string
+	onChange?: (e: ChangeEvent<HTMLInputElement>) => void
 }
 
 function TextInput(props: TextInputProps) {
@@ -36,6 +37,7 @@ function TextInput(props: TextInputProps) {
 					id={props.name}
 					type={inputType}
 					name={props.name}
+					onChange={props.onChange}
 					placeholder={props.placeholder}
 					className={twMerge(
 						'block w-full rounded-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',

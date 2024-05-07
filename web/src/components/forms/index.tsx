@@ -3,9 +3,9 @@ import { useCallback, useState } from 'react'
 import Button from '../lib/button'
 import FormRenderer from './renderer'
 import TextInput from '../lib/textInput'
-import Typography from '../lib/typography'
 import PhoneNumberInput from '../lib/phoneNumberInput'
 import { FormBuilder as FormBuilderType, widgetMap } from './constants'
+import { Typography } from '../lib/extras'
 
 const FormBuilder: FormBuilderType = (props) => {
 	return <FormRenderer meta={props.meta} />

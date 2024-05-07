@@ -2,6 +2,7 @@ export type SupportedValues = 'string' | 'textarea' | 'number' | 'boolean' | 'ch
 export type Props = Record<string, SupportedValues>
 
 export const buttonProps: Props = {
+	label: 'string',
 	onClick: 'textarea',
 	className: 'string',
 	type: ['button', 'submit'],
@@ -9,6 +10,7 @@ export const buttonProps: Props = {
 }
 
 export const phoneNumberInputProps: Props = {
+	name: 'string',
 	label: 'string',
 	required: 'boolean',
 	errorText: 'string',

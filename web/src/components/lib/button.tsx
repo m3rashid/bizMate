@@ -13,6 +13,7 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 	leftIcon?: FC<any>
 	rightIcon?: FC<any>
 	variant?: keyof typeof buttonVariants
+	label?: string
 }
 
 function Button(props: ButtonProps) {
@@ -26,7 +27,7 @@ function Button(props: ButtonProps) {
 			)}
 		>
 			{props.leftIcon ? <props.leftIcon className="-mr-0.5 h-5 w-5" aria-hidden="true" /> : null}
-			{props.children}
+			{props.label || props.children}
 			{props.rightIcon ? <props.rightIcon className="-mr-0.5 h-5 w-5" aria-hidden="true" /> : null}
 		</button>
 	)

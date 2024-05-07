@@ -1,6 +1,8 @@
-import { createFileRoute } from '@tanstack/react-router'
-import FormBuilder from '../../../components/forms'
 import { FormEvent } from 'react'
+import { createFileRoute } from '@tanstack/react-router'
+
+import FormBuilder from '../../../components/forms'
+import Button from '../../../components/lib/button'
 
 export const Route = createFileRoute('/apps/forms/builder')({
 	component: () => <FormBuilderPage />,
@@ -14,43 +16,31 @@ function FormBuilderPage() {
 	}
 
 	return (
-		<form onSubmit={handleSubmit}>
-			<FormBuilder
-				meta={[
-					{
-						key: 'txt-1',
-						name: 'textInput',
-						props: {
-							label: 'My input',
-							name: 'inputr',
-						},
-					},
-					{
-						key: 'ph-1',
-						name: 'phoneNumberInput',
-						props: {
-							label: 'Enter contact number',
-						},
-					},
-					{
-						key: 'bt1',
-						name: 'button',
-						props: {
-							variant: 'primary',
-							type: 'submit',
-						},
-						children: [
-							{
-								key: 'p-1',
-								name: 'typography',
-								props: {
-									value: 'Hello',
-								},
+		<div className="flex h-screen w-full items-center justify-center bg-gray-200 p-4">
+			<form className="flex w-full min-w-72 max-w-[600px] flex-col gap-4 rounded-lg bg-white p-8" onSubmit={handleSubmit}>
+				<FormBuilder
+					meta={[
+						{
+							key: 'txt-1',
+							name: 'textInput',
+							props: {
+								label: 'My input',
+								name: 'myinput',
 							},
-						],
-					},
-				]}
-			/>
-		</form>
+						},
+						{
+							key: 'ph-1',
+							name: 'phoneNumberInput',
+							props: {
+								label: 'Enter contact number',
+								name: 'phone',
+							},
+						},
+					]}
+				/>
+
+				<Button type="submit" label="Submit Form" />
+			</form>
+		</div>
 	)
 }
