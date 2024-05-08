@@ -14,7 +14,7 @@ export type PhoneNumberInputProps = {
 	descriptionText?: string
 }
 
-const phoneExtOptions: Array<Option> = [
+const phoneOptions: Array<Option> = [
 	{ id: 1, value: '+91', label: 'IND' },
 	{ id: 2, value: '+1', label: 'USA' },
 ]
@@ -23,10 +23,18 @@ function getPhoneNumber(phone: string, ext: string) {
 	return ext + ' ' + phone
 }
 
-const initialState = { phoneNumber: '', phoneExt: phoneExtOptions[0].value, phone: getPhoneNumber('', phoneExtOptions[0].value) }
-
-type Action = { type: 'CHANGE_EXT'; ext: string } | { type: 'CHANGE_PHONE'; phone: string } | { type: 'CLEAR' }
+const initialState = {
+	phoneNumber: '',
+	phoneExt: phoneOptions[0].value,
+	phone: getPhoneNumber('', phoneOptions[0].value),
+}
 type State = typeof initialState
+
+type Action =
+	| { type: 'CHANGE_EXT'; ext: string }
+	| { type: 'CHANGE_PHONE'; phone: string }
+	| { type: 'CLEAR' }
+
 function phoneNumberReducer(state: State, action: Action): State {
 	if (action.type === 'CLEAR') return initialState
 	if (action.type === 'CHANGE_EXT') {
@@ -34,7 +42,11 @@ function phoneNumberReducer(state: State, action: Action): State {
 	}
 
 	if (action.type === 'CHANGE_PHONE') {
-		return { ...state, phoneNumber: action.phone, phone: getPhoneNumber(action.phone, state.phoneExt) }
+		return {
+			...state,
+			phoneNumber: action.phone,
+			phone: getPhoneNumber(action.phone, state.phoneExt),
+		}
 	}
 
 	return state
@@ -42,11 +54,7 @@ function phoneNumberReducer(state: State, action: Action): State {
 
 function Component(
 	props: PhoneNumberInputProps,
-	ref: ForwardedRef<{
-		getValue: () => string
-		clear: () => void
-		setValue: (value: string) => void
-	}>,
+	ref: ForwardedRef<{ getValue: () => string; clear: () => void }>,
 ) {
 	const inputRef = useRef(null)
 	const [{ phone, phoneExt, phoneNumber }, dispatch] = useReducer(phoneNumberReducer, initialState)
@@ -54,16 +62,19 @@ function Component(
 	useImperativeHandle(ref, () => ({
 		getValue: () => phone,
 		clear: () => dispatch({ type: 'CLEAR' }),
-		setValue: (value: string) => {
-			console.log({ value })
-		},
 	}))
 
 	return (
 		<div>
 			<input type="hidden" name={props.name} ref={inputRef} value={phone} />
 			{props.label ? (
-				<label htmlFor="phone" className={twMerge('block text-sm font-medium leading-6 text-labelColor', props.labelClassName)}>
+				<label
+					htmlFor="phone"
+					className={twMerge(
+						'block text-sm font-medium leading-6 text-labelColor',
+						props.labelClassName,
+					)}
+				>
 					{props.label}&nbsp;
 					<span className="text-red-500">{props.required ? '*' : ''}</span>
 				</label>
@@ -72,13 +83,21 @@ function Component(
 			<div className="flex w-full items-center justify-stretch gap-2">
 				<SingleSelectInput
 					value={phoneExt}
-					options={phoneExtOptions}
-					default={phoneExtOptions[0]}
+					options={phoneOptions}
+					default={phoneOptions[0].value}
 					onChange={(value) => dispatch({ type: 'CHANGE_EXT', ext: value })}
 					render={({ active, option, selected }) => (
 						<div className="flex">
-							<span className={twMerge(selected ? 'font-semibold' : 'font-normal', 'truncate')}>{option.value}</span>
-							<span className={twMerge(active ? 'text-indigo-200' : 'text-gray-500', 'ml-2 truncate')}>{option.label}</span>
+							<span
+								className={twMerge(selected ? 'font-semibold' : 'font-normal', 'min-w-7 truncate')}
+							>
+								{option}
+							</span>
+							<span
+								className={twMerge(active ? 'text-indigo-200' : 'text-gray-500', 'ml-2 truncate')}
+							>
+								{phoneOptions.find((op) => op.value === option)?.label || phoneOptions[0].label}
+							</span>
 						</div>
 					)}
 				/>

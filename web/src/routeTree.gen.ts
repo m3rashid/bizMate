@@ -15,6 +15,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRoute } from './routes/__root'
 import { Route as AuthLoginImport } from './routes/auth/login'
 import { Route as AppsFormsIndexImport } from './routes/apps/forms/index'
+import { Route as AppsFormsDesignerImport } from './routes/apps/forms/designer'
 import { Route as AppsFormsBuilderImport } from './routes/apps/forms/builder'
 
 // Create Virtual Routes
@@ -44,6 +45,11 @@ const AppsFormsIndexRoute = AppsFormsIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AppsFormsDesignerRoute = AppsFormsDesignerImport.update({
+  path: '/apps/forms/designer',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const AppsFormsBuilderRoute = AppsFormsBuilderImport.update({
   path: '/apps/forms/builder',
   getParentRoute: () => rootRoute,
@@ -69,6 +75,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppsFormsBuilderImport
       parentRoute: typeof rootRoute
     }
+    '/apps/forms/designer': {
+      preLoaderRoute: typeof AppsFormsDesignerImport
+      parentRoute: typeof rootRoute
+    }
     '/apps/forms/': {
       preLoaderRoute: typeof AppsFormsIndexImport
       parentRoute: typeof rootRoute
@@ -83,6 +93,7 @@ export const routeTree = rootRoute.addChildren([
   AboutLazyRoute,
   AuthLoginRoute,
   AppsFormsBuilderRoute,
+  AppsFormsDesignerRoute,
   AppsFormsIndexRoute,
 ])
 

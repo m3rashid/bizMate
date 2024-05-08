@@ -12,6 +12,10 @@ const config: Config = {
 				sucess: '#38a169',
 				pageBg: '#e5e7eb',
 				labelColor: '#111827',
+
+				linkVisited: '#9333ea',
+				linkUnvisited: '#2563eb',
+				linkActive: '#db2777',
 			},
 		},
 	},
