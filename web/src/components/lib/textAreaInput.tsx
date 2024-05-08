@@ -1,9 +1,7 @@
+import { ChangeEvent, FC, TextareaHTMLAttributes } from 'react'
 import { twMerge } from 'tailwind-merge'
-import EyeOpen from '@heroicons/react/20/solid/EyeIcon'
-import EyeClosed from '@heroicons/react/20/solid/EyeSlashIcon'
-import { ChangeEvent, FC, InputHTMLAttributes, useState } from 'react'
 
-export type TextInputProps = InputHTMLAttributes<HTMLInputElement> & {
+export type TextAreaInputProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
 	label?: string
 	icon?: FC<any>
 	errorText?: string
@@ -12,9 +10,7 @@ export type TextInputProps = InputHTMLAttributes<HTMLInputElement> & {
 	onChange?: (e: ChangeEvent<HTMLInputElement>) => void
 }
 
-function TextInput(props: TextInputProps) {
-	const [inputType, setInputType] = useState(props.type)
-
+function TextAreaInput(props: TextAreaInputProps) {
 	return (
 		<div className="w-full">
 			{props.label ? (
@@ -39,35 +35,19 @@ function TextInput(props: TextInputProps) {
 					</div>
 				) : null}
 
-				<input
+				<textarea
 					id={props.name}
-					type={inputType}
-					name={props.name}
 					onChange={props.onChange}
 					placeholder={props.placeholder}
 					className={twMerge(
 						'block w-full rounded-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
 						!props.icon ? 'pl-3' : 'pl-10',
-						props.type === 'password' ? 'pr-10' : '',
 						props.errorText
 							? 'text-red-500 ring-1 ring-inset ring-red-300 placeholder:text-red-300'
 							: '',
 						props.className,
 					)}
 				/>
-
-				{props.type === 'password' ? (
-					<div
-						onClick={() => setInputType((prev) => (prev === 'password' ? 'text' : 'password'))}
-						className="absolute inset-y-0 right-0 flex items-center pr-3"
-					>
-						{inputType === 'password' ? (
-							<EyeClosed aria-hidden="true" className="h-5 w-5 cursor-pointer text-gray-400" />
-						) : (
-							<EyeOpen aria-hidden="true" className="h-5 w-5 cursor-pointer text-gray-400" />
-						)}
-					</div>
-				) : null}
 			</div>
 
 			{props.descriptionText ? (
@@ -77,4 +57,4 @@ function TextInput(props: TextInputProps) {
 	)
 }
 
-export default TextInput
+export default TextAreaInput

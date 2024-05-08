@@ -33,6 +33,24 @@ export const textInputProps: Props = {
 	descriptionText: 'string',
 }
 
+export const textAreaInputProps: Props = {
+	name: 'string',
+	label: 'string',
+	required: 'boolean',
+	errorText: 'string',
+	labelClassName: 'string',
+	descriptionText: 'string',
+}
+
+// export const selectInputProps: Props = {
+// 	label: 'string',
+// 	required: 'boolean',
+// 	errorText: 'string',
+// 	labelClassName: 'string',
+// 	descriptionText: 'string',
+// 	options: ['_string_'],
+// }
+
 // Extra components (Native web to react components mapping)
 export const paragraphProps: Props = {
 	value: 'string',

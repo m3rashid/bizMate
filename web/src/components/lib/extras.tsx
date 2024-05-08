@@ -24,7 +24,7 @@ export function Link(props: LinkProps) {
 		<a
 			{...props}
 			className={twMerge(
-				'visited:text-linkVisited hover:text-linkActive active:text-linkActive visited:active:text-linkActive visited:cursor-auto visited:underline hover:cursor-pointer active:cursor-pointer active:underline',
+				'visited:cursor-auto visited:text-linkVisited visited:underline hover:cursor-pointer hover:text-linkActive active:cursor-pointer active:text-linkActive active:underline visited:active:text-linkActive',
 				props.className,
 			)}
 		>

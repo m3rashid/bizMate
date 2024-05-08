@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react'
 import Button from '../lib/button'
 import FormRenderer from './renderer'
 import TextInput from '../lib/textInput'
+import TextAreaInput from '../lib/textAreaInput'
 import PhoneNumberInput from '../lib/phoneNumberInput'
 import { FormBuilder as FormBuilderType, widgetMap } from './constants'
 import { Code, Column, H1, H2, H3, H4, H5, H6, Image, Link, Paragraph } from '../lib/extras'
@@ -30,6 +31,7 @@ FormBuilder.useForceUpdate = () => {
 
 FormBuilder.register('button', Button)
 FormBuilder.register('textInput', TextInput)
+FormBuilder.register('textareaInput', TextAreaInput)
 FormBuilder.register('phoneNumberInput', PhoneNumberInput)
 FormBuilder.register('paragraph', Paragraph)
 

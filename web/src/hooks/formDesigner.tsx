@@ -11,6 +11,7 @@ import { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core'
 
 import { FormElementInstance, supportedWidgets } from '../components/forms/constants'
 import { Props } from '../components/forms/exposedProps'
+import { generateRandomString } from '../utils/string'
 
 export type FormDesignerType = 'header' | 'body'
 export type FormDesigner = {
@@ -60,12 +61,6 @@ export function useFormDesigner() {
 		setFormDesigner,
 	] = useContext(formDesignerContext)
 
-	function generateNewKey(len = 10) {
-		return Math.random()
-			.toString(36)
-			.substring(2, len + 2)
-	}
-
 	function getTaskPosition(meta: FormElementInstance[], id: string | UniqueIdentifier): number {
 		return meta.findIndex((el) => el.id === id)
 	}
@@ -91,7 +86,7 @@ export function useFormDesigner() {
 	}
 
 	function insertNewNode(newNode: Omit<FormElementInstance, 'id'>) {
-		const node: FormElementInstance = { ...newNode, props: {}, id: generateNewKey() }
+		const node: FormElementInstance = { ...newNode, props: {}, id: generateRandomString() }
 		setFormDesigner((prev) => ({
 			...prev,
 			selectedNode: node,
@@ -100,7 +95,10 @@ export function useFormDesigner() {
 	}
 
 	function getSelectedNodeProps(): Props {
-		if (!selectedNode) return {}
+		if (!selectedNode)
+			return {
+				// return the props for submit text and cancel text
+			}
 		return supportedWidgets.find((widget) => widget.name === selectedNode.name)?.props || {}
 	}
 

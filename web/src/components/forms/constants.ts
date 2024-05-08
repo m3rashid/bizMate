@@ -9,6 +9,7 @@ import {
 	headingProps,
 	paragraphProps,
 	textInputProps,
+	textAreaInputProps,
 	phoneNumberInputProps,
 } from './exposedProps'
 
@@ -17,6 +18,7 @@ type GetProps<T> = Record<keyof T, any>
 export type SupportedWidget =
 	| { name: 'button'; props: GetProps<typeof buttonProps> }
 	| { name: 'textInput'; props: GetProps<typeof textInputProps> }
+	| { name: 'textareaInput'; props: GetProps<typeof textAreaInputProps> }
 	| { name: 'phoneNumberInput'; props: GetProps<typeof phoneNumberInputProps> }
 	| { name: 'paragraph'; props: GetProps<typeof paragraphProps> }
 	| { name: 'column'; props: GetProps<typeof columnProps> }
@@ -57,6 +59,7 @@ export type SupportedWidgetsArray = Array<SupportedWidget & { label: string }>
 export const supportedWidgets: SupportedWidgetsArray = [
 	{ name: 'button', props: buttonProps, label: 'Button' },
 	{ name: 'textInput', props: textInputProps, label: 'Text Input' },
+	{ name: 'textareaInput', props: textAreaInputProps, label: 'Text Area Input' },
 	{ name: 'phoneNumberInput', props: phoneNumberInputProps, label: 'Phone Number Input' },
 	{ name: 'paragraph', props: paragraphProps, label: 'Paragraph' },
 	{ name: 'column', props: columnProps, label: 'Column' },
