@@ -5,15 +5,14 @@ const FORM_RESPONSE_MODEL_NAME = "form_responses"
 
 type Form struct {
 	BaseModel
-	Header             string `json:"header" gorm:"column:header;not null" validate:"required"`
 	Body               string `json:"body" gorm:"column:body;not null" validate:"required"`
-	SubmitText         string `json:"submitText" gorm:"column:submitText;not null" validate:""`
-	CancelText         string `json:"cancelText" gorm:"column:cancelText;not null" validate:""`
+	SubmitText         string `json:"submitText" gorm:"column:submitText;not null" validate:"required"`
+	CancelText         string `json:"cancelText" gorm:"column:cancelText;not null" validate:"required"`
 	AuthRequired       bool   `json:"authRequired" gorm:"column:authRequired;not null" validate:"required"`
 	SuccessPage        string `json:"successPage,omitempty" gorm:"column:successPage" validate:""`
 	FailurePage        string `json:"failurePage,omitempty" gorm:"column:failurePage" validate:""`
 	Active             bool   `json:"active" gorm:"column:active;not null" validate:"required"`
-	PreviousVersionIDs string `json:"previousVersionIDs,omitempty" gorm:"column:previousVersionIDs" validate:""`
+	PreviousVersionIDs string `json:"previousVersionIDs,omitempty" gorm:"column:previousVersionIDs" validate:"required"`
 }
 
 type FormResponse struct {

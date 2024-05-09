@@ -15,9 +15,11 @@ import { FormElementInstance, supportedWidgets } from '../components/forms/const
 
 export type FormDesignerType = 'header' | 'body'
 export type FormDesigner = {
-	rootClassNames: string
-	submitText: string
-	cancelText: string
+	rootProps: {
+		submitText: string
+		cancelText: string
+		authRequired: boolean
+	}
 	viewType: 'build' | 'preview'
 	meta: FormElementInstance[]
 	selectedNode: FormElementInstance | null
@@ -37,9 +39,11 @@ const formDesignerDefaultState: FormDesigner = {
 	],
 	viewType: 'build',
 	selectedNode: null,
-	cancelText: 'Cancel',
-	submitText: 'Submit Form',
-	rootClassNames: 'rounded-lg bg-white p-4 shadow-md',
+	rootProps: {
+		authRequired: false,
+		cancelText: 'Cancel',
+		submitText: 'Submit Form',
+	},
 }
 
 const formDesignerContext = createContext<
@@ -56,10 +60,8 @@ export function FormDesignerProvider({ children }: PropsWithChildren) {
 }
 
 export function useFormDesigner() {
-	const [
-		{ meta, viewType, cancelText, submitText, selectedNode, rootClassNames },
-		setFormDesigner,
-	] = useContext(formDesignerContext)
+	const [{ meta, viewType, selectedNode, rootProps }, setFormDesigner] =
+		useContext(formDesignerContext)
 
 	function getTaskPosition(meta: FormElementInstance[], id: string | UniqueIdentifier): number {
 		return meta.findIndex((el) => el.id === id)
@@ -94,18 +96,20 @@ export function useFormDesigner() {
 		}))
 	}
 
-	function getSelectedNodeProps(): { props: Props; values: Record<string, any> } {
+	function getSelectedNodeProps(): { _props: Props; values: Record<string, any> } {
 		if (!selectedNode) {
 			return {
-				props: {},
-				values: {},
+				values: rootProps,
+				_props: {
+					cancelText: ['Cancel button text', 'string'],
+					submitText: ['Submit button text', 'string'],
+					authRequired: ['Does the user need to be logged in to fill this form', 'boolean'],
+				},
 			}
 		}
-
-		const elementPropsValues = meta.find((node) => node.id === selectedNode.id)?.props || {}
-		const allProps =
-			supportedWidgets.find((widget) => widget.name === selectedNode.name)?.props || {}
-		return { props: allProps, values: elementPropsValues }
+		const elementValues = meta.find((node) => node.id === selectedNode.id)?.props || {}
+		const props = supportedWidgets.find((widget) => widget.name === selectedNode.name)?.props || {}
+		return { _props: props, values: elementValues }
 	}
 
 	function updateNode(nodeKey: string, props: Props) {
@@ -126,15 +130,13 @@ export function useFormDesigner() {
 	return {
 		meta,
 		viewType,
-		cancelText,
-		submitText,
+		rootProps,
 		removeNode,
 		updateNode,
 		selectedNode,
 		insertNewNode,
 		handleDragEnd,
 		changeViewType,
-		rootClassNames,
 		setFormDesigner,
 		getSelectedNodeProps,
 	}

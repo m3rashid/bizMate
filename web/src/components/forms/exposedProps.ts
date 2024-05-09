@@ -29,6 +29,7 @@ export const phoneNumberInputProps: Props = {
 }
 
 export const textInputProps: Props = {
+	name: ['Name of the input element', 'string'],
 	label: ['Label of this field', 'string'],
 	required: ['It is required by the user to fill this field', 'boolean'],
 	labelClassName: ['Tailwindcss classNames to style the label', 'string'],

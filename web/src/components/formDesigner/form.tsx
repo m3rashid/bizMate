@@ -1,5 +1,4 @@
 import { twMerge } from 'tailwind-merge'
-import { FormEvent, MouseEvent } from 'react'
 import { SortableContext } from '@dnd-kit/sortable'
 
 import FormBuilder from '../forms'
@@ -9,7 +8,7 @@ import { FormElementInstance } from '../forms/constants'
 import { useFormDesigner } from '../../hooks/formDesigner'
 
 function SingleFormDesigner() {
-	const { meta, rootClassNames, viewType, cancelText, submitText } = useFormDesigner()
+	const { meta, viewType, rootProps, setFormDesigner, selectedNode } = useFormDesigner()
 
 	const transformedMeta: FormElementInstance[] = meta.map((item) => ({
 		...item,
@@ -20,37 +19,32 @@ function SingleFormDesigner() {
 		),
 	}))
 
-	function handleSubmit(e: FormEvent<HTMLFormElement>) {
-		e.preventDefault()
-		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any
-		console.log({ formData })
-	}
-
-	function handleCancel(e: MouseEvent<HTMLButtonElement>) {
-		e.preventDefault()
-		const form = (e.target as any).parentNode.parentNode
-		form.reset({ errors: {} })
-	}
-
 	return (
-		<form onSubmit={handleSubmit} className="flex w-full min-w-72 max-w-[600px] flex-col gap-4">
+		<form className="flex w-full min-w-80 max-w-[800px] flex-col gap-4">
 			<SortableContext items={meta}>
 				<FormBuilder
-					className={twMerge('flex flex-col gap-4 p-8', rootClassNames)}
+					className="flex flex-col gap-4 rounded-lg border-[1px] border-gray-200 bg-white p-4 shadow-md"
 					meta={viewType === 'build' ? transformedMeta : meta}
 				/>
 			</SortableContext>
 
-			<div className={twMerge(rootClassNames, 'flex items-center justify-between')}>
+			<div
+				onClick={() => setFormDesigner((prev) => ({ ...prev, selectedNode: null }))}
+				className={twMerge(
+					'flex items-center justify-between rounded-lg border-[1px] border-gray-200 bg-white p-4 shadow-md',
+					selectedNode ? 'bg-gray-200' : 'ring-2 ring-linkActive',
+				)}
+			>
 				<Button
-					label={cancelText}
-					onClick={handleCancel}
+					className="select-none"
+					label={rootProps.cancelText}
 					disabled={viewType === 'build'}
 					variant={viewType === 'build' ? 'disabled' : 'simple'}
 				/>
 				<Button
 					type="submit"
-					label={submitText}
+					className="select-none"
+					label={rootProps.submitText}
 					disabled={viewType === 'build'}
 					variant={viewType === 'build' ? 'disabled' : 'primary'}
 				/>

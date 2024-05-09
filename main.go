@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bizmate/apis/forms"
 	"bizmate/auth"
 	"bizmate/models"
 	"bizmate/notifications"
@@ -52,11 +53,13 @@ func main() {
 
 	utils.TenantModels = []interface{}{
 		models.User{},
+		models.Form{},
 		models.Profile{},
 		models.Notification{},
 	}
 
 	auth.Setup(app)
+	forms.Setup(app)
 	scripts.Setup(app)
 	notifications.Setup(app)
 

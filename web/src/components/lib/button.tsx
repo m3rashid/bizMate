@@ -28,14 +28,13 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 function Button(props: ButtonProps) {
 	return (
 		<button
-			onClick={props.onClick}
+			{...props}
 			className={twMerge(
 				'inline-flex items-center justify-center gap-x-2 rounded-md font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2',
 				buttonVariants[props.variant ?? 'primary'],
 				buttonSizes[props.size ?? 'medium'],
 				props.className,
 			)}
-			{...props}
 		>
 			{props.leftIcon ? <props.leftIcon className="-mr-0.5 h-5 w-5" aria-hidden="true" /> : null}
 			{props.label || props.children}

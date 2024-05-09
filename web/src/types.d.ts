@@ -8,3 +8,14 @@ export type User = {
 	avatar?: string
 	createdAt: string
 }
+
+export type Form = {
+	body: string
+	submitText: string
+	cancelText: string
+	authRequired: boolean
+	successPage: string
+	failurePage: string
+	active: boolean
+	previousVersionIDs: string
+}

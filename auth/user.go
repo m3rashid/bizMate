@@ -47,7 +47,7 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 	validate := validator.New()
 	err = validate.Struct(loginBody)
 	if err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Bad Request"})
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Bad Request, Validation Failed"})
 	}
 
 	db, err := utils.GetTenantDbFromCtx(ctx)

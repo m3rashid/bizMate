@@ -1,27 +1,47 @@
+import { useMutation } from '@tanstack/react-query'
 import InformationCircleIcon from '@heroicons/react/24/outline/InformationCircleIcon'
 
 import Button from '../lib/button'
 import Tooltip from '../lib/tooltip'
+import apiClient from '../../api/client'
 import { useFormDesigner } from '../../hooks/formDesigner'
 
 function FormDesignerTopBar() {
-	const { viewType, changeViewType, meta, cancelText, submitText } = useFormDesigner()
+	const { viewType, changeViewType, meta, rootProps } = useFormDesigner()
+	const { isPending, mutate: saveForm } = useMutation({
+		mutationKey: ['saveForm'],
+		mutationFn: async (body: any) =>
+			apiClient('/forms/create', { method: 'POST', body: JSON.stringify(body) }),
+	})
 
 	function handleSaveForm() {
-		console.log('Save form', { meta, submitText, cancelText })
+		if (meta.length === 0) {
+			window.alert('No form elements to save')
+			return
+		}
+
+		const form = {
+			body: JSON.stringify(meta),
+			cancelText: rootProps.cancelText,
+			submitText: rootProps.submitText,
+			authRequired: rootProps.authRequired || false,
+		}
+
+		saveForm(form)
 	}
 
 	return (
-		<div className="mb-2 flex w-full items-center justify-between rounded-lg bg-white px-4 py-2">
+		<div className="mb-2 flex w-full items-center justify-between rounded-lg border-[1px] border-gray-200 bg-white px-4 py-2 shadow-md">
 			<Button
 				size="small"
 				variant="simple"
+				disabled={isPending}
 				onClick={() => changeViewType()}
 				label={viewType === 'build' ? 'Show Preview' : 'Designer View'}
 			/>
 
 			<div className="flex items-center gap-4">
-				<Button size="small" label="Save form" onClick={handleSaveForm} />
+				<Button size="small" label="Save form" disabled={isPending} onClick={handleSaveForm} />
 				<Tooltip
 					label={
 						<ul className="block list-disc pl-4">

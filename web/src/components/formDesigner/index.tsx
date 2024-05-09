@@ -36,7 +36,7 @@ function FormDesigner() {
 			</div>
 
 			<DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
-				<div className="flex w-full flex-col items-center overflow-auto bg-gray-200 p-4 pb-10">
+				<div className="flex w-full flex-col items-center overflow-auto bg-[url(/paper.svg)] p-4 pb-10">
 					<FormDesignerTopBar />
 					<FormDesignerCore />
 				</div>
