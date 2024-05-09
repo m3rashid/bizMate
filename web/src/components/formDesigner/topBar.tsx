@@ -1,4 +1,4 @@
-import InfoButton from '@heroicons/react/24/outline/InformationCircleIcon'
+import InformationCircleIcon from '@heroicons/react/24/outline/InformationCircleIcon'
 
 import Button from '../lib/button'
 import Tooltip from '../lib/tooltip'
@@ -27,10 +27,19 @@ function FormDesignerTopBar() {
 						<ul className="block list-disc pl-4">
 							<li className="list-item">Double click on any element to select</li>
 							<li className="list-item">Click on the elements in the left panel to add to form</li>
+							<li className="list-item">Drag elements to re-order</li>
+							<li className="list-item">Set Extra properties for elements in the right panel</li>
+							<li className="list-item">
+								All the
+								<span className="mx-[2px] rounded-md bg-gray-700 px-2 py-[2px] text-white">
+									className
+								</span>
+								props mean tailwind classes
+							</li>
 						</ul>
 					}
 				>
-					<InfoButton className="h-8 w-8" />
+					<InformationCircleIcon className="h-8 w-8" />
 				</Tooltip>
 			</div>
 		</div>

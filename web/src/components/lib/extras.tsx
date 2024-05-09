@@ -82,15 +82,12 @@ export function H6(props: HeadingProps) {
 	)
 }
 
-export type CodeProps = {
-	code: string
-	className?: string
-}
+export type CodeProps = { code: string; className?: string }
 export function Code(props: CodeProps) {
 	return (
 		<pre
 			className={twMerge(
-				'mx-0 my-2 block whitespace-pre rounded-md bg-gray-800 p-2 font-mono text-gray-50',
+				'mx-0 my-2 block overflow-auto whitespace-pre rounded-md bg-gray-800 p-2 font-mono text-gray-50',
 				props.className,
 			)}
 		>

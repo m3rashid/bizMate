@@ -5,80 +5,80 @@ export type SupportedValues =
 	| 'boolean'
 	| 'children'
 	| Array<string>
-export type Props = Record<string, SupportedValues>
+export type Props = Record<string, [string, SupportedValues]> // [description, supportedValues]
 
 export const buttonProps: Props = {
-	label: 'string',
-	onClick: 'textarea',
-	className: 'string',
-	type: ['button', 'submit'],
-	size: ['sm', 'md', 'lg'],
-	variant: ['primary', 'danger', 'secondary', 'disabled', 'sucess'],
+	label: ['Text written on the button', 'string'],
+	// onClick: ['Function to be called on button click', 'textarea'],
+	className: ['Tailwindcss classNames for button', 'string'],
+	type: ['HTML type of button', ['button', 'submit']],
+	size: ['Size of the button', ['sm', 'md', 'lg']],
+	variant: [
+		'Variant(presets) of the button',
+		['primary', 'danger', 'secondary', 'disabled', 'sucess'],
+	],
 }
 
 export const phoneNumberInputProps: Props = {
-	name: 'string',
-	label: 'string',
-	required: 'boolean',
-	errorText: 'string',
-	labelClassName: 'string',
-	descriptionText: 'string',
+	name: ['Name of the input element', 'string'],
+	label: ['Label of this field', 'string'],
+	required: ['It is required by the user to fill this field', 'boolean'],
+	// errorText: ['', 'string'],
+	labelClassName: ['Tailwindcss classNames to style the label', 'string'],
+	descriptionText: ['Describe more about this field', 'string'],
 }
 
 export const textInputProps: Props = {
-	label: 'string',
-	required: 'boolean',
-	errorText: 'string',
-	labelClassName: 'string',
-	descriptionText: 'string',
+	label: ['Label of this field', 'string'],
+	required: ['It is required by the user to fill this field', 'boolean'],
+	labelClassName: ['Tailwindcss classNames to style the label', 'string'],
+	descriptionText: ['Describe more about this field', 'string'],
 }
 
 export const textAreaInputProps: Props = {
-	name: 'string',
-	label: 'string',
-	required: 'boolean',
-	errorText: 'string',
-	labelClassName: 'string',
-	descriptionText: 'string',
+	name: ['Name of the input element', 'string'],
+	label: ['Label of this field', 'string'],
+	required: ['It is required by the user to fill this field', 'boolean'],
+	labelClassName: ['Tailwindcss classNames to style the label', 'string'],
+	descriptionText: ['Describe more about this field', 'string'],
 }
 
 // export const selectInputProps: Props = {
-// 	label: 'string',
-// 	required: 'boolean',
-// 	errorText: 'string',
-// 	labelClassName: 'string',
-// 	descriptionText: 'string',
-// 	options: ['_string_'],
+// 	label: ["Label of this field", 'string'],
+// 	required: ["It is required by the user to fill this field", 'boolean'],
+// 	labelClassName: ["Tailwindcss classNames to style the label", 'string'],
+// 	descriptionText: ["Describe more about this field", 'string'],
+// 	options: ["", ['_string_']],
 // }
 
 // Extra components (Native web to react components mapping)
 export const paragraphProps: Props = {
-	value: 'string',
-	className: 'string',
+	text: ['Paragraph text you want to show', 'string'],
+	className: ['Tailwindcss classNames to style', 'string'],
 }
 
 export const columnProps: Props = {
-	className: 'string',
+	className: ['Tailwindcss classNames to style', 'string'],
 }
 
 export const imageProps: Props = {
-	src: 'string',
-	className: 'string',
+	src: ['URL of the image you want to show', 'string'],
+	className: ['Tailwindcss classNames to style the field', 'string'],
 }
 
 export const linkProps: Props = {
-	href: 'string',
-	text: 'string',
-	className: 'string',
-	target: ['_blank', '_self'],
+	href: ['Link of the asset you want to open', 'string'],
+	text: ['Text you want to show for the link', 'string'],
+	className: ['Tailwindcss classNames to style the field', 'string'],
+	target: ['Where should the link open: _blank(new tab), _self(same tab)', ['_blank', '_self']],
 }
 
 export const headingProps: Props = {
-	text: 'string',
-	className: 'string',
+	text: ['Text you want to show', 'string'],
+	className: ['Tailwindcss classNames to style the field', 'string'],
 }
 
 export const codeProps: Props = {
-	code: 'string',
-	className: 'string',
+	code: ['Code you want to show', 'textarea'],
+	className: ['Tailwindcss classNames to style the field', 'string'],
 }

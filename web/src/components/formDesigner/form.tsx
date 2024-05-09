@@ -36,7 +36,7 @@ function SingleFormDesigner() {
 		<form onSubmit={handleSubmit} className="flex w-full min-w-72 max-w-[600px] flex-col gap-4">
 			<SortableContext items={meta}>
 				<FormBuilder
-					className={twMerge(rootClassNames, 'flex flex-col gap-4 p-8')}
+					className={twMerge('flex flex-col gap-4 p-8', rootClassNames)}
 					meta={viewType === 'build' ? transformedMeta : meta}
 				/>
 			</SortableContext>

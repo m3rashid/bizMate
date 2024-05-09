@@ -9,9 +9,9 @@ import {
 import { arrayMove } from '@dnd-kit/sortable'
 import { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core'
 
-import { FormElementInstance, supportedWidgets } from '../components/forms/constants'
+import { generateRandomString } from '../utils/helpers'
 import { Props } from '../components/forms/exposedProps'
-import { generateRandomString } from '../utils/string'
+import { FormElementInstance, supportedWidgets } from '../components/forms/constants'
 
 export type FormDesignerType = 'header' | 'body'
 export type FormDesigner = {
@@ -94,19 +94,31 @@ export function useFormDesigner() {
 		}))
 	}
 
-	function getSelectedNodeProps(): Props {
-		if (!selectedNode)
+	function getSelectedNodeProps(): { props: Props; values: Record<string, any> } {
+		if (!selectedNode) {
 			return {
-				// return the props for submit text and cancel text
+				props: {},
+				values: {},
 			}
-		return supportedWidgets.find((widget) => widget.name === selectedNode.name)?.props || {}
+		}
+
+		const elementPropsValues = meta.find((node) => node.id === selectedNode.id)?.props || {}
+		const allProps =
+			supportedWidgets.find((widget) => widget.name === selectedNode.name)?.props || {}
+		return { props: allProps, values: elementPropsValues }
 	}
 
-	function updateNode(nodeKey: string, newNode: FormElementInstance) {}
+	function updateNode(nodeKey: string, props: Props) {
+		setFormDesigner((prev) => ({
+			...prev,
+			meta: prev.meta.map((node) => ({ ...node, props: node.id === nodeKey ? props : node.props })),
+		}))
+	}
 
 	function removeNode(nodeKey: string) {
 		setFormDesigner((prev) => ({
 			...prev,
+			selectedNode: null,
 			meta: prev.meta.filter((node) => node.id !== nodeKey),
 		}))
 	}

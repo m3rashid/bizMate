@@ -42,9 +42,7 @@ function FormDesigner() {
 				</div>
 			</DndContext>
 
-			<div className="min-w-80 max-w-96 overflow-y-auto bg-gray-100 p-2 shadow-lg">
-				<RightSidebar />
-			</div>
+			<RightSidebar />
 		</div>
 	)
 }
