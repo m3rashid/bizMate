@@ -5,13 +5,16 @@ import Button from '../lib/button'
 import Tooltip from '../lib/tooltip'
 import apiClient from '../../api/client'
 import { useFormDesigner } from '../../hooks/formDesigner'
+import { useNavigate } from '@tanstack/react-router'
 
 function FormDesignerTopBar() {
+	const navigate = useNavigate()
 	const { viewType, changeViewType, meta, rootProps } = useFormDesigner()
 	const { isPending, mutate: saveForm } = useMutation({
 		mutationKey: ['saveForm'],
 		mutationFn: async (body: any) =>
 			apiClient('/forms/create', { method: 'POST', body: JSON.stringify(body) }),
+		onSuccess: () => navigate({ to: '/apps/forms' }),
 	})
 
 	function handleSaveForm() {

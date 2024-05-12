@@ -1,4 +1,4 @@
-package async
+package utils
 
 import "sync"
 

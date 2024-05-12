@@ -5,6 +5,8 @@ const FORM_RESPONSE_MODEL_NAME = "form_responses"
 
 type Form struct {
 	BaseModel
+	Title              string `json:"title" gorm:"column:title;not null" validate:"required"`
+	Description        string `json:"description" gorm:"column:description;not null" validate:"required"`
 	Body               string `json:"body" gorm:"column:body;not null" validate:"required"`
 	SubmitText         string `json:"submitText" gorm:"column:submitText;not null" validate:"required"`
 	CancelText         string `json:"cancelText" gorm:"column:cancelText;not null" validate:"required"`

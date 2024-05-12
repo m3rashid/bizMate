@@ -5,6 +5,7 @@ import (
 	"bizmate/auth"
 	"bizmate/models"
 	"bizmate/notifications"
+	"bizmate/payments"
 	"bizmate/scripts"
 	"bizmate/utils"
 	"fmt"
@@ -61,6 +62,7 @@ func main() {
 	auth.Setup(app)
 	forms.Setup(app)
 	scripts.Setup(app)
+	payments.Setup(app)
 	notifications.Setup(app)
 
 	app.Static("/public", "./public", fiber.Static{

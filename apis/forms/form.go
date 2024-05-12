@@ -79,7 +79,47 @@ func updateFormById(ctx *fiber.Ctx) error {
 }
 
 func getPaginatedForms(ctx *fiber.Ctx) error {
-	return ctx.SendString("Hello, World!")
+	reqBody := utils.PaginationRequestBody{}
+	if err := ctx.QueryParser(&reqBody); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Bad Request"})
+	}
+
+	if reqBody.Page <= 0 {
+		reqBody.Page = 1
+	}
+
+	if reqBody.Limit <= 0 {
+		reqBody.Limit = 10
+	}
+
+	reqBody.Limit = min(reqBody.Limit, 50)
+
+	db, err := utils.GetTenantDbFromCtx(ctx)
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Internal Server Error"})
+	}
+
+	forms := []models.Form{}
+	if err := db.Limit(reqBody.Limit).Offset((reqBody.Page - 1) * reqBody.Limit).Find(&forms).Error; err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Internal Server Error"})
+	}
+
+	var count int64 = 0
+	if err := db.Model(&models.Form{}).Count(&count).Error; err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Internal Server Error"})
+	}
+
+	paginationResponse := utils.PaginationResponse[models.Form]{
+		Docs:            forms,
+		Limit:           reqBody.Limit,
+		Count:           len(forms),
+		TotalDocs:       int(count),
+		CurrentPage:     reqBody.Page,
+		HasNextPage:     int(count) > reqBody.Page*reqBody.Limit,
+		HasPreviousPage: reqBody.Page > 1,
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(paginationResponse)
 }
 
 func getFormReports(ctx *fiber.Ctx) error {
