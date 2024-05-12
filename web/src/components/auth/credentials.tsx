@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query'
 import LockClosedIcon from '@heroicons/react/20/solid/LockClosedIcon'
 
 import Button from '../lib/button'
-import Loader from '../lib/loader'
+import { Loader } from '../lib/loader'
 import TextInput from '../lib/textInput'
 import apiClient from '../../api/client'
 import { useAuth } from '../../hooks/auth'
@@ -103,9 +103,9 @@ function LoginWithCredentials(props: LoginWithCredentialsProps) {
 			<Button
 				type="submit"
 				className="mt-2"
-				leftIcon={LockClosedIcon}
+				LeftIcon={<LockClosedIcon className="h-5 w-5" />}
 				label={props.type === 'register' ? 'Register' : 'Login'}
-				{...(isLoginPending || isRegisterPending ? { rightIcon: Loader } : {})}
+				{...(isLoginPending || isRegisterPending ? { RightIcon: <Loader /> } : {})}
 			/>
 		</form>
 	)

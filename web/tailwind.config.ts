@@ -5,17 +5,29 @@ const config: Config = {
 	theme: {
 		extend: {
 			colors: {
-				primary: '#3490dc',
-				danger: '#e3342f',
-				secondary: '#ffed4a',
-				disabled: '#a0aec0',
-				sucess: '#38a169',
-				pageBg: '#e5e7eb',
-				labelColor: '#111827',
+				primary: '#8b5cf6', // violet-500
+				primaryLight: '#a78bfa', // violet-400
 
-				linkVisited: '#9333ea',
-				linkUnvisited: '#2563eb',
-				linkActive: '#db2777',
+				danger: '#f43f5e', // rose-500
+				dangerLight: '#fb7185', // rose-400
+
+				secondary: '#06b6d4', // cyan-500
+				secondaryLight: '#22d3ee', // cyan-400
+
+				disabled: '#6b7280', // gray-500
+				disabledLight: '#9ca3af', // gray-400
+
+				success: '#22c55e', // green-500
+				successLight: '#4ade80', // green-400
+
+				pageBg: '#e5e7eb', // gray-200
+				borderColor: '#d1d5db', // gray-200
+
+				textColor: '#111827', // gray-900
+
+				linkVisited: '#9333ea', // purple-600
+				linkUnvisited: '#2563eb', // blue-600
+				linkActive: '#db2777', // pink-600
 			},
 		},
 	},

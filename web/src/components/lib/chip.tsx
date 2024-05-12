@@ -25,7 +25,7 @@ function Chip(props: ChipProps) {
 	return (
 		<div
 			className={twMerge(
-				'rounded-lg text-white',
+				'select-none rounded-lg text-white',
 				chipVariants[props.variant || 'primary'],
 				chipSizes[props.size || 'medium'],
 				props.className,

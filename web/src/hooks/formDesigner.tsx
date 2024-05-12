@@ -9,6 +9,7 @@ import {
 import { arrayMove } from '@dnd-kit/sortable'
 import { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core'
 
+import { StringBoolean } from '../types'
 import { generateRandomString } from '../utils/helpers'
 import { Props } from '../components/forms/exposedProps'
 import { FormElementInstance, supportedWidgets } from '../components/forms/constants'
@@ -16,9 +17,13 @@ import { FormElementInstance, supportedWidgets } from '../components/forms/const
 export type FormDesignerType = 'header' | 'body'
 export type FormDesigner = {
 	rootProps: {
+		title: string
 		submitText: string
 		cancelText: string
-		authRequired: boolean
+		description: string
+		allowResponseUpdate: StringBoolean
+		allowMultipleResponse: StringBoolean
+		allowAnonymousResponse: StringBoolean
 	}
 	viewType: 'build' | 'preview'
 	meta: FormElementInstance[]
@@ -40,9 +45,13 @@ const formDesignerDefaultState: FormDesigner = {
 	viewType: 'build',
 	selectedNode: null,
 	rootProps: {
-		authRequired: false,
+		title: 'New Form',
 		cancelText: 'Cancel',
 		submitText: 'Submit Form',
+		allowAnonymousResponse: 'off',
+		description: 'This is a new form',
+		allowMultipleResponse: 'off',
+		allowResponseUpdate: 'off',
 	},
 }
 
@@ -101,9 +110,22 @@ export function useFormDesigner() {
 			return {
 				values: rootProps,
 				_props: {
+					title: ['Form title', 'string'],
+					description: ['Form description', 'textarea'],
 					cancelText: ['Cancel button text', 'string'],
 					submitText: ['Submit button text', 'string'],
-					authRequired: ['Does the user need to be logged in to fill this form', 'boolean'],
+					allowAnonymousResponse: [
+						'Does the user need to be logged in to fill this form?',
+						'boolean',
+					],
+					allowMultipleResponse: [
+						'Do you want the user to respond multiple times to the same form?',
+						'boolean',
+					],
+					allowResponseUpdate: [
+						'Do you want the user to update their responses? Please make sure, If the form is anonymous, this cant be ensured',
+						'boolean',
+					],
 				},
 			}
 		}

@@ -1,6 +1,7 @@
 import { Fragment } from 'react'
 
-import { FormRenderProps, widgetMap } from './constants'
+import { widgetMap } from '.'
+import { FormRenderProps } from './constants'
 
 function FormRenderer(props: FormRenderProps) {
 	return (

@@ -17,3 +17,10 @@ func Conditional[T interface{}](trueVal T, falseVal T, condition bool) T {
 	}
 	return falseVal
 }
+
+func Ternary[T any](condition bool, trueVal T, falseVal T) T {
+	if condition {
+		return trueVal
+	}
+	return falseVal
+}

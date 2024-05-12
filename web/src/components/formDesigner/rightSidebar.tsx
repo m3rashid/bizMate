@@ -52,6 +52,17 @@ function propsToMeta({ _props, values }: PropsToMetaProps): FormElementInstance[
 				},
 			})
 		} else if (value === 'boolean') {
+			meta.push({
+				id,
+				name: 'toggler',
+				props: {
+					name: key,
+					descriptionText: description,
+					label: camelCaseToSentenceCase(key),
+					defaultValue: values[key] ? values[key] : 'off',
+					defaultChecked: values[key] ? values[key] === 'on' : false,
+				},
+			})
 		} else if (value === 'children') {
 		} else if (Array.isArray(value)) {
 		}
@@ -80,13 +91,16 @@ function RightSidebar() {
 		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any
 		if (selectedNode) updateNode(selectedNode.id, formData)
 		else {
-			if (!formData.cancelText || !formData.submitText) return
 			setFormDesigner((prev) => ({
 				...prev,
 				rootProps: {
+					title: formData.title,
 					cancelText: formData.cancelText,
 					submitText: formData.submitText,
-					authRequired: formData.authRequired,
+					description: formData.description,
+					allowResponseUpdate: formData.allowResponseUpdate,
+					allowMultipleResponse: formData.allowMultipleResponse,
+					allowAnonymousResponse: formData.allowAnonymousResponse,
 				},
 			}))
 		}

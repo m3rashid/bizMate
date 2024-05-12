@@ -4,7 +4,7 @@ export type LoaderProps = {
 	className?: string
 }
 
-function Loader(props: LoaderProps) {
+export function Loader(props: LoaderProps) {
 	return (
 		<div>
 			<img
@@ -16,4 +16,10 @@ function Loader(props: LoaderProps) {
 	)
 }
 
-export default Loader
+export function PageLoader(props: LoaderProps) {
+	return (
+		<div className="flex h-full min-h-96 items-center justify-center">
+			<Loader {...props} className={twMerge('h-20 w-20', props.className)} />
+		</div>
+	)
+}

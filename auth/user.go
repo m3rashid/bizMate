@@ -3,9 +3,7 @@ package auth
 import (
 	"bizmate/models"
 	"bizmate/utils"
-	"fmt"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -39,15 +37,9 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 		Email    string `json:"email" validate:"required,email"`
 		Password string `json:"password" validate:"required"`
 	}{}
-	err := ctx.BodyParser(&loginBody)
-	if err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Bad Request"})
-	}
 
-	validate := validator.New()
-	err = validate.Struct(loginBody)
-	if err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Bad Request, Validation Failed"})
+	if err := utils.ParseBodyAndValidate(ctx, &loginBody); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 
 	db, err := utils.GetTenantDbFromCtx(ctx)
@@ -84,16 +76,8 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 		Password string `json:"password" validate:"required"`
 	}{}
 
-	err := ctx.BodyParser(&registerBody)
-	if err != nil {
-		fmt.Println(err)
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Bad Request 1"})
-	}
-
-	validate := validator.New()
-	err = validate.Struct(registerBody)
-	if err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Bad Request 2"})
+	if err := utils.ParseBodyAndValidate(ctx, &registerBody); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 
 	password, err := HashPassword(registerBody.Password)

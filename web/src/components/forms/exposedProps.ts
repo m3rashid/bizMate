@@ -54,7 +54,7 @@ export const textAreaInputProps: Props = {
 
 // Extra components (Native web to react components mapping)
 export const paragraphProps: Props = {
-	text: ['Paragraph text you want to show', 'string'],
+	text: ['Paragraph text you want to show', 'textarea'],
 	className: ['Tailwindcss classNames to style', 'string'],
 }
 
@@ -82,4 +82,12 @@ export const headingProps: Props = {
 export const codeProps: Props = {
 	code: ['Code you want to show', 'textarea'],
 	className: ['Tailwindcss classNames to style the field', 'string'],
+}
+
+export const togglerProps: Props = {
+	label: ['Label of this field', 'string'],
+	name: ['Name of the input element', 'string'],
+	className: ['Tailwindcss classNames to style the field', 'string'],
+	required: ['It is required by the user to fill this field', 'boolean'],
+	descriptionText: ['Describe more about this field', 'string'],
 }

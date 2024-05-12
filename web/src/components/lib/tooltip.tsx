@@ -28,7 +28,7 @@ function Tooltip(props: TooltipProps) {
 				show ? (
 					<div
 						style={getTooltipStyles()}
-						className="absolute z-50 rounded-lg border-[1px] border-gray-200 bg-white px-4 py-2 shadow-md"
+						className="absolute z-50 rounded-lg border-[1px] border-gray-200 bg-gray-700 px-4 py-1 text-white shadow-md"
 					>
 						{props.label}
 					</div>

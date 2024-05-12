@@ -6,6 +6,7 @@ import {
 	imageProps,
 	buttonProps,
 	columnProps,
+	togglerProps,
 	headingProps,
 	paragraphProps,
 	textInputProps,
@@ -31,6 +32,7 @@ export type SupportedWidget =
 	| { name: 'h5'; props: GetProps<typeof headingProps> }
 	| { name: 'h6'; props: GetProps<typeof headingProps> }
 	| { name: 'code'; props: GetProps<typeof codeProps> }
+	| { name: 'toggler'; props: GetProps<typeof togglerProps> }
 
 export type SupportedWidgetName = SupportedWidget['name']
 
@@ -58,6 +60,7 @@ export type FormBuilder = FC<FormRenderProps> & {
 export type SupportedWidgetsArray = Array<SupportedWidget & { label: string }>
 export const supportedWidgets: SupportedWidgetsArray = [
 	{ name: 'button', props: buttonProps, label: 'Button' },
+	{ name: 'toggler', props: togglerProps, label: 'Toggle Input' },
 	{ name: 'textInput', props: textInputProps, label: 'Text Input' },
 	{ name: 'textareaInput', props: textAreaInputProps, label: 'Text Area Input' },
 	{ name: 'phoneNumberInput', props: phoneNumberInputProps, label: 'Phone Number Input' },
@@ -73,8 +76,3 @@ export const supportedWidgets: SupportedWidgetsArray = [
 	{ name: 'h6', props: headingProps, label: 'Heading 6' },
 	{ name: 'code', props: codeProps, label: 'Code' },
 ]
-
-export const widgetMap: Record<
-	SupportedWidgetName & Omit<string, SupportedWidgetName>,
-	{ widget: FC; fieldTransformer?: (field: any) => FC }
-> = {}

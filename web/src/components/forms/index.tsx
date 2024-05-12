@@ -1,12 +1,36 @@
-import { useCallback, useState } from 'react'
+import { FC, useCallback, useState } from 'react'
 
 import Button from '../lib/button'
 import FormRenderer from './renderer'
+import TogglerInput from '../lib/toggle'
 import TextInput from '../lib/textInput'
+import { ExplicitAndAll } from '../../types'
 import TextAreaInput from '../lib/textAreaInput'
 import PhoneNumberInput from '../lib/phoneNumberInput'
-import { FormBuilder as FormBuilderType, widgetMap } from './constants'
+import { FormBuilder as FormBuilderType, SupportedWidgetName } from './constants'
 import { Code, Column, H1, H2, H3, H4, H5, H6, Image, Link, Paragraph } from '../lib/extras'
+
+export const widgetMap: Record<
+	ExplicitAndAll<string, SupportedWidgetName>,
+	{ widget: FC<any>; fieldTransformer?: (field: any) => FC }
+> = {
+	button: { widget: Button },
+	toggler: { widget: TogglerInput },
+	textInput: { widget: TextInput },
+	textareaInput: { widget: TextAreaInput },
+	phoneNumberInput: { widget: PhoneNumberInput as any },
+	paragraph: { widget: Paragraph as any },
+	column: { widget: Column },
+	image: { widget: Image },
+	link: { widget: Link },
+	code: { widget: Code },
+	h1: { widget: H1 },
+	h2: { widget: H2 },
+	h3: { widget: H3 },
+	h4: { widget: H4 },
+	h5: { widget: H5 },
+	h6: { widget: H6 },
+}
 
 const FormBuilder: FormBuilderType = (props) => {
 	return (
@@ -28,23 +52,5 @@ FormBuilder.useForceUpdate = () => {
 	const forceUpdate = useCallback(() => update({}), [])
 	return forceUpdate
 }
-
-FormBuilder.register('button', Button)
-FormBuilder.register('textInput', TextInput)
-FormBuilder.register('textareaInput', TextAreaInput)
-FormBuilder.register('phoneNumberInput', PhoneNumberInput)
-FormBuilder.register('paragraph', Paragraph)
-
-FormBuilder.register('column', Column)
-FormBuilder.register('image', Image)
-FormBuilder.register('link', Link)
-FormBuilder.register('code', Code)
-
-FormBuilder.register('h1', H1)
-FormBuilder.register('h2', H2)
-FormBuilder.register('h3', H3)
-FormBuilder.register('h4', H4)
-FormBuilder.register('h5', H5)
-FormBuilder.register('h6', H6)
 
 export default FormBuilder

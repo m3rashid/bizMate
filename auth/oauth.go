@@ -63,7 +63,6 @@ func authCallback(ctx *fiber.Ctx) error {
 	}
 
 	if err = db.Where("email = ?", user.Email).First(&existingUser).Error; err != nil {
-		fmt.Println(err)
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			createUser()
 		} else {

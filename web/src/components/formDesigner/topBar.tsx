@@ -1,11 +1,12 @@
 import { useMutation } from '@tanstack/react-query'
+import { useNavigate } from '@tanstack/react-router'
 import InformationCircleIcon from '@heroicons/react/24/outline/InformationCircleIcon'
 
 import Button from '../lib/button'
 import Tooltip from '../lib/tooltip'
 import apiClient from '../../api/client'
+import { Form, StringBoolean } from '../../types'
 import { useFormDesigner } from '../../hooks/formDesigner'
-import { useNavigate } from '@tanstack/react-router'
 
 function FormDesignerTopBar() {
 	const navigate = useNavigate()
@@ -23,11 +24,18 @@ function FormDesignerTopBar() {
 			return
 		}
 
-		const form = {
+		const checkCondition = (val?: StringBoolean | undefined) => (val && val === 'on' ? true : false)
+
+		const form: Partial<Form> = {
 			body: JSON.stringify(meta),
+			title: rootProps.title,
 			cancelText: rootProps.cancelText,
 			submitText: rootProps.submitText,
-			authRequired: rootProps.authRequired || false,
+			description: rootProps.description,
+			allowAnonymousResponse: checkCondition(rootProps.allowAnonymousResponse),
+			active: false,
+			allowMultipleResponse: checkCondition(rootProps.allowMultipleResponse),
+			allowResponseUpdate: checkCondition(rootProps.allowResponseUpdate),
 		}
 
 		saveForm(form)

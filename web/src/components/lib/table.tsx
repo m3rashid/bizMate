@@ -18,9 +18,10 @@ export type TableProps<T> = {
 	description?: string
 	addButton?: ReactNode
 	rootClassName?: string
-	tableRowClassName?: string
+	tableRowClassName?: (rowIndex: number) => string
 	tableRootClassName?: string
-	tableHeadingClassName?: string
+	tableHeadingRowClassName?: string
+	tableHeadingClassName?: (columnIndex: number) => string
 	onEdit?: (item: T) => void
 	emptyState?: ReactNode
 }
@@ -38,7 +39,7 @@ function Table<T extends Row>(props: TableProps<T>) {
 				{props.title || props.description ? (
 					<div className="sm:flex-auto">
 						{props.title ? (
-							<h1 className="text-base font-semibold leading-6 text-gray-900">{props.title}</h1>
+							<h1 className="text-2xl font-semibold leading-6 text-gray-900">{props.title}</h1>
 						) : null}
 						{props.description ? (
 							<p className="mt-2 text-sm text-gray-700">{props.description}</p>
@@ -53,7 +54,7 @@ function Table<T extends Row>(props: TableProps<T>) {
 
 			<div
 				className={twMerge(
-					'flow-root min-h-72 max-w-screen-sm overflow-x-auto overflow-y-hidden sm:max-w-screen-md md:max-w-screen-lg lg:max-w-screen-xl xl:max-w-screen-2xl',
+					'flow-root min-h-72 overflow-x-auto overflow-y-hidden',
 					props.tableRootClassName,
 				)}
 			>
@@ -66,16 +67,25 @@ function Table<T extends Row>(props: TableProps<T>) {
 				) : (
 					<div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
 						<div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-							<table className="min-w-full divide-y divide-gray-300">
+							<table className="w-full">
 								<thead>
-									<tr>
-										{props.columns.map((column) => (
+									<tr
+										className={twMerge(
+											'select-none rounded-lg bg-primary text-white',
+											props.tableHeadingRowClassName,
+										)}
+									>
+										{props.columns.map((column, columnIndex) => (
 											<th
 												scope="col"
-												key={column.title}
+												key={column.title + columnIndex}
 												className={twMerge(
-													'px-3 py-3.5 text-left text-sm font-semibold text-gray-900',
-													props.tableHeadingClassName,
+													' p-3 text-left text-sm font-semibold',
+													columnIndex === 0 ? 'rounded-l-lg' : '',
+													columnIndex === props.columns.length - 1 ? 'rounded-r-lg' : '',
+													props.tableHeadingClassName
+														? props.tableHeadingClassName(columnIndex)
+														: '',
 												)}
 											>
 												{column.title}
@@ -85,12 +95,20 @@ function Table<T extends Row>(props: TableProps<T>) {
 								</thead>
 								<tbody className="divide-y divide-gray-200 bg-white">
 									{(props.data || []).map((row, rowIndex) => (
-										<tr key={row.id} className={twMerge('', props.tableRowClassName)}>
-											{props.columns.map((column) => (
+										<tr
+											key={row.id}
+											className={twMerge(
+												'transition-colors duration-200 ease-in-out hover:bg-pageBg hover:shadow-sm',
+												props.tableRowClassName ? props.tableRowClassName(rowIndex) : '',
+											)}
+										>
+											{props.columns.map((column, columnIndex) => (
 												<td
-													key={row[column.dataKey]}
+													key={row[column.dataKey] + columnIndex}
 													className={twMerge(
 														'whitespace-nowrap px-3 py-3.5 text-left text-sm',
+														columnIndex === 0 ? 'rounded-l-lg' : '',
+														columnIndex === props.columns.length - 1 ? 'rounded-r-lg' : '',
 														column.tableTdClassName,
 													)}
 												>

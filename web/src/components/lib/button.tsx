@@ -1,5 +1,7 @@
-import { ButtonHTMLAttributes, FC } from 'react'
 import { twMerge } from 'tailwind-merge'
+import { ButtonHTMLAttributes, ReactNode } from 'react'
+
+import { filterBykeys } from '../../utils/helpers'
 
 const buttonVariants = {
 	primary: 'bg-primary hover:bg-primary focus-visible:outline-primary',
@@ -18,8 +20,8 @@ const buttonSizes = {
 } as const
 
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-	leftIcon?: FC<any>
-	rightIcon?: FC<any>
+	LeftIcon?: ReactNode
+	RightIcon?: ReactNode
 	variant?: keyof typeof buttonVariants
 	label?: string
 	size?: keyof typeof buttonSizes
@@ -28,7 +30,7 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 function Button(props: ButtonProps) {
 	return (
 		<button
-			{...props}
+			{...filterBykeys(props, ['LeftIcon', 'RightIcon', 'variant', 'label', 'size'])}
 			className={twMerge(
 				'inline-flex items-center justify-center gap-x-2 rounded-md font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2',
 				buttonVariants[props.variant ?? 'primary'],
@@ -36,9 +38,9 @@ function Button(props: ButtonProps) {
 				props.className,
 			)}
 		>
-			{props.leftIcon ? <props.leftIcon className="-mr-0.5 h-5 w-5" aria-hidden="true" /> : null}
+			{props.LeftIcon ? props.LeftIcon : null}
 			{props.label || props.children}
-			{props.rightIcon ? <props.rightIcon className="-mr-0.5 h-5 w-5" aria-hidden="true" /> : null}
+			{props.RightIcon ? props.RightIcon : null}
 		</button>
 	)
 }

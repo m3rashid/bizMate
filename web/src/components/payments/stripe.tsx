@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { loadStripe } from '@stripe/stripe-js'
 import { useQuery } from '@tanstack/react-query'
 
-import Loader from '../lib/loader'
 import apiClient from '../../api/client'
+import { PageLoader } from '../lib/loader'
 
 function StripePayment() {
 	const [stripePromise, setStripePromise] = useState(null)
@@ -14,9 +14,7 @@ function StripePayment() {
 		queryFn: () => apiClient('/payments/stripe/config', { method: 'GET' }),
 	})
 
-	if (isPending) {
-		return <Loader />
-	}
+	if (isPending) return <PageLoader />
 
 	return (
 		<div>

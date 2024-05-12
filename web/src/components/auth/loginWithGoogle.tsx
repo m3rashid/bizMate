@@ -2,10 +2,10 @@ import { Suspense, useEffect, useRef } from 'react'
 import { useRouterState } from '@tanstack/react-router'
 
 import Button from '../lib/button'
-import Loader from '../lib/loader'
+import { PageLoader } from '../lib/loader'
 import { baseUrl } from '../../api/client'
 
-function googleIcon() {
+function GoogleIcon() {
 	return (
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20px" height="20px">
 			<path
@@ -43,8 +43,10 @@ function LoginWithGoogle(props: LoginWithGoogleProps) {
 
 	function receiveMessage(event: MessageEvent) {
 		try {
-			if (!windowBaseUrl || event.origin !== windowBaseUrl) throw new Error('Request has been forged')
-			if (!event.source || (event.source as any).name !== windowTarget) throw new Error('Invalid event source')
+			if (!windowBaseUrl || event.origin !== windowBaseUrl)
+				throw new Error('Request has been forged')
+			if (!event.source || (event.source as any).name !== windowTarget)
+				throw new Error('Invalid event source')
 			if (!event.data.success || !event.data.token) throw new Error('Login failed')
 
 			localStorage.setItem('token', event.data.token)
@@ -83,11 +85,13 @@ function LoginWithGoogle(props: LoginWithGoogleProps) {
 	}, [])
 
 	return (
-		<Suspense fallback={<Loader />}>
+		<Suspense fallback={<PageLoader />}>
 			<Button
-				leftIcon={googleIcon}
+				LeftIcon={<GoogleIcon />}
 				variant="primary"
-				onClick={() => openSignInWindow(`${baseUrl}/auth/google?state=${window.location.host}`, windowTarget)}
+				onClick={() =>
+					openSignInWindow(`${baseUrl}/auth/google?state=${window.location.host}`, windowTarget)
+				}
 			>
 				Login with Google
 			</Button>

@@ -5,42 +5,60 @@ import FormBuilder from '../forms'
 import Button from '../lib/button'
 import { FormElementInstance } from '../forms/constants'
 
+export type ShowMetaType = 'body' | 'success' | 'failure'
 export type FormViewProps = {
 	form?: Form
-	type: 'preview' | 'fill'
-	formRef: RefObject<HTMLFormElement>
-	handleSubmit: (e: FormEvent<HTMLFormElement>) => void
-	handleCancel: (e: MouseEvent<HTMLButtonElement>) => void
-}
+	showMeta?: ShowMetaType
+} & (
+	| { type: 'preview' }
+	| {
+			type: 'fill'
+			formRef: RefObject<HTMLFormElement>
+			handleSubmit: (e: FormEvent<HTMLFormElement>) => void
+			handleCancel: (e: MouseEvent<HTMLButtonElement>) => void
+	  }
+)
 
 function FormView(props: FormViewProps) {
 	if (!props.form) return null
+	const metaType = props.showMeta || 'body'
 
 	return (
 		<form
-			ref={props.formRef}
-			onSubmit={props.handleSubmit}
+			{...(props.type === 'fill' && metaType === 'body'
+				? { ref: props.formRef, onSubmit: props.handleSubmit }
+				: {})}
 			className="flex w-full min-w-80 max-w-[800px] flex-col gap-4"
 		>
 			<FormBuilder
 				className="flex flex-col gap-4 rounded-lg border-[1px] border-gray-200 bg-white p-4 shadow-md"
-				meta={JSON.parse(props.form.body) as FormElementInstance[]}
+				meta={
+					JSON.parse(
+						metaType === 'body'
+							? props.form.body
+							: metaType === 'success'
+								? props.form.successPage
+								: props.form.failurePage,
+					) as FormElementInstance[]
+				}
 			/>
 
-			<div className="flex items-center justify-between rounded-lg border-[1px] border-gray-200 bg-white p-4 shadow-md">
-				<Button
-					variant="simple"
-					onClick={props.handleCancel}
-					label={props.form.cancelText}
-					disabled={props.type === 'preview'}
-				/>
-				<Button
-					type="submit"
-					variant="primary"
-					label={props.form.submitText}
-					disabled={props.type === 'preview'}
-				/>
-			</div>
+			{metaType === 'body' ? (
+				<div className="flex items-center justify-between rounded-lg border-[1px] border-gray-200 bg-white p-4 shadow-md">
+					<Button
+						label={props.form.cancelText}
+						disabled={props.type === 'preview'}
+						variant={props.type === 'preview' ? 'disabled' : 'simple'}
+						{...(props.type === 'fill' ? { onClick: props.handleCancel } : {})}
+					/>
+					<Button
+						type="submit"
+						label={props.form.submitText}
+						disabled={props.type === 'preview'}
+						variant={props.type === 'preview' ? 'disabled' : 'primary'}
+					/>
+				</div>
+			) : null}
 		</form>
 	)
 }

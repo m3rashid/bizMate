@@ -1,8 +1,9 @@
 export type UnionOfObject<T> = T[keyof T]
 
 export type ExplicitAndAll<Universe, Partical> = Partical & Exclude<Universe, Partical>
-
 export type ExplicitAndAllObject<Universe, Partical> = Partical & Omit<Universe, Partical>
+
+export type StringBoolean = 'on' | 'off'
 
 export type User = {
 	id: number
@@ -20,12 +21,18 @@ export type Form = {
 	body: string
 	submitText: string
 	cancelText: string
-	authRequired: boolean
 	successPage: string
 	failurePage: string
-	active: boolean
 	previousVersionIDs: string
 	createdAt: string
+	active: boolean
+	allowAnonymousResponse: boolean
+	allowResponseUpdate: boolean
+	allowMultipleResponse: boolean
+	createdById?: number
+	updatedById?: number
+	createdByUser?: User
+	updatedByUser?: User
 }
 
 export type PaginationResponse<T> = {
