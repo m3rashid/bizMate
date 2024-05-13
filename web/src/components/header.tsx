@@ -20,8 +20,8 @@ function Header() {
 					<Link to="/about" className="[&.active]:font-bold">
 						About
 					</Link>
-					<Link to="/apps/forms/builder" className="[&.active]:font-bold">
-						Form Builder
+					<Link to="/apps/forms/designer" className="[&.active]:font-bold">
+						Form Designer
 					</Link>
 				</div>
 
@@ -31,7 +31,9 @@ function Header() {
 							<p onClick={logout} className="m-0 cursor-pointer p-0 [&.active]:font-bold">
 								Logout
 							</p>
-							{auth.user?.avatar ? <img className="h-7 w-7 rounded-full" src={auth.user.avatar} /> : null}
+							{auth.user?.avatar ? (
+								<img className="h-7 w-7 rounded-full" src={auth.user.avatar} />
+							) : null}
 						</div>
 					) : (
 						<Link to="/auth/login" className="[&.active]:font-bold">

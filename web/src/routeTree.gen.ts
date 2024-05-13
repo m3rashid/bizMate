@@ -21,6 +21,7 @@ const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
 const AuthLoginLazyImport = createFileRoute('/auth/login')()
 const AppsFormsIndexLazyImport = createFileRoute('/apps/forms/')()
+const AppsFlowsIndexLazyImport = createFileRoute('/apps/flows/')()
 const AppsFormsDesignerLazyImport = createFileRoute('/apps/forms/designer')()
 const AppsFormsFormIdFillLazyImport = createFileRoute(
   '/apps/forms/$formId/fill',
@@ -56,6 +57,13 @@ const AppsFormsIndexLazyRoute = AppsFormsIndexLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() =>
   import('./routes/apps/forms/index.lazy').then((d) => d.Route),
+)
+
+const AppsFlowsIndexLazyRoute = AppsFlowsIndexLazyImport.update({
+  path: '/apps/flows/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/apps/flows/index.lazy').then((d) => d.Route),
 )
 
 const AppsFormsDesignerLazyRoute = AppsFormsDesignerLazyImport.update({
@@ -105,6 +113,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppsFormsDesignerLazyImport
       parentRoute: typeof rootRoute
     }
+    '/apps/flows/': {
+      preLoaderRoute: typeof AppsFlowsIndexLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/apps/forms/': {
       preLoaderRoute: typeof AppsFormsIndexLazyImport
       parentRoute: typeof rootRoute
@@ -128,6 +140,7 @@ export const routeTree = rootRoute.addChildren([
   PaymentLazyRoute,
   AuthLoginLazyRoute,
   AppsFormsDesignerLazyRoute,
+  AppsFlowsIndexLazyRoute,
   AppsFormsIndexLazyRoute,
   AppsFormsFormIdDetailsLazyRoute,
   AppsFormsFormIdFillLazyRoute,

@@ -65,7 +65,7 @@ export function MessagePopup(props: MessagePopupType) {
 }
 
 const popupContainerClassName =
-	'absolute top-0 z-[99] h-full w-full max-w-80 overflow-hidden p-2 flex flex-col gap-2 items-center'
+	'absolute top-0 z-[99] max-h-full w-full max-w-80 overflow-hidden p-2 flex flex-col gap-2 items-center'
 
 export function MessagePopupContainer() {
 	const { messagePopups } = usePopups()
