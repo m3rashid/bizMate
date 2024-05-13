@@ -22,7 +22,11 @@ const IndexLazyImport = createFileRoute('/')()
 const AuthLoginLazyImport = createFileRoute('/auth/login')()
 const AppsFormsIndexLazyImport = createFileRoute('/apps/forms/')()
 const AppsFlowsIndexLazyImport = createFileRoute('/apps/flows/')()
+const AppsDashboardIndexLazyImport = createFileRoute('/apps/dashboard/')()
 const AppsFormsDesignerLazyImport = createFileRoute('/apps/forms/designer')()
+const AppsDashboardDesignerLazyImport = createFileRoute(
+  '/apps/dashboard/designer',
+)()
 const AppsFormsFormIdFillLazyImport = createFileRoute(
   '/apps/forms/$formId/fill',
 )()
@@ -66,11 +70,25 @@ const AppsFlowsIndexLazyRoute = AppsFlowsIndexLazyImport.update({
   import('./routes/apps/flows/index.lazy').then((d) => d.Route),
 )
 
+const AppsDashboardIndexLazyRoute = AppsDashboardIndexLazyImport.update({
+  path: '/apps/dashboard/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/apps/dashboard/index.lazy').then((d) => d.Route),
+)
+
 const AppsFormsDesignerLazyRoute = AppsFormsDesignerLazyImport.update({
   path: '/apps/forms/designer',
   getParentRoute: () => rootRoute,
 } as any).lazy(() =>
   import('./routes/apps/forms/designer.lazy').then((d) => d.Route),
+)
+
+const AppsDashboardDesignerLazyRoute = AppsDashboardDesignerLazyImport.update({
+  path: '/apps/dashboard/designer',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/apps/dashboard/designer.lazy').then((d) => d.Route),
 )
 
 const AppsFormsFormIdFillLazyRoute = AppsFormsFormIdFillLazyImport.update({
@@ -109,8 +127,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginLazyImport
       parentRoute: typeof rootRoute
     }
+    '/apps/dashboard/designer': {
+      preLoaderRoute: typeof AppsDashboardDesignerLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/apps/forms/designer': {
       preLoaderRoute: typeof AppsFormsDesignerLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/apps/dashboard/': {
+      preLoaderRoute: typeof AppsDashboardIndexLazyImport
       parentRoute: typeof rootRoute
     }
     '/apps/flows/': {
@@ -139,7 +165,9 @@ export const routeTree = rootRoute.addChildren([
   AboutLazyRoute,
   PaymentLazyRoute,
   AuthLoginLazyRoute,
+  AppsDashboardDesignerLazyRoute,
   AppsFormsDesignerLazyRoute,
+  AppsDashboardIndexLazyRoute,
   AppsFlowsIndexLazyRoute,
   AppsFormsIndexLazyRoute,
   AppsFormsFormIdDetailsLazyRoute,

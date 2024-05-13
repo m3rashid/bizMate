@@ -1,15 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router'
+
 import PageContainer from '../../../components/pageContainer'
-import FlowBuilder from '../../../components/flowBuilder'
+import FlowDesignerComponent from '../../../components/flowDesigner'
 
 export const Route = createFileRoute('/apps/flows/')({
-	component: Flows,
+	component: FlowDesigner,
 })
 
-function Flows() {
+function FlowDesigner() {
 	return (
 		<PageContainer>
-			<FlowBuilder />
+			<FlowDesignerComponent />
 		</PageContainer>
 	)
 }

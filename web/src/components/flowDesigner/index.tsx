@@ -1,13 +1,11 @@
-import 'reactflow/dist/style.css'
 import ReactFlow, {
+	addEdge,
 	MiniMap,
 	Controls,
 	Background,
 	useNodesState,
 	useEdgesState,
-	addEdge,
 } from 'reactflow'
-
 import 'reactflow/dist/style.css'
 import { useCallback } from 'react'
 
@@ -16,7 +14,7 @@ const initialNodes = [
 	{ id: '2', position: { x: 0, y: 100 }, data: { label: '2' } },
 ]
 const initialEdges = [{ id: 'e1-2', source: '1', target: '2' }]
-function FlowBuilder() {
+function FlowDesigner() {
 	const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
 	const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
 
@@ -42,4 +40,4 @@ function FlowBuilder() {
 	)
 }
 
-export default FlowBuilder
+export default FlowDesigner
