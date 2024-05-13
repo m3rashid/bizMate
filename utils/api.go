@@ -17,3 +17,7 @@ func ParseBodyAndValidate[T interface{}](ctx *fiber.Ctx, str *T) error {
 
 	return nil
 }
+
+func GetDeviceIP(ctx *fiber.Ctx) string {
+	return ctx.Get("X-Forwarded-For")
+}

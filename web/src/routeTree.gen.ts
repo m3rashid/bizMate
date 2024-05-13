@@ -22,14 +22,11 @@ const IndexLazyImport = createFileRoute('/')()
 const AuthLoginLazyImport = createFileRoute('/auth/login')()
 const AppsFormsIndexLazyImport = createFileRoute('/apps/forms/')()
 const AppsFormsDesignerLazyImport = createFileRoute('/apps/forms/designer')()
-const AppsFormsFormIdReportsLazyImport = createFileRoute(
-  '/apps/forms/$formId/reports',
-)()
-const AppsFormsFormIdPreviewLazyImport = createFileRoute(
-  '/apps/forms/$formId/preview',
-)()
 const AppsFormsFormIdFillLazyImport = createFileRoute(
   '/apps/forms/$formId/fill',
+)()
+const AppsFormsFormIdDetailsLazyImport = createFileRoute(
+  '/apps/forms/$formId/details',
 )()
 
 // Create/Update Routes
@@ -68,29 +65,20 @@ const AppsFormsDesignerLazyRoute = AppsFormsDesignerLazyImport.update({
   import('./routes/apps/forms/designer.lazy').then((d) => d.Route),
 )
 
-const AppsFormsFormIdReportsLazyRoute = AppsFormsFormIdReportsLazyImport.update(
-  {
-    path: '/apps/forms/$formId/reports',
-    getParentRoute: () => rootRoute,
-  } as any,
-).lazy(() =>
-  import('./routes/apps/forms/$formId/reports.lazy').then((d) => d.Route),
-)
-
-const AppsFormsFormIdPreviewLazyRoute = AppsFormsFormIdPreviewLazyImport.update(
-  {
-    path: '/apps/forms/$formId/preview',
-    getParentRoute: () => rootRoute,
-  } as any,
-).lazy(() =>
-  import('./routes/apps/forms/$formId/preview.lazy').then((d) => d.Route),
-)
-
 const AppsFormsFormIdFillLazyRoute = AppsFormsFormIdFillLazyImport.update({
   path: '/apps/forms/$formId/fill',
   getParentRoute: () => rootRoute,
 } as any).lazy(() =>
   import('./routes/apps/forms/$formId/fill.lazy').then((d) => d.Route),
+)
+
+const AppsFormsFormIdDetailsLazyRoute = AppsFormsFormIdDetailsLazyImport.update(
+  {
+    path: '/apps/forms/$formId/details',
+    getParentRoute: () => rootRoute,
+  } as any,
+).lazy(() =>
+  import('./routes/apps/forms/$formId/details.lazy').then((d) => d.Route),
 )
 
 // Populate the FileRoutesByPath interface
@@ -121,16 +109,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppsFormsIndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/apps/forms/$formId/details': {
+      preLoaderRoute: typeof AppsFormsFormIdDetailsLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/apps/forms/$formId/fill': {
       preLoaderRoute: typeof AppsFormsFormIdFillLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/apps/forms/$formId/preview': {
-      preLoaderRoute: typeof AppsFormsFormIdPreviewLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/apps/forms/$formId/reports': {
-      preLoaderRoute: typeof AppsFormsFormIdReportsLazyImport
       parentRoute: typeof rootRoute
     }
   }
@@ -145,9 +129,8 @@ export const routeTree = rootRoute.addChildren([
   AuthLoginLazyRoute,
   AppsFormsDesignerLazyRoute,
   AppsFormsIndexLazyRoute,
+  AppsFormsFormIdDetailsLazyRoute,
   AppsFormsFormIdFillLazyRoute,
-  AppsFormsFormIdPreviewLazyRoute,
-  AppsFormsFormIdReportsLazyRoute,
 ])
 
 /* prettier-ignore-end */

@@ -1,13 +1,13 @@
 import { useMutation } from '@tanstack/react-query'
 import { Dispatch, FormEvent, MouseEvent, SetStateAction, useMemo } from 'react'
 
-import Modal from '../lib/modal'
-import Button from '../lib/button'
-import apiClient from '../../api/client'
-import FormRenderer from '../forms/renderer'
-import { Form, StringBoolean } from '../../types'
-import { camelCaseToSentenceCase } from '../../utils/helpers'
-import { FormElementInstance, SupportedWidgetName } from '../forms/constants'
+import Modal from '../../lib/modal'
+import Button from '../../lib/button'
+import apiClient from '../../../api/client'
+import FormRenderer from '../../forms/renderer'
+import { Form, StringBoolean } from '../../../types'
+import { camelCaseToSentenceCase } from '../../../utils/helpers'
+import { FormElementInstance, SupportedWidgetName } from '../../forms/constants'
 
 export type EditFormProps = { setOpen: Dispatch<SetStateAction<boolean>> } & (
 	| { form: undefined }

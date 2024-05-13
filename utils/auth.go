@@ -48,7 +48,7 @@ func CheckAuthMiddleware(c *fiber.Ctx) error {
 
 	claims, err := CheckAuth(clientToken)
 	if err != nil {
-		c.Status(fiber.StatusUnauthorized).SendString(err.Error())
+		c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": err.Error()})
 	}
 
 	userIdU64, err := strconv.ParseUint(claims.UserID, 10, 32)
@@ -61,4 +61,18 @@ func CheckAuthMiddleware(c *fiber.Ctx) error {
 	c.Locals("authorized", true)
 
 	return c.Next()
+}
+
+func GetUserIdOrNullFromCtxMaybe(ctx *fiber.Ctx) uint {
+	userIdStr := ctx.Locals("userId")
+	if userIdStr == nil {
+		return 0
+	}
+
+	userId, ok := userIdStr.(uint)
+	if !ok {
+		return 0
+	}
+
+	return userId
 }

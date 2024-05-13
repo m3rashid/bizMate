@@ -67,7 +67,7 @@ func getPaginatedForms(ctx *fiber.Ctx) error {
 }
 
 func getFormById(ctx *fiber.Ctx) error {
-	formId := ctx.Params("id")
+	formId := ctx.Params("formId")
 
 	db, err := utils.GetTenantDbFromCtx(ctx)
 	if err != nil {
@@ -120,7 +120,8 @@ func createForm(ctx *fiber.Ctx) error {
 }
 
 func deleteForm(ctx *fiber.Ctx) error {
-	return ctx.SendString("Hello, World!")
+	formId := ctx.Params("formId")
+	return ctx.SendString("NOT IMPLEMENTED: formID = " + formId)
 }
 
 func updateFormById(ctx *fiber.Ctx) error {

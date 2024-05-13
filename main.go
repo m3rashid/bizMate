@@ -57,6 +57,7 @@ func main() {
 		models.Form{},
 		models.Profile{},
 		models.Notification{},
+		models.FormResponse{},
 	}
 
 	auth.Setup(app)

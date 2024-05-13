@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { FormEvent, MouseEvent, useRef, useState } from 'react'
-import { createFileRoute, useNavigate, useParams } from '@tanstack/react-router'
+import { createFileRoute, useParams } from '@tanstack/react-router'
 
 import { Form } from '../../../../types'
 import apiClient from '../../../../api/client'
@@ -13,7 +13,6 @@ export const Route = createFileRoute('/apps/forms/$formId/fill')({
 })
 
 function FormFill() {
-	const navigate = useNavigate()
 	const formRef = useRef<HTMLFormElement>(null)
 	const [formStatus, setFormStatus] = useState<ShowMetaType>('body')
 	const { formId } = useParams({ from: '/apps/forms/$formId/fill' })
@@ -39,10 +38,10 @@ function FormFill() {
 		}
 	}
 
-	const { isPending } = useMutation({
+	const { mutate } = useMutation({
 		mutationKey: ['sumitFormResponse'],
-		mutationFn: (data) =>
-			apiClient(`/forms/response/submit/${formId}`, {
+		mutationFn: (data: { response: any }) =>
+			apiClient(`/forms/response/${formId}/submit`, {
 				method: 'POST',
 				body: JSON.stringify(data),
 			}),
@@ -59,9 +58,7 @@ function FormFill() {
 	function handleSubmit(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault()
 		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any
-		console.log(formData)
-		formRef.current?.reset()
-		handleFormStatusChange('success', form?.successPage)
+		mutate({ response: JSON.stringify(formData) })
 	}
 
 	function handleCancel(e: MouseEvent<HTMLButtonElement>) {

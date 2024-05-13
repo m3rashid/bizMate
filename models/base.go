@@ -17,7 +17,7 @@ type CreatedBy struct {
 }
 
 type OptionalCreatedBy struct {
-	CreatedByID   uint  `json:"createdById,omitempty" gorm:"column:createdById" validate:""`
+	CreatedByID   *uint `json:"createdById,omitempty" gorm:"column:createdById" validate:""`
 	CreatedByUser *User `json:"createdByUser,omitempty" gorm:"foreignKey:createdById;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" validate:""`
 }
 

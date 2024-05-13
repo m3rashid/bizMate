@@ -1,9 +1,9 @@
 import { FormEvent, MouseEvent, RefObject } from 'react'
 
-import { Form } from '../../types'
-import FormBuilder from '../forms'
-import Button from '../lib/button'
-import { FormElementInstance } from '../forms/constants'
+import { Form } from '../../../types'
+import FormBuilder from '../../forms'
+import Button from '../../lib/button'
+import { FormElementInstance } from '../../forms/constants'
 
 export type ShowMetaType = 'body' | 'success' | 'failure'
 export type FormViewProps = {

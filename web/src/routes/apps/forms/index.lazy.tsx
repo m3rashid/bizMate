@@ -18,8 +18,8 @@ import Button from '../../../components/lib/button'
 import Tooltip from '../../../components/lib/tooltip'
 import { PageLoader } from '../../../components/lib/loader'
 import PageContainer from '../../../components/pageContainer'
+import EditForm from '../../../components/apps/forms/editForm'
 import Table, { TableProps } from '../../../components/lib/table'
-import EditForm from '../../../components/formDesigner/editForm'
 
 export const Route = createFileRoute('/apps/forms/')({
 	component: Forms,
@@ -84,9 +84,9 @@ function Forms() {
 						/>
 					</Tooltip>
 					<Button
-						label="View"
+						label="Details"
 						size="small"
-						onClick={() => navigate({ to: `/apps/forms/${row.id}/preview` })}
+						onClick={() => navigate({ to: `/apps/forms/${row.id}/details` })}
 					/>
 					<Button
 						label="Edit"

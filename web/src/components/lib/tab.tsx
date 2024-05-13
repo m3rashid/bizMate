@@ -1,58 +1,87 @@
-import { ReactNode, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
+import { FC, ReactNode, useState } from 'react'
+
+import SingleSelectInput from './selectInput'
+import { NotFound } from './notFound'
 
 export type Tab = {
 	id: string
-	label: ReactNode
+	label?: ReactNode
+	Component: FC<any>
+	componentProps?: any
 }
 
 export type TabProps = {
 	tabs: Tab[]
+	rootClassName?: string
+	tabClassName?: string
 }
 
 function Tabs(props: TabProps) {
 	const [selectedTab, setSelectedTab] = useState(props.tabs[0].id)
 
+	const currentTab = props.tabs.find((tab) => tab.id === selectedTab)
+
+	function SelectRender({ tab }: { tab: Tab }) {
+		return (
+			<div key={tab.id} className="w-full" onClick={() => setSelectedTab(tab.id)}>
+				{tab.label ?? tab.id}
+			</div>
+		)
+	}
+
 	return (
-		<div>
-			<div className="sm:hidden">
-				<label htmlFor="tabs" className="sr-only">
-					Select a tab
-				</label>
-				{/* Use an "onChange" listener to redirect the user to the selected tab URL. */}
-				{/* <select
-					id="tabs"
-					name="tabs"
-					className="block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-					defaultValue={
-						props.tabs.find((tab) => tab.id === selectedTab)?.label || props.tabs[0].label
-					}
-				>
-					{tabs.map((tab) => (
-						<option key={tab.name}>{tab.name}</option>
-					))}
-				</select> */}
+		<div className={twMerge('flex flex-col items-center', props.rootClassName)}>
+			<div className="flex min-w-full items-center justify-center sm:hidden">
+				<SingleSelectInput
+					className="w-full"
+					value={selectedTab}
+					default={selectedTab}
+					onChange={setSelectedTab}
+					options={props.tabs.map((tab) => ({
+						id: tab.id,
+						value: tab.id,
+						label: tab.label || tab.id,
+					}))}
+					render={({ option }) => {
+						return (
+							<SelectRender tab={props.tabs.find((tab) => tab.id === option) || props.tabs[0]} />
+						)
+					}}
+				/>
 			</div>
-			<div className="hidden sm:block">
-				<nav className="flex space-x-4" aria-label="Tabs">
-					{props.tabs.map((tab) => (
-						<a
-							key={tab.id}
-							// href={tab.href}
-							className={twMerge(
-								tab.id === selectedTab
-									? 'bg-indigo-100 text-indigo-700'
-									: 'text-gray-500 hover:text-gray-700',
-								'rounded-md px-3 py-2 text-sm font-medium',
-							)}
-							onClick={() => setSelectedTab(tab.id)}
-							aria-current={tab.id === selectedTab ? 'page' : undefined}
-						>
-							{tab.label}
-						</a>
-					))}
-				</nav>
+			<div
+				className={twMerge(
+					'bg-borderColor hidden w-full items-center justify-center space-x-4 rounded-lg p-2 sm:flex',
+					props.tabClassName,
+				)}
+			>
+				{props.tabs.map((tab) => (
+					<div
+						key={tab.id}
+						className={twMerge(
+							'hover:bg-primaryLight hover:border-primaryLight cursor-pointer rounded-md border-2 px-3 py-2 text-sm font-medium',
+							tab.id === selectedTab
+								? ' border-primaryLight bg-primary text-white'
+								: ' hover:text-white',
+						)}
+						onClick={() => setSelectedTab(tab.id)}
+					>
+						{tab.label ?? tab.id}
+					</div>
+				))}
 			</div>
+
+			{selectedTab ? (
+				<div className="mt-4">
+					{currentTab ? (
+						<currentTab.Component {...currentTab.componentProps} />
+					) : (
+						// <div>No found</div>
+						<NotFound />
+					)}
+				</div>
+			) : null}
 		</div>
 	)
 }

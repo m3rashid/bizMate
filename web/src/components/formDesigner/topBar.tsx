@@ -27,7 +27,15 @@ function FormDesignerTopBar() {
 		const checkCondition = (val?: StringBoolean | undefined) => (val && val === 'on' ? true : false)
 
 		const form: Partial<Form> = {
-			body: JSON.stringify(meta),
+			body: JSON.stringify(
+				meta.map((el) => ({
+					...el,
+					props: {
+						...el.props,
+						...(el.props.required ? { required: checkCondition(el.props.required) } : {}),
+					},
+				})),
+			),
 			title: rootProps.title,
 			cancelText: rootProps.cancelText,
 			submitText: rootProps.submitText,
