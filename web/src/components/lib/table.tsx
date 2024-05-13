@@ -3,7 +3,7 @@ import { twMerge } from 'tailwind-merge'
 
 import { ExplicitAndAllObject } from '../../types'
 
-export type Column<T> = {
+export type TableColumn<T> = {
 	title: string
 	dataKey: keyof T
 	className?: string
@@ -13,7 +13,7 @@ export type Column<T> = {
 
 export type TableProps<T> = {
 	data: Array<T>
-	columns: Array<Column<T>>
+	columns: Array<TableColumn<T>>
 	title?: string
 	description?: string
 	addButton?: ReactNode

@@ -23,3 +23,12 @@ export function filterBykeys(obj: Record<string, any>, keys: string[]): Record<s
 		{},
 	)
 }
+
+export function getUniqueObjectsByKey<T extends Record<string, any>>(arr: Array<T>, key: string) {
+	const keyMap = new Map<string, boolean>()
+	return arr.filter((obj) => {
+		if (keyMap.has(obj[key])) return false
+		keyMap.set(obj[key], true)
+		return true
+	})
+}

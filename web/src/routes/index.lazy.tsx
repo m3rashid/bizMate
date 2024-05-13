@@ -1,6 +1,7 @@
 import { createLazyFileRoute } from '@tanstack/react-router'
-import PageContainer from '../components/pageContainer'
+
 import { useAuth } from '../hooks/auth'
+import PageContainer from '../components/pageContainer'
 
 export const Route = createLazyFileRoute('/')({ component: Index })
 

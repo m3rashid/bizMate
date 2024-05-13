@@ -32,7 +32,7 @@ function Tabs(props: TabProps) {
 
 	return (
 		<div className={twMerge('flex flex-col items-center', props.rootClassName)}>
-			<div className="flex min-w-full items-center justify-center sm:hidden">
+			<div className="mb-4 flex min-w-full items-center justify-center sm:hidden">
 				<SingleSelectInput
 					className="w-full"
 					value={selectedTab}
@@ -52,7 +52,7 @@ function Tabs(props: TabProps) {
 			</div>
 			<div
 				className={twMerge(
-					'bg-borderColor hidden w-full items-center justify-center space-x-4 rounded-lg p-2 sm:flex',
+					'bg-borderColor mb-4 hidden w-full items-center justify-center space-x-4 rounded-lg p-2 sm:flex',
 					props.tabClassName,
 				)}
 			>
@@ -73,14 +73,12 @@ function Tabs(props: TabProps) {
 			</div>
 
 			{selectedTab ? (
-				<div className="mt-4">
-					{currentTab ? (
-						<currentTab.Component {...currentTab.componentProps} />
-					) : (
-						// <div>No found</div>
-						<NotFound />
-					)}
-				</div>
+				currentTab ? (
+					<currentTab.Component {...currentTab.componentProps} />
+				) : (
+					// <div>No found</div>
+					<NotFound />
+				)
 			) : null}
 		</div>
 	)

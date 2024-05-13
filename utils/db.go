@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"regexp"
 	"strings"
@@ -13,9 +14,19 @@ import (
 	"github.com/Pacific73/gorm-cache/cache"
 	"github.com/Pacific73/gorm-cache/config"
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
+
+func init() {
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	fmt.Println("Environment Variables Loaded")
+}
 
 const CONNECTION_REFRESH_INTERVAL = 1 * time.Hour
 
@@ -51,7 +62,16 @@ func GetDbConnection(connectionString string) (*gorm.DB, error) {
 	sqlDB.SetMaxOpenConns(100)
 	sqlDB.SetConnMaxLifetime(time.Hour)
 
-	gormDB, err := gorm.Open(postgres.New(postgres.Config{Conn: sqlDB}), &gorm.Config{})
+	gormDB, err := gorm.Open(postgres.New(postgres.Config{Conn: sqlDB}), &gorm.Config{
+		Logger: Ternary(os.Getenv("SERVER_MODE") == "development", logger.New(
+			log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+			logger.Config{
+				SlowThreshold:        time.Second, // Slow SQL threshold
+				LogLevel:             logger.Info,
+				ParameterizedQueries: true,  // Don't include params in the SQL log
+				Colorful:             false, // Disable color
+			}), nil),
+	})
 	if err != nil {
 		return nil, err
 	}

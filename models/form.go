@@ -26,6 +26,7 @@ type FormResponse struct {
 	UpdatedBy
 	OptionalCreatedBy
 	FormID   uint   `json:"formId" gorm:"column:formId;not null" validate:"required"`
+	Form     *Form  `json:"form" gorm:"foreignKey:formId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" validate:""`
 	Response string `json:"response" gorm:"column:response;not null" validate:"required"`
 	DeviceIP string `json:"deviceIp,omitempty" gorm:"column:deviceIp" validate:""`
 }

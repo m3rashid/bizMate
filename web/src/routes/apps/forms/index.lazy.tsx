@@ -31,7 +31,6 @@ function Forms() {
 	const { data, isPending, refetch } = useQuery({
 		queryKey: ['getForms'],
 		queryFn: () => apiClient('/forms/all', { method: 'GET' }),
-		retryOnMount: true,
 	})
 
 	const tableColumns: TableProps<Form>['columns'] = [
@@ -42,8 +41,6 @@ function Forms() {
 			dataKey: 'createdAt',
 			render: ({ row }) => dayjs(row.createdAt).format('DD MMM, YYYY - HH:mm A'),
 		},
-		{ dataKey: 'submitText', title: 'Submit Text' },
-		{ dataKey: 'cancelText', title: 'Cancel Text' },
 		{
 			dataKey: 'active',
 			title: '',
@@ -121,7 +118,7 @@ function Forms() {
 				<Table<Form>
 					title="Forms"
 					description="Create and manage all forms"
-					data={data.docs}
+					data={data?.docs || []}
 					columns={tableColumns}
 					addButton={AddButton}
 					emptyState={

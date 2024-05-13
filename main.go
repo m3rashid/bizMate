@@ -17,7 +17,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/favicon"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
-	"github.com/gofiber/fiber/v2/middleware/logger"
+	goFiberLogger "github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/joho/godotenv"
 )
 
@@ -60,12 +60,6 @@ func main() {
 		models.FormResponse{},
 	}
 
-	auth.Setup(app)
-	forms.Setup(app)
-	scripts.Setup(app)
-	payments.Setup(app)
-	notifications.Setup(app)
-
 	app.Static("/public", "./public", fiber.Static{
 		MaxAge:        3600,
 		CacheDuration: 10 * time.Second,
@@ -84,14 +78,18 @@ func main() {
 		}))
 	}
 
-	if os.Getenv("SERVER_MODE") == "development" {
-		app.Use(logger.New(logger.Config{
-			Format: "${time} ${status} ${latency} ${method} ${path} ${body} ${query}\n",
-		}))
-	}
-
 	db := utils.GetHostDB()
 	utils.GormMigrate(db, []interface{}{&models.Tenant{}, &models.TenantOwner{}})
+	if os.Getenv("SERVER_MODE") == "development" {
+		app.Use(goFiberLogger.New())
+		db.Logger.LogMode(3)
+	}
+
+	auth.Setup(app)
+	forms.Setup(app)
+	scripts.Setup(app)
+	payments.Setup(app)
+	notifications.Setup(app)
 
 	log.Println("Server is running in " + os.Getenv("SERVER_MODE") + " mode.")
 	app.Listen(":" + os.Getenv("SERVER_PORT"))

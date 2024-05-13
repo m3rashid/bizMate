@@ -6,7 +6,7 @@ import { Form } from '../../../../types'
 import apiClient from '../../../../api/client'
 import { PageLoader } from '../../../../components/lib/loader'
 import { PageNotFound } from '../../../../components/lib/notFound'
-import FormView, { ShowMetaType } from '../../../../components/formDesigner/formView'
+import FormView, { ShowMetaType } from '../../../../components/apps/forms/formView'
 
 export const Route = createFileRoute('/apps/forms/$formId/fill')({
 	component: FormFill,

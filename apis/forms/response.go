@@ -3,6 +3,7 @@ package forms
 import (
 	"bizmate/models"
 	"bizmate/utils"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -39,6 +40,7 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 	}
 
 	userId := utils.GetUserIdOrNullFromCtxMaybe(ctx)
+	fmt.Println("userId", userId, " and form.AllowAnonymousResponse", form.AllowAnonymousResponse)
 	if !form.AllowAnonymousResponse && userId == 0 {
 		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "unauthorized"})
 	}
@@ -112,8 +114,8 @@ func getFormResponseCount(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "internal_server_error"})
 	}
 
-	var responseCount int64 = 0
-	if err := db.Model(&models.FormResponse{}).Where("\"formId\" = ?", formId).Count(&responseCount).Error; err != nil {
+	var responseCount int64
+	if err := db.Model(models.FormResponse{}).Where("\"formId\" = ?", formId).Count(&responseCount).Error; err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
@@ -122,6 +124,7 @@ func getFormResponseCount(ctx *fiber.Ctx) error {
 
 func getPaginatedFormResponses(ctx *fiber.Ctx) error {
 	reqBody := utils.PaginationRequestBody{}
+	formId := ctx.Params("formId")
 	if err := ctx.QueryParser(&reqBody); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Bad Request"})
 	}
@@ -141,8 +144,18 @@ func getPaginatedFormResponses(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Internal Server Error"})
 	}
 
+	form := models.Form{}
+	if err := db.Where("id = ?", formId).First(&form).Error; err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
 	formResponses := []models.FormResponse{}
-	if err := db.Limit(reqBody.Limit).Offset((reqBody.Page - 1) * reqBody.Limit).Find(&formResponses).Error; err != nil {
+	db = db.Where("\"formId\" = ?", formId)
+	if !form.AllowAnonymousResponse {
+		db = db.Preload("CreatedByUser")
+	}
+
+	if err := db.Order("id DESC").Limit(reqBody.Limit).Offset((reqBody.Page - 1) * reqBody.Limit).Find(&formResponses).Error; err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Internal Server Error"})
 	}
 
