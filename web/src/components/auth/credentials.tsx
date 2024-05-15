@@ -24,14 +24,12 @@ function LoginWithCredentials(props: LoginWithCredentialsProps) {
 	const [errors, setErrors] = useState<Errors>({ email: '', password: '', name: '', phone: '' })
 	const { isPending: isLoginPending, mutate: handleLogin } = useMutation({
 		mutationKey: ['login'],
-		mutationFn: async (body: LoginBody) =>
-			apiClient('/auth/login', { method: 'POST', body: JSON.stringify(body) }),
+		mutationFn: async (body: LoginBody) => apiClient('/auth/login', { method: 'POST', body: JSON.stringify(body) }),
 	})
 
 	const { isPending: isRegisterPending, mutate: handleRegister } = useMutation({
 		mutationKey: ['register'],
-		mutationFn: async (body: RegisterBody) =>
-			apiClient('/auth/register', { method: 'POST', body: JSON.stringify(body) }),
+		mutationFn: async (body: RegisterBody) => apiClient('/auth/register', { method: 'POST', body: JSON.stringify(body) }),
 	})
 
 	function onSuccess(data: any) {
@@ -67,14 +65,7 @@ function LoginWithCredentials(props: LoginWithCredentialsProps) {
 	return (
 		<form className="flex w-full flex-col gap-4" onSubmit={handleSubmit}>
 			{props.type === 'register' ? (
-				<TextInput
-					name="name"
-					type="name"
-					label="Name"
-					placeholder="BizMate Hero"
-					required
-					errorText={errors.name}
-				/>
+				<TextInput name="name" type="name" label="Name" placeholder="BizMate Hero" required errorText={errors.name} />
 			) : null}
 
 			<TextInput
@@ -87,18 +78,9 @@ function LoginWithCredentials(props: LoginWithCredentialsProps) {
 				errorText={errors.email}
 			/>
 
-			{props.type === 'register' ? (
-				<PhoneNumberInput name="phone" label="Phone" errorText={errors.phone} />
-			) : null}
+			{props.type === 'register' ? <PhoneNumberInput name="phone" label="Phone" errorText={errors.phone} /> : null}
 
-			<TextInput
-				placeholder="Shhh..."
-				required
-				name="password"
-				type="password"
-				label="Password"
-				errorText={errors.password}
-			/>
+			<TextInput placeholder="Shhh..." required name="password" type="password" label="Password" errorText={errors.password} />
 
 			<Button
 				type="submit"

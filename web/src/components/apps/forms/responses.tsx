@@ -21,10 +21,7 @@ function parseFormResponses(
 		const formFields: Record<string, [string, boolean]> = {}
 		for (let i = 0; i < formJson.length; i++) {
 			if (!formJson[i].props || !formJson[i].props.name) continue
-			formFields[formJson[i].props.name] = [
-				formJson[i].props.label || formJson[i].props.name,
-				formJson[i].props.required || false,
-			]
+			formFields[formJson[i].props.name] = [formJson[i].props.label || formJson[i].props.name, formJson[i].props.required || false]
 		}
 
 		const formFieldKeys = Object.keys(formFields)
@@ -33,9 +30,7 @@ function parseFormResponses(
 			try {
 				const formRes = JSON.parse(data.docs[i].response as string)
 				for (let j = 0; j < formFieldKeys.length; j++) {
-					if (!formRes[formFieldKeys[j]]) {
-						formRes[formFieldKeys[j]] = 'N/A'
-					}
+					if (!formRes[formFieldKeys[j]]) formRes[formFieldKeys[j]] = 'N/A'
 				}
 
 				responses.push({
@@ -62,7 +57,6 @@ function parseFormResponses(
 					},
 					...(!form.allowAnonymousResponse
 						? [
-								// { title: 'Device IP', dataKey: 'deviceIp' },
 								{
 									title: 'Submitted By',
 									dataKey: 'createdByUser',

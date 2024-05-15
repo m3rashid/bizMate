@@ -9,8 +9,7 @@ const buttonVariants = {
 	secondary: 'bg-secondary hover:bg-secondary focus-visible:outline-secondary',
 	disabled: 'bg-disabled hover:bg-disabled focus-visible:outline-disabled',
 	sucess: 'bg-sucess hover:bg-sucess focus-visible:outline-sucess',
-	simple:
-		'bg-white text-gray-700 hover:bg-gray-50 focus-visible:outline-gray-200 border border-gray-300',
+	simple: 'bg-white text-gray-700 hover:bg-gray-50 focus-visible:outline-gray-200 border border-gray-300',
 } as const
 
 const buttonSizes = {

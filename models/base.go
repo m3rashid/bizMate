@@ -25,3 +25,21 @@ type UpdatedBy struct {
 	UpdatedByID   *uint `json:"updatedById,omitempty" gorm:"column:updatedById" validate:""`
 	UpdatedByUser *User `json:"updatedByUser" gorm:"foreignKey:updatedById;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" validate:""`
 }
+
+type JsonFieldType string
+
+const (
+	JsonString    JsonFieldType = "string"
+	JsonNumber    JsonFieldType = "number"
+	JsonBool      JsonFieldType = "boolean"
+	JsonObject    JsonFieldType = "object"
+	JsonArray     JsonFieldType = "array"
+	JsonNull      JsonFieldType = "null"
+	JsonDate      JsonFieldType = "date"
+	JsonCreatedBy JsonFieldType = "createdBy"
+)
+
+type DashboardIndexableJsonModel struct {
+	Fields    map[string]JsonFieldType `json:"fields"`
+	ModelName string                   `json:"modelName"`
+}

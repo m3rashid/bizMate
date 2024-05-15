@@ -44,26 +44,17 @@ function Tabs(props: TabProps) {
 						label: tab.label || tab.id,
 					}))}
 					render={({ option }) => {
-						return (
-							<SelectRender tab={props.tabs.find((tab) => tab.id === option) || props.tabs[0]} />
-						)
+						return <SelectRender tab={props.tabs.find((tab) => tab.id === option) || props.tabs[0]} />
 					}}
 				/>
 			</div>
-			<div
-				className={twMerge(
-					'bg-borderColor mb-4 hidden w-full items-center justify-center space-x-4 rounded-lg p-2 sm:flex',
-					props.tabClassName,
-				)}
-			>
+			<div className={twMerge('mb-4 hidden w-full items-center justify-center space-x-4 rounded-lg bg-borderColor p-2 sm:flex', props.tabClassName)}>
 				{props.tabs.map((tab) => (
 					<div
 						key={tab.id}
 						className={twMerge(
-							'hover:bg-primaryLight hover:border-primaryLight cursor-pointer rounded-md border-2 px-3 py-2 text-sm font-medium',
-							tab.id === selectedTab
-								? ' border-primaryLight bg-primary text-white'
-								: ' hover:text-white',
+							'cursor-pointer rounded-md border-2 px-3 py-2 text-sm font-medium hover:border-primaryLight hover:bg-primaryLight',
+							tab.id === selectedTab ? ' border-primaryLight bg-primary text-white' : ' hover:text-white',
 						)}
 						onClick={() => setSelectedTab(tab.id)}
 					>

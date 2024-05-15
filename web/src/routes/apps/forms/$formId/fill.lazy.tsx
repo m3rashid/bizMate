@@ -71,9 +71,7 @@ function FormFill() {
 
 	return (
 		<div className="flex justify-center p-4">
-			<FormView
-				{...{ type: 'fill', formRef, handleCancel, handleSubmit, form, showMeta: formStatus }}
-			/>
+			<FormView {...{ type: 'fill', formRef, handleCancel, handleSubmit, form, showMeta: formStatus }} />
 		</div>
 	)
 }

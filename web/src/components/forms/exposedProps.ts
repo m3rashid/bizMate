@@ -1,10 +1,4 @@
-export type SupportedValues =
-	| 'string'
-	| 'textarea'
-	| 'number'
-	| 'boolean'
-	| 'children'
-	| Array<string>
+export type SupportedValues = 'string' | 'textarea' | 'number' | 'boolean' | 'children' | Array<string>
 export type Props = Record<string, [string, SupportedValues]> // [description, supportedValues]
 
 export const buttonProps: Props = {
@@ -13,10 +7,7 @@ export const buttonProps: Props = {
 	className: ['Tailwindcss classNames for button', 'string'],
 	type: ['HTML type of button', ['button', 'submit']],
 	size: ['Size of the button', ['sm', 'md', 'lg']],
-	variant: [
-		'Variant(presets) of the button',
-		['primary', 'danger', 'secondary', 'disabled', 'sucess'],
-	],
+	variant: ['Variant(presets) of the button', ['primary', 'danger', 'secondary', 'disabled', 'sucess']],
 }
 
 export const phoneNumberInputProps: Props = {

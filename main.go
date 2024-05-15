@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bizmate/apis/dashboard"
 	"bizmate/apis/forms"
 	"bizmate/auth"
 	"bizmate/models"
@@ -17,7 +18,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/favicon"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
-	goFiberLogger "github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/joho/godotenv"
 )
 
@@ -54,10 +55,16 @@ func main() {
 
 	utils.TenantModels = []interface{}{
 		models.User{},
-		models.Form{},
 		models.Profile{},
+
 		models.Notification{},
+
+		models.Form{},
 		models.FormResponse{},
+
+		models.Kpi{},
+		models.Widget{},
+		models.Dashboard{},
 	}
 
 	app.Static("/public", "./public", fiber.Static{
@@ -81,7 +88,7 @@ func main() {
 	db := utils.GetHostDB()
 	utils.GormMigrate(db, []interface{}{&models.Tenant{}, &models.TenantOwner{}})
 	if os.Getenv("SERVER_MODE") == "development" {
-		app.Use(goFiberLogger.New())
+		app.Use(logger.New())
 		db.Logger.LogMode(3)
 	}
 
@@ -89,6 +96,7 @@ func main() {
 	forms.Setup(app)
 	scripts.Setup(app)
 	payments.Setup(app)
+	dashboard.Setup(app)
 	notifications.Setup(app)
 
 	log.Println("Server is running in " + os.Getenv("SERVER_MODE") + " mode.")

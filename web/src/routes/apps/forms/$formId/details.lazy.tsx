@@ -53,9 +53,7 @@ function FormPreview() {
 							<div className="relative flex items-center justify-center gap-3 pr-1">
 								<DocumentTextIcon className="h-4 w-4" />
 								<span>Responses</span>
-								<Chip className="bg-dangerLight absolute -right-6 -top-6 rounded-full">
-									{responseCountData.count}
-								</Chip>
+								<Chip className="absolute -right-6 -top-6 rounded-full bg-dangerLight">{responseCountData.count}</Chip>
 							</div>
 						),
 						Component: FormResponses,

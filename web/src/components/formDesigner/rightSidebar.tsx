@@ -21,35 +21,19 @@ function propsToMeta({ _props, values }: PropsToMetaProps): FormElementInstance[
 			meta.push({
 				id,
 				name: 'textInput',
-				props: {
-					name: key,
-					defaultValue: values[key],
-					descriptionText: description,
-					label: camelCaseToSentenceCase(key),
-				},
+				props: { name: key, defaultValue: values[key], descriptionText: description, label: camelCaseToSentenceCase(key) },
 			})
 		} else if (value === 'textarea') {
 			meta.push({
 				id,
 				name: 'textareaInput',
-				props: {
-					name: key,
-					defaultValue: values[key],
-					descriptionText: description,
-					label: camelCaseToSentenceCase(key),
-				},
+				props: { name: key, defaultValue: values[key], descriptionText: description, label: camelCaseToSentenceCase(key) },
 			})
 		} else if (value === 'number') {
 			meta.push({
 				id,
 				name: 'textInput',
-				props: {
-					name: key,
-					type: 'number',
-					defaultValue: values[key],
-					descriptionText: description,
-					label: camelCaseToSentenceCase(key),
-				},
+				props: { name: key, type: 'number', defaultValue: values[key], descriptionText: description, label: camelCaseToSentenceCase(key) },
 			})
 		} else if (value === 'boolean') {
 			meta.push({
@@ -111,13 +95,9 @@ function RightSidebar() {
 			<form ref={formRef} className="flex h-full flex-col gap-4" onSubmit={handleSave}>
 				<div className="flex items-center gap-2 border-b-2 border-b-gray-200 pb-3">
 					<h2 className="text-xl font-semibold">
-						{selectedNode
-							? `Settings for ${camelCaseToSentenceCase(selectedNode.name)}`
-							: `Overall Form Settings`}
+						{selectedNode ? `Settings for ${camelCaseToSentenceCase(selectedNode.name)}` : `Overall Form Settings`}
 					</h2>
-					<Tooltip
-						label={selectedNode ? `Properties of the selected element: ${selectedNode.name}` : ''}
-					>
+					<Tooltip label={selectedNode ? `Properties of the selected element: ${selectedNode.name}` : ''}>
 						<InformationCircleIcon className="h-6 w-6" />
 					</Tooltip>
 				</div>

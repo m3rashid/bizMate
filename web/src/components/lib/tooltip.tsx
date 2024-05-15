@@ -1,5 +1,5 @@
-import { CSSProperties, PropsWithChildren, ReactNode, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { CSSProperties, PropsWithChildren, ReactNode, useRef, useState } from 'react'
 
 export type TooltipProps = PropsWithChildren & {
 	label: ReactNode

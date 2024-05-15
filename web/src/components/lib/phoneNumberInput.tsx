@@ -30,10 +30,7 @@ const initialState = {
 }
 type State = typeof initialState
 
-type Action =
-	| { type: 'CHANGE_EXT'; ext: string }
-	| { type: 'CHANGE_PHONE'; phone: string }
-	| { type: 'CLEAR' }
+type Action = { type: 'CHANGE_EXT'; ext: string } | { type: 'CHANGE_PHONE'; phone: string } | { type: 'CLEAR' }
 
 function phoneNumberReducer(state: State, action: Action): State {
 	if (action.type === 'CLEAR') return initialState
@@ -42,20 +39,13 @@ function phoneNumberReducer(state: State, action: Action): State {
 	}
 
 	if (action.type === 'CHANGE_PHONE') {
-		return {
-			...state,
-			phoneNumber: action.phone,
-			phone: getPhoneNumber(action.phone, state.phoneExt),
-		}
+		return { ...state, phoneNumber: action.phone, phone: getPhoneNumber(action.phone, state.phoneExt) }
 	}
 
 	return state
 }
 
-function Component(
-	props: PhoneNumberInputProps,
-	ref: ForwardedRef<{ getValue: () => string; clear: () => void }>,
-) {
+function Component(props: PhoneNumberInputProps, ref: ForwardedRef<{ getValue: () => string; clear: () => void }>) {
 	const inputRef = useRef(null)
 	const [{ phone, phoneExt, phoneNumber }, dispatch] = useReducer(phoneNumberReducer, initialState)
 
@@ -68,13 +58,7 @@ function Component(
 		<div>
 			<input type="hidden" name={props.name} ref={inputRef} value={phone} />
 			{props.label ? (
-				<label
-					htmlFor="phone"
-					className={twMerge(
-						'block text-sm font-medium leading-6 text-labelColor',
-						props.labelClassName,
-					)}
-				>
+				<label htmlFor="phone" className={twMerge('text-labelColor block text-sm font-medium leading-6', props.labelClassName)}>
 					{props.label}&nbsp;
 					<span className="text-red-500">{props.required ? '*' : ''}</span>
 				</label>
@@ -88,14 +72,8 @@ function Component(
 					onChange={(value) => dispatch({ type: 'CHANGE_EXT', ext: value })}
 					render={({ active, option, selected }) => (
 						<div className="flex">
-							<span
-								className={twMerge(selected ? 'font-semibold' : 'font-normal', 'min-w-7 truncate')}
-							>
-								{option}
-							</span>
-							<span
-								className={twMerge(active ? 'text-indigo-200' : 'text-gray-500', 'ml-2 truncate')}
-							>
+							<span className={twMerge(selected ? 'font-semibold' : 'font-normal', 'min-w-7 truncate')}>{option}</span>
+							<span className={twMerge(active ? 'text-indigo-200' : 'text-gray-500', 'ml-2 truncate')}>
 								{phoneOptions.find((op) => op.value === option)?.label || phoneOptions[0].label}
 							</span>
 						</div>

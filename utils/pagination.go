@@ -1,13 +1,13 @@
 package utils
 
 type PaginationResponse[T any] struct {
-	Docs            []T  `json:"docs"`
-	Limit           int  `json:"limit"`
-	Count           int  `json:"count"`
-	TotalDocs       int  `json:"totalDocs"`
-	CurrentPage     int  `json:"page"`
-	HasNextPage     bool `json:"hasNextPage"`
-	HasPreviousPage bool `json:"hasPreviousPage"`
+	Docs            []T   `json:"docs"`
+	Limit           int   `json:"limit"`
+	Count           int   `json:"count"`
+	TotalDocs       int64 `json:"totalDocs"`
+	CurrentPage     int   `json:"page"`
+	HasNextPage     bool  `json:"hasNextPage"`
+	HasPreviousPage bool  `json:"hasPreviousPage"`
 }
 
 var DefaultPaginationResponse = PaginationResponse[interface{}]{
@@ -20,8 +20,7 @@ var DefaultPaginationResponse = PaginationResponse[interface{}]{
 	HasPreviousPage: false,
 }
 
-type PaginationRequestBody struct {
-	Query string `json:"query,omitempty" validate:""`
-	Page  int    `json:"page" validate:""`
-	Limit int    `json:"limit" validate:""`
+type PaginationRequestQuery struct {
+	Page  int `json:"page" validate:""`
+	Limit int `json:"limit" validate:""`
 }

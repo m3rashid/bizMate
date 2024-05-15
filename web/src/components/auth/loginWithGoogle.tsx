@@ -43,10 +43,8 @@ function LoginWithGoogle(props: LoginWithGoogleProps) {
 
 	function receiveMessage(event: MessageEvent) {
 		try {
-			if (!windowBaseUrl || event.origin !== windowBaseUrl)
-				throw new Error('Request has been forged')
-			if (!event.source || (event.source as any).name !== windowTarget)
-				throw new Error('Invalid event source')
+			if (!windowBaseUrl || event.origin !== windowBaseUrl) throw new Error('Request has been forged')
+			if (!event.source || (event.source as any).name !== windowTarget) throw new Error('Invalid event source')
 			if (!event.data.success || !event.data.token) throw new Error('Login failed')
 
 			localStorage.setItem('token', event.data.token)
@@ -89,9 +87,7 @@ function LoginWithGoogle(props: LoginWithGoogleProps) {
 			<Button
 				LeftIcon={<GoogleIcon />}
 				variant="primary"
-				onClick={() =>
-					openSignInWindow(`${baseUrl}/auth/google?state=${window.location.host}`, windowTarget)
-				}
+				onClick={() => openSignInWindow(`${baseUrl}/auth/google?state=${window.location.host}`, windowTarget)}
 			>
 				Login with Google
 			</Button>

@@ -18,10 +18,29 @@ type User struct {
 	RefreshToken string `gorm:"refreshToken"`
 }
 
+var UserJsonModel = DashboardIndexableJsonModel{
+	ModelName: USER_MODEL_NAME,
+	Fields: map[string]JsonFieldType{
+		"id":        JsonString,
+		"name":      JsonString,
+		"email":     JsonString,
+		"phone":     JsonString,
+		"createdAt": JsonDate,
+	},
+}
+
 type Profile struct {
 	BaseModel
 	UserID uint  `json:"userId" gorm:"column:userId;not null" validate:"required"`
 	User   *User `json:"user" gorm:"column:userId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" validate:""`
+}
+
+var ProfileJsonModel = DashboardIndexableJsonModel{
+	ModelName: PROFILE_MODEL_NAME,
+	Fields: map[string]JsonFieldType{
+		"id":        JsonNumber,
+		"createdAt": JsonDate,
+	},
 }
 
 func (*User) TableName() string {

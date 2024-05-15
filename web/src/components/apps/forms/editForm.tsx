@@ -9,19 +9,12 @@ import { Form, StringBoolean } from '../../../types'
 import { camelCaseToSentenceCase } from '../../../utils/helpers'
 import { FormElementInstance, SupportedWidgetName } from '../../forms/constants'
 
-export type EditFormProps = { setOpen: Dispatch<SetStateAction<boolean>> } & (
-	| { form: undefined }
-	| { form: Form; refetch: () => void }
-)
+export type EditFormProps = { setOpen: Dispatch<SetStateAction<boolean>> } & ({ form: undefined } | { form: Form; refetch: () => void })
 
 /**
  * @param form Array<[name, value, descriptionText, type, required]>
  */
-function editFormMeta(
-	form: Array<
-		[keyof Form, string | boolean, string, SupportedWidgetName, boolean?, Record<string, any>?]
-	>,
-) {
+function editFormMeta(form: Array<[keyof Form, string | boolean, string, SupportedWidgetName, boolean?, Record<string, any>?]>) {
 	const meta: FormElementInstance[] = []
 	for (let i = 0; i < form.length; i++) {
 		meta.push({
@@ -44,16 +37,10 @@ function editFormMeta(
 function EditForm(props: EditFormProps) {
 	const { mutate } = useMutation({
 		mutationKey: ['editForm'],
-		mutationFn: (form: Partial<Form>) =>
-			apiClient('/forms/update', {
-				method: 'POST',
-				body: JSON.stringify(form),
-			}),
+		mutationFn: (form: Partial<Form>) => apiClient('/forms/update', { method: 'POST', body: JSON.stringify(form) }),
 		onSuccess: () => {
 			props.setOpen(false)
-			if (props.form) {
-				props.refetch()
-			}
+			if (props.form) props.refetch()
 		},
 	})
 
@@ -88,14 +75,7 @@ function EditForm(props: EditFormProps) {
 				true,
 				{ defaultChecked: props.form.allowResponseUpdate },
 			],
-			[
-				'active',
-				props.form.active ? 'on' : 'off',
-				'Is this form active',
-				'toggler',
-				true,
-				{ defaultChecked: props.form.active },
-			],
+			['active', props.form.active ? 'on' : 'off', 'Is this form active', 'toggler', true, { defaultChecked: props.form.active }],
 		])
 	}, [props.form?.id])
 
@@ -125,11 +105,7 @@ function EditForm(props: EditFormProps) {
 	}
 
 	return (
-		<Modal
-			open={!!props.form}
-			setOpen={props.setOpen}
-			title={`Edit Form ${props.form ? `(${props.form.title})` : ''}`}
-		>
+		<Modal open={!!props.form} setOpen={props.setOpen} title={`Edit Form ${props.form ? `(${props.form.title})` : ''}`}>
 			<form className="flex h-full flex-col gap-4" onSubmit={handleEditForm}>
 				<div className="flex h-full flex-grow flex-col gap-4 overflow-y-auto">
 					<FormRenderer meta={meta} />

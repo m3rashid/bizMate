@@ -1,12 +1,5 @@
 import { DragEndEvent } from '@dnd-kit/core'
-import {
-	Dispatch,
-	useState,
-	useContext,
-	createContext,
-	SetStateAction,
-	PropsWithChildren,
-} from 'react'
+import { Dispatch, useState, useContext, createContext, SetStateAction, PropsWithChildren } from 'react'
 
 export type DashboardDesigner = {
 	rootProps: {}
@@ -19,21 +12,12 @@ const dashboardDesignerDefaultState: DashboardDesigner = {
 }
 
 const dashboardDesignerContext = createContext<
-	[
-		dashboardDesigner: DashboardDesigner,
-		setDashboardDesigner: Dispatch<SetStateAction<DashboardDesigner>>,
-	]
+	[dashboardDesigner: DashboardDesigner, setDashboardDesigner: Dispatch<SetStateAction<DashboardDesigner>>]
 >([dashboardDesignerDefaultState, () => {}])
 
 export function DashboardDesignerProvider({ children }: PropsWithChildren) {
-	const [dashboardDesigner, setDashboardDesigner] = useState<DashboardDesigner>(
-		dashboardDesignerDefaultState,
-	)
-	return (
-		<dashboardDesignerContext.Provider value={[dashboardDesigner, setDashboardDesigner]}>
-			{children}
-		</dashboardDesignerContext.Provider>
-	)
+	const [dashboardDesigner, setDashboardDesigner] = useState<DashboardDesigner>(dashboardDesignerDefaultState)
+	return <dashboardDesignerContext.Provider value={[dashboardDesigner, setDashboardDesigner]}>{children}</dashboardDesignerContext.Provider>
 }
 
 export function useDashboardDesigner() {

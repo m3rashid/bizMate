@@ -1,15 +1,8 @@
 import dayjs from 'dayjs'
 import { useState } from 'react'
-import {
-	PlusIcon,
-	LockOpenIcon,
-	ArrowPathIcon,
-	ClipboardIcon,
-	LockClosedIcon,
-	PencilSquareIcon,
-} from '@heroicons/react/24/outline'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { PlusIcon, LockOpenIcon, ArrowPathIcon, ClipboardIcon, LockClosedIcon, PencilSquareIcon } from '@heroicons/react/24/outline'
 
 import { Form } from '../../../types'
 import apiClient from '../../../api/client'
@@ -53,15 +46,9 @@ function Forms() {
 							<span className="">{`${arr.length === 0 ? 'No' : arr.length} previous versions`}</span>
 						</Chip>
 
-						<Chip variant={row.active ? 'success' : 'danger'}>
-							{row.active ? 'Active' : 'Inactive'}
-						</Chip>
+						<Chip variant={row.active ? 'success' : 'danger'}>{row.active ? 'Active' : 'Inactive'}</Chip>
 						<Chip variant="secondary">
-							{row.allowAnonymousResponse ? (
-								<LockOpenIcon className="h-4 w-4" />
-							) : (
-								<LockClosedIcon className="h-4 w-4" />
-							)}
+							{row.allowAnonymousResponse ? <LockOpenIcon className="h-4 w-4" /> : <LockClosedIcon className="h-4 w-4" />}
 						</Chip>
 					</div>
 				)
@@ -75,42 +62,21 @@ function Forms() {
 					<Tooltip label="Copy Form URL">
 						<ClipboardIcon
 							className="h-8 w-8 cursor-pointer rounded-lg bg-secondary p-1.5 text-white"
-							onClick={() =>
-								navigator.clipboard.writeText(`${window.location.host}/apps/forms/${row.id}/fill`)
-							}
+							onClick={() => navigator.clipboard.writeText(`${window.location.host}/apps/forms/${row.id}/fill`)}
 						/>
 					</Tooltip>
-					<Button
-						label="Details"
-						size="small"
-						onClick={() => navigate({ to: `/apps/forms/${row.id}/details` })}
-					/>
-					<Button
-						label="Edit"
-						size="small"
-						variant="secondary"
-						onClick={() => setEditRow(row)}
-						LeftIcon={<PencilSquareIcon className="h-4 w-4" />}
-					/>
+					<Button label="Details" size="small" onClick={() => navigate({ to: `/apps/forms/${row.id}/details` })} />
+					<Button label="Edit" size="small" variant="secondary" onClick={() => setEditRow(row)} LeftIcon={<PencilSquareIcon className="h-4 w-4" />} />
 				</div>
 			),
 		},
 	]
 
-	const AddButton = (
-		<Button
-			label="New Form"
-			LeftIcon={<PlusIcon className="h-5 w-5" />}
-			onClick={() => navigate({ to: '/apps/forms/designer' })}
-		/>
-	)
+	const AddButton = <Button label="New Form" LeftIcon={<PlusIcon className="h-5 w-5" />} onClick={() => navigate({ to: '/apps/forms/designer' })} />
 
 	return (
 		<PageContainer>
-			<EditForm
-				setOpen={() => setEditRow(undefined)}
-				{...(!!editRow ? { form: editRow, refetch } : { form: undefined })}
-			/>
+			<EditForm setOpen={() => setEditRow(undefined)} {...(!!editRow ? { form: editRow, refetch } : { form: undefined })} />
 
 			{isPending ? (
 				<PageLoader />

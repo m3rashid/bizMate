@@ -1,8 +1,8 @@
+import { useEffect } from 'react'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 
-import { routeTree } from './routeTree.gen'
 import { useAuth } from './hooks/auth'
-import { useEffect } from 'react'
+import { routeTree } from './routeTree.gen'
 
 const router = createRouter({ routeTree })
 

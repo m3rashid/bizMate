@@ -25,20 +25,14 @@ function FormView(props: FormViewProps) {
 
 	return (
 		<form
-			{...(props.type === 'fill' && metaType === 'body'
-				? { ref: props.formRef, onSubmit: props.handleSubmit }
-				: {})}
+			{...(props.type === 'fill' && metaType === 'body' ? { ref: props.formRef, onSubmit: props.handleSubmit } : {})}
 			className="flex w-full min-w-80 max-w-[800px] flex-col gap-4"
 		>
 			<FormBuilder
 				className="flex flex-col gap-4 rounded-lg border-[1px] border-gray-200 bg-white p-4 shadow-md"
 				meta={
 					JSON.parse(
-						metaType === 'body'
-							? props.form.body
-							: metaType === 'success'
-								? props.form.successPage
-								: props.form.failurePage,
+						metaType === 'body' ? props.form.body : metaType === 'success' ? props.form.successPage : props.form.failurePage,
 					) as FormElementInstance[]
 				}
 			/>

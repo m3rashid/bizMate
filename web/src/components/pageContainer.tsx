@@ -1,7 +1,7 @@
+import { twMerge } from 'tailwind-merge'
 import { PropsWithChildren } from 'react'
 
 import Header, { HeaderProps } from './header'
-import { twMerge } from 'tailwind-merge'
 
 export type PageContainerProps = PropsWithChildren & {
 	headerProps?: HeaderProps

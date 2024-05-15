@@ -1,12 +1,4 @@
-import {
-	useState,
-	Dispatch,
-	useContext,
-	createContext,
-	SetStateAction,
-	PropsWithChildren,
-	ReactNode,
-} from 'react'
+import { useState, Dispatch, useContext, createContext, SetStateAction, PropsWithChildren, ReactNode } from 'react'
 
 import { getUniqueObjectsByKey } from '../utils/helpers'
 
@@ -37,9 +29,7 @@ const defaultPopupContext: PopupStateType = {
 	messagePopups: [],
 }
 
-const popupContext = createContext<
-	[popups: PopupStateType, setPopups: Dispatch<SetStateAction<PopupStateType>>]
->([defaultPopupContext, () => {}])
+const popupContext = createContext<[popups: PopupStateType, setPopups: Dispatch<SetStateAction<PopupStateType>>]>([defaultPopupContext, () => {}])
 
 export function PopupProvider(props: PropsWithChildren) {
 	const [popups, setPopups] = useState<PopupStateType>(defaultPopupContext)
@@ -54,10 +44,7 @@ export function usePopups() {
 
 		setPopups((prev) => ({
 			...prev,
-			messagePopups: getUniqueObjectsByKey<MessagePopupType>(
-				[...prev.messagePopups, messagepopup],
-				'id',
-			),
+			messagePopups: getUniqueObjectsByKey<MessagePopupType>([...prev.messagePopups, messagepopup], 'id'),
 		}))
 
 		setTimeout(() => {

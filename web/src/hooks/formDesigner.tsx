@@ -1,13 +1,6 @@
-import {
-	useState,
-	Dispatch,
-	useContext,
-	createContext,
-	SetStateAction,
-	PropsWithChildren,
-} from 'react'
 import { arrayMove } from '@dnd-kit/sortable'
 import { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core'
+import { useState, Dispatch, useContext, createContext, SetStateAction, PropsWithChildren } from 'react'
 
 import { StringBoolean } from '../types'
 import { generateRandomString } from '../utils/helpers'
@@ -55,22 +48,18 @@ const formDesignerDefaultState: FormDesigner = {
 	},
 }
 
-const formDesignerContext = createContext<
-	[formDesigner: FormDesigner, setFormDesigner: Dispatch<SetStateAction<FormDesigner>>]
->([formDesignerDefaultState, () => {}])
+const formDesignerContext = createContext<[formDesigner: FormDesigner, setFormDesigner: Dispatch<SetStateAction<FormDesigner>>]>([
+	formDesignerDefaultState,
+	() => {},
+])
 
 export function FormDesignerProvider({ children }: PropsWithChildren) {
 	const [formDesigner, setFormDesigner] = useState<FormDesigner>(formDesignerDefaultState)
-	return (
-		<formDesignerContext.Provider value={[formDesigner, setFormDesigner]}>
-			{children}
-		</formDesignerContext.Provider>
-	)
+	return <formDesignerContext.Provider value={[formDesigner, setFormDesigner]}>{children}</formDesignerContext.Provider>
 }
 
 export function useFormDesigner() {
-	const [{ meta, viewType, selectedNode, rootProps }, setFormDesigner] =
-		useContext(formDesignerContext)
+	const [{ meta, viewType, selectedNode, rootProps }, setFormDesigner] = useContext(formDesignerContext)
 
 	function getTaskPosition(meta: FormElementInstance[], id: string | UniqueIdentifier): number {
 		return meta.findIndex((el) => el.id === id)
@@ -114,14 +103,8 @@ export function useFormDesigner() {
 					description: ['Form description', 'textarea'],
 					cancelText: ['Cancel button text', 'string'],
 					submitText: ['Submit button text', 'string'],
-					allowAnonymousResponse: [
-						'Does the user need to be logged in to fill this form?',
-						'boolean',
-					],
-					allowMultipleResponse: [
-						'Do you want the user to respond multiple times to the same form?',
-						'boolean',
-					],
+					allowAnonymousResponse: ['Does the user need to be logged in to fill this form?', 'boolean'],
+					allowMultipleResponse: ['Do you want the user to respond multiple times to the same form?', 'boolean'],
 					allowResponseUpdate: [
 						'Do you want the user to update their responses? Please make sure, If the form is anonymous, this cant be ensured',
 						'boolean',

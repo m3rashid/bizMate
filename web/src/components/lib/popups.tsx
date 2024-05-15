@@ -24,12 +24,7 @@ export const PopupIcons: Record<PopupType, [any, string]> = {
 export function ActionPopup(props: ActionPopupType) {
 	const [Icon, color] = PopupIcons[props.type]
 	return (
-		<div
-			className={twMerge(
-				'w-full rounded-lg border-l-4 bg-white p-2 shadow-md',
-				popupVariants[props.type],
-			)}
-		>
+		<div className={twMerge('w-full rounded-lg border-l-4 bg-white p-2 shadow-md', popupVariants[props.type])}>
 			{props.title ? (
 				<div className="flex gap-2">
 					<div>
@@ -49,12 +44,7 @@ export function MessagePopup(props: MessagePopupType) {
 	const [Icon, color] = PopupIcons[props.type]
 
 	return (
-		<div
-			className={twMerge(
-				'flex w-full gap-2 rounded-lg border-l-4 bg-white p-2 shadow-md',
-				popupVariants[props.type],
-			)}
-		>
+		<div className={twMerge('flex w-full gap-2 rounded-lg border-l-4 bg-white p-2 shadow-md', popupVariants[props.type])}>
 			<div>
 				<Icon className={twMerge('h-5 w-5', color)} />
 			</div>
@@ -64,8 +54,7 @@ export function MessagePopup(props: MessagePopupType) {
 	)
 }
 
-const popupContainerClassName =
-	'absolute top-0 z-[99] max-h-full w-full max-w-80 overflow-hidden p-2 flex flex-col gap-2 items-center'
+const popupContainerClassName = 'absolute top-0 z-[99] max-h-full w-full max-w-80 overflow-hidden p-2 flex flex-col gap-2 items-center'
 
 export function MessagePopupContainer() {
 	const { messagePopups } = usePopups()

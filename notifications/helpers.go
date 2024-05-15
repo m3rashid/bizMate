@@ -88,7 +88,7 @@ func getNotifications(ctx *fiber.Ctx) error {
 		HasPreviousPage: page > 1,
 		CurrentPage:     page,
 		Count:           int(len(results)),
-		TotalDocs:       int(docsCount),
+		TotalDocs:       docsCount,
 		HasNextPage:     docsCount > int64(page*limit),
 	}
 

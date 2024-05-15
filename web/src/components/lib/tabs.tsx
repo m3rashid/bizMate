@@ -45,9 +45,7 @@ function Tabs(props: TabsProps) {
 								href="#"
 								className={twMerge(
 									'flex whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium',
-									tab.current
-										? 'border-indigo-500 text-indigo-600'
-										: 'border-transparent text-gray-500 hover:border-gray-200 hover:text-gray-700',
+									tab.current ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-200 hover:text-gray-700',
 								)}
 								aria-current={tab.current ? 'page' : undefined}
 							>

@@ -36,10 +36,7 @@ function Modal(props: ModalProps) {
 						>
 							<DialogPanel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
 								{props.title ? (
-									<DialogTitle
-										as="h3"
-										className="mb-4 text-base font-semibold leading-6 text-gray-900"
-									>
+									<DialogTitle as="h3" className="mb-4 text-base font-semibold leading-6 text-gray-900">
 										{props.title}
 									</DialogTitle>
 								) : null}

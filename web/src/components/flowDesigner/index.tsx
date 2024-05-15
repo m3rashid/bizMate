@@ -1,13 +1,6 @@
-import ReactFlow, {
-	addEdge,
-	MiniMap,
-	Controls,
-	Background,
-	useNodesState,
-	useEdgesState,
-} from 'reactflow'
 import 'reactflow/dist/style.css'
 import { useCallback } from 'react'
+import ReactFlow, { addEdge, MiniMap, Controls, Background, useNodesState, useEdgesState } from 'reactflow'
 
 const initialNodes = [
 	{ id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },
@@ -18,20 +11,11 @@ function FlowDesigner() {
 	const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
 	const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
 
-	const onConnect = useCallback(
-		(params: any) => setEdges((eds) => addEdge(params, eds)),
-		[setEdges],
-	)
+	const onConnect = useCallback((params: any) => setEdges((eds) => addEdge(params, eds)), [setEdges])
 
 	return (
 		<div className="h-[calc(100vh-74px)] w-[calc(100vw-32px)]">
-			<ReactFlow
-				nodes={nodes}
-				edges={edges}
-				onNodesChange={onNodesChange}
-				onEdgesChange={onEdgesChange}
-				onConnect={onConnect}
-			>
+			<ReactFlow nodes={nodes} edges={edges} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onConnect={onConnect}>
 				<Controls />
 				<MiniMap />
 				<Background variant="dots" gap={12} size={1} />

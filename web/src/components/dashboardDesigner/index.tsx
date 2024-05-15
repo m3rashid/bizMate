@@ -1,12 +1,5 @@
-import {
-	useSensor,
-	DndContext,
-	useSensors,
-	PointerSensor,
-	KeyboardSensor,
-	closestCorners,
-} from '@dnd-kit/core'
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable'
+import { useSensor, DndContext, useSensors, PointerSensor, KeyboardSensor, closestCorners } from '@dnd-kit/core'
 
 import { useDashboardDesigner } from '../../hooks/dashboardDesigner'
 

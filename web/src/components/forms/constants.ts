@@ -49,11 +49,7 @@ export type FormRenderProps = {
 }
 
 export type FormBuilder = FC<FormRenderProps> & {
-	register: (
-		widgetName: SupportedWidgetName,
-		widget: any,
-		fieldTransformer?: (field?: any) => any,
-	) => void
+	register: (widgetName: SupportedWidgetName, widget: any, fieldTransformer?: (field?: any) => any) => void
 	useForceUpdate: () => () => void
 }
 
