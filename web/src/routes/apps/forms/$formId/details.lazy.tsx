@@ -18,15 +18,10 @@ export const Route = createFileRoute('/apps/forms/$formId/details')({
 
 function FormPreview() {
 	const { formId } = useParams({ from: '/apps/forms/$formId/details' })
-
-	const { data: form, isPending } = useQuery({
-		queryKey: ['getForm', formId],
-		queryFn: () => apiClient(`/forms/one/${formId}`, { method: 'GET' }),
-	})
-
+	const { data: form, isPending } = useQuery({ queryKey: ['getForm', formId], queryFn: () => apiClient(`/forms/one/${formId}`) })
 	const { data: responseCountData, isPending: isCountPending } = useQuery({
 		queryKey: ['getFormResponseCount', formId],
-		queryFn: () => apiClient(`/forms/response/${formId}/count`, { method: 'GET' }),
+		queryFn: () => apiClient(`/forms/response/${formId}/count`),
 	})
 
 	if (!formId || isNaN(parseInt(formId))) return <PageNotFound />

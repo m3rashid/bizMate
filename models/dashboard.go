@@ -4,7 +4,7 @@ const KPI_MODEL_NAME = "kpis"
 const WIDGET_MODEL_NAME = "widgets"
 const DASHBOARD_MODEL_NAME = "dashboards"
 
-type ChartType string
+type WidgetChartType string
 
 // KPIs can be used to display key performance indicators on any page
 type Kpi struct {
@@ -32,19 +32,19 @@ type Widget struct {
 	BaseModel
 	CreatedBy
 	UpdatedBy
-	DashboardID     uint       `json:"dashboardId" gorm:"column:dashboardId;not null" validate:"required"`
-	Dashboard       *Dashboard `json:"form" gorm:"foreignKey:dashboardId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" validate:""`
-	Title           string     `json:"title" gorm:"column:title;not null" validate:"required"`
-	Description     string     `json:"description" gorm:"column:description;not null" validate:""`
-	RefreshInterval int        `json:"refreshInterval" gorm:"column:refreshInterval;not null" validate:"required"`
-	Position        int        `json:"position" gorm:"column:position;not null" validate:"required"` // index of the widget in the dashboard
-	Model           string     `json:"model" gorm:"column:model;not null" validate:"required"`       // model name of the widget
-	XLabel          string     `json:"xLabel,omitempty" gorm:"column:xLabel" validate:""`
-	YLabel          string     `json:"yLabel,omitempty" gorm:"column:yLabel" validate:""`
-	XDataKey        string     `json:"xDataKey,omitempty" gorm:"column:xDataKey" validate:""` // field name of the x-axis data
-	YDataKey        string     `json:"yDataKey,omitempty" gorm:"column:yDataKey" validate:""` // field name of the y-axis data
-	ChartType       ChartType  `json:"chartType,omitempty" gorm:"column:chartType" validate:""`
-	ChartOptions    string     `json:"chartOptions,omitempty" gorm:"column:chartOptions" validate:""`
+	DashboardID     uint            `json:"dashboardId" gorm:"column:dashboardId;not null" validate:"required"`
+	Dashboard       *Dashboard      `json:"dashboard" gorm:"foreignKey:dashboardId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" validate:""`
+	Title           string          `json:"title" gorm:"column:title;not null" validate:"required"`
+	Description     string          `json:"description" gorm:"column:description;not null" validate:""`
+	RefreshInterval int             `json:"refreshInterval" gorm:"column:refreshInterval;not null" validate:"required"`
+	Position        int             `json:"position" gorm:"column:position;not null" validate:"required"` // index of the widget in the dashboard
+	Model           string          `json:"model" gorm:"column:model;not null" validate:"required"`       // model name of the widget
+	XLabel          string          `json:"xLabel,omitempty" gorm:"column:xLabel" validate:""`
+	YLabel          string          `json:"yLabel,omitempty" gorm:"column:yLabel" validate:""`
+	XDataKey        string          `json:"xDataKey,omitempty" gorm:"column:xDataKey" validate:""` // field name of the x-axis data
+	YDataKey        string          `json:"yDataKey,omitempty" gorm:"column:yDataKey" validate:""` // field name of the y-axis data
+	ChartType       WidgetChartType `json:"chartType,omitempty" gorm:"column:chartType" validate:""`
+	ChartOptions    string          `json:"chartOptions,omitempty" gorm:"column:chartOptions" validate:""`
 }
 
 var WidgetJsonModel = DashboardIndexableJsonModel{

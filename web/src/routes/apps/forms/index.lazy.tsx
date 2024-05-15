@@ -21,10 +21,7 @@ export const Route = createFileRoute('/apps/forms/')({
 function Forms() {
 	const navigate = useNavigate()
 	const [editRow, setEditRow] = useState<Form | undefined>(undefined)
-	const { data, isPending, refetch } = useQuery({
-		queryKey: ['getForms'],
-		queryFn: () => apiClient('/forms/all', { method: 'GET' }),
-	})
+	const { data, isPending, refetch } = useQuery({ queryKey: ['getForms'], queryFn: () => apiClient('/forms/all') })
 
 	const tableColumns: TableProps<Form>['columns'] = [
 		{ dataKey: 'title', title: 'Title' },

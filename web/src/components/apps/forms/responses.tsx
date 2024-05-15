@@ -82,7 +82,7 @@ function parseFormResponses(
 function FormResponses(props: FormResponsesType) {
 	const { data, isPending } = useQuery({
 		queryKey: ['getFormResponses', props.form.id],
-		queryFn: () => apiClient(`/forms/response/${props.form.id}/all`, { method: 'GET' }),
+		queryFn: () => apiClient(`/forms/response/${props.form.id}/all`),
 		select: (data) => parseFormResponses(props.form, data),
 	})
 

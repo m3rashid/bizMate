@@ -11,7 +11,7 @@ function StripePayment() {
 	const { data: stripeConfig, isPending } = useQuery({
 		retry: false,
 		queryKey: ['stripeConfig'],
-		queryFn: () => apiClient('/payments/stripe/config', { method: 'GET' }),
+		queryFn: () => apiClient('/payments/stripe/config'),
 	})
 
 	if (isPending) return <PageLoader />

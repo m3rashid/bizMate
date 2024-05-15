@@ -7,6 +7,19 @@ import { generateRandomString } from '../utils/helpers'
 import { Props } from '../components/forms/exposedProps'
 import { FormElementInstance, supportedWidgets } from '../components/forms/constants'
 
+const propsNodeNotSelected: Props = {
+	title: ['Form title', 'string'],
+	description: ['Form description', 'textarea'],
+	cancelText: ['Cancel button text', 'string'],
+	submitText: ['Submit button text', 'string'],
+	allowAnonymousResponse: ['Does the user need to be logged in to fill this form?', 'boolean'],
+	allowMultipleResponse: ['Do you want the user to respond multiple times to the same form?', 'boolean'],
+	allowResponseUpdate: [
+		'Do you want the user to update their responses? Please make sure, If the form is anonymous, this cant be ensured',
+		'boolean',
+	],
+}
+
 export type FormDesignerType = 'header' | 'body'
 export type FormDesigner = {
 	rootProps: {
@@ -28,11 +41,7 @@ const formDesignerDefaultState: FormDesigner = {
 		{
 			id: 'img',
 			name: 'image',
-			props: {
-				src: 'https://via.placeholder.com/150',
-				alt: 'placeholder image',
-				className: 'w-full h-48 object-cover rounded-md',
-			},
+			props: { src: 'https://via.placeholder.com/150', alt: 'placeholder image', className: 'w-full h-48 object-cover rounded-md' },
 		},
 	],
 	viewType: 'build',
@@ -71,65 +80,33 @@ export function useFormDesigner() {
 			if (!e.over) return prev
 			const source = getTaskPosition(prev.meta, e.active.id)
 			const destination = getTaskPosition(prev.meta, e.over.id)
-			return {
-				...prev,
-				meta: arrayMove(prev.meta, source, destination),
-			}
+			return { ...prev, meta: arrayMove(prev.meta, source, destination) }
 		})
 	}
 
 	function changeViewType(viewType?: FormDesigner['viewType']) {
-		setFormDesigner((prev) => ({
-			...prev,
-			viewType: viewType || (prev.viewType === 'build' ? 'preview' : 'build'),
-		}))
+		setFormDesigner((prev) => ({ ...prev, viewType: viewType || (prev.viewType === 'build' ? 'preview' : 'build') }))
 	}
 
 	function insertNewNode(newNode: Omit<FormElementInstance, 'id'>) {
 		const node: FormElementInstance = { ...newNode, props: {}, id: generateRandomString() }
-		setFormDesigner((prev) => ({
-			...prev,
-			selectedNode: node,
-			meta: [...prev.meta, node],
-		}))
+		setFormDesigner((prev) => ({ ...prev, selectedNode: node, meta: [...prev.meta, node] }))
 	}
 
 	function getSelectedNodeProps(): { _props: Props; values: Record<string, any> } {
-		if (!selectedNode) {
-			return {
-				values: rootProps,
-				_props: {
-					title: ['Form title', 'string'],
-					description: ['Form description', 'textarea'],
-					cancelText: ['Cancel button text', 'string'],
-					submitText: ['Submit button text', 'string'],
-					allowAnonymousResponse: ['Does the user need to be logged in to fill this form?', 'boolean'],
-					allowMultipleResponse: ['Do you want the user to respond multiple times to the same form?', 'boolean'],
-					allowResponseUpdate: [
-						'Do you want the user to update their responses? Please make sure, If the form is anonymous, this cant be ensured',
-						'boolean',
-					],
-				},
-			}
+		if (!selectedNode) return { values: rootProps, _props: propsNodeNotSelected }
+		return {
+			values: meta.find((node) => node.id === selectedNode.id)?.props || {},
+			_props: supportedWidgets.find((widget) => widget.name === selectedNode.name)?.props || {},
 		}
-		const elementValues = meta.find((node) => node.id === selectedNode.id)?.props || {}
-		const props = supportedWidgets.find((widget) => widget.name === selectedNode.name)?.props || {}
-		return { _props: props, values: elementValues }
 	}
 
 	function updateNode(nodeKey: string, props: Props) {
-		setFormDesigner((prev) => ({
-			...prev,
-			meta: prev.meta.map((node) => ({ ...node, props: node.id === nodeKey ? props : node.props })),
-		}))
+		setFormDesigner((prev) => ({ ...prev, meta: prev.meta.map((node) => ({ ...node, props: node.id === nodeKey ? props : node.props })) }))
 	}
 
 	function removeNode(nodeKey: string) {
-		setFormDesigner((prev) => ({
-			...prev,
-			selectedNode: null,
-			meta: prev.meta.filter((node) => node.id !== nodeKey),
-		}))
+		setFormDesigner((prev) => ({ ...prev, selectedNode: null, meta: prev.meta.filter((node) => node.id !== nodeKey) }))
 	}
 
 	return {

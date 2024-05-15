@@ -26,7 +26,7 @@ export type TableProps<T> = {
 	emptyState?: ReactNode
 }
 
-type Row = ExplicitAndAllObject<Record<string, any>, { id: string | number }>
+type Row = ExplicitAndAllObject<'id'>
 function Table<T extends Row>(props: TableProps<T>) {
 	return (
 		<div className={twMerge('h-full w-full', props.rootClassName)}>
@@ -81,7 +81,7 @@ function Table<T extends Row>(props: TableProps<T>) {
 										>
 											{props.columns.map((column, columnIndex) => (
 												<td
-													key={row[column.dataKey] + columnIndex}
+													key={row[column.dataKey] + String(columnIndex)}
 													className={twMerge(
 														'whitespace-nowrap px-3 py-3.5 text-left text-sm',
 														columnIndex === 0 ? 'rounded-l-lg' : '',
@@ -89,7 +89,7 @@ function Table<T extends Row>(props: TableProps<T>) {
 														column.tableTdClassName,
 													)}
 												>
-													{column.render ? <column.render {...{ row, rowIndex }} /> : row[column.dataKey]}
+													{column.render ? <column.render {...{ row, rowIndex }} /> : (String(row[column.dataKey]) satisfies ReactNode)}
 												</td>
 											))}
 										</tr>

@@ -14,13 +14,9 @@ export const Route = createFileRoute('/apps/forms/$formId/fill')({
 
 function FormFill() {
 	const formRef = useRef<HTMLFormElement>(null)
-	const [formStatus, setFormStatus] = useState<ShowMetaType>('body')
 	const { formId } = useParams({ from: '/apps/forms/$formId/fill' })
-
-	const { data: form, isPending: isGetFormPending } = useQuery<Form>({
-		queryKey: ['getForm', formId],
-		queryFn: () => apiClient(`/forms/one/${formId}`, { method: 'GET' }),
-	})
+	const [formStatus, setFormStatus] = useState<ShowMetaType>('body')
+	const { data: form, isPending } = useQuery<Form>({ queryKey: ['getForm', formId], queryFn: () => apiClient(`/forms/one/${formId}`) })
 
 	function handleFormStatusChange(type: 'success' | 'failure', formMeta?: string) {
 		try {
@@ -67,7 +63,7 @@ function FormFill() {
 	}
 
 	if (!formId || isNaN(parseInt(formId))) return <PageNotFound />
-	if (isGetFormPending) return <PageLoader />
+	if (isPending) return <PageLoader />
 
 	return (
 		<div className="flex justify-center p-4">

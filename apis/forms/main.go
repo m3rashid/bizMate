@@ -11,7 +11,7 @@ import (
 func Setup(app *fiber.App) {
 	app.Get("/forms/one/:formId", utils.CheckAuthMiddlewareButAllowUnauthorized, getFormById)
 	app.Post("/forms/create", utils.CheckAuthMiddleware, createForm)
-	app.Get("/forms/all", utils.CheckAuthMiddleware, controllers.Paginate[models.Form](models.FORM_MODEL_NAME, controllers.PaginateOptions{}))
+	app.Get("/forms/all", utils.CheckAuthMiddleware, controllers.Paginate[models.Form](models.FORM_MODEL_NAME))
 	app.Post("/forms/update", utils.CheckAuthMiddleware, updateFormById)
 	app.Post("/forms/delete/:formId", utils.CheckAuthMiddleware, deleteForm)
 

@@ -14,7 +14,16 @@ type PaginateOptions struct {
 	Populate  []string
 }
 
-func Paginate[Model interface{}](tableName string, paginationOptions PaginateOptions) func(*fiber.Ctx) error {
+func Paginate[Model interface{}](tableName string, _paginationOptions ...PaginateOptions) func(*fiber.Ctx) error {
+	if len(_paginationOptions) > 1 {
+		panic("Only one pagination option is allowed")
+	}
+
+	paginationOptions := PaginateOptions{}
+	if len(_paginationOptions) > 0 {
+		paginationOptions = _paginationOptions[0]
+	}
+
 	return func(ctx *fiber.Ctx) error {
 		reqBody := utils.PaginationRequestQuery{}
 		if err := ctx.QueryParser(&reqBody); err != nil {
