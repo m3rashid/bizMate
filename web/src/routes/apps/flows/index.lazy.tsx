@@ -1,16 +1,15 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createLazyFileRoute } from '@tanstack/react-router'
 
 import PageContainer from '../../../components/pageContainer'
-import FlowDesignerComponent from '../../../components/flowDesigner'
 
-export const Route = createFileRoute('/apps/flows/')({
-	component: FlowDesigner,
+export const Route = createLazyFileRoute('/apps/flows/')({
+	component: Flows,
 })
 
-function FlowDesigner() {
+function Flows() {
 	return (
 		<PageContainer>
-			<FlowDesignerComponent />
+			<h1>All Flows</h1>
 		</PageContainer>
 	)
 }

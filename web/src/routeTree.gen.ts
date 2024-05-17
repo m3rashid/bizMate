@@ -24,6 +24,7 @@ const AppsFormsIndexLazyImport = createFileRoute('/apps/forms/')()
 const AppsFlowsIndexLazyImport = createFileRoute('/apps/flows/')()
 const AppsDashboardsIndexLazyImport = createFileRoute('/apps/dashboards/')()
 const AppsFormsDesignerLazyImport = createFileRoute('/apps/forms/designer')()
+const AppsFlowsDesignerLazyImport = createFileRoute('/apps/flows/designer')()
 const AppsDashboardsDesignerLazyImport = createFileRoute(
   '/apps/dashboards/designer',
 )()
@@ -84,6 +85,13 @@ const AppsFormsDesignerLazyRoute = AppsFormsDesignerLazyImport.update({
   import('./routes/apps/forms/designer.lazy').then((d) => d.Route),
 )
 
+const AppsFlowsDesignerLazyRoute = AppsFlowsDesignerLazyImport.update({
+  path: '/apps/flows/designer',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/apps/flows/designer.lazy').then((d) => d.Route),
+)
+
 const AppsDashboardsDesignerLazyRoute = AppsDashboardsDesignerLazyImport.update(
   {
     path: '/apps/dashboards/designer',
@@ -133,6 +141,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppsDashboardsDesignerLazyImport
       parentRoute: typeof rootRoute
     }
+    '/apps/flows/designer': {
+      preLoaderRoute: typeof AppsFlowsDesignerLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/apps/forms/designer': {
       preLoaderRoute: typeof AppsFormsDesignerLazyImport
       parentRoute: typeof rootRoute
@@ -168,6 +180,7 @@ export const routeTree = rootRoute.addChildren([
   PaymentLazyRoute,
   AuthLoginLazyRoute,
   AppsDashboardsDesignerLazyRoute,
+  AppsFlowsDesignerLazyRoute,
   AppsFormsDesignerLazyRoute,
   AppsDashboardsIndexLazyRoute,
   AppsFlowsIndexLazyRoute,

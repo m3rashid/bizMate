@@ -54,13 +54,13 @@ export function MessagePopup(props: MessagePopupType) {
 	)
 }
 
-const popupContainerClassName = 'absolute top-0 z-[99] max-h-full w-full max-w-80 overflow-hidden p-2 flex flex-col gap-2 items-center'
+const popupContainerClassName = 'absolute top-0 z-[99] max-h-full w-full max-w-80 overflow-hidden flex flex-col gap-2 items-center'
 
 export function MessagePopupContainer() {
 	const { messagePopups } = usePopups()
 
 	return createPortal(
-		<div className={twMerge(popupContainerClassName, 'left-[calc(50vw-160px)]')}>
+		<div className={twMerge(popupContainerClassName, 'left-[calc(50vw-160px)]', messagePopups.length > 0 ? 'p-2' : '')}>
 			{messagePopups.map((messagePopup) => (
 				<MessagePopup key={messagePopup.id} {...messagePopup} />
 			))}
@@ -73,7 +73,7 @@ export function ActionPopupContainer() {
 	const { actionPopups } = usePopups()
 
 	return createPortal(
-		<div className={twMerge(popupContainerClassName, 'right-0')}>
+		<div className={twMerge(popupContainerClassName, 'right-0', actionPopups.length > 0 ? 'p-2' : '')}>
 			{actionPopups.map((actionPopup) => (
 				<ActionPopup key={actionPopup.id} {...actionPopup} />
 			))}
