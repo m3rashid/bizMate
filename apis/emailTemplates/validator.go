@@ -9,8 +9,6 @@ type HTML struct {
 	Variables  []string
 }
 
-type HtmlTemplate string
-
 func (t *HTML) removeCommentsAndCompress() {
 	removeCommentsRegex := regexp.MustCompile(`(?s)<!--.*?-->`)
 	noComments := removeCommentsRegex.ReplaceAllString(string(t.HtmlString), "")
