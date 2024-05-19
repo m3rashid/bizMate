@@ -85,8 +85,6 @@ func (execGraph *ExecutionGraph) HasCycle() bool {
 	return false
 }
 
-func (execGraph *ExecutionGraph) TopologicalSort(startNode, endNode uint) {
-
-}
+func (execGraph *ExecutionGraph) TopologicalSort(startNode, endNode uint) {}
 
 func (execgraph *ExecutionGraph) Execute() {}

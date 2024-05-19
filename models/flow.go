@@ -37,7 +37,9 @@ type WorkflowStep struct {
 
 type WorkflowExectionLog struct {
 	BaseModel
-	// ...
+	WorkflowStepID uint          `json:"workflowStepId" gorm:"column:workflowStepId;not null" validate:"required"`
+	WorkflowStep   *WorkflowStep `json:"workflowStep" gorm:"foreignKey:workflowStepId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" validate:""`
+	Output         string        `json:"output" gorm:"input:name;not null" validate:"required"`
 }
 
 func (*Workflow) TableName() string {
