@@ -15,6 +15,7 @@ type Form struct {
 	SuccessPage            string `json:"successPage,omitempty" gorm:"column:successPage" validate:""`
 	FailurePage            string `json:"failurePage,omitempty" gorm:"column:failurePage" validate:""`
 	Active                 bool   `json:"active" gorm:"column:active;not null" validate:"required"`
+	SendResponseEmail      bool   `json:"sendResponseEmail" gorm:"column:sendResponseEmail;not null" validate:"required"`
 	AllowAnonymousResponse bool   `json:"allowAnonymousResponse" gorm:"column:allowAnonymousResponse;not null" validate:"required"`
 	AllowResponseUpdate    bool   `json:"allowResponseUpdate" gorm:"column:allowResponseUpdate;not null" validate:"required"`
 	AllowMultipleResponse  bool   `json:"allowMultipleResponse" gorm:"column:allowMultipleResponse;not null" validate:"required"`

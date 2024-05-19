@@ -14,3 +14,12 @@
 	border-radius: 20px;
 	border: 2px solid white;
 }
+
+a.blockbuilder-branding {
+	display: none !important;
+}
+
+a[href^="https://unlayer.com/"]
+{
+	display: none !important;
+}

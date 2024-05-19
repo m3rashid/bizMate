@@ -19,11 +19,10 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-const CONNECTION_REFRESH_INTERVAL = 1 * time.Hour
-
+var db *gorm.DB
 var TenantModels []interface{}
 
-var db *gorm.DB
+const CONNECTION_REFRESH_INTERVAL = 1 * time.Hour
 
 type TenantConnection struct {
 	Connection *gorm.DB

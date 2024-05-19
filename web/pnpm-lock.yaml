@@ -44,6 +44,9 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+      react-email-editor:
+        specifier: ^1.7.10
+        version: 1.7.10(react@18.3.1)
       react-responsive-masonry:
         specifier: ^2.2.0
         version: 2.2.0
@@ -1849,6 +1852,12 @@ packages:
     peerDependencies:
       react: ^18.3.1
 
+  react-email-editor@1.7.10:
+    resolution: {integrity: sha512-nIBohccq/oIG50/Xdgf3Q9Cml1/URywtQpl9i4HYofEPKYoDqC3gabbYwOeUSC78VkIAGBMzKkyPdyDHUvgsRg==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=15'
+
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
@@ -2049,6 +2058,9 @@ packages:
     resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
     engines: {node: '>=14.17'}
     hasBin: true
+
+  unlayer-types@1.32.0:
+    resolution: {integrity: sha512-LQ1t6l+pa2QxGLr4L/KPfRk5hfXIV/qQzdB3N/J4zfSBedNiQb/WaPdLupVhuRFnd8bsk5Ks5rQQi6pqcd36yA==}
 
   update-browserslist-db@1.0.14:
     resolution: {integrity: sha512-JixKH8GR2pWYshIPUg/NujK3JO7JiqEEUiNArE86NQyrgUuZeTlZQN3xuS/yiV5Kb48ev9K6RqNkaJjXsdg7Jw==}
@@ -3884,6 +3896,11 @@ snapshots:
       react: 18.3.1
       scheduler: 0.23.2
 
+  react-email-editor@1.7.10(react@18.3.1):
+    dependencies:
+      react: 18.3.1
+      unlayer-types: 1.32.0
+
   react-is@16.13.1: {}
 
   react-refresh@0.14.2: {}
@@ -4121,6 +4138,8 @@ snapshots:
       prelude-ls: 1.2.1
 
   typescript@5.4.5: {}
+
+  unlayer-types@1.32.0: {}
 
   update-browserslist-db@1.0.14(browserslist@4.23.0):
     dependencies:

@@ -7,13 +7,14 @@ import {
 	ClipboardDocumentIcon,
 	AdjustmentsHorizontalIcon,
 	PresentationChartLineIcon,
+	AtSymbolIcon,
+	ChatBubbleLeftRightIcon,
 } from '@heroicons/react/24/outline'
 import { useNavigate } from '@tanstack/react-router'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 
 export type Route = {
 	name: string
-	description: string
 	icon: FC<any>
 	link: string
 }
@@ -31,8 +32,8 @@ export const apps: Array<App> = [
 		description: 'Create, publish, and get analytics for your forms',
 		icon: ClipboardDocumentIcon,
 		routes: [
-			{ name: 'Designer', description: 'Design your custom forms', icon: DeviceTabletIcon, link: '/apps/forms/designer' },
-			{ name: 'All Forms', description: 'Check all your forms', icon: ListBulletIcon, link: '/apps/forms/' },
+			{ name: 'Designer', icon: DeviceTabletIcon, link: '/apps/forms/designer' },
+			{ name: 'All Forms', icon: ListBulletIcon, link: '/apps/forms/' },
 		],
 	},
 	{
@@ -40,8 +41,8 @@ export const apps: Array<App> = [
 		description: 'Automate your daily processes',
 		icon: ArrowPathIcon,
 		routes: [
-			{ name: 'Designer', description: 'Create your custom workflow', icon: AdjustmentsHorizontalIcon, link: '/apps/flows/designer' },
-			{ name: 'All Automations', description: 'Check all your workflows', icon: ListBulletIcon, link: '/apps/automations/' },
+			{ name: 'Designer', icon: AdjustmentsHorizontalIcon, link: '/apps/flows/designer' },
+			{ name: 'All Automations', icon: ListBulletIcon, link: '/apps/automations/' },
 		],
 	},
 	{
@@ -49,8 +50,18 @@ export const apps: Array<App> = [
 		description: 'Create and manage your dashboards',
 		icon: PresentationChartLineIcon,
 		routes: [
-			{ name: 'Designer', description: 'Create your custom dashboards', icon: ChartBarIcon, link: '/apps/dashboards/designer' },
-			{ name: 'All Dashboards', description: 'Check all your dashboards', icon: ListBulletIcon, link: '/apps/dashboards/' },
+			{ name: 'Designer', icon: ChartBarIcon, link: '/apps/dashboards/designer' },
+			{ name: 'All Dashboards', icon: ListBulletIcon, link: '/apps/dashboards/' },
+		],
+	},
+	{
+		name: 'Communications',
+		description: 'Handle your communications from here',
+		icon: ChatBubbleLeftRightIcon,
+		routes: [
+			{ name: 'Email Templates', icon: AtSymbolIcon, link: '/apps/communications/emails/' },
+			{ name: 'Schedule Emails', icon: AtSymbolIcon, link: '/apps/communications/emails/designer' },
+			{ name: 'Create Email Templates', icon: AtSymbolIcon, link: '/apps/communications/emails/designer' },
 		],
 	},
 ]
@@ -63,7 +74,7 @@ function AppsList() {
 			<ResponsiveMasonry className="col-span-1 md:col-span-2 lg:col-span-3" columnsCountBreakPoints={{ 300: 1, 1100: 2, 1600: 3 }}>
 				<Masonry gutter="1rem" className="mb-4">
 					{apps.map((app) => (
-						<div className="select-none rounded-lg border-2 border-white p-4 shadow-lg hover:border-primary">
+						<div key={app.name} className="select-none rounded-lg border-2 border-white p-4 shadow-lg hover:border-primary">
 							<div className="mb-2 cursor-pointer hover:text-primary">
 								<div className="flex gap-2">
 									<app.icon className="h-8 w-8" />
@@ -75,15 +86,11 @@ function AppsList() {
 								</div>
 							</div>
 
-							<div className="ml-12 flex flex-col gap-2">
+							<div className="ml-10 flex flex-col gap-2">
 								{app.routes.map((route) => (
-									<div key={route.name} className="flex cursor-pointer hover:text-primary" onClick={() => navigate({ to: route.link })}>
-										<route.icon className="h-6 w-6" />
-
-										<div className="ml-2">
-											<h4 className="text-md font-semibold">{route.name}</h4>
-											<p className="text-sm text-disabled">{route.description}</p>
-										</div>
+									<div key={route.link} className="flex cursor-pointer items-center hover:text-primary" onClick={() => navigate({ to: route.link })}>
+										<route.icon className="h-4 w-4" />
+										<h4 className="text-md ml-1 font-semibold">{route.name}</h4>
 									</div>
 								))}
 							</div>

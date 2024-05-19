@@ -56,6 +56,10 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
+	if form.SendResponseEmail {
+		sendResponseEmail(form, formResponse, userId, db)
+	}
+
 	return ctx.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "response_submitted"})
 }
 
