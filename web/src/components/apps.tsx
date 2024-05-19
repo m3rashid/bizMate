@@ -41,7 +41,7 @@ export const apps: Array<App> = [
 		icon: ArrowPathIcon,
 		routes: [
 			{ name: 'Designer', description: 'Create your custom workflow', icon: AdjustmentsHorizontalIcon, link: '/apps/flows/designer' },
-			{ name: 'All Automations', description: 'Check all your workflows', icon: ListBulletIcon, link: '/apps/flows/' },
+			{ name: 'All Automations', description: 'Check all your workflows', icon: ListBulletIcon, link: '/apps/automations/' },
 		],
 	},
 	{

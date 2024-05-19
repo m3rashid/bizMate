@@ -69,8 +69,6 @@ function Forms() {
 		},
 	]
 
-	const AddButton = <Button label="New Form" LeftIcon={<PlusIcon className="h-5 w-5" />} onClick={() => navigate({ to: '/apps/forms/designer' })} />
-
 	return (
 		<PageContainer>
 			<EditForm setOpen={() => setEditRow(undefined)} {...(!!editRow ? { form: editRow, refetch } : { form: undefined })} />
@@ -83,16 +81,8 @@ function Forms() {
 					description="Create and manage all forms"
 					data={data?.docs || []}
 					columns={tableColumns}
-					addButton={AddButton}
-					emptyState={
-						<div className="flex h-72 flex-col items-center justify-center gap-4 rounded-md border-2 border-gray-200">
-							<div className="text-center">
-								<h3 className="text-lg font-semibold text-gray-800">No Forms found</h3>
-								<p className="text-sm text-gray-500">Get started by creating a new form</p>
-							</div>
-							{AddButton}
-						</div>
-					}
+					addButtonLink="/apps/forms/designer"
+					defaultEmptyStateName="forms"
 				/>
 			)}
 		</PageContainer>

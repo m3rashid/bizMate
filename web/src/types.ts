@@ -98,3 +98,14 @@ export type Dashboard = BaseModel &
 		title: string
 		description: string
 	}
+
+export type Workflow = BaseModel &
+	CreatedBy &
+	UpdatedBy & {
+		name: string
+		description: string
+		active: boolean
+		startNodeId: ID
+		endNodeId: ID
+		edges: any // handle this type
+	}

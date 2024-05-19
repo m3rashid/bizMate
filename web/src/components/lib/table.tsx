@@ -2,6 +2,9 @@ import { FC, ReactNode } from 'react'
 import { twMerge } from 'tailwind-merge'
 
 import { ExplicitAndAllObject } from '../../types'
+import Button from './button'
+import { PlusIcon } from '@heroicons/react/24/outline'
+import { useNavigate } from '@tanstack/react-router'
 
 export type TableColumn<T> = {
 	title: string
@@ -16,7 +19,7 @@ export type TableProps<T> = {
 	columns: Array<TableColumn<T>>
 	title?: string
 	description?: string
-	addButton?: ReactNode
+	addButtonLink?: string
 	rootClassName?: string
 	tableRowClassName?: (rowIndex: number) => string
 	tableRootClassName?: string
@@ -24,13 +27,16 @@ export type TableProps<T> = {
 	tableHeadingClassName?: (columnIndex: number) => string
 	onEdit?: (item: T) => void
 	emptyState?: ReactNode
+	defaultEmptyStateName?: string
 }
 
 type Row = ExplicitAndAllObject<'id'>
 function Table<T extends Row>(props: TableProps<T>) {
+	const navigate = useNavigate()
+
 	return (
 		<div className={twMerge('h-full w-full', props.rootClassName)}>
-			<div className={twMerge('sm:flex sm:items-center', props.title || props.description || props.addButton ? 'mb-8' : '')}>
+			<div className={twMerge('sm:flex sm:items-center', props.title || props.description || props.addButtonLink ? 'mb-8' : '')}>
 				{props.title || props.description ? (
 					<div className="sm:flex-auto">
 						{props.title ? <h1 className="text-2xl font-semibold leading-6 text-gray-900">{props.title}</h1> : null}
@@ -38,12 +44,26 @@ function Table<T extends Row>(props: TableProps<T>) {
 					</div>
 				) : null}
 
-				{props.addButton ? <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">{props.addButton}</div> : null}
+				{props.addButtonLink ? (
+					<div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+						<Button label="New Dashboard" LeftIcon={<PlusIcon className="h-5 w-5" />} onClick={() => navigate({ to: props.addButtonLink })} />
+					</div>
+				) : null}
 			</div>
 
 			<div className={twMerge('flow-root min-h-72 overflow-x-auto overflow-y-hidden', props.tableRootClassName)}>
 				{props.data.length === 0 ? (
-					props.emptyState ? (
+					props.defaultEmptyStateName ? (
+						<div className="flex h-72 flex-col items-center justify-center gap-4 rounded-md border-2 border-gray-200">
+							<div className="text-center">
+								<h3 className="text-lg font-semibold text-gray-800">{`No ${props.defaultEmptyStateName} found`}</h3>
+								<p className="text-sm text-gray-500">{`Get started by creating a new ${props.defaultEmptyStateName}`}</p>
+							</div>
+							{props.addButtonLink ? (
+								<Button label="New Dashboard" LeftIcon={<PlusIcon className="h-5 w-5" />} onClick={() => navigate({ to: props.addButtonLink })} />
+							) : null}
+						</div>
+					) : props.emptyState ? (
 						props.emptyState
 					) : (
 						<div className=""></div>

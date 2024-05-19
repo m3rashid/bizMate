@@ -6,6 +6,7 @@ import (
 	"bizmate/apis/forms"
 	"bizmate/apis/notifications"
 	"bizmate/apis/payments"
+	"bizmate/apis/workflows"
 	"bizmate/models"
 	"bizmate/scripts"
 	"bizmate/utils"
@@ -71,6 +72,10 @@ func main() {
 		models.Kpi{},
 		models.Widget{},
 		models.Dashboard{},
+
+		models.Workflow{},
+		models.WorkflowStep{},
+		models.WorkflowExectionLog{},
 	}
 
 	app.Static("/public", "./public", fiber.Static{
@@ -103,6 +108,7 @@ func main() {
 	scripts.Setup(app)
 	payments.Setup(app)
 	dashboard.Setup(app)
+	workflows.Setup(app)
 	notifications.Setup(app)
 
 	log.Println("Server is running in " + os.Getenv("SERVER_MODE") + " mode.")
