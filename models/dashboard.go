@@ -18,16 +18,6 @@ type Kpi struct {
 	PageRoute       string `json:"pageRoute" gorm:"column:pageRoute;not null" validate:"required"`
 }
 
-var KpiJsonModel = DashboardIndexableJsonModel{
-	ModelName: KPI_MODEL_NAME,
-	Fields: map[string]JsonFieldType{
-		"id":        JsonNumber,
-		"createdBy": JsonCreatedBy,
-		"updatedBy": JsonCreatedBy,
-		"createdAt": JsonDate,
-	},
-}
-
 type Widget struct {
 	BaseModel
 	CreatedBy
@@ -47,34 +37,12 @@ type Widget struct {
 	ChartOptions    string          `json:"chartOptions,omitempty" gorm:"column:chartOptions" validate:""`
 }
 
-var WidgetJsonModel = DashboardIndexableJsonModel{
-	ModelName: WIDGET_MODEL_NAME,
-	Fields: map[string]JsonFieldType{
-		"id":        JsonNumber,
-		"createdBy": JsonCreatedBy,
-		"updatedBy": JsonCreatedBy,
-		"createdAt": JsonDate,
-		"dashboard": JsonString,
-		"model":     JsonString,
-	},
-}
-
 type Dashboard struct {
 	BaseModel
 	CreatedBy
 	UpdatedBy
 	Title       string `json:"title" gorm:"column:title;not null" validate:"required"`
 	Description string `json:"description" gorm:"column:description;not null" validate:""`
-}
-
-var DashboardJsonModel = DashboardIndexableJsonModel{
-	ModelName: WIDGET_MODEL_NAME,
-	Fields: map[string]JsonFieldType{
-		"id":        JsonNumber,
-		"createdBy": JsonCreatedBy,
-		"updatedBy": JsonCreatedBy,
-		"createdAt": JsonDate,
-	},
 }
 
 func (*Kpi) TableName() string {

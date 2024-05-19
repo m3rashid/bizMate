@@ -1,17 +1,18 @@
 package main
 
 import (
+	"bizmate/apis/auth"
 	"bizmate/apis/dashboard"
 	"bizmate/apis/forms"
-	"bizmate/auth"
+	"bizmate/apis/notifications"
+	"bizmate/apis/payments"
 	"bizmate/models"
-	"bizmate/notifications"
-	"bizmate/payments"
 	"bizmate/scripts"
 	"bizmate/utils"
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -23,6 +24,11 @@ import (
 )
 
 func init() {
+	isTestEnvironment := strings.HasSuffix(os.Args[0], ".test")
+	if isTestEnvironment { // we are in a testing environment
+		return
+	}
+
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatal("Error loading .env file")

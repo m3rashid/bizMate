@@ -56,11 +56,11 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Wrong Provider"})
 	}
 
-	if !VerifyPassword(user.Password, loginBody.Password) {
+	if !utils.VerifyPassword(user.Password, loginBody.Password) {
 		return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User not found"})
 	}
 
-	token, err := GenerateJWT(user.ID, user.Email)
+	token, err := utils.GenerateJWT(user.ID, user.Email)
 	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Internal Server Error"})
 	}
@@ -80,7 +80,7 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	password, err := HashPassword(registerBody.Password)
+	password, err := utils.HashPassword(registerBody.Password)
 	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Internal Server Error"})
 	}
@@ -98,11 +98,11 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 		Provider: models.PROVIDER_CREDENTIALS,
 	}
 
-	if err := createUser(db, &newUser); err != nil {
+	if err := db.Create(&newUser).Error; err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Internal Server Error"})
 	}
 
-	token, err := GenerateJWT(newUser.ID, registerBody.Email)
+	token, err := utils.GenerateJWT(newUser.ID, registerBody.Email)
 	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Internal Server Error"})
 	}

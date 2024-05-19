@@ -74,7 +74,7 @@ func authCallback(ctx *fiber.Ctx) error {
 		createUser()
 	}
 
-	jwtToken, err := GenerateJWT(existingUser.ID, existingUser.Email)
+	jwtToken, err := utils.GenerateJWT(existingUser.ID, existingUser.Email)
 	if err != nil {
 		ctx.Redirect(getRedirectUrl(false, "error=no_token"))
 	}
@@ -91,7 +91,7 @@ func logout(ctx *fiber.Ctx) error {
 }
 
 func checkAuth(ctx *fiber.Ctx) error {
-	jwtToken, err := GenerateJWT(ctx.Locals("userId").(uint), ctx.Locals("email").(string))
+	jwtToken, err := utils.GenerateJWT(ctx.Locals("userId").(uint), ctx.Locals("email").(string))
 	if err != nil {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}

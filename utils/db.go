@@ -21,6 +21,11 @@ import (
 )
 
 func init() {
+	hasSuff := strings.HasSuffix(os.Args[0], ".test")
+	if hasSuff { // we are in a testing environment
+		return
+	}
+
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatal("Error loading .env file")

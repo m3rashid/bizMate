@@ -1,7 +1,6 @@
 package scripts
 
 import (
-	"bizmate/auth"
 	"bizmate/models"
 	"bizmate/utils"
 
@@ -20,7 +19,7 @@ type createTenantStruct struct {
 
 func createTenant(props createTenantStruct) error {
 	db := utils.GetHostDB()
-	hashedPassword, err := auth.HashPassword(props.OwnerPassword)
+	hashedPassword, err := utils.HashPassword(props.OwnerPassword)
 	if err != nil {
 		return err
 	}
