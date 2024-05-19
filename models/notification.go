@@ -1,11 +1,13 @@
 package models
 
 const NOTIFICATION_MODEL_NAME = "notifications"
+const EMAIL_TEMPLATE_MODEL_NAME = "email_templates"
+const BULK_EMAIL_REQUEST_MODEL_NAME = "bulk_email_requests"
 
-const SCOPE_TENANT = "tenant"
 const SCOPE_USER = "user"
+const SCOPE_TENANT = "tenant"
 
-type Notification struct {
+type WebUiNotification struct {
 	BaseModel
 	Title       string `json:"title" gorm:"column:title;not null" validate:"required"`
 	Description string `json:"description,omitempty" gorm:"column:description" validate:""`
@@ -14,6 +16,34 @@ type Notification struct {
 	Read        bool   `json:"read" gorm:"column:read" validate:"required"`
 }
 
-func (*Notification) TableName() string {
+type EmailTemplate struct {
+	BaseModel
+	CreatedBy
+	UpdatedBy
+	Title           string `json:"title" gorm:"column:title;not null" validate:"required"`
+	Description     string `json:"description,omitempty" gorm:"column:description" validate:""`
+	Variables       string `json:"variables,omitempty" gorm:"column:variables" validate:""` // array of strings to be replaced
+	SubjectTemplate string `json:"subjectTemplate,omitempty" gorm:"column:subjectTemplate;not null" validate:"required"`
+	BodyTemplate    string `json:"bodyTemplate" gorm:"column:bodyTemplate;not null" validate:"required"`
+}
+
+type BulkEmailRequest struct {
+	BaseModel
+	CreatedBy
+	EmailTemplateID        uint           `json:"emailTemplateId" gorm:"column:emailTemplateId;not null" validate:"required"`
+	EmailTemplate          *EmailTemplate `json:"emailTemplate" gorm:"foreignKey:emailTemplateId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" validate:""`
+	BodyVariableMapping    string         `json:"bodyVariableMapping,omitempty" gorm:"column:bodyVariableMapping" validate:""`
+	SubjectVariableMapping string         `json:"subjectVariableMapping,omitempty" gorm:"column:subjectVariableMapping" validate:""`
+}
+
+func (*WebUiNotification) TableName() string {
 	return NOTIFICATION_MODEL_NAME
+}
+
+func (*EmailTemplate) TableName() string {
+	return EMAIL_TEMPLATE_MODEL_NAME
+}
+
+func (*BulkEmailRequest) TableName() string {
+	return BULK_EMAIL_REQUEST_MODEL_NAME
 }

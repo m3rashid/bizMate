@@ -29,7 +29,7 @@ func CreateNotification(tenantUrl string, notification CreateNotificationBody) e
 		return err
 	}
 
-	if err = db.Create(models.Notification{
+	if err = db.Create(models.WebUiNotification{
 		Title:       notification.Title,
 		Description: notification.Description,
 		Link:        notification.Link,
@@ -72,7 +72,7 @@ func getNotifications(ctx *fiber.Ctx) error {
 	}
 
 	var docsCount int64
-	var results []models.Notification
+	var results []models.WebUiNotification
 
 	if err := db.Order("id DESC").Limit(limit).Offset(int((page - 1) * limit)).Find(&results).Error; err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(utils.DefaultPaginationResponse)
@@ -82,7 +82,7 @@ func getNotifications(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(utils.DefaultPaginationResponse)
 	}
 
-	response := utils.PaginationResponse[models.Notification]{
+	response := utils.PaginationResponse[models.WebUiNotification]{
 		Docs:            results,
 		Limit:           limit,
 		HasPreviousPage: page > 1,

@@ -64,7 +64,9 @@ func main() {
 		models.User{},
 		models.Profile{},
 
-		models.Notification{},
+		models.EmailTemplate{},
+		models.BulkEmailRequest{},
+		models.WebUiNotification{},
 
 		models.Form{},
 		models.FormResponse{},
