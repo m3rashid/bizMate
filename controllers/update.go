@@ -2,106 +2,47 @@ package controllers
 
 import (
 	"bizmate/utils"
-	"encoding/json"
-	"log"
+	"fmt"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
-	"gorm.io/gorm"
 )
 
-func Update[T interface{}](
-	tableName string,
-	options UpdateOptions[T],
-) func(*fiber.Ctx) error {
+type UpdateOptions struct {
+	ParamValue string // coming from ctx.Params(ParamKey)
+	ParamKey   string // what entry in db to match paramValue with
+}
+
+func Update[Model DbModel](_options ...UpdateOptions) func(*fiber.Ctx) error {
+	var _mod Model
+	tableName := _mod.TableName()
+
+	if len(_options) > 1 {
+		panic("Only one option is allowed")
+	}
+
+	options := UpdateOptions{}
+	if len(_options) > 0 {
+		options = _options[0]
+	}
+
 	return func(ctx *fiber.Ctx) error {
-		var updateBody UpdateBody
-		err := ctx.BodyParser(&updateBody)
+		paramValue := ctx.Params(options.ParamValue)
+		var updateBody Model
+		err := utils.ParseBodyAndValidate(ctx, &updateBody)
 		if err != nil {
-			log.Println(err)
-			return ctx.Status(400).JSON(fiber.Map{
-				"error": err.Error(),
-			})
+			return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "error in form validation"})
 		}
 
-		update := updateBody.Update
-		searchCriteria := updateBody.SearchCriteria
-
-		if searchCriteria == nil {
-			return ctx.Status(400).JSON(fiber.Map{
-				"error": "search criteria is required",
-			})
-		}
-
-		validate := validator.New()
-		err = validate.Struct(update)
+		db, err := utils.GetTenantDbFromCtx(ctx)
 		if err != nil {
-			log.Println(err)
-			return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"error": err.Error(),
-			})
+			return ctx.SendStatus(fiber.StatusInternalServerError)
 		}
 
-		var db *gorm.DB
-		if options.GetDB != nil {
-			db = options.GetDB()
-		} else {
-			db, err = utils.GetTenantDbFromCtx(ctx)
-			if err != nil {
-				return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-					"error": err.Error(),
-				})
-			}
+		// var column Model
+		if err := db.Table(tableName).Where(fmt.Sprintf("%s = ?", paramValue), options.ParamKey).Updates(updateBody).Error; err != nil {
+			return ctx.SendStatus(fiber.StatusInternalServerError)
 		}
 
-		err = db.Table(tableName).Where(searchCriteria).Updates(update).Error
-		if err != nil {
-			return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"error": err.Error(),
-			})
-		}
-
-		jsonByte, err := json.Marshal(update)
-		if err != nil {
-			return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"error": err.Error(),
-			})
-		}
-
-		var createdResponse CreatedDBResponse
-		err = json.Unmarshal(jsonByte, &createdResponse)
-		if err != nil {
-			return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"error": err.Error(),
-			})
-		}
-
-		// models.Flows <- models.WorkflowAction{
-		// 	TriggerModel:  tableName,
-		// 	TriggerAction: models.UpdateAction,
-		// 	TenantUrl:     ctx.GetReqHeaders()["Origin"][0],
-		// 	ObjectID:      createdResponse.ID, // handle this
-		// 	RetryIndex:    0,
-		// }
-
-		// if updateBody.ResourceIndex.Name != "" && updateBody.ResourceIndex.ResourceType != "" {
-		// 	newResource := models.Resource{
-		// 		Name:         updateBody.ResourceIndex.Name,
-		// 		Description:  updateBody.ResourceIndex.Description,
-		// 		ResourceID:   createdResponse.ID,
-		// 		ResourceType: updateBody.ResourceIndex.ResourceType,
-		// 	}
-
-		// 	err = db.Table(models.RESOURCE_MODEL_NAME).Where("resourceId = ?", createdResponse.ID).Updates(&newResource).Error
-		// 	if err != nil {
-		// 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-		// 			"error": err.Error(),
-		// 		})
-		// 	}
-		// }
-
-		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-			"message": "Document updated successfully",
-		})
+		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{})
 	}
 }

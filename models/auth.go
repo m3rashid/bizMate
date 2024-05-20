@@ -1,7 +1,9 @@
 package models
 
-const USER_MODEL_NAME = "users"
-const PROFILE_MODEL_NAME = "profiles"
+import "github.com/gofiber/fiber/v2"
+
+const USER_MODEL_NAME string = "users"
+const PROFILE_MODEL_NAME string = "profiles"
 
 const PROVIDER_CREDENTIALS = "credentials"
 const PROVIDER_GOOGLE = "google"
@@ -18,16 +20,26 @@ type User struct {
 	RefreshToken string `gorm:"refreshToken"`
 }
 
+func (user *User) ToPartialUser() fiber.Map {
+	return fiber.Map{
+		"id":        user.ID,
+		"name":      user.Name,
+		"email":     user.Email,
+		"avatar":    user.Avatar,
+		"createdAt": user.CreatedAt,
+	}
+}
+
 type Profile struct {
 	BaseModel
 	UserID uint  `json:"userId" gorm:"column:userId;not null" validate:"required"`
 	User   *User `json:"user" gorm:"column:userId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" validate:""`
 }
 
-func (*User) TableName() string {
+func (User) TableName() string {
 	return USER_MODEL_NAME
 }
 
-func (*Profile) TableName() string {
+func (Profile) TableName() string {
 	return PROFILE_MODEL_NAME
 }

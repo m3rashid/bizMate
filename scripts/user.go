@@ -57,22 +57,22 @@ func createTenant(props createTenantStruct) error {
 	return nil
 }
 
-func createTenantHandler(c *fiber.Ctx) error {
+func createTenantHandler(ctx *fiber.Ctx) error {
 	var props createTenantStruct
-	if err := c.BodyParser(&props); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	if err := ctx.BodyParser(&props); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 
 	validate := validator.New()
 	err := validate.Struct(props)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 
 	err = createTenant(props)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"success": true, "message": "Tenant Created"})
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"success": true, "message": "Tenant Created"})
 }

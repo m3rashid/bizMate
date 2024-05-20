@@ -1,8 +1,8 @@
 package models
 
-const NOTIFICATION_MODEL_NAME = "notifications"
-const EMAIL_TEMPLATE_MODEL_NAME = "email_templates"
-const BULK_EMAIL_REQUEST_MODEL_NAME = "bulk_email_requests"
+const NOTIFICATION_MODEL_NAME string = "notifications"
+const EMAIL_TEMPLATE_MODEL_NAME string = "email_templates"
+const BULK_EMAIL_REQUEST_MODEL_NAME string = "bulk_email_requests"
 
 const SCOPE_USER = "user"
 const SCOPE_TENANT = "tenant"
@@ -36,14 +36,14 @@ type BulkEmailRequest struct {
 	SubjectVariableMapping string         `json:"subjectVariableMapping,omitempty" gorm:"column:subjectVariableMapping" validate:""`
 }
 
-func (*WebUiNotification) TableName() string {
+func (WebUiNotification) TableName() string {
 	return NOTIFICATION_MODEL_NAME
 }
 
-func (*EmailTemplate) TableName() string {
+func (EmailTemplate) TableName() string {
 	return EMAIL_TEMPLATE_MODEL_NAME
 }
 
-func (*BulkEmailRequest) TableName() string {
+func (BulkEmailRequest) TableName() string {
 	return BULK_EMAIL_REQUEST_MODEL_NAME
 }

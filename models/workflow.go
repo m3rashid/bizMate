@@ -1,8 +1,8 @@
 package models
 
-const WORKFLOW_MODEL_NAME = "workflows"
-const WORKFLOW_STEP_MODEL_NAME = "workflow_steps"
-const WORKFLOW_EXECUTION_LOGS_MODEL_NAME = "workflow_execution_logs"
+const WORKFLOW_MODEL_NAME string = "workflows"
+const WORKFLOW_STEP_MODEL_NAME string = "workflow_steps"
+const WORKFLOW_EXECUTION_LOGS_MODEL_NAME string = "workflow_execution_logs"
 
 // not a model, just for parsing and validation
 type WorkflowEdge struct {
@@ -42,14 +42,14 @@ type WorkflowExectionLog struct {
 	Output         string        `json:"output" gorm:"input:name;not null" validate:"required"`
 }
 
-func (*Workflow) TableName() string {
+func (Workflow) TableName() string {
 	return WORKFLOW_MODEL_NAME
 }
 
-func (*WorkflowStep) TableName() string {
+func (WorkflowStep) TableName() string {
 	return WORKFLOW_STEP_MODEL_NAME
 }
 
-func (*WorkflowExectionLog) TableName() string {
+func (WorkflowExectionLog) TableName() string {
 	return WORKFLOW_EXECUTION_LOGS_MODEL_NAME
 }

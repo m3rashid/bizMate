@@ -22,22 +22,6 @@ type formReqBody struct {
 	AllowMultipleResponse  *bool  `json:"allowMultipleResponse" validate:"required"`
 }
 
-func getFormById(ctx *fiber.Ctx) error {
-	formId := ctx.Params("formId")
-
-	db, err := utils.GetTenantDbFromCtx(ctx)
-	if err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "internal_server_error"})
-	}
-
-	form := models.Form{}
-	if err := db.Where("id = ?", formId).First(&form).Error; err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "internal_server_error"})
-	}
-
-	return ctx.Status(fiber.StatusOK).JSON(form)
-}
-
 // TODO: proper and deep validation of form body on the basis of form schema
 func createForm(ctx *fiber.Ctx) error {
 	userId := ctx.Locals("userId").(uint)
@@ -65,11 +49,11 @@ func createForm(ctx *fiber.Ctx) error {
 
 	db, err := utils.GetTenantDbFromCtx(ctx)
 	if err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Internal Server Error"})
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	if err := db.Create(&form).Error; err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Internal Server Error"})
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	return ctx.Status(fiber.StatusCreated).JSON(form)
@@ -97,12 +81,12 @@ func updateFormById(ctx *fiber.Ctx) error {
 
 	db, err := utils.GetTenantDbFromCtx(ctx)
 	if err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Internal Server Error"})
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	form := models.Form{}
 	if err := db.Where("id = ?", updateBody.ID).First(&form).Error; err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Could not find form"})
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	form.Title = updateBody.Title
@@ -120,7 +104,7 @@ func updateFormById(ctx *fiber.Ctx) error {
 	form.UpdatedBy.UpdatedByID = &userId
 
 	if err := db.Save(&form).Error; err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Internal Server Error"})
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(form)

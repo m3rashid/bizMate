@@ -1,6 +1,6 @@
 package models
 
-const CONTACT_MODEL_NAME = "contacts"
+const CONTACT_MODEL_NAME string = "contacts"
 
 type Contact struct {
 	BaseModel
@@ -8,6 +8,6 @@ type Contact struct {
 	UpdatedBy
 }
 
-func (*Contact) TableName() string {
+func (Contact) TableName() string {
 	return CONTACT_MODEL_NAME
 }

@@ -9,6 +9,5 @@ import (
 )
 
 func Setup(app *fiber.App) {
-	// add APIs here
-	app.Get("/automations/all", utils.CheckAuthMiddleware, controllers.Paginate[models.Workflow](models.WORKFLOW_MODEL_NAME))
+	app.Get("/automations/all", utils.CheckAuthMiddleware, controllers.Paginate[models.Workflow]())
 }

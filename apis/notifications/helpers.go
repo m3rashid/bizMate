@@ -68,18 +68,18 @@ func getNotifications(ctx *fiber.Ctx) error {
 
 	db, err := utils.GetTenantDbFromCtx(ctx)
 	if err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(utils.DefaultPaginationResponse)
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	var docsCount int64
 	var results []models.WebUiNotification
 
 	if err := db.Order("id DESC").Limit(limit).Offset(int((page - 1) * limit)).Find(&results).Error; err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(utils.DefaultPaginationResponse)
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	if err := db.Order("id DESC").Count(&docsCount); err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(utils.DefaultPaginationResponse)
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	response := utils.PaginationResponse[models.WebUiNotification]{

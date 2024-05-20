@@ -1,7 +1,7 @@
 package models
 
-const FORM_MODEL_NAME = "forms"
-const FORM_RESPONSE_MODEL_NAME = "form_responses"
+const FORM_MODEL_NAME string = "forms"
+const FORM_RESPONSE_MODEL_NAME string = "form_responses"
 
 type Form struct {
 	BaseModel
@@ -32,10 +32,10 @@ type FormResponse struct {
 	DeviceIP string `json:"deviceIp,omitempty" gorm:"column:deviceIp" validate:""`
 }
 
-func (*Form) TableName() string {
+func (Form) TableName() string {
 	return FORM_MODEL_NAME
 }
 
-func (*FormResponse) TableName() string {
+func (FormResponse) TableName() string {
 	return FORM_RESPONSE_MODEL_NAME
 }

@@ -9,19 +9,24 @@ import (
 )
 
 type PaginateOptions struct {
-	ParamKeys []string
-	QueryKeys []string
-	Populate  []string
+	ParamKeys          []string
+	QueryKeys          []string
+	Populate           []string
+	IncludeSoftDeleted bool // default false: dont include soft deleted
+	ReturnOnlyDeleted  bool // to show deleted items
 }
 
-func Paginate[Model interface{}](tableName string, _paginationOptions ...PaginateOptions) func(*fiber.Ctx) error {
-	if len(_paginationOptions) > 1 {
+func Paginate[Model DbModel](_options ...PaginateOptions) func(*fiber.Ctx) error {
+	var _mod Model
+	tableName := _mod.TableName()
+
+	if len(_options) > 1 {
 		panic("Only one pagination option is allowed")
 	}
 
 	paginationOptions := PaginateOptions{}
-	if len(_paginationOptions) > 0 {
-		paginationOptions = _paginationOptions[0]
+	if len(_options) > 0 {
+		paginationOptions = _options[0]
 	}
 
 	return func(ctx *fiber.Ctx) error {
@@ -57,7 +62,7 @@ func Paginate[Model interface{}](tableName string, _paginationOptions ...Paginat
 
 		db, err := utils.GetTenantDbFromCtx(ctx)
 		if err != nil {
-			return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Internal Server Error"})
+			return ctx.SendStatus(fiber.StatusInternalServerError)
 		}
 
 		if paginationOptions.Populate != nil {
@@ -66,14 +71,22 @@ func Paginate[Model interface{}](tableName string, _paginationOptions ...Paginat
 			}
 		}
 
+		if !paginationOptions.IncludeSoftDeleted {
+			db = db.Where("deleted = false")
+		}
+
+		if paginationOptions.ReturnOnlyDeleted {
+			db = db.Where("deleted = true")
+		}
+
 		results := []Model{}
 		if err := db.Where(requestQueryParams).Order("id DESC").Limit(reqBody.Limit).Offset((reqBody.Page - 1) * reqBody.Limit).Find(&results).Error; err != nil {
-			return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Internal Server Error"})
+			return ctx.SendStatus(fiber.StatusInternalServerError)
 		}
 
 		var docsCount int64 = 0
 		if err := db.Table(tableName).Where(requestQueryParams).Count(&docsCount).Error; err != nil {
-			return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Internal Server Error"})
+			return ctx.SendStatus(fiber.StatusInternalServerError)
 		}
 
 		paginationResponse := utils.PaginationResponse[Model]{

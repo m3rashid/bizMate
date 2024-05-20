@@ -28,12 +28,12 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 
 	db, err := utils.GetTenantDbFromCtx(ctx)
 	if err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "internal_server_error"})
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	form := models.Form{}
 	if err := db.Where("id = ?", formId).First(&form).Error; err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	if !form.Active {
@@ -53,7 +53,7 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 	}
 
 	if err := db.Create(&formResponse).Error; err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	if form.SendResponseEmail {
@@ -78,12 +78,12 @@ func editFormResponse(ctx *fiber.Ctx) error {
 
 	db, err := utils.GetTenantDbFromCtx(ctx)
 	if err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "internal_server_error"})
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	form := models.Form{}
 	if err := db.Where("id = ?", formId).First(&form).Error; err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	if !form.Active {
@@ -96,7 +96,7 @@ func editFormResponse(ctx *fiber.Ctx) error {
 
 	formResponse := models.FormResponse{}
 	if err := db.Where("id = ?", reqBody.ID).First(&formResponse).Error; err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	if *formResponse.CreatedByID == 0 || formResponse.CreatedByID != &userId {
@@ -115,12 +115,12 @@ func getFormResponseCount(ctx *fiber.Ctx) error {
 
 	db, err := utils.GetTenantDbFromCtx(ctx)
 	if err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "internal_server_error"})
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	var responseCount int64
 	if err := db.Model(models.FormResponse{}).Where("\"formId\" = ?", formId).Count(&responseCount).Error; err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	return ctx.JSON(fiber.Map{"count": responseCount})

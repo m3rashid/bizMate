@@ -7,29 +7,19 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func toPartialUser(user models.User) fiber.Map {
-	return fiber.Map{
-		"id":        user.ID,
-		"name":      user.Name,
-		"email":     user.Email,
-		"avatar":    user.Avatar,
-		"createdAt": user.CreatedAt,
-	}
-}
-
 func getUser(ctx *fiber.Ctx) error {
 	userId := ctx.Locals("userId").(uint)
 	db, err := utils.GetTenantDbFromCtx(ctx)
 	if err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "internal_server_error"})
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	user := models.User{}
 	if err := db.Where("id = ?", userId).First(&user).Error; err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "internal_server_error"})
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
-	return ctx.JSON(toPartialUser(user))
+	return ctx.JSON(user.ToPartialUser())
 }
 
 func credentialsLogin(ctx *fiber.Ctx) error {
@@ -44,7 +34,7 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 
 	db, err := utils.GetTenantDbFromCtx(ctx)
 	if err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Internal Server Error"})
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	user := models.User{}
@@ -62,10 +52,10 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 
 	token, err := utils.GenerateJWT(user.ID, user.Email)
 	if err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Internal Server Error"})
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
-	return ctx.JSON(fiber.Map{"token": token, "user": toPartialUser(user)})
+	return ctx.JSON(fiber.Map{"token": token, "user": user.ToPartialUser()})
 }
 
 func credentialsRegister(ctx *fiber.Ctx) error {
@@ -82,12 +72,12 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 
 	password, err := utils.HashPassword(registerBody.Password)
 	if err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Internal Server Error"})
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	db, err := utils.GetTenantDbFromCtx(ctx)
 	if err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Internal Server Error"})
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	newUser := models.User{
@@ -99,13 +89,13 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 	}
 
 	if err := db.Create(&newUser).Error; err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Internal Server Error"})
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	token, err := utils.GenerateJWT(newUser.ID, registerBody.Email)
 	if err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Internal Server Error"})
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
-	return ctx.JSON(fiber.Map{"token": token, "user": toPartialUser(newUser)})
+	return ctx.JSON(fiber.Map{"token": token, "user": newUser.ToPartialUser()})
 }

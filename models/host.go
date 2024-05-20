@@ -2,8 +2,8 @@ package models
 
 import "time"
 
-const TENANT_MODEL_NAME = "tenants"
-const TENANT_OWNER_MODEL_NAME = "tenant_owners"
+const TENANT_MODEL_NAME string = "tenants"
+const TENANT_OWNER_MODEL_NAME string = "tenant_owners"
 
 type Tenant struct {
 	ID            uint         `gorm:"primary_key;column:id" json:"id"`
@@ -23,10 +23,10 @@ type TenantOwner struct {
 	CreatedAt time.Time `gorm:"column:createdAt; default:current_timestamp" json:"createdAt"`
 }
 
-func (*Tenant) TableName() string {
+func (Tenant) TableName() string {
 	return TENANT_MODEL_NAME
 }
 
-func (*TenantOwner) TableName() string {
+func (TenantOwner) TableName() string {
 	return TENANT_OWNER_MODEL_NAME
 }

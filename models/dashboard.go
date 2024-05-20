@@ -1,8 +1,8 @@
 package models
 
-const KPI_MODEL_NAME = "kpis"
-const WIDGET_MODEL_NAME = "widgets"
-const DASHBOARD_MODEL_NAME = "dashboards"
+const KPI_MODEL_NAME string = "kpis"
+const WIDGET_MODEL_NAME string = "widgets"
+const DASHBOARD_MODEL_NAME string = "dashboards"
 
 type WidgetChartType string
 
@@ -45,14 +45,14 @@ type Dashboard struct {
 	Description string `json:"description" gorm:"column:description;not null" validate:""`
 }
 
-func (*Kpi) TableName() string {
+func (Kpi) TableName() string {
 	return KPI_MODEL_NAME
 }
 
-func (*Widget) TableName() string {
+func (Widget) TableName() string {
 	return WIDGET_MODEL_NAME
 }
 
-func (*Dashboard) TableName() string {
+func (Dashboard) TableName() string {
 	return DASHBOARD_MODEL_NAME
 }
