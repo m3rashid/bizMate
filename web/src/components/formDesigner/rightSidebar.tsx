@@ -82,6 +82,7 @@ function RightSidebar() {
 					cancelText: formData.cancelText,
 					submitText: formData.submitText,
 					description: formData.description,
+					sendResponseEmail: formData.sendResponseEmail,
 					allowResponseUpdate: formData.allowResponseUpdate,
 					allowMultipleResponse: formData.allowMultipleResponse,
 					allowAnonymousResponse: formData.allowAnonymousResponse,

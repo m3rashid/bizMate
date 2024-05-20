@@ -46,7 +46,11 @@ function Table<T extends Row>(props: TableProps<T>) {
 
 				{props.addButtonLink ? (
 					<div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-						<Button label="New Dashboard" LeftIcon={<PlusIcon className="h-5 w-5" />} onClick={() => navigate({ to: props.addButtonLink })} />
+						<Button
+							label={`New ${props.title || props.defaultEmptyStateName}`}
+							LeftIcon={<PlusIcon className="h-5 w-5" />}
+							onClick={() => navigate({ to: props.addButtonLink })}
+						/>
 					</div>
 				) : null}
 			</div>
@@ -60,7 +64,11 @@ function Table<T extends Row>(props: TableProps<T>) {
 								<p className="text-sm text-gray-500">{`Get started by creating a new ${props.defaultEmptyStateName}`}</p>
 							</div>
 							{props.addButtonLink ? (
-								<Button label="New Dashboard" LeftIcon={<PlusIcon className="h-5 w-5" />} onClick={() => navigate({ to: props.addButtonLink })} />
+								<Button
+									LeftIcon={<PlusIcon className="h-5 w-5" />}
+									onClick={() => navigate({ to: props.addButtonLink })}
+									label={`New ${props.title || props.defaultEmptyStateName}`}
+								/>
 							) : null}
 						</div>
 					) : props.emptyState ? (

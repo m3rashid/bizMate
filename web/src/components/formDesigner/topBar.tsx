@@ -13,8 +13,7 @@ function FormDesignerTopBar() {
 	const { viewType, changeViewType, meta, rootProps } = useFormDesigner()
 	const { isPending, mutate: saveForm } = useMutation({
 		mutationKey: ['saveForm'],
-		mutationFn: async (body: any) =>
-			apiClient('/forms/create', { method: 'POST', body: JSON.stringify(body) }),
+		mutationFn: async (body: any) => apiClient('/forms/create', { method: 'POST', body: JSON.stringify(body) }),
 		onSuccess: () => navigate({ to: '/apps/forms' }),
 	})
 
@@ -42,6 +41,7 @@ function FormDesignerTopBar() {
 			description: rootProps.description,
 			allowAnonymousResponse: checkCondition(rootProps.allowAnonymousResponse),
 			active: false,
+			sendResponseEmail: checkCondition(rootProps.sendResponseEmail),
 			allowMultipleResponse: checkCondition(rootProps.allowMultipleResponse),
 			allowResponseUpdate: checkCondition(rootProps.allowResponseUpdate),
 		}
@@ -70,9 +70,7 @@ function FormDesignerTopBar() {
 							<li className="list-item">Set Extra properties for elements in the right panel</li>
 							<li className="list-item">
 								All the
-								<span className="mx-[2px] rounded-md bg-gray-700 px-2 py-[2px] text-white">
-									className
-								</span>
+								<span className="mx-[2px] rounded-md bg-gray-700 px-2 py-[2px] text-white">className</span>
 								props mean tailwind classes
 							</li>
 						</ul>

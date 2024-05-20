@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { PlusIcon, LockOpenIcon, ArrowPathIcon, ClipboardIcon, LockClosedIcon, PencilSquareIcon } from '@heroicons/react/24/outline'
+import { LockOpenIcon, ArrowPathIcon, ClipboardIcon, LockClosedIcon, PencilSquareIcon } from '@heroicons/react/24/outline'
 
 import { Form } from '../../../types'
 import apiClient from '../../../api/client'

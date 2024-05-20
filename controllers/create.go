@@ -1,104 +1,64 @@
 package controllers
 
-// func Create[T interface{}](
-// 	tableName string,
-// 	options CreateOptions[T],
-// ) func(*fiber.Ctx) error {
-// 	return func(ctx *fiber.Ctx) error {
-// 		var data CreateRequestBody[T]
-// 		err := ctx.BodyParser(&data)
-// 		if err != nil {
-// 			return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
-// 		}
+import (
+	"bizmate/utils"
 
-// 		var db *gorm.DB
-// 		if options.GetDB != nil {
-// 			db = options.GetDB()
-// 		} else {
-// 			db, err = utils.GetTenantDbFromCtx(ctx)
-// 			if err != nil {
-// 				return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-// 					"error": err.Error(),
-// 				})
-// 			}
-// 		}
+	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
+)
 
-// 		if options.PreCreate != nil {
-// 			err = options.PreCreate(ctx, db, &data.Body)
-// 			if err != nil {
-// 				log.Println("Pre Create Error: ", err.Error())
-// 				return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-// 					"error": err.Error(),
-// 				})
-// 			}
-// 		}
+type CreateOptions[CreateBodyType interface{}, Model interface{}] struct {
+	GetDefaultValues func(values *CreateBodyType, ctx *fiber.Ctx) *Model
+	PreCreate        func(values *CreateBodyType, db *gorm.DB, ctx *fiber.Ctx) (*Model, error)
+	PostCreate       func(values *CreateBodyType, model *Model, db *gorm.DB, ctx *fiber.Ctx) (interface{}, error)
+}
 
-// 		validate := validator.New()
-// 		err = validate.Struct(data)
-// 		if err != nil {
-// 			return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-// 				"error": err.Error(),
-// 			})
-// 		}
+func Create[CreateBodyType interface{}, Model interface{}](tableName string, _options ...CreateOptions[CreateBodyType, Model]) func(*fiber.Ctx) error {
+	if len(_options) > 1 {
+		panic("Only one option is allowed")
+	}
 
-// 		err = db.Create(&data.Body).Error
-// 		if err != nil {
-// 			return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-// 				"error": err.Error(),
-// 			})
-// 		}
+	options := CreateOptions[CreateBodyType, Model]{}
+	if len(_options) > 0 {
+		options = _options[0]
+	}
 
-// 		if options.PostCreate != nil {
-// 			err = options.PostCreate(ctx, db, &data.Body)
-// 			if err != nil {
-// 				log.Println("Post Create Error: ", err.Error())
-// 				return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-// 					"error": err.Error(),
-// 				})
-// 			}
-// 		}
+	return func(ctx *fiber.Ctx) error {
+		var formBody CreateBodyType
+		var model *Model
 
-// 		jsonByte, err := json.Marshal(data.Body)
-// 		if err != nil {
-// 			return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-// 				"error": err.Error(),
-// 			})
-// 		}
+		if err := utils.ParseBodyAndValidate(ctx, &formBody); err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+		}
 
-// 		var createdResponse CreatedDBResponse
-// 		err = json.Unmarshal(jsonByte, &createdResponse)
-// 		if err != nil {
-// 			return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-// 				"error": err.Error(),
-// 			})
-// 		}
+		if options.GetDefaultValues != nil {
+			model = options.GetDefaultValues(&formBody, ctx)
+		}
 
-// 		// models.Flows <- models.WorkflowAction{
-// 		// 	TriggerModel:  tableName,
-// 		// 	TriggerAction: models.CreateAction,
-// 		// 	TenantUrl:     ctx.GetReqHeaders()["Origin"][0],
-// 		// 	ObjectID:      createdResponse.ID,
-// 		// 	RetryIndex:    0,
-// 		// }
+		db, err := utils.GetTenantDbFromCtx(ctx)
+		if err != nil {
+			return ctx.SendStatus(fiber.StatusInternalServerError)
+		}
 
-// 		// if data.ResourceIndex.Name != "" && data.ResourceIndex.ResourceType != "" {
-// 		// 	newResource := models.Resource{
-// 		// 		ResourceID:   createdResponse.ID,
-// 		// 		Name:         data.ResourceIndex.Name,
-// 		// 		Description:  data.ResourceIndex.Description,
-// 		// 		ResourceType: data.ResourceIndex.ResourceType,
-// 		// 	}
+		if options.PreCreate != nil {
+			model, err = options.PreCreate(&formBody, db, ctx)
+			if err != nil {
+				return ctx.SendStatus(fiber.StatusInternalServerError)
+			}
+		}
 
-// 		// 	err = db.Create(&newResource).Error
-// 		// 	if err != nil {
-// 		// 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-// 		// 			"error": err.Error(),
-// 		// 		})
-// 		// 	}
-// 		// }
+		if err := db.Table(tableName).Create(utils.Ternary[interface{}](model != nil, &model, &formBody)).Error; err != nil {
+			return ctx.SendStatus(fiber.StatusInternalServerError)
+		}
 
-// 		return ctx.Status(fiber.StatusCreated).JSON(fiber.Map{
-// 			"message": "Created Successfully",
-// 		})
-// 	}
-// }
+		var result interface{} = formBody
+		if options.PostCreate != nil {
+			result, err = options.PostCreate(&formBody, model, db, ctx)
+			if err != nil {
+				return ctx.SendStatus(fiber.StatusInternalServerError)
+			}
+		}
+
+		return ctx.Status(fiber.StatusCreated).JSON(result)
+	}
+}

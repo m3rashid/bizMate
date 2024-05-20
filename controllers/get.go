@@ -15,9 +15,6 @@ type GetOptions struct {
 }
 
 func Get[Model DbModel](_options ...GetOptions) func(*fiber.Ctx) error {
-	// var _mod Model
-	// tableName := _mod.TableName()
-
 	if len(_options) > 1 {
 		panic("Only one option is allowed")
 	}

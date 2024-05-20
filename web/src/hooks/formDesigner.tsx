@@ -18,6 +18,10 @@ const propsNodeNotSelected: Props = {
 		'Do you want the user to update their responses? Please make sure, If the form is anonymous, this cant be ensured',
 		'boolean',
 	],
+	sendResponseEmail: [
+		'Do you want to send a copy of response to your audience via email? Only applicable if the form is not marked as anonymous ',
+		'boolean',
+	],
 }
 
 export type FormDesignerType = 'header' | 'body'
@@ -27,6 +31,7 @@ export type FormDesigner = {
 		submitText: string
 		cancelText: string
 		description: string
+		sendResponseEmail: StringBoolean
 		allowResponseUpdate: StringBoolean
 		allowMultipleResponse: StringBoolean
 		allowAnonymousResponse: StringBoolean
@@ -50,6 +55,7 @@ const formDesignerDefaultState: FormDesigner = {
 		title: 'New Form',
 		cancelText: 'Cancel',
 		submitText: 'Submit Form',
+		sendResponseEmail: 'off',
 		allowAnonymousResponse: 'off',
 		description: 'This is a new form',
 		allowMultipleResponse: 'off',

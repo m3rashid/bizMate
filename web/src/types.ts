@@ -51,6 +51,7 @@ export type Form = BaseModel &
 		previousVersionIDs: string
 		createdAt: string
 		active: boolean
+		sendResponseEmail: boolean
 		allowAnonymousResponse: boolean
 		allowResponseUpdate: boolean
 		allowMultipleResponse: boolean

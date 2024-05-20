@@ -1,6 +1,7 @@
 package forms
 
 import (
+	"bizmate/controllers"
 	"bizmate/models"
 	"bizmate/utils"
 
@@ -20,49 +21,30 @@ type formReqBody struct {
 	AllowAnonymousResponse *bool  `json:"allowAnonymousResponse" validate:"required"`
 	AllowResponseUpdate    *bool  `json:"allowResponseUpdate" validate:"required"`
 	AllowMultipleResponse  *bool  `json:"allowMultipleResponse" validate:"required"`
+	SendResponseEmail      *bool  `json:"sendResponseEmail" validate:"required"`
 }
 
-// TODO: proper and deep validation of form body on the basis of form schema
-func createForm(ctx *fiber.Ctx) error {
-	userId := ctx.Locals("userId").(uint)
-	formBody := formReqBody{}
-
-	if err := utils.ParseBodyAndValidate(ctx, &formBody); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
-	}
-
-	form := models.Form{
-		Title:                  formBody.Title,
-		Description:            formBody.Description,
-		Body:                   formBody.Body,
-		SubmitText:             formBody.SubmitText,
-		CancelText:             formBody.CancelText,
-		SuccessPage:            "[]",
-		FailurePage:            "[]",
-		PreviousVersionIDs:     "[]",
-		Active:                 utils.Ternary(formBody.Active != nil, *formBody.Active, false),
-		AllowAnonymousResponse: utils.Ternary(formBody.AllowAnonymousResponse != nil, *formBody.AllowAnonymousResponse, false),
-		AllowResponseUpdate:    utils.Ternary(formBody.AllowResponseUpdate != nil, *formBody.AllowResponseUpdate, false),
-		AllowMultipleResponse:  utils.Ternary(formBody.AllowMultipleResponse != nil, *formBody.AllowMultipleResponse, false),
-		CreatedBy:              models.CreatedBy{CreatedByID: userId},
-	}
-
-	db, err := utils.GetTenantDbFromCtx(ctx)
-	if err != nil {
-		return ctx.SendStatus(fiber.StatusInternalServerError)
-	}
-
-	if err := db.Create(&form).Error; err != nil {
-		return ctx.SendStatus(fiber.StatusInternalServerError)
-	}
-
-	return ctx.Status(fiber.StatusCreated).JSON(form)
-}
-
-func deleteForm(ctx *fiber.Ctx) error {
-	formId := ctx.Params("formId")
-	return ctx.SendString("NOT IMPLEMENTED: formID = " + formId)
-}
+var createNewForm = controllers.Create(models.FORM_MODEL_NAME, controllers.CreateOptions[formReqBody, models.Form]{
+	GetDefaultValues: func(values *formReqBody, ctx *fiber.Ctx) *models.Form {
+		userId := ctx.Locals("userId").(uint)
+		return &models.Form{
+			Title:                  values.Title,
+			Body:                   values.Body,
+			SubmitText:             values.SubmitText,
+			CancelText:             values.CancelText,
+			Description:            values.Description,
+			SuccessPage:            "[]",
+			FailurePage:            "[]",
+			PreviousVersionIDs:     "[]",
+			CreatedBy:              models.CreatedBy{CreatedByID: userId},
+			Active:                 utils.Ternary(values.Active != nil, *values.Active, false),
+			SendResponseEmail:      utils.Ternary(values.SendResponseEmail != nil, *values.SendResponseEmail, false),
+			AllowResponseUpdate:    utils.Ternary(values.AllowResponseUpdate != nil, *values.AllowResponseUpdate, false),
+			AllowAnonymousResponse: utils.Ternary(values.AllowAnonymousResponse != nil, *values.AllowAnonymousResponse, false),
+			AllowMultipleResponse:  utils.Ternary(values.AllowMultipleResponse != nil, *values.AllowMultipleResponse, false),
+		}
+	},
+})
 
 func updateFormById(ctx *fiber.Ctx) error {
 	updateBody := formReqBody{}
