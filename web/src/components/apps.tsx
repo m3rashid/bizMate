@@ -60,7 +60,7 @@ export const apps: Array<App> = [
 		icon: ChatBubbleLeftRightIcon,
 		routes: [
 			{ name: 'Email Templates', icon: AtSymbolIcon, link: '/apps/communications/emails/' },
-			{ name: 'Schedule Emails', icon: AtSymbolIcon, link: '/apps/communications/emails/designer' },
+			// { name: 'Schedule Emails', icon: AtSymbolIcon, link: '/apps/communications/emails/designer' },
 			{ name: 'Create Email Templates', icon: AtSymbolIcon, link: '/apps/communications/emails/designer' },
 		],
 	},
