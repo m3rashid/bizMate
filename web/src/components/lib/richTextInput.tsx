@@ -1,9 +1,12 @@
+import '@blocknote/mantine/style.css'
 import { twMerge } from 'tailwind-merge'
+import { BlockNoteView } from '@blocknote/mantine'
+import { useCreateBlockNote } from '@blocknote/react'
 import { ChangeEvent, FC, TextareaHTMLAttributes } from 'react'
 
 import { filterBykeys } from '../../utils/helpers'
 
-export type TextAreaInputProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
+export type RichTextInputProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
 	label?: string
 	icon?: FC<any>
 	errorText?: string
@@ -12,7 +15,9 @@ export type TextAreaInputProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
 	onChange?: (e: ChangeEvent<HTMLInputElement>) => void
 }
 
-function TextAreaInput(props: TextAreaInputProps) {
+function RichTextInput(props: RichTextInputProps) {
+	const editor = useCreateBlockNote()
+
 	return (
 		<div className="w-full">
 			{props.label ? (
@@ -31,8 +36,9 @@ function TextAreaInput(props: TextAreaInputProps) {
 					</div>
 				) : null}
 
-				<textarea
-					{...filterBykeys(props, ['label', 'icon', 'errorText', 'labelClassName', 'descriptionText'])}
+				<BlockNoteView
+					theme="light"
+					editor={editor}
 					id={props.name}
 					className={twMerge(
 						'block w-full rounded-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
@@ -48,4 +54,4 @@ function TextAreaInput(props: TextAreaInputProps) {
 	)
 }
 
-export default TextAreaInput
+export default RichTextInput

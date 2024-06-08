@@ -5,6 +5,7 @@ import FormRenderer from './renderer'
 import TogglerInput from '../lib/toggle'
 import TextInput from '../lib/textInput'
 import { ExplicitAndAll } from '../../types'
+import RichTextInput from '../lib/richTextInput'
 import TextAreaInput from '../lib/textAreaInput'
 import PhoneNumberInput from '../lib/phoneNumberInput'
 import { FormBuilder as FormBuilderType, SupportedWidgetName } from './constants'
@@ -15,6 +16,7 @@ export const widgetMap: Record<ExplicitAndAll<string, SupportedWidgetName>, { wi
 	toggler: { widget: TogglerInput },
 	textInput: { widget: TextInput },
 	textareaInput: { widget: TextAreaInput },
+	richTextInput: { widget: RichTextInput },
 	phoneNumberInput: { widget: PhoneNumberInput as any },
 	paragraph: { widget: Paragraph as any },
 	column: { widget: Column },

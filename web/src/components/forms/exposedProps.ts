@@ -1,4 +1,4 @@
-export type SupportedValues = 'string' | 'textarea' | 'number' | 'boolean' | 'children' | Array<string>
+export type SupportedValues = 'string' | 'textarea' | 'number' | 'boolean' | 'children' | 'richText' | Array<string>
 export type Props = Record<string, [string, SupportedValues]> // [description, supportedValues]
 
 export const buttonProps: Props = {
@@ -28,6 +28,14 @@ export const textInputProps: Props = {
 }
 
 export const textAreaInputProps: Props = {
+	name: ['Name of the input element', 'string'],
+	label: ['Label of this field', 'string'],
+	required: ['It is required by the user to fill this field', 'boolean'],
+	labelClassName: ['Tailwindcss classNames to style the label', 'string'],
+	descriptionText: ['Describe more about this field', 'string'],
+}
+
+export const richTextInputProps: Props = {
 	name: ['Name of the input element', 'string'],
 	label: ['Label of this field', 'string'],
 	required: ['It is required by the user to fill this field', 'boolean'],

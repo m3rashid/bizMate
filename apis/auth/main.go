@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"bizmate/controllers"
+	"bizmate/models"
 	"bizmate/utils"
 	"os"
 	"time"
@@ -38,6 +40,8 @@ func Setup(app *fiber.App) {
 	app.Get("/auth/check", utils.CheckAuthMiddleware, checkAuth)
 	app.Post("/auth/login", credentialsLogin)
 	app.Post("/auth/register", credentialsRegister)
+
+	app.Get("/users/all", utils.CheckAuthMiddleware, controllers.Paginate[models.User]())
 
 	app.Get("/auth/:provider", beginAuth)
 	app.Get("/auth/:provider/callback", authCallback)

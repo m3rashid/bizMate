@@ -11,6 +11,7 @@ import {
 	paragraphProps,
 	textInputProps,
 	textAreaInputProps,
+	richTextInputProps,
 	phoneNumberInputProps,
 } from './exposedProps'
 
@@ -21,6 +22,7 @@ export type SupportedWidget =
 	| { name: 'textInput'; props: GetProps<typeof textInputProps> }
 	| { name: 'textareaInput'; props: GetProps<typeof textAreaInputProps> }
 	| { name: 'phoneNumberInput'; props: GetProps<typeof phoneNumberInputProps> }
+	| { name: 'richTextInput'; props: GetProps<typeof richTextInputProps> }
 	| { name: 'paragraph'; props: GetProps<typeof paragraphProps> }
 	| { name: 'column'; props: GetProps<typeof columnProps> }
 	| { name: 'image'; props: GetProps<typeof imageProps> }
@@ -59,6 +61,7 @@ export const supportedWidgets: SupportedWidgetsArray = [
 	{ name: 'toggler', props: togglerProps, label: 'Toggle Input' },
 	{ name: 'textInput', props: textInputProps, label: 'Text Input' },
 	{ name: 'textareaInput', props: textAreaInputProps, label: 'Text Area Input' },
+	{ name: 'richTextInput', props: richTextInputProps, label: 'Rich Text Input' },
 	{ name: 'phoneNumberInput', props: phoneNumberInputProps, label: 'Phone Number Input' },
 	{ name: 'paragraph', props: paragraphProps, label: 'Paragraph' },
 	{ name: 'column', props: columnProps, label: 'Column' },

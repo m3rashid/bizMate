@@ -175,7 +175,7 @@ func GormMigrate(gormDB *gorm.DB, Models []interface{}) error {
 		return err
 	}
 
-	fmt.Println("====================== \nMigration completed, Migrated " + fmt.Sprint(len(Models)) + " models ==============================\n")
+	fmt.Println("Migration completed, Migrated " + fmt.Sprint(len(Models)) + " models")
 	return nil
 }
 

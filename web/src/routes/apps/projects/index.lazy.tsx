@@ -10,6 +10,7 @@ import { PageLoader } from '../../../components/lib/loader'
 import PageContainer from '../../../components/pageContainer'
 import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import Table, { TableProps } from '../../../components/lib/table'
+import AddEditProjectModal from '../../../components/projects/addEditModalForm'
 
 export const Route = createLazyFileRoute('/apps/projects/')({
 	component: Projects,
@@ -17,6 +18,7 @@ export const Route = createLazyFileRoute('/apps/projects/')({
 
 function Projects() {
 	const navigate = useNavigate()
+	const [open, setOpen] = useState(false)
 	const [editRow, setEditRow] = useState<Project | undefined>(undefined)
 	const { data, isPending, refetch } = useQuery({ queryKey: ['getProjects'], queryFn: () => apiClient('/projects/all') })
 
@@ -42,7 +44,7 @@ function Projects() {
 
 	return (
 		<PageContainer>
-			{/* <EditForm setOpen={() => setEditRow(undefined)} {...(!!editRow ? { form: editRow, refetch } : { form: undefined })} /> */}
+			<AddEditProjectModal {...{ open, setOpen, refetch, project: editRow }} />
 
 			{isPending ? (
 				<PageLoader />

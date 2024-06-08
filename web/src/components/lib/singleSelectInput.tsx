@@ -10,7 +10,7 @@ export type Option = {
 	label: ReactNode
 }
 
-export type SelectInputProps = {
+export type SingleSelectInputProps = {
 	default: string
 	options: Array<Option>
 	name?: string
@@ -21,7 +21,7 @@ export type SelectInputProps = {
 	onChange?: (value: string) => void
 }
 
-function SingleSelectInput(props: SelectInputProps) {
+function SingleSelectInput(props: SingleSelectInputProps) {
 	const [selectedOptionValue, setSelectedOptionValue] = useState<string>(props.value || props.default)
 
 	return (
@@ -55,15 +55,15 @@ function SingleSelectInput(props: SelectInputProps) {
 									<ListboxOption
 										key={option.id}
 										value={option}
-										className={({ active }) =>
-											twMerge('relative cursor-default select-none py-2 pl-3 pr-9', active ? 'bg-primary text-white' : 'text-gray-900')
+										className={({ focus }) =>
+											twMerge('relative cursor-default select-none py-2 pl-3 pr-9', focus ? 'bg-primary text-white' : 'text-gray-900')
 										}
 									>
-										{({ selected, active }) => (
+										{({ selected, focus }) => (
 											<Fragment>
-												<props.render {...{ option: option.value, selected, active }} />
+												<props.render {...{ option: option.value, selected, active: focus }} />
 												{selected ? (
-													<span className={twMerge('absolute inset-y-0 right-0 flex items-center pr-4', active ? 'text-white' : 'text-primary')}>
+													<span className={twMerge('absolute inset-y-0 right-0 flex items-center pr-4', focus ? 'text-white' : 'text-primary')}>
 														<CheckIcon className="h-5 w-5" aria-hidden="true" />
 													</span>
 												) : null}

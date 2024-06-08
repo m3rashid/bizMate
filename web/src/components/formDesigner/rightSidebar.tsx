@@ -29,6 +29,12 @@ function propsToMeta({ _props, values }: PropsToMetaProps): FormElementInstance[
 				name: 'textareaInput',
 				props: { name: key, defaultValue: values[key], descriptionText: description, label: camelCaseToSentenceCase(key) },
 			})
+		} else if (value === 'richText') {
+			meta.push({
+				id,
+				name: 'richTextInput',
+				props: { name: key, defaultValue: values[key], descriptionText: description, label: camelCaseToSentenceCase(key) },
+			})
 		} else if (value === 'number') {
 			meta.push({
 				id,
@@ -92,7 +98,7 @@ function RightSidebar() {
 	}
 
 	return (
-		<div className="min-w-80 max-w-96 overflow-y-auto bg-gray-100 p-4 shadow-lg">
+		<div className="w-full min-w-80 max-w-96 overflow-y-auto bg-gray-100 p-4 shadow-lg">
 			<form ref={formRef} className="flex h-full flex-col gap-4" onSubmit={handleSave}>
 				<div className="flex items-center gap-2 border-b-2 border-b-gray-200 pb-3">
 					<h2 className="text-xl font-semibold">
