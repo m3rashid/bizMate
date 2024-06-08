@@ -15,14 +15,14 @@ type PaginationResponse[T interface{}] struct {
 }
 
 type ResourceIndex struct {
-	Name         string `json:"name" validate:""`
-	Description  string `json:"description" validate:""`
-	ResourceType string `json:"resourceType" validate:""`
+	Name         string `json:"name"`
+	Description  string `json:"description"`
+	ResourceType string `json:"resourceType"`
 }
 
 type CreateRequestBody[T interface{}] struct {
 	Body          T             `json:"body" validate:"required"`
-	ResourceIndex ResourceIndex `json:"resourceIndex" validate:""`
+	ResourceIndex ResourceIndex `json:"resourceIndex"`
 }
 
 type DbModel interface {

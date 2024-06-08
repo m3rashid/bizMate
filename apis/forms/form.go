@@ -15,8 +15,8 @@ type formReqBody struct {
 	Body                   string `json:"body" validate:"required"`
 	SubmitText             string `json:"submitText" validate:"required"`
 	CancelText             string `json:"cancelText" validate:"required"`
-	SuccessPage            string `json:"successPage,omitempty" validate:""`
-	FailurePage            string `json:"failurePage,omitempty" validate:""`
+	SuccessPage            string `json:"successPage,omitempty"`
+	FailurePage            string `json:"failurePage,omitempty"`
 	Active                 *bool  `json:"active" validate:"required"`
 	AllowAnonymousResponse *bool  `json:"allowAnonymousResponse" validate:"required"`
 	AllowResponseUpdate    *bool  `json:"allowResponseUpdate" validate:"required"`

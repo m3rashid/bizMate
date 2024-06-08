@@ -12,7 +12,7 @@ type Kpi struct {
 	CreatedBy
 	UpdatedBy
 	Title           string `json:"title" gorm:"column:title;not null" validate:"required"`
-	Description     string `json:"description" gorm:"column:description;not null" validate:""`
+	Description     string `json:"description" gorm:"column:description;not null"`
 	Model           string `json:"model" gorm:"column:model;not null" validate:"required"` // model name of the kpi
 	RefreshInterval int    `json:"refreshInterval" gorm:"column:refreshInterval;not null" validate:"required"`
 	PageRoute       string `json:"pageRoute" gorm:"column:pageRoute;not null" validate:"required"`
@@ -23,18 +23,18 @@ type Widget struct {
 	CreatedBy
 	UpdatedBy
 	DashboardID     uint            `json:"dashboardId" gorm:"column:dashboardId;not null" validate:"required"`
-	Dashboard       *Dashboard      `json:"dashboard" gorm:"foreignKey:dashboardId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" validate:""`
+	Dashboard       *Dashboard      `json:"dashboard" gorm:"foreignKey:dashboardId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Title           string          `json:"title" gorm:"column:title;not null" validate:"required"`
-	Description     string          `json:"description" gorm:"column:description;not null" validate:""`
+	Description     string          `json:"description" gorm:"column:description;not null"`
 	RefreshInterval int             `json:"refreshInterval" gorm:"column:refreshInterval;not null" validate:"required"`
 	Position        int             `json:"position" gorm:"column:position;not null" validate:"required"` // index of the widget in the dashboard
 	Model           string          `json:"model" gorm:"column:model;not null" validate:"required"`       // model name of the widget
-	XLabel          string          `json:"xLabel,omitempty" gorm:"column:xLabel" validate:""`
-	YLabel          string          `json:"yLabel,omitempty" gorm:"column:yLabel" validate:""`
-	XDataKey        string          `json:"xDataKey,omitempty" gorm:"column:xDataKey" validate:""` // field name of the x-axis data
-	YDataKey        string          `json:"yDataKey,omitempty" gorm:"column:yDataKey" validate:""` // field name of the y-axis data
-	ChartType       WidgetChartType `json:"chartType,omitempty" gorm:"column:chartType" validate:""`
-	ChartOptions    string          `json:"chartOptions,omitempty" gorm:"column:chartOptions" validate:""`
+	XLabel          string          `json:"xLabel,omitempty" gorm:"column:xLabel"`
+	YLabel          string          `json:"yLabel,omitempty" gorm:"column:yLabel"`
+	XDataKey        string          `json:"xDataKey,omitempty" gorm:"column:xDataKey"` // field name of the x-axis data
+	YDataKey        string          `json:"yDataKey,omitempty" gorm:"column:yDataKey"` // field name of the y-axis data
+	ChartType       WidgetChartType `json:"chartType,omitempty" gorm:"column:chartType"`
+	ChartOptions    string          `json:"chartOptions,omitempty" gorm:"column:chartOptions"`
 }
 
 type Dashboard struct {
@@ -42,7 +42,7 @@ type Dashboard struct {
 	CreatedBy
 	UpdatedBy
 	Title       string `json:"title" gorm:"column:title;not null" validate:"required"`
-	Description string `json:"description" gorm:"column:description;not null" validate:""`
+	Description string `json:"description" gorm:"column:description;not null"`
 }
 
 func (Kpi) TableName() string {

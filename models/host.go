@@ -10,9 +10,9 @@ type Tenant struct {
 	Name          string       `gorm:"column:name;not null;unique" json:"name" validate:"required"`
 	TenantUrl     string       `gorm:"column:tenantUrl;not null;unique" json:"tenantUrl" validate:"required"`
 	CreatedAt     time.Time    `gorm:"column:createdAt; default:current_timestamp" json:"createdAt"`
-	DbUri         string       `gorm:"column:dbUri;not null;unique" json:"dbUri" validate:""`
+	DbUri         string       `gorm:"column:dbUri;not null;unique" json:"dbUri"`
 	TenantOwnerID uint         `json:"tenantOwnerId" gorm:"column:tenantOwnerId;not null" validate:"required"`
-	TenantOwner   *TenantOwner `json:"tenantOwner" gorm:"column:tenantOwnerId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" validate:""`
+	TenantOwner   *TenantOwner `json:"tenantOwner" gorm:"column:tenantOwnerId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 type TenantOwner struct {
