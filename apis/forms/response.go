@@ -9,7 +9,7 @@ import (
 )
 
 type formResponseReqBody struct {
-	ID       uint   `json:"id" validate:""`
+	ID       uint   `json:"id"`
 	Response string `json:"response" validate:"required"`
 }
 

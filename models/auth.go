@@ -12,11 +12,12 @@ type User struct {
 	BaseModel
 	Name         string `json:"name" gorm:"column:name;not null" validate:"required"`
 	Email        string `json:"email" gorm:"column:email;unique;not null" validate:"required,email"`
-	Phone        string `json:"phone,omitempty" gorm:"column:phone" validate:""`
-	Avatar       string `json:"avatar,omitempty" gorm:"column:avatar" validate:""`
-	Deactivated  bool   `json:"deactivated" gorm:"column:deactivated" validate:""`
-	Provider     string `json:"provider" gorm:"column:provider" validate:""`
+	Phone        string `json:"phone,omitempty" gorm:"column:phone"`
+	Avatar       string `json:"avatar,omitempty" gorm:"column:avatar"`
+	Deactivated  bool   `json:"deactivated" gorm:"column:deactivated"`
+	Provider     string `json:"provider" gorm:"column:provider"`
 	Password     string `json:"password" gorm:"column:password;not null" validate:"required"`
+	TenantOwner  bool   `json:"tenantOwner" gorm:"column:tenantOwner"`
 	RefreshToken string `gorm:"refreshToken"`
 }
 
@@ -33,7 +34,7 @@ func (user *User) ToPartialUser() fiber.Map {
 type Profile struct {
 	BaseModel
 	UserID uint  `json:"userId" gorm:"column:userId;not null" validate:"required"`
-	User   *User `json:"user" gorm:"column:userId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" validate:""`
+	User   *User `json:"user" gorm:"column:userId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 func (User) TableName() string {

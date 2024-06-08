@@ -12,13 +12,13 @@ type Form struct {
 	Body                   string `json:"body" gorm:"column:body;not null" validate:"required"`
 	SubmitText             string `json:"submitText" gorm:"column:submitText;not null" validate:"required"`
 	CancelText             string `json:"cancelText" gorm:"column:cancelText;not null" validate:"required"`
-	SuccessPage            string `json:"successPage,omitempty" gorm:"column:successPage" validate:""`
-	FailurePage            string `json:"failurePage,omitempty" gorm:"column:failurePage" validate:""`
-	Active                 bool   `json:"active" gorm:"column:active;default:false" validate:""`
-	SendResponseEmail      bool   `json:"sendResponseEmail" gorm:"column:sendResponseEmail;default:false" validate:""`
-	AllowAnonymousResponse bool   `json:"allowAnonymousResponse" gorm:"column:allowAnonymousResponse;default:true" validate:""`
-	AllowResponseUpdate    bool   `json:"allowResponseUpdate" gorm:"column:allowResponseUpdate;default:false" validate:""`
-	AllowMultipleResponse  bool   `json:"allowMultipleResponse" gorm:"column:allowMultipleResponse;default:false" validate:""`
+	SuccessPage            string `json:"successPage,omitempty" gorm:"column:successPage"`
+	FailurePage            string `json:"failurePage,omitempty" gorm:"column:failurePage"`
+	Active                 bool   `json:"active" gorm:"column:active;default:false"`
+	SendResponseEmail      bool   `json:"sendResponseEmail" gorm:"column:sendResponseEmail;default:false"`
+	AllowAnonymousResponse bool   `json:"allowAnonymousResponse" gorm:"column:allowAnonymousResponse;default:true"`
+	AllowResponseUpdate    bool   `json:"allowResponseUpdate" gorm:"column:allowResponseUpdate;default:false"`
+	AllowMultipleResponse  bool   `json:"allowMultipleResponse" gorm:"column:allowMultipleResponse;default:false"`
 	PreviousVersionIDs     string `json:"previousVersionIDs,omitempty" gorm:"column:previousVersionIDs;default:[]" validate:"required"`
 }
 
@@ -27,9 +27,9 @@ type FormResponse struct {
 	UpdatedBy
 	OptionalCreatedBy
 	FormID   uint   `json:"formId" gorm:"column:formId;not null" validate:"required"`
-	Form     *Form  `json:"form" gorm:"foreignKey:formId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" validate:""`
+	Form     *Form  `json:"form" gorm:"foreignKey:formId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Response string `json:"response" gorm:"column:response;not null" validate:"required"`
-	DeviceIP string `json:"deviceIp,omitempty" gorm:"column:deviceIp" validate:""`
+	DeviceIP string `json:"deviceIp,omitempty" gorm:"column:deviceIp"`
 }
 
 func (Form) TableName() string {

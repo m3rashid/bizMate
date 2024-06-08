@@ -11,8 +11,8 @@ import (
 
 type CreateNotificationBody struct {
 	Title       string `json:"title" validate:"required"`
-	Description string `json:"description,omitempty" validate:""`
-	Link        string `json:"link,omitempty" validate:""`
+	Description string `json:"description,omitempty"`
+	Link        string `json:"link,omitempty"`
 	Scope       string `json:"scope" validate:"required"`
 	Read        bool   `json:"read" validate:"required"`
 }

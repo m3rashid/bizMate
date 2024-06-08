@@ -21,6 +21,6 @@ var DefaultPaginationResponse = PaginationResponse[interface{}]{
 }
 
 type PaginationRequestQuery struct {
-	Page  int `json:"page" validate:""`
-	Limit int `json:"limit" validate:""`
+	Page  int `json:"page"`
+	Limit int `json:"limit"`
 }
