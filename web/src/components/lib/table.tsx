@@ -2,7 +2,7 @@ import { FC, ReactNode } from 'react'
 import { twMerge } from 'tailwind-merge'
 
 import { ExplicitAndAllObject } from '../../types'
-import Button from './button'
+import Button, { ButtonProps } from './button'
 import { PlusIcon } from '@heroicons/react/24/outline'
 import { useNavigate } from '@tanstack/react-router'
 
@@ -20,6 +20,7 @@ export type TableProps<T> = {
 	title?: string
 	description?: string
 	addButtonLink?: string
+	addButtonProps?: ButtonProps
 	rootClassName?: string
 	tableRowClassName?: (rowIndex: number) => string
 	tableRootClassName?: string
@@ -50,6 +51,7 @@ function Table<T extends Row>(props: TableProps<T>) {
 							label={`New ${props.title || props.defaultEmptyStateName}`}
 							LeftIcon={<PlusIcon className="h-5 w-5" />}
 							onClick={() => navigate({ to: props.addButtonLink })}
+							{...props.addButtonProps}
 						/>
 					</div>
 				) : null}
@@ -68,6 +70,7 @@ function Table<T extends Row>(props: TableProps<T>) {
 									LeftIcon={<PlusIcon className="h-5 w-5" />}
 									onClick={() => navigate({ to: props.addButtonLink })}
 									label={`New ${props.title || props.defaultEmptyStateName}`}
+									{...props.addButtonProps}
 								/>
 							) : null}
 						</div>

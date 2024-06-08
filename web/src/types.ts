@@ -110,3 +110,42 @@ export type Workflow = BaseModel &
 		endNodeId: ID
 		edges: any // handle this type
 	}
+
+export type Project = BaseModel &
+	CreatedBy &
+	UpdatedBy & {
+		name: string
+		description: string
+		abandoned: boolean
+		completed: boolean
+		people: Array<User>
+	}
+
+export type Tag = BaseModel & {
+	name: string
+}
+
+export const taskStatus = ['backlog', 'todo', 'inprogress', 'review', 'done'] as const
+export type TaskStatus = (typeof taskStatus)[number]
+export type Task = BaseModel &
+	CreatedBy &
+	UpdatedBy & {
+		title: string
+		description: string
+		status: TaskStatus
+		deadline: Date
+		projectId: ID
+		project: Project
+		users: Array<User>
+		tags: Array<Tag>
+		parentTaskId?: ID
+		parentTask?: Task
+	}
+
+export type ProjectTaskComment = BaseModel &
+	CreatedBy &
+	UpdatedBy & {
+		taskId: ID
+		task: Task
+		comment: string
+	}

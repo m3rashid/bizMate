@@ -83,6 +83,7 @@ function Forms() {
 					columns={tableColumns}
 					addButtonLink="/apps/forms/designer"
 					defaultEmptyStateName="forms"
+					addButtonProps={{ label: 'New Form' }}
 				/>
 			)}
 		</PageContainer>

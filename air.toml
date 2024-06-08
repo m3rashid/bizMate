@@ -12,6 +12,7 @@ exclude_dir = [
 	"vendor",
 	"testdata",
 	"web",
+	"launch-site",
 	"bin",
 	".vscode",
 	".idea",

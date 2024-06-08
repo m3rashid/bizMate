@@ -6,6 +6,7 @@ import (
 	"bizmate/apis/forms"
 	"bizmate/apis/notifications"
 	"bizmate/apis/payments"
+	"bizmate/apis/project"
 	"bizmate/apis/workflows"
 	"bizmate/models"
 	"bizmate/scripts"
@@ -75,6 +76,11 @@ func main() {
 		models.Widget{},
 		models.Dashboard{},
 
+		models.Tag{},
+		models.Task{},
+		models.Project{},
+		models.ProjectTaskComment{},
+
 		models.Workflow{},
 		models.WorkflowStep{},
 		models.WorkflowExectionLog{},
@@ -107,6 +113,7 @@ func main() {
 
 	auth.Setup(app)
 	forms.Setup(app)
+	project.Setup(app)
 	scripts.Setup(app)
 	payments.Setup(app)
 	dashboard.Setup(app)

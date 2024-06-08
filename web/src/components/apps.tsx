@@ -29,8 +29,8 @@ export type App = {
 export const apps: Array<App> = [
 	{
 		name: 'Forms',
-		description: 'Create, publish, and get analytics for your forms',
 		icon: ClipboardDocumentIcon,
+		description: 'Create, publish, and get analytics for your forms',
 		routes: [
 			{ name: 'Designer', icon: DeviceTabletIcon, link: '/apps/forms/designer' },
 			{ name: 'All Forms', icon: ListBulletIcon, link: '/apps/forms/' },
@@ -38,8 +38,8 @@ export const apps: Array<App> = [
 	},
 	{
 		name: 'Automations',
-		description: 'Automate your daily processes',
 		icon: ArrowPathIcon,
+		description: 'Automate your daily processes',
 		routes: [
 			{ name: 'Designer', icon: AdjustmentsHorizontalIcon, link: '/apps/flows/designer' },
 			{ name: 'All Automations', icon: ListBulletIcon, link: '/apps/automations/' },
@@ -47,8 +47,8 @@ export const apps: Array<App> = [
 	},
 	{
 		name: 'Dashboards',
-		description: 'Create and manage your dashboards',
 		icon: PresentationChartLineIcon,
+		description: 'Create and manage your dashboards',
 		routes: [
 			{ name: 'Designer', icon: ChartBarIcon, link: '/apps/dashboards/designer' },
 			{ name: 'All Dashboards', icon: ListBulletIcon, link: '/apps/dashboards/' },
@@ -56,13 +56,19 @@ export const apps: Array<App> = [
 	},
 	{
 		name: 'Communications',
-		description: 'Handle your communications from here',
 		icon: ChatBubbleLeftRightIcon,
+		description: 'Handle your communications from here',
 		routes: [
 			{ name: 'Email Templates', icon: AtSymbolIcon, link: '/apps/communications/emails/' },
 			// { name: 'Schedule Emails', icon: AtSymbolIcon, link: '/apps/communications/emails/designer' },
 			{ name: 'Create Email Templates', icon: AtSymbolIcon, link: '/apps/communications/emails/designer' },
 		],
+	},
+	{
+		name: 'Projects',
+		icon: ClipboardDocumentIcon,
+		description: 'Create and manage your projects',
+		routes: [{ name: 'All Projects', icon: ListBulletIcon, link: '/apps/projects/' }],
 	},
 ]
 
