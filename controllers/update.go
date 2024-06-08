@@ -50,7 +50,7 @@ func Update[UpdateBodyType interface{}, Model DbModel](_options ...UpdateOptions
 			}
 		}
 
-		if err := db.Table(tableName).Where(fmt.Sprintf("%s = ?", paramValue), options.ParamKey).Updates(updateBody).Error; err != nil {
+		if err := db.Table(tableName).Where(fmt.Sprintf("%s = ?", options.ParamKey), paramValue).Updates(updateBody).Error; err != nil {
 			return ctx.SendStatus(fiber.StatusInternalServerError)
 		}
 

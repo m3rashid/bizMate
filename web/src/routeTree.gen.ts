@@ -34,14 +34,21 @@ const AppsAutomationsDesignerLazyImport = createFileRoute(
 const AppsProjectsProjectIdIndexLazyImport = createFileRoute(
   '/apps/projects/$projectId/',
 )()
+const AppsFormsFormIdIndexLazyImport = createFileRoute('/apps/forms/$formId/')()
 const AppsCommunicationsEmailsIndexLazyImport = createFileRoute(
   '/apps/communications/emails/',
 )()
+const AppsProjectsProjectIdReadmeLazyImport = createFileRoute(
+  '/apps/projects/$projectId/readme',
+)()
+const AppsProjectsProjectIdGuidelinesLazyImport = createFileRoute(
+  '/apps/projects/$projectId/guidelines',
+)()
+const AppsProjectsProjectIdDocumentationLazyImport = createFileRoute(
+  '/apps/projects/$projectId/documentation',
+)()
 const AppsFormsFormIdFillLazyImport = createFileRoute(
   '/apps/forms/$formId/fill',
-)()
-const AppsFormsFormIdDetailsLazyImport = createFileRoute(
-  '/apps/forms/$formId/details',
 )()
 const AppsCommunicationsEmailsTemplatesLazyImport = createFileRoute(
   '/apps/communications/emails/templates',
@@ -132,6 +139,13 @@ const AppsProjectsProjectIdIndexLazyRoute =
     import('./routes/apps/projects/$projectId/index.lazy').then((d) => d.Route),
   )
 
+const AppsFormsFormIdIndexLazyRoute = AppsFormsFormIdIndexLazyImport.update({
+  path: '/apps/forms/$formId/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/apps/forms/$formId/index.lazy').then((d) => d.Route),
+)
+
 const AppsCommunicationsEmailsIndexLazyRoute =
   AppsCommunicationsEmailsIndexLazyImport.update({
     path: '/apps/communications/emails/',
@@ -142,20 +156,41 @@ const AppsCommunicationsEmailsIndexLazyRoute =
     ),
   )
 
+const AppsProjectsProjectIdReadmeLazyRoute =
+  AppsProjectsProjectIdReadmeLazyImport.update({
+    path: '/apps/projects/$projectId/readme',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/apps/projects/$projectId/readme.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const AppsProjectsProjectIdGuidelinesLazyRoute =
+  AppsProjectsProjectIdGuidelinesLazyImport.update({
+    path: '/apps/projects/$projectId/guidelines',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/apps/projects/$projectId/guidelines.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const AppsProjectsProjectIdDocumentationLazyRoute =
+  AppsProjectsProjectIdDocumentationLazyImport.update({
+    path: '/apps/projects/$projectId/documentation',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/apps/projects/$projectId/documentation.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
 const AppsFormsFormIdFillLazyRoute = AppsFormsFormIdFillLazyImport.update({
   path: '/apps/forms/$formId/fill',
   getParentRoute: () => rootRoute,
 } as any).lazy(() =>
   import('./routes/apps/forms/$formId/fill.lazy').then((d) => d.Route),
-)
-
-const AppsFormsFormIdDetailsLazyRoute = AppsFormsFormIdDetailsLazyImport.update(
-  {
-    path: '/apps/forms/$formId/details',
-    getParentRoute: () => rootRoute,
-  } as any,
-).lazy(() =>
-  import('./routes/apps/forms/$formId/details.lazy').then((d) => d.Route),
 )
 
 const AppsCommunicationsEmailsTemplatesLazyRoute =
@@ -234,16 +269,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppsCommunicationsEmailsTemplatesLazyImport
       parentRoute: typeof rootRoute
     }
-    '/apps/forms/$formId/details': {
-      preLoaderRoute: typeof AppsFormsFormIdDetailsLazyImport
-      parentRoute: typeof rootRoute
-    }
     '/apps/forms/$formId/fill': {
       preLoaderRoute: typeof AppsFormsFormIdFillLazyImport
       parentRoute: typeof rootRoute
     }
+    '/apps/projects/$projectId/documentation': {
+      preLoaderRoute: typeof AppsProjectsProjectIdDocumentationLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/apps/projects/$projectId/guidelines': {
+      preLoaderRoute: typeof AppsProjectsProjectIdGuidelinesLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/apps/projects/$projectId/readme': {
+      preLoaderRoute: typeof AppsProjectsProjectIdReadmeLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/apps/communications/emails/': {
       preLoaderRoute: typeof AppsCommunicationsEmailsIndexLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/apps/forms/$formId/': {
+      preLoaderRoute: typeof AppsFormsFormIdIndexLazyImport
       parentRoute: typeof rootRoute
     }
     '/apps/projects/$projectId/': {
@@ -269,9 +316,12 @@ export const routeTree = rootRoute.addChildren([
   AppsProjectsIndexLazyRoute,
   AppsCommunicationsEmailsDesignerLazyRoute,
   AppsCommunicationsEmailsTemplatesLazyRoute,
-  AppsFormsFormIdDetailsLazyRoute,
   AppsFormsFormIdFillLazyRoute,
+  AppsProjectsProjectIdDocumentationLazyRoute,
+  AppsProjectsProjectIdGuidelinesLazyRoute,
+  AppsProjectsProjectIdReadmeLazyRoute,
   AppsCommunicationsEmailsIndexLazyRoute,
+  AppsFormsFormIdIndexLazyRoute,
   AppsProjectsProjectIdIndexLazyRoute,
 ])
 

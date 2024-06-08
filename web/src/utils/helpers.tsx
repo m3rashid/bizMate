@@ -6,7 +6,7 @@ export function generateRandomString(len = 10) {
 
 export function capitalizeFirstLetter(str: string | string[]) {
 	if (typeof str === 'string') return str.charAt(0).toUpperCase() + str.slice(1)
-	return str.map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+	return str.map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join(' ')
 }
 
 export function camelCaseToSentenceCase(str: string) {
@@ -28,4 +28,14 @@ export function getUniqueObjectsByKey<T extends Record<string, any>>(arr: Array<
 		keyMap.set(obj[key], true)
 		return true
 	})
+}
+
+export function safeJsonParse(content: string, defaultReturn: any, validations?: (res: any) => boolean) {
+	try {
+		const res = JSON.parse(content)
+		if (validations && !validations(res)) throw new Error('Validations failed')
+		return res
+	} catch (err: any) {
+		return defaultReturn
+	}
 }

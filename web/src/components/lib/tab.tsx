@@ -1,8 +1,8 @@
 import { twMerge } from 'tailwind-merge'
 import { FC, ReactNode, useState } from 'react'
 
-import SingleSelectInput from './selectInput'
 import { NotFound } from './notFound'
+import SingleSelectInput from './singleSelectInput'
 
 export type Tab = {
 	id: string

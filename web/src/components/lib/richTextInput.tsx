@@ -2,9 +2,9 @@ import '@blocknote/mantine/style.css'
 import { twMerge } from 'tailwind-merge'
 import { BlockNoteView } from '@blocknote/mantine'
 import { useCreateBlockNote } from '@blocknote/react'
-import { ChangeEvent, FC, TextareaHTMLAttributes } from 'react'
+import { ChangeEvent, FC, TextareaHTMLAttributes, useState } from 'react'
 
-import { filterBykeys } from '../../utils/helpers'
+import { filterBykeys, safeJsonParse } from '../../utils/helpers'
 
 export type RichTextInputProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
 	label?: string
@@ -16,7 +16,15 @@ export type RichTextInputProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
 }
 
 function RichTextInput(props: RichTextInputProps) {
-	const editor = useCreateBlockNote()
+	const [editorContent, setEditorContent] = useState<any>()
+
+	const editor = useCreateBlockNote({
+		...(!!props.defaultValue ? { initialContent: safeJsonParse(props.defaultValue as string, undefined, (res) => res.length > 0) } : {}),
+	})
+
+	editor.onChange((content) => {
+		setEditorContent(content.document)
+	})
 
 	return (
 		<div className="w-full">
@@ -36,9 +44,16 @@ function RichTextInput(props: RichTextInputProps) {
 					</div>
 				) : null}
 
+				<input
+					type="hidden"
+					value={JSON.stringify(editorContent)}
+					{...filterBykeys(props, ['label', 'icon', 'errorText', 'labelClassName', 'descriptionText'])}
+				/>
 				<BlockNoteView
+					{...filterBykeys(props, ['label', 'icon', 'errorText', 'labelClassName', 'descriptionText'])}
 					theme="light"
 					editor={editor}
+					itemType="input"
 					id={props.name}
 					className={twMerge(
 						'block w-full rounded-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',

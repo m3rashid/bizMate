@@ -17,9 +17,24 @@ func Setup(app *fiber.App) {
 		ParamKey:   "id",
 	}))
 
-	app.Post("/projects/create", utils.CheckAuthMiddleware, controllers.Create[models.Project, models.Project](models.PROJECT_MODEL_NAME))
+	app.Post("/projects/create", utils.CheckAuthMiddleware, controllers.Create(models.PROJECT_MODEL_NAME, controllers.CreateOptions[projectReqBody, models.Project]{
+		GetDefaultValues: func(values *projectReqBody, ctx *fiber.Ctx) *models.Project {
+			userId := ctx.Locals("userId").(uint)
+			return &models.Project{
+				Name:        values.Name,
+				Description: values.Description,
+				Abandoned:   false,
+				Completed:   false,
+				People:      utils.Ternary(len(values.People) > 0, values.People, []*models.User{}),
+				CreatedBy:   models.CreatedBy{CreatedByID: userId},
+			}
+		},
+	}))
 
-	app.Post("/projects/update", utils.CheckAuthMiddleware, controllers.Update[models.Project, models.Project]())
+	app.Post("/projects/:projectId/update", utils.CheckAuthMiddleware, controllers.Update(controllers.UpdateOptions[projectEditReqBody, models.Project]{
+		ParamKey:   "id",
+		ParamValue: "projectId",
+	}))
 
 	app.Get("/projects/delete/:projectId", utils.CheckAuthMiddleware, controllers.Delete(controllers.DeleteOptions[models.Project]{
 		ParamKey:   "id",

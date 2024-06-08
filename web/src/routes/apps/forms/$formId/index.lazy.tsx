@@ -12,12 +12,12 @@ import { PageNotFound } from '../../../../components/lib/notFound'
 import FormResponses from '../../../../components/apps/forms/responses'
 import FormAnalytics from '../../../../components/apps/forms/analytics'
 
-export const Route = createFileRoute('/apps/forms/$formId/details')({
+export const Route = createFileRoute('/apps/forms/$formId/')({
 	component: FormPreview,
 })
 
 function FormPreview() {
-	const { formId } = useParams({ from: '/apps/forms/$formId/details' })
+	const { formId } = useParams({ from: '/apps/forms/$formId/' })
 	const { data: form, isPending } = useQuery({ queryKey: ['getForm', formId], queryFn: () => apiClient(`/forms/one/${formId}`) })
 	const { data: responseCountData, isPending: isCountPending } = useQuery({
 		queryKey: ['getFormResponseCount', formId],

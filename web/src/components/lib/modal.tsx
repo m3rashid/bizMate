@@ -1,3 +1,4 @@
+import XMarkIcon from '@heroicons/react/20/solid/XMarkIcon'
 import { Fragment, PropsWithChildren, ReactNode } from 'react'
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react'
 
@@ -35,11 +36,14 @@ function Modal(props: ModalProps) {
 							leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
 						>
 							<DialogPanel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
-								{props.title ? (
-									<DialogTitle as="h3" className="mb-4 text-base font-semibold leading-6 text-gray-900">
-										{props.title}
-									</DialogTitle>
-								) : null}
+								<div className="mb-4 flex w-full items-center justify-between gap-4">
+									{props.title ? (
+										<DialogTitle as="h3" className="text-base font-semibold leading-6 text-gray-900">
+											{props.title}
+										</DialogTitle>
+									) : null}
+									<XMarkIcon className="h-6 w-6 cursor-pointer hover:text-gray-600" onClick={() => props.setOpen(false)} />
+								</div>
 								<div className="mt-2">{props.children}</div>
 							</DialogPanel>
 						</TransitionChild>

@@ -119,6 +119,9 @@ export type Project = BaseModel &
 		abandoned: boolean
 		completed: boolean
 		people: Array<User>
+		readme: string
+		guidelines: string
+		documentation: string
 	}
 
 export type Tag = BaseModel & {

@@ -3,18 +3,17 @@ import { createLazyFileRoute, useParams } from '@tanstack/react-router'
 
 import { Project } from '../../../../types'
 import apiClient from '../../../../api/client'
+import Chip from '../../../../components/lib/chip'
 import { PageLoader } from '../../../../components/lib/loader'
 import PageContainer from '../../../../components/pageContainer'
-import EditProjectDetails from '../../../../components/projects/editProjectDetails'
 import ShowRichText from '../../../../components/lib/showRichText'
-import Chip from '../../../../components/lib/chip'
 
-export const Route = createLazyFileRoute('/apps/projects/$projectId/')({
-	component: ProjectDetails,
+export const Route = createLazyFileRoute('/apps/projects/$projectId/readme')({
+	component: ProjectReadme,
 })
 
-function ProjectDetails() {
-	const { projectId } = useParams({ from: '/apps/projects/$projectId/' })
+function ProjectReadme() {
+	const { projectId } = useParams({ from: '/apps/projects/$projectId/readme' })
 
 	const { data: project, isPending } = useQuery<Project>({
 		queryKey: ['getProject', projectId],
@@ -25,7 +24,12 @@ function ProjectDetails() {
 
 	return (
 		<PageContainer>
-			<EditProjectDetails {...project} />
+			{project.readme ? (
+				<div className="relative">
+					<Chip className="absolute right-2 top-2 z-50 border-2 bg-transparent text-black">Readme</Chip>
+					<ShowRichText data={project.readme} />
+				</div>
+			) : null}
 		</PageContainer>
 	)
 }

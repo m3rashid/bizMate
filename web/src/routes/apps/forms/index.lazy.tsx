@@ -62,7 +62,7 @@ function Forms() {
 							onClick={() => navigator.clipboard.writeText(`${window.location.host}/apps/forms/${row.id}/fill`)}
 						/>
 					</Tooltip>
-					<Button label="Details" size="small" onClick={() => navigate({ to: `/apps/forms/${row.id}/details` })} />
+					<Button label="Details" size="small" onClick={() => navigate({ to: `/apps/forms/${row.id}/` })} />
 					<Button label="Edit" size="small" variant="secondary" onClick={() => setEditRow(row)} LeftIcon={<PencilSquareIcon className="h-4 w-4" />} />
 				</div>
 			),
