@@ -14,11 +14,11 @@ type User struct {
 	Email        string `json:"email" gorm:"column:email;unique;not null" validate:"required,email"`
 	Phone        string `json:"phone,omitempty" gorm:"column:phone"`
 	Avatar       string `json:"avatar,omitempty" gorm:"column:avatar"`
-	Deactivated  bool   `json:"deactivated" gorm:"column:deactivated"`
-	Provider     string `json:"provider" gorm:"column:provider"`
-	Password     string `json:"password" gorm:"column:password;not null" validate:"required"`
-	TenantOwner  bool   `json:"tenantOwner" gorm:"column:tenantOwner"`
-	RefreshToken string `gorm:"refreshToken"`
+	Deactivated  bool   `json:"-" gorm:"column:deactivated"`
+	Provider     string `json:"-" gorm:"column:provider"`
+	Password     string `json:"-" gorm:"column:password;not null" validate:"required"`
+	TenantOwner  bool   `json:"-" gorm:"column:tenantOwner"`
+	RefreshToken string `json:"-" gorm:"refreshToken"`
 }
 
 func (user *User) ToPartialUser() fiber.Map {

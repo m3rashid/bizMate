@@ -56,6 +56,9 @@ const AppsCommunicationsEmailsTemplatesLazyImport = createFileRoute(
 const AppsCommunicationsEmailsDesignerLazyImport = createFileRoute(
   '/apps/communications/emails/designer',
 )()
+const AppsProjectsProjectIdTasksTaskIdIndexLazyImport = createFileRoute(
+  '/apps/projects/$projectId/tasks/$taskId/',
+)()
 
 // Create/Update Routes
 
@@ -211,6 +214,16 @@ const AppsCommunicationsEmailsDesignerLazyRoute =
     ),
   )
 
+const AppsProjectsProjectIdTasksTaskIdIndexLazyRoute =
+  AppsProjectsProjectIdTasksTaskIdIndexLazyImport.update({
+    path: '/apps/projects/$projectId/tasks/$taskId/',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/apps/projects/$projectId/tasks/$taskId/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -295,6 +308,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppsProjectsProjectIdIndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/apps/projects/$projectId/tasks/$taskId/': {
+      preLoaderRoute: typeof AppsProjectsProjectIdTasksTaskIdIndexLazyImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -321,6 +338,7 @@ export const routeTree = rootRoute.addChildren([
   AppsCommunicationsEmailsIndexLazyRoute,
   AppsFormsFormIdIndexLazyRoute,
   AppsProjectsProjectIdIndexLazyRoute,
+  AppsProjectsProjectIdTasksTaskIdIndexLazyRoute,
 ])
 
 /* prettier-ignore-end */

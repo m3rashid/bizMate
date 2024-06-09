@@ -13,10 +13,12 @@ export type UsePaginateProps = {
 }
 
 export function usePaginate<T extends Record<string, any>>(props: UsePaginateProps) {
+	// const url = props.url.includes("?")?
+
 	const res = useInfiniteQuery<PaginationResponse<T>>({
 		initialPageParam: 1,
 		queryKey: props.queryKeys,
-		queryFn: ({ pageParam }) => apiClient(`${props.url}?page=${pageParam}&limit=${props.limit || 20}`),
+		queryFn: ({ pageParam }) => apiClient(`${props.url}${props.url.includes('?') ? '&' : '?'}page=${pageParam}&limit=${props.limit || 20}`),
 		getNextPageParam: (lastPage) => (lastPage.hasNextPage ? lastPage.page + 1 : undefined),
 	})
 

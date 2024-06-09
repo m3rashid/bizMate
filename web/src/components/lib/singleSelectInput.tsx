@@ -33,7 +33,7 @@ function SingleSelectInput(props: SingleSelectInputProps) {
 			}
 		>
 			{({ open }) => (
-				<Fragment>
+				<div>
 					{props.label ? <Label className="text-labelColor block text-sm font-medium leading-6">{props.label}</Label> : null}
 
 					<div className="relative w-full">
@@ -74,7 +74,7 @@ function SingleSelectInput(props: SingleSelectInputProps) {
 							</ListboxOptions>
 						</Transition>
 					</div>
-				</Fragment>
+				</div>
 			)}
 		</Listbox>
 	)

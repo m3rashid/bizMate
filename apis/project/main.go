@@ -46,8 +46,13 @@ func Setup(app *fiber.App) {
 		Populate:  []string{"Assinees", "Tags"},
 	}))
 
+	app.Get("/tasks/children", utils.CheckAuthMiddleware, controllers.Paginate[models.ProjectTask](controllers.PaginateOptions{
+		QueryKeys: []string{"parentTaskId"},
+		Populate:  []string{"Assinees", "Tags"},
+	}))
+
 	app.Get("/tasks/one/:taskId", utils.CheckAuthMiddleware, controllers.Get[models.ProjectTask](controllers.GetOptions{
-		Populate:   []string{"Assinees", "Tags"},
+		Populate:   []string{"Assinees", "Tags", "CreatedByUser"},
 		ParamKey:   "id",
 		ParamValue: "taskId",
 	}))
