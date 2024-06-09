@@ -5,9 +5,7 @@ import { Project } from '../../../../types'
 import apiClient from '../../../../api/client'
 import { PageLoader } from '../../../../components/lib/loader'
 import PageContainer from '../../../../components/pageContainer'
-import EditProjectDetails from '../../../../components/projects/editProjectDetails'
-import ShowRichText from '../../../../components/lib/showRichText'
-import Chip from '../../../../components/lib/chip'
+import ProjectHeader from '../../../../components/projects/projectHeader'
 
 export const Route = createLazyFileRoute('/apps/projects/$projectId/')({
 	component: ProjectDetails,
@@ -25,7 +23,7 @@ function ProjectDetails() {
 
 	return (
 		<PageContainer>
-			<EditProjectDetails {...project} />
+			<ProjectHeader {...project} />
 		</PageContainer>
 	)
 }

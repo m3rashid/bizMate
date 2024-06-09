@@ -44,8 +44,8 @@ const AppsProjectsProjectIdReadmeLazyImport = createFileRoute(
 const AppsProjectsProjectIdGuidelinesLazyImport = createFileRoute(
   '/apps/projects/$projectId/guidelines',
 )()
-const AppsProjectsProjectIdDocumentationLazyImport = createFileRoute(
-  '/apps/projects/$projectId/documentation',
+const AppsProjectsProjectIdDocsLazyImport = createFileRoute(
+  '/apps/projects/$projectId/docs',
 )()
 const AppsFormsFormIdFillLazyImport = createFileRoute(
   '/apps/forms/$formId/fill',
@@ -176,14 +176,12 @@ const AppsProjectsProjectIdGuidelinesLazyRoute =
     ),
   )
 
-const AppsProjectsProjectIdDocumentationLazyRoute =
-  AppsProjectsProjectIdDocumentationLazyImport.update({
-    path: '/apps/projects/$projectId/documentation',
+const AppsProjectsProjectIdDocsLazyRoute =
+  AppsProjectsProjectIdDocsLazyImport.update({
+    path: '/apps/projects/$projectId/docs',
     getParentRoute: () => rootRoute,
   } as any).lazy(() =>
-    import('./routes/apps/projects/$projectId/documentation.lazy').then(
-      (d) => d.Route,
-    ),
+    import('./routes/apps/projects/$projectId/docs.lazy').then((d) => d.Route),
   )
 
 const AppsFormsFormIdFillLazyRoute = AppsFormsFormIdFillLazyImport.update({
@@ -273,8 +271,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppsFormsFormIdFillLazyImport
       parentRoute: typeof rootRoute
     }
-    '/apps/projects/$projectId/documentation': {
-      preLoaderRoute: typeof AppsProjectsProjectIdDocumentationLazyImport
+    '/apps/projects/$projectId/docs': {
+      preLoaderRoute: typeof AppsProjectsProjectIdDocsLazyImport
       parentRoute: typeof rootRoute
     }
     '/apps/projects/$projectId/guidelines': {
@@ -317,7 +315,7 @@ export const routeTree = rootRoute.addChildren([
   AppsCommunicationsEmailsDesignerLazyRoute,
   AppsCommunicationsEmailsTemplatesLazyRoute,
   AppsFormsFormIdFillLazyRoute,
-  AppsProjectsProjectIdDocumentationLazyRoute,
+  AppsProjectsProjectIdDocsLazyRoute,
   AppsProjectsProjectIdGuidelinesLazyRoute,
   AppsProjectsProjectIdReadmeLazyRoute,
   AppsCommunicationsEmailsIndexLazyRoute,

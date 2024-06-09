@@ -121,7 +121,7 @@ export type Project = BaseModel &
 		people: Array<User>
 		readme: string
 		guidelines: string
-		documentation: string
+		docs: string
 	}
 
 export type Tag = BaseModel & {

@@ -35,15 +35,9 @@ function Projects() {
 			title: '',
 			render: ({ row }) => (
 				<div className="flex w-fit items-center gap-2">
-					{row.readme ? (
-						<Button variant="simple" label="Readme" size="small" onClick={() => navigate({ to: `/apps/projects/${row.id}/readme` })} />
-					) : null}
-					{row.guidelines ? (
-						<Button variant="simple" label="Guidelines" size="small" onClick={() => navigate({ to: `/apps/projects/${row.id}/guidelines` })} />
-					) : null}
-					{row.documentation ? (
-						<Button variant="simple" label="Documentation" size="small" onClick={() => navigate({ to: `/apps/projects/${row.id}/documentation` })} />
-					) : null}
+					<Button variant="simple" label="Readme" size="small" onClick={() => navigate({ to: `/apps/projects/${row.id}/readme` })} />
+					<Button variant="simple" label="Guidelines" size="small" onClick={() => navigate({ to: `/apps/projects/${row.id}/guidelines` })} />
+					<Button variant="simple" label="Documentation" size="small" onClick={() => navigate({ to: `/apps/projects/${row.id}/docs` })} />
 				</div>
 			),
 		},

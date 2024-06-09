@@ -8,17 +8,17 @@ import ExclamationTriangleIcon from '@heroicons/react/20/solid/ExclamationTriang
 import { ActionPopupType, MessagePopupType, PopupType, usePopups } from '../../hooks/popups'
 
 export const popupVariants: Record<PopupType, string> = {
-	error: 'bg-red-100 border-red-400',
-	success: 'bg-green-100 border-green-400',
-	info: 'bg-blue-100 border-blue-400',
-	warning: 'bg-yellow-100 border-yellow-400',
+	error: 'bg-red-50 border-red-200',
+	success: 'bg-green-50 border-green-200',
+	info: 'bg-blue-50 border-blue-200',
+	warning: 'bg-yellow-50 border-yellow-200',
 }
 
 export const PopupIcons: Record<PopupType, [any, string]> = {
-	error: [XCircleIcon, 'text-red-400'],
-	success: [CheckCircleIcon, 'text-green-400'],
-	info: [InformationCircleIcon, 'text-blue-400'],
-	warning: [ExclamationTriangleIcon, 'text-yellow-400'],
+	error: [XCircleIcon, 'text-red-300'],
+	success: [CheckCircleIcon, 'text-green-300'],
+	info: [InformationCircleIcon, 'text-blue-300'],
+	warning: [ExclamationTriangleIcon, 'text-yellow-300'],
 }
 
 export function ActionPopup(props: ActionPopupType) {

@@ -21,14 +21,14 @@ type Project struct {
 	BaseModel
 	CreatedBy
 	UpdatedBy
-	Name          string  `json:"name" gorm:"column:name;not null" validate:"required"`
-	Description   string  `json:"description" gorm:"column:description;not null" validate:"required"`
-	Abandoned     bool    `json:"abandoned" gorm:"column:abandoned;default:false"`
-	Completed     bool    `json:"completed" gorm:"column:completed;default:false"`
-	Readme        string  `json:"readme" gorm:"column:readme"`
-	Guidelines    string  `json:"guidelines" gorm:"column:guidelines"`
-	Documentation string  `json:"documentation" gorm:"column:documentation"`
-	People        []*User `json:"users" gorm:"many2many:users_project_relation"`
+	Name        string  `json:"name" gorm:"column:name;not null" validate:"required"`
+	Description string  `json:"description" gorm:"column:description;not null" validate:"required"`
+	Abandoned   bool    `json:"abandoned" gorm:"column:abandoned;default:false"`
+	Completed   bool    `json:"completed" gorm:"column:completed;default:false"`
+	Readme      string  `json:"readme" gorm:"column:readme"`
+	Guidelines  string  `json:"guidelines" gorm:"column:guidelines"`
+	Docs        string  `json:"docs" gorm:"column:docs"`
+	People      []*User `json:"users" gorm:"many2many:users_project_relation"`
 }
 
 type Tag struct {

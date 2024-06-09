@@ -11,12 +11,12 @@ type projectReqBody struct {
 }
 
 type projectEditReqBody struct {
-	Name          string         `json:"name"`
-	Description   string         `json:"description"`
-	Abandoned     *bool          `json:"abandoned"`
-	Completed     *bool          `json:"completed"`
-	Readme        string         `json:"readme" gorm:"column:readme"`
-	Guidelines    string         `json:"guidelines" gorm:"column:guidelines"`
-	Documentation string         `json:"documentation" gorm:"column:documentation"`
-	People        []*models.User `json:"users" gorm:"many2many:users_project_relation"`
+	Name        string         `json:"name"`
+	Description string         `json:"description"`
+	Abandoned   *bool          `json:"abandoned"`
+	Completed   *bool          `json:"completed"`
+	Readme      string         `json:"readme" gorm:"column:readme"`
+	Guidelines  string         `json:"guidelines" gorm:"column:guidelines"`
+	Docs        string         `json:"docs" gorm:"column:docs"`
+	People      []*models.User `json:"users" gorm:"many2many:users_project_relation"`
 }

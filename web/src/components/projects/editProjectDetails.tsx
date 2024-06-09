@@ -1,65 +1,90 @@
-import { useMutation } from '@tanstack/react-query'
-import { FormEvent, MouseEvent, useState } from 'react'
+import { useEffect, useState } from 'react'
+import '@blocknote/mantine/style.css'
+import { twMerge } from 'tailwind-merge'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { BlockNoteView } from '@blocknote/mantine'
+import { useCreateBlockNote } from '@blocknote/react'
+import PencilSquareIcon from '@heroicons/react/24/outline/PencilSquareIcon'
 
-import Modal from '../lib/modal'
+import Chip from '../lib/chip'
 import Button from '../lib/button'
 import { Project } from '../../types'
 import apiClient from '../../api/client'
-import RichTextInput from '../lib/richTextInput'
+import { PageLoader } from '../lib/loader'
+import { usePopups } from '../../hooks/popups'
+import { capitalizeFirstLetter, safeJsonParse } from '../../utils/helpers'
 
-type ProjectDetailType = 'readme' | 'guidelines' | 'documentation'
-export type EditProjectDetailsProps = Project
+type ProjectDetailType = 'readme' | 'guidelines' | 'docs'
+export type EditProjectDetailsProps = {
+	projectId: string
+	type: ProjectDetailType
+}
 
-function EditProjectDetails(project: EditProjectDetailsProps) {
-	const [type, setType] = useState<ProjectDetailType | null>(null)
-
+function Editor(props: EditProjectDetailsProps & { project: Project; editable: boolean; onSuccess: () => void }) {
+	const { addMessagePopup } = usePopups()
 	const { mutate: editProject } = useMutation({
-		onSuccess: () => setType(null),
-		mutationKey: ['editProject', project.id],
-		mutationFn: (data: Partial<Project>) => apiClient(`/projects/${project.id}/update`, { method: 'POST', body: JSON.stringify(data) }),
+		onSuccess: () => {
+			props.onSuccess()
+			addMessagePopup({ message: 'Project details updated successfully', type: 'success', id: Math.random().toString() })
+		},
+		mutationKey: ['editProjectDetails', props.type],
+		mutationFn: (data: Partial<Project>) => apiClient(`/projects/${props.projectId}/update`, { method: 'POST', body: JSON.stringify(data) }),
 	})
 
-	function handleEditForm(e: FormEvent<HTMLFormElement>) {
-		e.preventDefault()
-		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any
-		if (type) editProject({ [type]: formData[type] })
-	}
+	const editor = useCreateBlockNote({
+		...(!!props.project[props.type]
+			? { initialContent: safeJsonParse(props.project[props.type] as string, undefined, (res) => res.length > 0) }
+			: {}),
+	})
 
-	function handleReset(e: MouseEvent<HTMLButtonElement>) {
-		e.preventDefault()
-	}
+	useEffect(() => {
+		if (!props.editable) {
+			const content = props.project[props.type]
+			const edContent = JSON.stringify(editor.document)
+			if (content !== edContent) {
+				editProject({ [props.type]: edContent })
+			}
+		}
+	}, [props.editable])
 
-	if (!project.id) return null
 	return (
-		<>
-			<div className="flex flex-col items-center justify-between gap-4 rounded-lg p-2 px-4 shadow-md md:flex-row">
-				<h3 className="text-xl font-bold">{project.name}</h3>
-				<div className="flex items-center justify-center gap-4">
-					<Button size="small" onClick={() => setType('readme')}>
-						Edit Readme
-					</Button>
-					<Button size="small" onClick={() => setType('guidelines')}>
-						Edit Guidelines
-					</Button>
-					<Button size="small" onClick={() => setType('documentation')}>
-						Edit Documentation
-					</Button>
-				</div>
+		<BlockNoteView
+			theme="light"
+			editor={editor}
+			itemType="input"
+			editable={props.editable}
+			className={twMerge(
+				'w-full border-0 py-1.5 text-gray-900 placeholder:text-gray-400 sm:text-sm sm:leading-6',
+				props.editable ? 'rounded-lg ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600' : '',
+			)}
+		/>
+	)
+}
+
+function EditProjectDetails(props: EditProjectDetailsProps) {
+	const [editable, setEditable] = useState(false)
+
+	const { data: project, isPending } = useQuery<Project>({
+		queryKey: ['getProject', props.projectId],
+		queryFn: () => apiClient(`/projects/one/${props.projectId}`),
+	})
+
+	function onSuccess() {
+		setEditable(false)
+	}
+
+	if (isPending || !project) return <PageLoader />
+
+	return (
+		<div className="relative">
+			<div className="absolute right-2 top-2 z-50 flex items-center gap-2">
+				<Button size="small" onClick={() => setEditable((p) => !p)} LeftIcon={<PencilSquareIcon className="h-4 w-4" />}>
+					{editable ? 'Confirm' : 'Edit'}
+				</Button>
+				<Chip className="border-2 bg-transparent text-black">{capitalizeFirstLetter(props.type)}</Chip>
 			</div>
-
-			<Modal open={!!type} setOpen={() => setType(null)} title={`Edit ${type}`}>
-				<form className="flex h-full w-full flex-col gap-4" onSubmit={handleEditForm}>
-					{type ? <RichTextInput defaultValue={project[type]} name={type} /> : null}
-
-					<div className="flex flex-grow-0 items-center justify-between pt-3">
-						<Button variant="simple" onClick={handleReset}>
-							Reset
-						</Button>
-						<Button type="submit">Save</Button>
-					</div>
-				</form>
-			</Modal>
-		</>
+			<Editor {...{ editable, project, onSuccess, ...props }} />
+		</div>
 	)
 }
 
