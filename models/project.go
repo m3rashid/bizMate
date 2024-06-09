@@ -2,8 +2,8 @@ package models
 
 import "time"
 
-const TAG_MODEL_NAME string = "tags"
-const TASK_MODEL_NAME string = "tasks"
+const TAG_MODEL_NAME string = "project_tags"
+const TASK_MODEL_NAME string = "project_tasks"
 const PROJECT_MODEL_NAME string = "projects"
 const PROJECT_TASK_COMMENT_MODEL_NAME = "project_task_comments"
 
@@ -31,45 +31,45 @@ type Project struct {
 	People      []*User `json:"users" gorm:"many2many:users_project_relation"`
 }
 
-type Tag struct {
+type ProjectTag struct {
 	BaseModel
 	Name string `json:"name" gorm:"column:name;not null" validate:"required"`
 }
 
-type Task struct {
+type ProjectTask struct {
 	BaseModel
 	CreatedBy
 	UpdatedBy
-	Title        string     `json:"title" gorm:"column:title;not null" validate:"required"`
-	Description  string     `json:"description" gorm:"column:description;not null" validate:"required"`
-	Status       TaskStatus `json:"status" gorm:"column:status;not null" validate:"required"`
-	Deadline     time.Time  `json:"deadline" gorm:"column:deadline" validate:""`
-	ProjectID    uint       `json:"projectId" gorm:"column:projectId;not null" validate:"required"`
-	Project      *Project   `json:"project" gorm:"foreignKey:projectId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Assinees     []*User    `json:"users" gorm:"many2many:users_task_relation"`
-	Tags         []*Tag     `json:"tags" gorm:"many2many:tags_task_relation"`
-	ParentTaskID uint       `json:"parentTaskId" gorm:"column:parentTaskId"`
-	ParentTask   *Task      `json:"parentTask" gorm:"foreignKey:parentTaskId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Title        string        `json:"title" gorm:"column:title;not null" validate:"required"`
+	Description  string        `json:"description" gorm:"column:description;not null" validate:"required"`
+	Status       TaskStatus    `json:"status" gorm:"column:status;not null" validate:"required"`
+	Deadline     time.Time     `json:"deadline" gorm:"column:deadline" validate:""`
+	ProjectID    uint          `json:"projectId" gorm:"column:projectId;not null" validate:"required"`
+	Project      *Project      `json:"project" gorm:"foreignKey:projectId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Assinees     []*User       `json:"users" gorm:"many2many:users_task_relation"`
+	Tags         []*ProjectTag `json:"tags" gorm:"many2many:tags_task_relation"`
+	ParentTaskID *uint         `json:"parentTaskId" gorm:"column:parentTaskId"`
+	ParentTask   *ProjectTask  `json:"parentTask" gorm:"foreignKey:parentTaskId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 type ProjectTaskComment struct {
 	BaseModel
 	CreatedBy
 	UpdatedBy
-	Comment string `json:"comment" gorm:"column:comment;not null" validate:"required"`
-	TaskID  uint   `json:"taskId" gorm:"column:taskId;not null" validate:"required"`
-	Task    *Task  `json:"task" gorm:"foreignKey:taskId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Comment string       `json:"comment" gorm:"column:comment;not null" validate:"required"`
+	TaskID  uint         `json:"taskId" gorm:"column:taskId;not null" validate:"required"`
+	Task    *ProjectTask `json:"task" gorm:"foreignKey:taskId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 func (Project) TableName() string {
 	return PROJECT_MODEL_NAME
 }
 
-func (Tag) TableName() string {
+func (ProjectTag) TableName() string {
 	return TAG_MODEL_NAME
 }
 
-func (Task) TableName() string {
+func (ProjectTask) TableName() string {
 	return TASK_MODEL_NAME
 }
 

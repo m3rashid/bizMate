@@ -5,7 +5,6 @@ import { Project } from '../../../../types'
 import apiClient from '../../../../api/client'
 import { PageLoader } from '../../../../components/lib/loader'
 import PageContainer from '../../../../components/pageContainer'
-import { ProjectKanbanProvider } from '../../../../hooks/projectKanban'
 import ProjectHeader from '../../../../components/projects/projectHeader'
 import ProjectKanbanBoard from '../../../../components/projects/projectKanbanBoard'
 
@@ -27,9 +26,7 @@ function ProjectDetails() {
 		<PageContainer>
 			<ProjectHeader {...project} />
 
-			<ProjectKanbanProvider project={project} projectId={projectId}>
-				<ProjectKanbanBoard projectId={projectId} />
-			</ProjectKanbanProvider>
+			<ProjectKanbanBoard projectId={projectId} />
 		</PageContainer>
 	)
 }

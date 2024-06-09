@@ -76,8 +76,8 @@ func main() {
 		models.Widget{},
 		models.Dashboard{},
 
-		models.Tag{},
-		models.Task{},
+		models.ProjectTag{},
+		models.ProjectTask{},
 		models.Project{},
 		models.ProjectTaskComment{},
 

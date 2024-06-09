@@ -1,34 +1,49 @@
 import { FormEvent, MouseEvent } from 'react'
+import { useMutation } from '@tanstack/react-query'
 
 import Modal from '../lib/modal'
 import Button from '../lib/button'
 import TextInput from '../lib/textInput'
-import { taskStatuses } from '../../types'
+import apiClient from '../../api/client'
 import RichTextInput from '../lib/richTextInput'
+import { ProjectTask, taskStatuses } from '../../types'
 import SingleSelectInput from '../lib/singleSelectInput'
 import { capitalizeFirstLetter } from '../../utils/helpers'
-import { useProjectKanban } from '../../hooks/projectKanban'
 
-function AddEditProjectTask() {
-	const {
-		setAddEditModalOpen,
-		projectKanban: { editData, addEditModalOpen },
-	} = useProjectKanban()
-	function handleEditForm(e: FormEvent<HTMLFormElement>) {
+type AddEditProjectTaskProps = {
+	modalOpen: boolean
+	projectId: string
+	setModalClose: () => void
+	editData: ProjectTask | null
+}
+function AddEditProjectTask(props: AddEditProjectTaskProps) {
+	const { mutate: addProjectTask } = useMutation({
+		mutationKey: ['createTask'],
+		onSuccess: () => props.setModalClose(),
+		mutationFn: (task: Partial<ProjectTask>) => apiClient('/tasks/create', { method: 'POST', body: JSON.stringify(task) }),
+	})
+
+	const { mutate: editProjectTask } = useMutation({
+		mutationKey: ['editTask'],
+		mutationFn: (task: Partial<ProjectTask>) => apiClient(`/tasks/${props.editData?.id}/update`, { method: 'POST', body: JSON.stringify(task) }),
+	})
+
+	function handleAddEditForm(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault()
 		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any
-		console.log(formData)
+		!!props.editData ? editProjectTask({ ...formData }) : addProjectTask({ ...formData, projectId: parseInt(props.projectId) })
 	}
 
 	function handleReset(e: MouseEvent<HTMLButtonElement>) {
 		e.preventDefault()
 	}
 
+	if (!props.modalOpen) return null
+
 	return (
-		<Modal open={addEditModalOpen} setOpen={setAddEditModalOpen} title={!!editData ? '' : 'Add Project Task'}>
-			<form className="flex h-full flex-col gap-4" onSubmit={handleEditForm}>
-				<TextInput name="title" placeholder="Create the sales pitchdeck" defaultValue={editData?.title} label="Title" />
-				<RichTextInput name="description" defaultValue={editData?.description} />
+		<Modal open={props.modalOpen} setOpen={props.setModalClose} title={!!props.editData ? '' : 'Add Project Task'}>
+			<form className="flex h-full flex-col gap-4" onSubmit={handleAddEditForm}>
+				<TextInput name="title" placeholder="Create the sales pitchdeck" defaultValue={props.editData?.title} label="Title" />
 				<SingleSelectInput
 					name="status"
 					render={({ option }) => (
@@ -36,9 +51,11 @@ function AddEditProjectTask() {
 							{option}
 						</div>
 					)}
-					default={editData?.status || taskStatuses[0]}
+					default={props.editData?.status || taskStatuses[0]}
 					options={taskStatuses.map((status) => ({ id: status, value: status, label: capitalizeFirstLetter(status) }) as any)}
 				/>
+
+				<RichTextInput name="description" defaultValue={props.editData?.description} />
 
 				<div className="flex flex-grow-0 items-center justify-between pt-3">
 					<Button variant="simple" onClick={handleReset}>

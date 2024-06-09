@@ -41,22 +41,40 @@ func Setup(app *fiber.App) {
 		ParamValue: "projectId",
 	}))
 
-	app.Get("/projects/:projectId/tasks/all", utils.CheckAuthMiddleware, controllers.Paginate[models.Task](controllers.PaginateOptions{
+	app.Get("/projects/:projectId/tasks/all", utils.CheckAuthMiddleware, controllers.Paginate[models.ProjectTask](controllers.PaginateOptions{
 		ParamKeys: []string{"projectId"},
 		Populate:  []string{"Assinees", "Tags"},
 	}))
 
-	app.Get("/tasks/one/:taskId", utils.CheckAuthMiddleware, controllers.Get[models.Task](controllers.GetOptions{
+	app.Get("/tasks/one/:taskId", utils.CheckAuthMiddleware, controllers.Get[models.ProjectTask](controllers.GetOptions{
 		Populate:   []string{"Assinees", "Tags"},
 		ParamKey:   "id",
 		ParamValue: "taskId",
 	}))
 
-	app.Post("/tasks/create", utils.CheckAuthMiddleware, controllers.Create[models.Task, models.Task](models.TASK_MODEL_NAME))
+	app.Post("/tasks/create", utils.CheckAuthMiddleware, controllers.Create(models.TASK_MODEL_NAME, controllers.CreateOptions[ProjectTaskReqBody, models.ProjectTask]{
+		GetDefaultValues: func(values *ProjectTaskReqBody, ctx *fiber.Ctx) *models.ProjectTask {
+			userId := ctx.Locals("userId").(uint)
+			return &models.ProjectTask{
+				Title:        values.Title,
+				Description:  values.Description,
+				Status:       values.Status,
+				Deadline:     values.Deadline,
+				ProjectID:    values.ProjectID,
+				Assinees:     utils.Ternary(len(values.Assinees) > 0, values.Assinees, []*models.User{}),
+				Tags:         utils.Ternary(len(values.Tags) > 0, values.Tags, []*models.ProjectTag{}),
+				ParentTaskID: values.ParentTaskID,
+				CreatedBy:    models.CreatedBy{CreatedByID: userId},
+			}
+		},
+	}))
 
-	app.Post("/tasks/update", utils.CheckAuthMiddleware, controllers.Update[models.Task, models.Task]())
+	app.Post("/tasks/:taskId/update", utils.CheckAuthMiddleware, controllers.Update(controllers.UpdateOptions[ProjectTaskReqBody, models.ProjectTask]{
+		ParamKey:   "id",
+		ParamValue: "taskId",
+	}))
 
-	app.Get("/tasks/delete/:taskId", utils.CheckAuthMiddleware, controllers.Delete(controllers.DeleteOptions[models.Task]{
+	app.Get("/tasks/delete/:taskId", utils.CheckAuthMiddleware, controllers.Delete(controllers.DeleteOptions[models.ProjectTask]{
 		ParamKey:   "id",
 		ParamValue: "taskId",
 	}))
@@ -67,15 +85,21 @@ func Setup(app *fiber.App) {
 
 	app.Post("/tasks/comments/create", utils.CheckAuthMiddleware, controllers.Create[models.ProjectTaskComment, models.ProjectTaskComment](models.PROJECT_TASK_COMMENT_MODEL_NAME))
 
-	app.Post("/tasks/comments/update", utils.CheckAuthMiddleware, controllers.Update[models.ProjectTaskComment, models.ProjectTaskComment]())
+	app.Post("/tasks/comments/:commentId/update", utils.CheckAuthMiddleware, controllers.Update(controllers.UpdateOptions[models.ProjectTaskComment, models.ProjectTaskComment]{
+		ParamKey:   "id",
+		ParamValue: "commentId",
+	}))
 
-	app.Get("/tags/all", utils.CheckAuthMiddleware, controllers.Paginate[models.Tag]())
+	app.Get("/tags/all", utils.CheckAuthMiddleware, controllers.Paginate[models.ProjectTag]())
 
-	app.Post("/tags/create", utils.CheckAuthMiddleware, controllers.Create[models.Tag, models.Tag](models.TAG_MODEL_NAME))
+	app.Post("/tags/create", utils.CheckAuthMiddleware, controllers.Create[models.ProjectTag, models.ProjectTag](models.TAG_MODEL_NAME))
 
-	app.Post("/tags/update", utils.CheckAuthMiddleware, controllers.Update[models.Tag, models.Tag]())
+	app.Post("/tags/:tagId/update", utils.CheckAuthMiddleware, controllers.Update(controllers.UpdateOptions[models.ProjectTag, models.ProjectTag]{
+		ParamKey:   "id",
+		ParamValue: "tagId",
+	}))
 
-	app.Get("/tags/delete/:tagId", utils.CheckAuthMiddleware, controllers.Delete(controllers.DeleteOptions[models.Tag]{
+	app.Get("/tags/delete/:tagId", utils.CheckAuthMiddleware, controllers.Delete(controllers.DeleteOptions[models.ProjectTag]{
 		ParamKey:   "id",
 		ParamValue: "tagId",
 	}))

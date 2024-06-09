@@ -30,8 +30,8 @@ func Paginate[Model DbModel](_options ...PaginateOptions) func(*fiber.Ctx) error
 	}
 
 	return func(ctx *fiber.Ctx) error {
-		reqBody := utils.PaginationRequestQuery{}
-		if err := ctx.QueryParser(&reqBody); err != nil {
+		reqQuery := utils.PaginationRequestQuery{}
+		if err := ctx.QueryParser(&reqQuery); err != nil {
 			return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Bad Request"})
 		}
 
@@ -50,15 +50,15 @@ func Paginate[Model DbModel](_options ...PaginateOptions) func(*fiber.Ctx) error
 
 		requestQueryParams := strings.Join(requestQueriesAndParams, " AND ")
 
-		if reqBody.Page <= 0 {
-			reqBody.Page = 1
+		if reqQuery.Page <= 0 {
+			reqQuery.Page = 1
 		}
 
-		if reqBody.Limit <= 0 {
-			reqBody.Limit = 10
+		if reqQuery.Limit <= 0 {
+			reqQuery.Limit = 10
 		}
 
-		reqBody.Limit = min(reqBody.Limit, 50)
+		reqQuery.Limit = min(reqQuery.Limit, 50)
 
 		db, err := utils.GetTenantDbFromCtx(ctx)
 		if err != nil {
@@ -80,7 +80,7 @@ func Paginate[Model DbModel](_options ...PaginateOptions) func(*fiber.Ctx) error
 		}
 
 		results := []Model{}
-		if err := db.Where(requestQueryParams).Order("id DESC").Limit(reqBody.Limit).Offset((reqBody.Page - 1) * reqBody.Limit).Find(&results).Error; err != nil {
+		if err := db.Where(requestQueryParams).Order("id DESC").Limit(reqQuery.Limit).Offset((reqQuery.Page - 1) * reqQuery.Limit).Find(&results).Error; err != nil {
 			return ctx.SendStatus(fiber.StatusInternalServerError)
 		}
 
@@ -91,12 +91,12 @@ func Paginate[Model DbModel](_options ...PaginateOptions) func(*fiber.Ctx) error
 
 		paginationResponse := utils.PaginationResponse[Model]{
 			Docs:            results,
-			Limit:           reqBody.Limit,
+			Limit:           reqQuery.Limit,
 			Count:           len(results),
 			TotalDocs:       docsCount,
-			CurrentPage:     reqBody.Page,
-			HasNextPage:     docsCount > int64(reqBody.Page*reqBody.Limit),
-			HasPreviousPage: reqBody.Page > 1,
+			CurrentPage:     reqQuery.Page,
+			HasNextPage:     docsCount > int64(reqQuery.Page*reqQuery.Limit),
+			HasPreviousPage: reqQuery.Page > 1,
 		}
 
 		return ctx.Status(fiber.StatusOK).JSON(paginationResponse)

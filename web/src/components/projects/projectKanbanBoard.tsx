@@ -1,7 +1,8 @@
 import { SortableContext } from '@dnd-kit/sortable'
 import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 
-import { taskStatuses } from '../../types'
+import { usePaginate } from '../../hooks/paginate'
+import { ProjectTask, taskStatuses } from '../../types'
 import ColumnContainer from './projectKanbanColumnContainer'
 import { useProjectKanban } from '../../hooks/projectKanban'
 
@@ -10,14 +11,8 @@ export type ProjectKanbanBoardProps = {
 }
 
 function ProjectKanbanBoard(props: ProjectKanbanBoardProps) {
-	const {
-		onDragEnd,
-		onDragOver,
-		onDragStart,
-		projectKanban: { tasks: projectTasks },
-	} = useProjectKanban()
-	console.log(projectTasks)
-
+	const { docs } = usePaginate<ProjectTask>({ url: `/projects/${props.projectId}/tasks/all`, queryKeys: ['getProjectTasks', props.projectId] })
+	const { onDragEnd, onDragOver, onDragStart } = useProjectKanban()
 	const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 10 } }))
 
 	return (
@@ -27,7 +22,12 @@ function ProjectKanbanBoard(props: ProjectKanbanBoardProps) {
 					<div className="flex gap-4">
 						<SortableContext items={taskStatuses as any}>
 							{taskStatuses.map((taskStatus) => (
-								<ColumnContainer key={taskStatus} {...{ projectId: props.projectId, taskStatus }} />
+								<ColumnContainer
+									key={taskStatus}
+									taskStatus={taskStatus}
+									projectId={props.projectId}
+									tasks={(docs || []).filter((t) => t.status === taskStatus)}
+								/>
 							))}
 						</SortableContext>
 					</div>

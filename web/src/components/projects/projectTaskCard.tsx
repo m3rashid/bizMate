@@ -7,6 +7,7 @@ import { ProjectTask } from '../../types'
 
 export type ProjectTaskCardProps = {
 	task: ProjectTask
+	onEdit: (task: ProjectTask) => void
 }
 
 function ProjectTaskCard(props: ProjectTaskCardProps) {
@@ -37,7 +38,7 @@ function ProjectTaskCard(props: ProjectTaskCardProps) {
 			<div
 				style={style}
 				ref={setNodeRef}
-				className="bg-mainBackgroundColor relative flex h-[100px] min-h-[100px] cursor-grab items-center rounded-xl border-2 border-rose-500 p-2.5  text-left opacity-30"
+				className="relative z-50 flex h-[100px] min-h-[100px] cursor-grab items-center rounded-xl border-2 border-rose-500  p-2.5 text-left opacity-30"
 			/>
 		)
 	}
@@ -49,13 +50,13 @@ function ProjectTaskCard(props: ProjectTaskCardProps) {
 				style={style}
 				{...attributes}
 				{...listeners}
-				className="bg-mainBackgroundColor relative flex h-[100px] min-h-[100px] cursor-grab items-center rounded-xl p-2.5 text-left hover:ring-2 hover:ring-inset hover:ring-rose-500"
+				className="relative flex h-[100px] min-h-[100px] cursor-grab items-center rounded-xl border-primaryLight p-2.5 text-left hover:ring-2 hover:ring-inset hover:ring-rose-500"
 			>
 				<textarea
-					value={props.task.description}
+					value={props.task.title}
 					autoFocus
 					placeholder="Task content here"
-					className="h-[90%] w-full resize-none rounded border-none bg-transparent text-white focus:outline-none"
+					className="h-[90%] w-full resize-none rounded border-none bg-transparent focus:outline-none"
 					onBlur={toggleEditMode}
 					onKeyDown={(e) => {
 						if (e.key === 'Enter' && e.shiftKey) {
@@ -86,9 +87,9 @@ function ProjectTaskCard(props: ProjectTaskCardProps) {
 					// onClick={() => {
 					// 	deleteTask(task.id)
 					// }}
-					className="bg-columnBackgroundColor absolute right-4 top-1/2 -translate-y-1/2 rounded stroke-white p-2 opacity-60 hover:opacity-100"
+					className="absolute right-4 top-1/2 -translate-y-1/2 rounded stroke-white p-2 opacity-60 hover:opacity-100"
 				>
-					<TrashIcon className="" />
+					<TrashIcon className="h-4 w-4 text-danger" />
 				</button>
 			)}
 		</div>
