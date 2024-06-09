@@ -1,13 +1,13 @@
+import { useMutation } from '@tanstack/react-query'
 import { Dispatch, FormEvent, MouseEvent, SetStateAction } from 'react'
 
 import Modal from '../lib/modal'
 import Button from '../lib/button'
 import { Project } from '../../types'
-import { useMutation } from '@tanstack/react-query'
 import apiClient from '../../api/client'
 import TextInput from '../lib/textInput'
-import TextAreaInput from '../lib/textAreaInput'
 import TogglerInput from '../lib/toggle'
+import TextAreaInput from '../lib/textAreaInput'
 
 type AddEditProjectModalProps = {
 	open: boolean

@@ -128,9 +128,9 @@ export type Tag = BaseModel & {
 	name: string
 }
 
-export const taskStatus = ['backlog', 'todo', 'inprogress', 'review', 'done'] as const
-export type TaskStatus = (typeof taskStatus)[number]
-export type Task = BaseModel &
+export const taskStatuses = ['backlog', 'todo', 'inprogress', 'review', 'done'] as const
+export type TaskStatus = (typeof taskStatuses)[number]
+export type ProjectTask = BaseModel &
 	CreatedBy &
 	UpdatedBy & {
 		title: string
@@ -142,13 +142,13 @@ export type Task = BaseModel &
 		users: Array<User>
 		tags: Array<Tag>
 		parentTaskId?: ID
-		parentTask?: Task
+		parentTask?: ProjectTask
 	}
 
 export type ProjectTaskComment = BaseModel &
 	CreatedBy &
 	UpdatedBy & {
 		taskId: ID
-		task: Task
+		task: ProjectTask
 		comment: string
 	}

@@ -68,9 +68,9 @@ const formDesignerContext = createContext<[formDesigner: FormDesigner, setFormDe
 	() => {},
 ])
 
-export function FormDesignerProvider({ children }: PropsWithChildren) {
+export function FormDesignerProvider(props: PropsWithChildren) {
 	const [formDesigner, setFormDesigner] = useState<FormDesigner>(formDesignerDefaultState)
-	return <formDesignerContext.Provider value={[formDesigner, setFormDesigner]}>{children}</formDesignerContext.Provider>
+	return <formDesignerContext.Provider value={[formDesigner, setFormDesigner]}>{props.children}</formDesignerContext.Provider>
 }
 
 export function useFormDesigner() {
