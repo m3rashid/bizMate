@@ -36,7 +36,7 @@ function ElementWrapper(props: ElementWrapperProps) {
 					removeNode(props.item.id)
 				}}
 			>
-				<Tooltip label="Double Click to remove">
+				<Tooltip show="right" label="Double Click to remove">
 					<XMarkIcon className="-mr-0.5 h-8 w-8" />
 				</Tooltip>
 			</div>

@@ -16,7 +16,7 @@ function Tooltip(props: TooltipProps) {
 		const bounds = domRef.current.getBoundingClientRect()
 		return {
 			...defaultStyles,
-			top: bounds.top + bounds.height + 10,
+			top: bounds.top + bounds.height + 5,
 			...(props.show === 'right' ? { left: bounds.left } : { left: bounds.right - defaultStyles.maxWidth }),
 		}
 	}
