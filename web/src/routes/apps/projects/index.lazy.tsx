@@ -10,7 +10,7 @@ import Button from '../../../components/lib/button'
 import { PageLoader } from '../../../components/lib/loader'
 import PageContainer from '../../../components/pageContainer'
 import Table, { TableProps } from '../../../components/lib/table'
-import AddEditProjectModal from '../../../components/projects/addEditModalForm'
+import AddEditProjectModal from '../../../components/projects/addEditProject'
 
 export const Route = createLazyFileRoute('/apps/projects/')({
 	component: Projects,

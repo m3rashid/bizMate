@@ -8,7 +8,7 @@ const buttonVariants = {
 	danger: 'bg-danger hover:bg-danger focus-visible:outline-danger',
 	secondary: 'bg-secondary hover:bg-secondary focus-visible:outline-secondary',
 	disabled: 'bg-disabled hover:bg-disabled focus-visible:outline-disabled',
-	sucess: 'bg-sucess hover:bg-sucess focus-visible:outline-sucess',
+	sucess: 'bg-success hover:bg-success focus-visible:outline-success',
 	simple: 'bg-white text-gray-700 hover:bg-gray-50 focus-visible:outline-gray-200 border border-gray-300',
 } as const
 

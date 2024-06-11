@@ -47,6 +47,9 @@ const AppsProjectsProjectIdGuidelinesLazyImport = createFileRoute(
 const AppsProjectsProjectIdDocsLazyImport = createFileRoute(
   '/apps/projects/$projectId/docs',
 )()
+const AppsProjectsProjectIdAnalyticsLazyImport = createFileRoute(
+  '/apps/projects/$projectId/analytics',
+)()
 const AppsFormsFormIdFillLazyImport = createFileRoute(
   '/apps/forms/$formId/fill',
 )()
@@ -187,6 +190,16 @@ const AppsProjectsProjectIdDocsLazyRoute =
     import('./routes/apps/projects/$projectId/docs.lazy').then((d) => d.Route),
   )
 
+const AppsProjectsProjectIdAnalyticsLazyRoute =
+  AppsProjectsProjectIdAnalyticsLazyImport.update({
+    path: '/apps/projects/$projectId/analytics',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/apps/projects/$projectId/analytics.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
 const AppsFormsFormIdFillLazyRoute = AppsFormsFormIdFillLazyImport.update({
   path: '/apps/forms/$formId/fill',
   getParentRoute: () => rootRoute,
@@ -284,6 +297,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppsFormsFormIdFillLazyImport
       parentRoute: typeof rootRoute
     }
+    '/apps/projects/$projectId/analytics': {
+      preLoaderRoute: typeof AppsProjectsProjectIdAnalyticsLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/apps/projects/$projectId/docs': {
       preLoaderRoute: typeof AppsProjectsProjectIdDocsLazyImport
       parentRoute: typeof rootRoute
@@ -332,6 +349,7 @@ export const routeTree = rootRoute.addChildren([
   AppsCommunicationsEmailsDesignerLazyRoute,
   AppsCommunicationsEmailsTemplatesLazyRoute,
   AppsFormsFormIdFillLazyRoute,
+  AppsProjectsProjectIdAnalyticsLazyRoute,
   AppsProjectsProjectIdDocsLazyRoute,
   AppsProjectsProjectIdGuidelinesLazyRoute,
   AppsProjectsProjectIdReadmeLazyRoute,
