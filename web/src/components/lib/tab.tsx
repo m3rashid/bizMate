@@ -63,14 +63,7 @@ function Tabs(props: TabProps) {
 				))}
 			</div>
 
-			{selectedTab ? (
-				currentTab ? (
-					<currentTab.Component {...currentTab.componentProps} />
-				) : (
-					// <div>No found</div>
-					<NotFound />
-				)
-			) : null}
+			{selectedTab ? currentTab ? <currentTab.Component {...currentTab.componentProps} /> : <NotFound /> : null}
 		</div>
 	)
 }

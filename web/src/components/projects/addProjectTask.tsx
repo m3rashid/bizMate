@@ -14,11 +14,15 @@ type AddProjectTaskProps = {
 	projectId: string
 	setModalOpen: Dispatch<SetStateAction<boolean>>
 	parentTaskId?: number
+	refetch: () => void
 }
 function AddProjectTask(props: AddProjectTaskProps) {
 	const { mutate: addProjectTask } = useMutation({
 		mutationKey: ['createTask'],
-		onSuccess: () => props.setModalOpen(false),
+		onSuccess: () => {
+			props.refetch()
+			props.setModalOpen(false)
+		},
 		mutationFn: (task: Partial<ProjectTask>) => apiClient('/tasks/create', { method: 'POST', body: JSON.stringify(task) }),
 	})
 

@@ -44,7 +44,7 @@ export function MessagePopup(props: MessagePopupType) {
 	const [Icon, color] = PopupIcons[props.type]
 
 	return (
-		<div className={twMerge('flex w-full gap-2 rounded-lg border-l-4 bg-white p-2 shadow-md', popupVariants[props.type])}>
+		<div className={twMerge('flex w-full gap-2 rounded-lg border-l-4 bg-white p-2 shadow-lg', popupVariants[props.type])}>
 			<div>
 				<Icon className={twMerge('h-5 w-5', color)} />
 			</div>

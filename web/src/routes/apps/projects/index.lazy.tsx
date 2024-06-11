@@ -1,13 +1,10 @@
 import dayjs from 'dayjs'
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import { createLazyFileRoute, useNavigate } from '@tanstack/react-router'
 
 import { Project } from '../../../types'
-import apiClient from '../../../api/client'
 import Button from '../../../components/lib/button'
-import { PageLoader } from '../../../components/lib/loader'
 import PageContainer from '../../../components/pageContainer'
 import Table, { TableProps } from '../../../components/lib/table'
 import AddEditProjectModal from '../../../components/projects/addEditProject'
@@ -20,7 +17,6 @@ function Projects() {
 	const navigate = useNavigate()
 	const [open, setOpen] = useState(false)
 	const [editRow, setEditRow] = useState<Project | undefined>(undefined)
-	const { data, isPending, refetch } = useQuery({ queryKey: ['getProjects'], queryFn: () => apiClient('/projects/all') })
 
 	const tableColumns: TableProps<Project>['columns'] = [
 		{ dataKey: 'name', title: 'Title' },
@@ -64,24 +60,21 @@ function Projects() {
 
 	return (
 		<PageContainer>
-			<AddEditProjectModal {...{ open, setOpen, refetch, project: editRow }} />
+			<AddEditProjectModal {...{ open, setOpen, refetch: () => {}, project: editRow }} />
 
-			{isPending ? (
-				<PageLoader />
-			) : (
-				<Table<Project>
-					title="Projects"
-					description="Create and manage all projects"
-					data={data?.docs || []}
-					columns={tableColumns}
-					defaultEmptyStateName="projects"
-					addButtonLink="/apps/projects/create"
-					addButtonProps={{
-						label: 'New Project',
-						onClick: () => setOpen(true),
-					}}
-				/>
-			)}
+			<Table<Project>
+				title="Projects"
+				columns={tableColumns}
+				queryKeys={['getProjects']}
+				paginateUrl="/projects/all"
+				addButtonProps={{
+					label: 'New Project',
+					onClick: () => setOpen(true),
+				}}
+				defaultEmptyStateName="projects"
+				addButtonLink="/apps/projects/create"
+				description="Create and manage all projects"
+			/>
 		</PageContainer>
 	)
 }

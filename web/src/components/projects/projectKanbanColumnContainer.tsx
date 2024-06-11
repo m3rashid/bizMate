@@ -10,6 +10,7 @@ export type ColumnContainerProps = {
 	taskStatus: TaskStatus
 	tasks?: ProjectTask[]
 	onAddTask: () => void
+	refetch: () => void
 }
 
 function ColumnContainer(props: ColumnContainerProps) {
@@ -23,10 +24,10 @@ function ColumnContainer(props: ColumnContainerProps) {
 				</div>
 			</div>
 
-			<div className="flex flex-grow flex-col gap-4 overflow-y-auto overflow-x-hidden p-2">
+			<div className="mb-4 flex flex-grow flex-col gap-4 overflow-y-auto overflow-x-hidden rounded-b-md bg-slate-100 p-2">
 				<SortableContext items={(props.tasks || []).map((t) => t.id)}>
 					{(props.tasks || []).map((task) => (
-						<ProjectTaskCard key={task.id} task={task} />
+						<ProjectTaskCard key={task.id} task={task} onDelete={props.refetch} />
 					))}
 				</SortableContext>
 			</div>

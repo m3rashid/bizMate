@@ -1,15 +1,12 @@
+import { FC, ReactNode } from 'react'
 import { twMerge } from 'tailwind-merge'
-import { FC, ReactNode, useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
-import PlusIcon from '@heroicons/react/24/outline/PlusIcon'
+import { PlusIcon } from '@heroicons/react/24/outline'
 
-import { PageLoader } from './loader'
-import apiClient from '../../api/client'
 import Button, { ButtonProps } from './button'
-import { ExplicitAndAllObject, PaginationResponse } from '../../types'
+import { ExplicitAndAllObject } from '../../types'
 
-export type TableColumn<T> = {
+export type SimpleTableColumn<T> = {
 	title: string
 	dataKey: keyof T
 	className?: string
@@ -17,17 +14,15 @@ export type TableColumn<T> = {
 	render?: FC<{ row: T; rowIndex: number }>
 }
 
-export type TableProps<T> = {
-	pageSize?: number
-	paginateUrl: string
-	queryKeys: string[]
-	columns: Array<TableColumn<T>>
+export type SimpleTableProps<T> = {
+	data: Array<T>
+	columns: Array<SimpleTableColumn<T>>
 	title?: string
 	description?: string
 	addButtonLink?: string
 	addButtonProps?: ButtonProps
 	rootClassName?: string
-	tableRowClassName?: (data: T, rowIndex: number) => string
+	tableRowClassName?: (rowIndex: number) => string
 	tableRootClassName?: string
 	tableHeadingRowClassName?: string
 	tableHeadingClassName?: (columnIndex: number) => string
@@ -37,16 +32,9 @@ export type TableProps<T> = {
 }
 
 type Row = ExplicitAndAllObject<'id'>
-function Table<T extends Row>(props: TableProps<T>) {
-	const [page, setPage] = useState(1)
-
+function SimpleTable<T extends Row>(props: SimpleTableProps<T>) {
 	const navigate = useNavigate()
-	const { isPending, data } = useQuery<PaginationResponse<T>>({
-		queryKey: [...props.queryKeys, page, props.pageSize || 15],
-		queryFn: () => apiClient(`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${page}&limit=${props.pageSize || 15}`),
-	})
 
-	if (isPending || !data) return <PageLoader />
 	return (
 		<div className={twMerge('h-full w-full', props.rootClassName)}>
 			<div className={twMerge('sm:flex sm:items-center', props.title || props.description || props.addButtonLink ? 'mb-8' : '')}>
@@ -60,8 +48,7 @@ function Table<T extends Row>(props: TableProps<T>) {
 				{props.addButtonLink ? (
 					<div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
 						<Button
-							size="small"
-							label={`Create ${props.title || props.defaultEmptyStateName}`}
+							label={`New ${props.title || props.defaultEmptyStateName}`}
 							LeftIcon={<PlusIcon className="h-5 w-5" />}
 							onClick={() => navigate({ to: props.addButtonLink })}
 							{...props.addButtonProps}
@@ -71,7 +58,7 @@ function Table<T extends Row>(props: TableProps<T>) {
 			</div>
 
 			<div className={twMerge('flow-root min-h-72 overflow-x-auto overflow-y-hidden', props.tableRootClassName)}>
-				{data.docs.length === 0 ? (
+				{props.data.length === 0 ? (
 					props.defaultEmptyStateName ? (
 						<div className="flex h-72 flex-col items-center justify-center gap-4 rounded-md border-2 border-gray-200">
 							<div className="text-center">
@@ -82,7 +69,7 @@ function Table<T extends Row>(props: TableProps<T>) {
 								<Button
 									LeftIcon={<PlusIcon className="h-5 w-5" />}
 									onClick={() => navigate({ to: props.addButtonLink })}
-									label={`Create ${props.title || props.defaultEmptyStateName}`}
+									label={`New ${props.title || props.defaultEmptyStateName}`}
 									{...props.addButtonProps}
 								/>
 							) : null}
@@ -90,7 +77,7 @@ function Table<T extends Row>(props: TableProps<T>) {
 					) : props.emptyState ? (
 						props.emptyState
 					) : (
-						<div className="" />
+						<div className=""></div>
 					)
 				) : (
 					<div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
@@ -115,12 +102,12 @@ function Table<T extends Row>(props: TableProps<T>) {
 									</tr>
 								</thead>
 								<tbody className="divide-y divide-gray-200 bg-white">
-									{(data.docs || []).map((row, rowIndex) => (
+									{(props.data || []).map((row, rowIndex) => (
 										<tr
 											key={row.id}
 											className={twMerge(
 												'transition-colors duration-200 ease-in-out hover:bg-pageBg hover:shadow-sm',
-												props.tableRowClassName ? props.tableRowClassName(row, rowIndex) : '',
+												props.tableRowClassName ? props.tableRowClassName(rowIndex) : '',
 											)}
 										>
 											{props.columns.map((column, columnIndex) => (
@@ -144,34 +131,8 @@ function Table<T extends Row>(props: TableProps<T>) {
 					</div>
 				)}
 			</div>
-
-			<nav className="flex items-center justify-between border-b-2 border-pageBg bg-white p-2" aria-label="Pagination">
-				<div className="hidden sm:block">
-					<p className="text-sm text-gray-700">
-						Showing {Math.max((data.page - 1) * data.limit)} to {Math.min(data.page * data.limit, data.count)} of {data.totalDocs} results
-					</p>
-				</div>
-				<div className="flex flex-1 justify-between gap-4 sm:justify-end">
-					<Button
-						size="small"
-						disabled={!data.hasPreviousPage}
-						variant={data.hasPreviousPage ? 'simple' : 'disabled'}
-						onClick={() => setPage((prev) => (prev !== 1 ? prev - 1 : prev))}
-					>
-						Previous
-					</Button>
-					<Button
-						size="small"
-						disabled={!data.hasNextPage}
-						onClick={() => setPage((prev) => prev + 1)}
-						variant={data.hasNextPage ? 'simple' : 'disabled'}
-					>
-						Next
-					</Button>
-				</div>
-			</nav>
 		</div>
 	)
 }
 
-export default Table
+export default SimpleTable

@@ -1,19 +1,15 @@
 import dayjs from 'dayjs'
-import { useQuery } from '@tanstack/react-query'
-
-import apiClient from '../../../api/client'
-import { PageLoader } from '../../lib/loader'
-import Table, { TableColumn } from '../../lib/table'
+import { TableColumn } from '../../lib/table'
 import { CreatedBy, Form, FormResponse, PaginationResponse } from '../../../types'
 
 export type FormResponsesType = {
 	form: Form
 }
 
-function parseFormResponses(
+export function parseFormResponses(
 	form: Form,
 	data: PaginationResponse<FormResponse>,
-): { res: PaginationResponse<FormResponse>; tableData: Array<TableColumn<any>> } {
+): { data: PaginationResponse<FormResponse>; tableData: Array<TableColumn<any>> } {
 	try {
 		const formJson = JSON.parse(form.body)
 		if (!Array.isArray(formJson)) throw new Error('Invalid form body')
@@ -46,7 +42,7 @@ function parseFormResponses(
 			}
 		}
 		return {
-			res: { ...data, docs: responses },
+			data: { ...data, docs: responses },
 			tableData: Object.entries(formFields).reduce<Array<TableColumn<any>>>(
 				(acc, [name, [label]]) => [{ title: label, dataKey: name }, ...acc],
 				[
@@ -75,36 +71,6 @@ function parseFormResponses(
 			),
 		}
 	} catch (err) {
-		return { res: data, tableData: [] }
+		return { data: data, tableData: [] }
 	}
 }
-
-function FormResponses(props: FormResponsesType) {
-	const { data, isPending } = useQuery({
-		queryKey: ['getFormResponses', props.form.id],
-		queryFn: () => apiClient(`/forms/response/${props.form.id}/all`),
-		select: (data) => parseFormResponses(props.form, data),
-	})
-
-	if (isPending) return <PageLoader />
-
-	return (
-		<Table<any>
-			title={`Form Responses (${props.form.title})`}
-			rootClassName="w-full"
-			description={props.form.description}
-			data={data?.res.docs || []}
-			columns={data?.tableData || []}
-			emptyState={
-				<div className="flex h-72 flex-col items-center justify-center gap-4 rounded-md border-2 border-gray-200">
-					<div className="text-center">
-						<h3 className="text-lg font-semibold text-gray-800">No responses</h3>
-						<p className="text-sm text-gray-500">Share the form link for your audience</p>
-					</div>
-				</div>
-			}
-		/>
-	)
-}
-
-export default FormResponses

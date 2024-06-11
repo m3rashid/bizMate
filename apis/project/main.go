@@ -79,7 +79,7 @@ func Setup(app *fiber.App) {
 		ParamValue: "taskId",
 	}))
 
-	app.Get("/tasks/delete/:taskId", utils.CheckAuthMiddleware, controllers.Delete(controllers.DeleteOptions[models.ProjectTask]{
+	app.Post("/tasks/delete/:taskId", utils.CheckAuthMiddleware, controllers.Delete(controllers.DeleteOptions[models.ProjectTask]{
 		ParamKey:   "id",
 		ParamValue: "taskId",
 	}))

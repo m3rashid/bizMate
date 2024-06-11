@@ -1,10 +1,7 @@
 import dayjs from 'dayjs'
-import { useQuery } from '@tanstack/react-query'
 import { createLazyFileRoute } from '@tanstack/react-router'
 
 import { Dashboard } from '../../../types'
-import apiClient from '../../../api/client'
-import { PageLoader } from '../../../components/lib/loader'
 import PageContainer from '../../../components/pageContainer'
 import Table, { TableProps } from '../../../components/lib/table'
 
@@ -13,8 +10,6 @@ export const Route = createLazyFileRoute('/apps/dashboards/')({
 })
 
 function Dashboards() {
-	const { data, isPending } = useQuery({ queryKey: ['getAllDashboards'], queryFn: () => apiClient('/dashboards/all') })
-
 	const tableColumns: TableProps<Dashboard>['columns'] = [
 		{ dataKey: 'title', title: 'Title' },
 		{ dataKey: 'description', title: 'Description' },
@@ -27,18 +22,15 @@ function Dashboards() {
 
 	return (
 		<PageContainer>
-			{isPending ? (
-				<PageLoader />
-			) : (
-				<Table<Dashboard>
-					title="Dashboards"
-					description="Create and manage all custom dashboards"
-					data={data?.docs || []}
-					columns={tableColumns}
-					defaultEmptyStateName="dashboards"
-					addButtonLink="/apps/dashboards/designer"
-				/>
-			)}
+			<Table<Dashboard>
+				title="Dashboards"
+				columns={tableColumns}
+				paginateUrl="/dashboards/all"
+				queryKeys={['getAllDashboards']}
+				defaultEmptyStateName="dashboards"
+				addButtonLink="/apps/dashboards/designer"
+				description="Create and manage all custom dashboards"
+			/>
 		</PageContainer>
 	)
 }

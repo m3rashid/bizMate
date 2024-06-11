@@ -4,7 +4,7 @@ import { getUniqueObjectsByKey } from '../utils/helpers'
 
 export type PopupType = 'error' | 'warning' | 'info' | 'success'
 export type MessagePopupType = {
-	id: string
+	id: string | number
 	message: string
 	type: PopupType
 	timeout?: number
@@ -13,7 +13,7 @@ export type MessagePopupType = {
 const DEFAULT_MESSAGE_POPUP_TIMEOUT = 5000 // 5 seconds
 
 export type ActionPopupType = {
-	id: string
+	id: string | number
 	type: PopupType
 	title?: string
 	children?: ReactNode
@@ -52,7 +52,7 @@ export function usePopups() {
 		}, timeout)
 	}
 
-	function removeMessagePopup(id: string) {
+	function removeMessagePopup(id: string | number) {
 		setPopups((prev) => ({
 			...prev,
 			messagePopups: prev.messagePopups.filter((n) => n.id !== id),

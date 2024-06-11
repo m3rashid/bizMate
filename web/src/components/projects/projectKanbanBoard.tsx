@@ -8,19 +8,19 @@ import { ProjectTask, taskStatuses } from '../../types'
 import ColumnContainer from './projectKanbanColumnContainer'
 import { useProjectKanban } from '../../hooks/projectKanban'
 
-export type ProjectKanbanBoardProps = {
-	projectId: string
-}
-
-function ProjectKanbanBoard(props: ProjectKanbanBoardProps) {
+function ProjectKanbanBoard(props: { projectId: string }) {
 	const [modalOpen, setModalOpen] = useState(false)
 	const { onDragEnd, onDragOver, onDragStart } = useProjectKanban()
 	const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 10 } }))
-	const { docs } = usePaginate<ProjectTask>({ url: `/projects/${props.projectId}/tasks/all`, queryKeys: ['getProjectTasks', props.projectId] })
+
+	const { docs, refetch } = usePaginate<ProjectTask>({
+		url: `/projects/${props.projectId}/tasks/all`,
+		queryKeys: ['getProjectTasks', props.projectId],
+	})
 
 	return (
 		<div className="mt-4 max-w-max overflow-x-auto">
-			<AddProjectTask modalOpen={modalOpen} setModalOpen={setModalOpen} projectId={props.projectId} />
+			<AddProjectTask {...{ refetch, modalOpen, setModalOpen, projectId: props.projectId }} />
 
 			<DndContext sensors={sensors} onDragStart={onDragStart} onDragEnd={onDragEnd} onDragOver={onDragOver}>
 				<div className="m-auto flex gap-4">
@@ -28,6 +28,7 @@ function ProjectKanbanBoard(props: ProjectKanbanBoardProps) {
 						<SortableContext items={taskStatuses as any}>
 							{taskStatuses.map((taskStatus) => (
 								<ColumnContainer
+									refetch={refetch}
 									key={taskStatus}
 									taskStatus={taskStatus}
 									projectId={props.projectId}
