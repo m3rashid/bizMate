@@ -1,4 +1,17 @@
-import { FC, PropsWithChildren } from 'react'
+import {
+	LinkIcon,
+	PhoneIcon,
+	PhotoIcon,
+	ListBulletIcon,
+	ViewColumnsIcon,
+	CodeBracketIcon,
+	Square2StackIcon,
+	DocumentTextIcon,
+	AdjustmentsVerticalIcon,
+	Bars2Icon,
+	Bars3CenterLeftIcon,
+} from '@heroicons/react/24/outline'
+import { FC, PropsWithChildren, SVGProps } from 'react'
 
 import {
 	codeProps,
@@ -55,23 +68,23 @@ export type FormBuilder = FC<FormRenderProps> & {
 	useForceUpdate: () => () => void
 }
 
-export type SupportedWidgetsArray = Array<SupportedWidget & { label: string }>
+export type SupportedWidgetsArray = Array<SupportedWidget & { label: string; icon?: FC<SVGProps<SVGSVGElement>> }>
 export const supportedWidgets: SupportedWidgetsArray = [
-	{ name: 'button', props: buttonProps, label: 'Button' },
-	{ name: 'toggler', props: togglerProps, label: 'Toggle Input' },
-	{ name: 'textInput', props: textInputProps, label: 'Text Input' },
-	{ name: 'textareaInput', props: textAreaInputProps, label: 'Text Area Input' },
-	{ name: 'richTextInput', props: richTextInputProps, label: 'Rich Text Input' },
-	{ name: 'phoneNumberInput', props: phoneNumberInputProps, label: 'Phone Number Input' },
-	{ name: 'paragraph', props: paragraphProps, label: 'Paragraph' },
-	{ name: 'column', props: columnProps, label: 'Column' },
-	{ name: 'image', props: imageProps, label: 'Image' },
-	{ name: 'link', props: linkProps, label: 'Link' },
 	{ name: 'h1', props: headingProps, label: 'Heading 1' },
 	{ name: 'h2', props: headingProps, label: 'Heading 2' },
 	{ name: 'h3', props: headingProps, label: 'Heading 3' },
 	{ name: 'h4', props: headingProps, label: 'Heading 4' },
 	{ name: 'h5', props: headingProps, label: 'Heading 5' },
 	{ name: 'h6', props: headingProps, label: 'Heading 6' },
-	{ name: 'code', props: codeProps, label: 'Code' },
+	{ name: 'button', props: buttonProps, label: 'Button', icon: Square2StackIcon },
+	{ name: 'toggler', props: togglerProps, label: 'Toggle Input', icon: AdjustmentsVerticalIcon },
+	{ name: 'textInput', props: textInputProps, label: 'Text Input', icon: Bars2Icon },
+	{ name: 'textareaInput', props: textAreaInputProps, label: 'Text Area Input', icon: Bars3CenterLeftIcon },
+	{ name: 'richTextInput', props: richTextInputProps, label: 'Rich Text Input', icon: DocumentTextIcon },
+	{ name: 'phoneNumberInput', props: phoneNumberInputProps, label: 'Phone No. Input', icon: PhoneIcon },
+	{ name: 'paragraph', props: paragraphProps, label: 'Paragraph', icon: ListBulletIcon },
+	{ name: 'column', props: columnProps, label: 'Column', icon: ViewColumnsIcon },
+	{ name: 'image', props: imageProps, label: 'Image', icon: PhotoIcon },
+	{ name: 'link', props: linkProps, label: 'Link', icon: LinkIcon },
+	{ name: 'code', props: codeProps, label: 'Code', icon: CodeBracketIcon },
 ]

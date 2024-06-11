@@ -3,19 +3,21 @@ import { CSSProperties, PropsWithChildren, ReactNode, useRef, useState } from 'r
 
 export type TooltipProps = PropsWithChildren & {
 	label: ReactNode
+	show?: 'left' | 'right'
 }
+
 function Tooltip(props: TooltipProps) {
 	const domRef = useRef<HTMLDivElement>(null)
 	const [show, setShow] = useState(false)
 
 	function getTooltipStyles(): CSSProperties {
-		const defaultStyles: CSSProperties = { maxWidth: Math.min(window.innerWidth - 10, 350) }
+		const defaultStyles = { maxWidth: Math.min(window.innerWidth - 10, 250) }
 		if (!domRef.current) return defaultStyles
 		const bounds = domRef.current.getBoundingClientRect()
 		return {
 			...defaultStyles,
-			left: bounds.left,
 			top: bounds.top + bounds.height + 10,
+			...(props.show === 'right' ? { left: bounds.left } : { left: bounds.right - defaultStyles.maxWidth }),
 		}
 	}
 
@@ -28,7 +30,7 @@ function Tooltip(props: TooltipProps) {
 				show ? (
 					<div
 						style={getTooltipStyles()}
-						className="absolute z-50 rounded-lg border-[1px] border-gray-200 bg-gray-700 px-4 py-1 text-white shadow-md"
+						className="absolute z-50 rounded-lg border-[1px] border-gray-200 bg-gray-700 px-2 py-1 text-sm text-white shadow-md"
 					>
 						{props.label}
 					</div>

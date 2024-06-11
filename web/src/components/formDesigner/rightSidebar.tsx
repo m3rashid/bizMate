@@ -100,13 +100,13 @@ function RightSidebar() {
 	return (
 		<div className="w-full min-w-80 max-w-96 overflow-y-auto bg-gray-100 p-4 shadow-lg">
 			<form ref={formRef} className="flex h-full flex-col gap-4" onSubmit={handleSave}>
-				<div className="flex items-center gap-2 border-b-2 border-b-gray-200 pb-3">
-					<h2 className="text-xl font-semibold">
-						{selectedNode ? `Settings for ${camelCaseToSentenceCase(selectedNode.name)}` : `Overall Form Settings`}
-					</h2>
-					<Tooltip label={selectedNode ? `Properties of the selected element: ${selectedNode.name}` : ''}>
-						<InformationCircleIcon className="h-6 w-6" />
-					</Tooltip>
+				<div className="flex items-center justify-between gap-2 border-b-2 border-b-gray-200 pb-3">
+					<h2 className="text-xl font-semibold">{selectedNode ? `Settings for ${camelCaseToSentenceCase(selectedNode.name)}` : 'Form Settings'}</h2>
+					{selectedNode ? (
+						<Tooltip show="left" label={selectedNode ? `Properties of the selected element: ${selectedNode.name}` : ''}>
+							<InformationCircleIcon className="h-6 w-6" />
+						</Tooltip>
+					) : null}
 				</div>
 
 				<div className="flex h-full flex-grow flex-col gap-4 overflow-y-auto">
