@@ -19,6 +19,10 @@ function FormResponsesTable(props: FormResponseTableProps) {
 		<SimpleTable<any>
 			title={`Form Responses (${props.form.title})`}
 			rootClassName="w-full"
+			tableExportprops={{
+				tableName: '',
+				mutationKeys: [],
+			}}
 			description={props.form.description}
 			data={formResponses?.data.docs || []}
 			columns={formResponses?.tableData || []}

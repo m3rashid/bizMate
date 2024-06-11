@@ -8,6 +8,7 @@ import { PageLoader } from './loader'
 import apiClient from '../../api/client'
 import Button, { ButtonProps } from './button'
 import { ExplicitAndAllObject, PaginationResponse } from '../../types'
+import TableExport, { TableExportProps } from './tableExport'
 
 export type TableColumn<T> = {
 	title: string
@@ -19,6 +20,7 @@ export type TableColumn<T> = {
 
 export type TableProps<T> = {
 	pageSize?: number
+	tableExportprops?: TableExportProps
 	paginateUrl: string
 	queryKeys: string[]
 	columns: Array<TableColumn<T>>
@@ -57,17 +59,21 @@ function Table<T extends Row>(props: TableProps<T>) {
 					</div>
 				) : null}
 
-				{props.addButtonLink ? (
-					<div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-						<Button
-							size="small"
-							label={`Create ${props.title || props.defaultEmptyStateName}`}
-							LeftIcon={<PlusIcon className="h-5 w-5" />}
-							onClick={() => navigate({ to: props.addButtonLink })}
-							{...props.addButtonProps}
-						/>
-					</div>
-				) : null}
+				<div>
+					{props.addButtonLink ? (
+						<div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+							<Button
+								size="small"
+								label={`Create ${props.title || props.defaultEmptyStateName}`}
+								LeftIcon={<PlusIcon className="h-5 w-5" />}
+								onClick={() => navigate({ to: props.addButtonLink })}
+								{...props.addButtonProps}
+							/>
+						</div>
+					) : null}
+
+					{props.tableExportprops ? <TableExport {...props.tableExportprops} /> : null}
+				</div>
 			</div>
 
 			<div className={twMerge('flow-root min-h-72 overflow-x-auto overflow-y-hidden', props.tableRootClassName)}>

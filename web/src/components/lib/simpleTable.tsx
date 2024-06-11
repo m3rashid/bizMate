@@ -5,6 +5,7 @@ import { PlusIcon } from '@heroicons/react/24/outline'
 
 import Button, { ButtonProps } from './button'
 import { ExplicitAndAllObject } from '../../types'
+import TableExport, { TableExportProps } from './tableExport'
 
 export type SimpleTableColumn<T> = {
 	title: string
@@ -16,6 +17,7 @@ export type SimpleTableColumn<T> = {
 
 export type SimpleTableProps<T> = {
 	data: Array<T>
+	tableExportprops?: TableExportProps
 	columns: Array<SimpleTableColumn<T>>
 	title?: string
 	description?: string
@@ -45,16 +47,19 @@ function SimpleTable<T extends Row>(props: SimpleTableProps<T>) {
 					</div>
 				) : null}
 
-				{props.addButtonLink ? (
-					<div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-						<Button
-							label={`New ${props.title || props.defaultEmptyStateName}`}
-							LeftIcon={<PlusIcon className="h-5 w-5" />}
-							onClick={() => navigate({ to: props.addButtonLink })}
-							{...props.addButtonProps}
-						/>
-					</div>
-				) : null}
+				<div>
+					{props.addButtonLink ? (
+						<div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+							<Button
+								label={`New ${props.title || props.defaultEmptyStateName}`}
+								LeftIcon={<PlusIcon className="h-5 w-5" />}
+								onClick={() => navigate({ to: props.addButtonLink })}
+								{...props.addButtonProps}
+							/>
+						</div>
+					) : null}
+					{props.tableExportprops ? <TableExport {...props.tableExportprops} /> : null}
+				</div>
 			</div>
 
 			<div className={twMerge('flow-root min-h-72 overflow-x-auto overflow-y-hidden', props.tableRootClassName)}>
