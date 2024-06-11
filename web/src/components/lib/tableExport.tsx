@@ -1,36 +1,53 @@
 import { FormEvent, MouseEvent, useState } from 'react'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import TableCellsIcon from '@heroicons/react/24/outline/TableCellsIcon'
 
 import Modal from './modal'
+import TogglerInput from './toggle'
+import { PageLoader } from './loader'
 import apiClient from '../../api/client'
-import SingleSelectInput, { Option } from './singleSelectInput'
+import { ExportableTable } from '../../types'
 import Button, { ButtonProps } from './button'
-import { TableCellsIcon } from '@heroicons/react/24/outline'
+import SingleSelectInput, { Option } from './singleSelectInput'
 
 export type TableExportProps = {
-	tableName: string
-	mutationKeys: string[]
+	tableName: ExportableTable
+	mutationKeys?: string[]
 	buttonProps?: ButtonProps
+	formId?: number
 }
 
 const selectOptions: Array<Option> = [
-	{ id: 'xlsx', label: 'Excel', value: 'xlsx' },
 	{ id: 'csv', label: 'CSV', value: 'csv' },
+	{ id: 'xlsx', label: 'Excel', value: 'xlsx' },
 ]
 
 function TableExport(props: TableExportProps) {
 	const [open, setOpen] = useState(false)
 
-	const { mutate } = useMutation({
+	const { data: tableFields, isPending } = useQuery<Array<{ name: string; label: string }>>({
+		queryKey: [props.tableName, ...(props.mutationKeys || []), ...(props.formId ? [props.formId] : [])],
+		queryFn: () =>
+			apiClient('/table/export/table-fields', {
+				method: 'POST',
+				body: JSON.stringify({ tableName: props.tableName, ...(props.formId ? { formId: props.formId } : {}) }),
+			}),
+	})
+
+	const { mutate: exportTable } = useMutation({
 		onSuccess: () => setOpen(false),
-		mutationKey: props.mutationKeys,
-		mutationFn: (data: any) => apiClient('', { method: 'POST', body: JSON.stringify(data) }),
+		mutationKey: [props.tableName, ...(props.mutationKeys || [])],
+		mutationFn: (data: any) => apiClient('/table/export', { method: 'POST', body: JSON.stringify(data) }),
 	})
 
 	function handleSubmit(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault()
 		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any
-		console.log({ ...formData, tableName: props.tableName })
+		const fields: string[] = []
+		for (const key in formData) {
+			if (formData[key] === 'on') fields.push(key)
+		}
+		exportTable({ fields, tableName: props.tableName, format: formData.format, ...(props.formId ? { formId: props.formId } : {}) })
 	}
 
 	function handleReset(e: MouseEvent<HTMLButtonElement>) {
@@ -40,26 +57,42 @@ function TableExport(props: TableExportProps) {
 	return (
 		<>
 			<Button size="small" variant="sucess" LeftIcon={<TableCellsIcon className="h-4 w-4" />} {...props.buttonProps} onClick={() => setOpen(true)}>
-				Export Data
+				Export
 			</Button>
 
 			<Modal title="Export Data" {...{ open, setOpen }}>
-				<form className="flex w-full flex-col gap-4" onSubmit={handleSubmit}>
-					<SingleSelectInput
-						name="format"
-						label="Export format"
-						options={selectOptions}
-						default={selectOptions[0].value}
-						render={({ option }) => option}
-					/>
-
-					<div className="flex flex-grow-0 items-center justify-between pt-3">
-						<Button variant="simple" onClick={handleReset}>
-							Reset
-						</Button>
-						<Button type="submit">Save</Button>
+				{isPending ? (
+					<PageLoader />
+				) : !tableFields || tableFields.length === 0 ? (
+					<div>
+						<label className="block text-sm font-medium leading-6 text-gray-900">No columns to select</label>
 					</div>
-				</form>
+				) : (
+					<form className="flex w-full flex-col gap-4" onSubmit={handleSubmit}>
+						<SingleSelectInput
+							name="format"
+							label="Export format"
+							options={selectOptions}
+							default={selectOptions[0].value}
+							render={({ option }) => option}
+						/>
+
+						<label className="block text-sm font-medium leading-6 text-gray-900">Select Columns to include</label>
+
+						<div className="grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-4">
+							{tableFields.map((field) => (
+								<TogglerInput key={field.name} name={field.name} label={field.label} defaultChecked />
+							))}
+						</div>
+
+						<div className="flex flex-grow-0 items-center justify-between pt-3">
+							<Button variant="simple" onClick={handleReset}>
+								Reset
+							</Button>
+							<Button type="submit">Export</Button>
+						</div>
+					</form>
+				)}
 			</Modal>
 		</>
 	)

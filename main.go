@@ -3,6 +3,7 @@ package main
 import (
 	"bizmate/apis/auth"
 	"bizmate/apis/dashboard"
+	"bizmate/apis/export"
 	"bizmate/apis/forms"
 	"bizmate/apis/notifications"
 	"bizmate/apis/payments"
@@ -119,6 +120,7 @@ func main() {
 	dashboard.Setup(app)
 	workflows.Setup(app)
 	notifications.Setup(app)
+	export.Setup(app)
 
 	log.Println("Server is running in " + os.Getenv("SERVER_MODE") + " mode.")
 	app.Listen(":" + os.Getenv("SERVER_PORT"))

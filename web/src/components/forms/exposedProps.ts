@@ -83,7 +83,7 @@ export const codeProps: Props = {
 	className: ['Tailwindcss classNames to style the field', 'string'],
 }
 
-export const togglerProps: Props = {
+export const togglerInputProps: Props = {
 	label: ['Label of this field', 'string'],
 	name: ['Name of the input element', 'string'],
 	className: ['Tailwindcss classNames to style the field', 'string'],

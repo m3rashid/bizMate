@@ -44,7 +44,7 @@ function propsToMeta({ _props, values }: PropsToMetaProps): FormElementInstance[
 		} else if (value === 'boolean') {
 			meta.push({
 				id,
-				name: 'toggler',
+				name: 'togglerInput',
 				props: {
 					name: key,
 					descriptionText: description,

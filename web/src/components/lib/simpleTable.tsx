@@ -85,8 +85,8 @@ function SimpleTable<T extends Row>(props: SimpleTableProps<T>) {
 						<div className=""></div>
 					)
 				) : (
-					<div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
-						<div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+					<div className="-my-2">
+						<div className="inline-block min-w-full py-2 align-middle">
 							<table className="w-full">
 								<thead>
 									<tr className={twMerge('select-none rounded-lg bg-primary text-white', props.tableHeadingRowClassName)}>

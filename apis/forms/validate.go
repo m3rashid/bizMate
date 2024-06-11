@@ -1,6 +1,7 @@
 package forms
 
 import (
+	"bizmate/models/forms"
 	"bizmate/utils"
 	"encoding/json"
 	"errors"
@@ -8,19 +9,12 @@ import (
 	"reflect"
 )
 
-type formElementInstanceType struct {
-	ID       string                    `json:"id"`
-	Name     elementNameType           `json:"name"`
-	Props    map[string]interface{}    `json:"props"`
-	Children []formElementInstanceType `json:"children"`
-}
-
-func validateFormElementInstance(el formElementInstanceType) []string {
+func validateFormElementInstance(el forms.FormElementInstanceType) []string {
 	errorArr := []string{}
 	elementProps := el.Props
-	supportedProps := getSupportedProps(el.Name)
+	supportedProps := el.Name.GetSupportedProps()
 
-	if _, ok := el.Props["name"]; isFormElement(el.Name) && !ok {
+	if _, ok := el.Props["name"]; el.Name.IsFormElement() && !ok {
 		errorArr = append(errorArr, "name attribute not present in "+el.ID+"_"+string(el.Name))
 	}
 
@@ -36,15 +30,15 @@ func validateFormElementInstance(el formElementInstanceType) []string {
 			continue
 		}
 
-		if (propValueType == _FORM_STRING || propValueType == _FORM_TEXTAREA) && reflect.TypeOf(elementProps[propName]) != reflect.TypeOf("") {
+		if (propValueType == forms.FORM_STRING || propValueType == forms.FORM_TEXTAREA) && reflect.TypeOf(elementProps[propName]) != reflect.TypeOf("") {
 			errorArr = append(errorArr, "invalid data type for "+propName)
-		} else if propValueType == _FORM_NUMBER && reflect.TypeOf(elementProps[propName]) != reflect.TypeOf(1) {
+		} else if propValueType == forms.FORM_NUMBER && reflect.TypeOf(elementProps[propName]) != reflect.TypeOf(1) {
 			errorArr = append(errorArr, "invalid data type for "+propName)
-		} else if propValueType == _FORM_BOOLEAN && reflect.TypeOf(elementProps[propName]) != reflect.TypeOf(true) {
+		} else if propValueType == forms.FORM_BOOLEAN && reflect.TypeOf(elementProps[propName]) != reflect.TypeOf(true) {
 			errorArr = append(errorArr, "invalid data type for "+propName)
 			// } else if propValueType == _FORM_CHILDREN {
 			// this will be formElement instance
-		} else if propValueType == _FORM_STRING_ARRAY && reflect.TypeOf(elementProps[propName]) != reflect.TypeOf([]string{}) {
+		} else if propValueType == forms.FORM_STRING_ARRAY && reflect.TypeOf(elementProps[propName]) != reflect.TypeOf([]string{}) {
 			errorArr = append(errorArr, "invalid data type for "+propName)
 		}
 	}
@@ -53,7 +47,7 @@ func validateFormElementInstance(el formElementInstanceType) []string {
 }
 
 func ValidateFormJsonString(jsonStr string) error {
-	jsonArr := []formElementInstanceType{}
+	jsonArr := []forms.FormElementInstanceType{}
 	errorArr := []string{}
 
 	err := json.Unmarshal([]byte(jsonStr), &jsonArr)

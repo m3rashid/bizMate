@@ -59,7 +59,7 @@ function Table<T extends Row>(props: TableProps<T>) {
 					</div>
 				) : null}
 
-				<div>
+				<div className="flex items-center justify-center gap-2">
 					{props.addButtonLink ? (
 						<div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
 							<Button
@@ -99,8 +99,8 @@ function Table<T extends Row>(props: TableProps<T>) {
 						<div className="" />
 					)
 				) : (
-					<div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
-						<div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+					<div className="-my-2">
+						<div className="inline-block min-w-full py-2 align-middle">
 							<table className="w-full">
 								<thead>
 									<tr className={twMerge('select-none rounded-lg bg-primary text-white', props.tableHeadingRowClassName)}>
@@ -154,7 +154,7 @@ function Table<T extends Row>(props: TableProps<T>) {
 			<nav className="flex items-center justify-between border-b-2 border-pageBg bg-white p-2" aria-label="Pagination">
 				<div className="hidden sm:block">
 					<p className="text-sm text-gray-700">
-						Showing {Math.max((data.page - 1) * data.limit)} to {Math.min(data.page * data.limit, data.count)} of {data.totalDocs} results
+						Showing {Math.min(data.page * data.limit, data.count)} of {data.totalDocs} results
 					</p>
 				</div>
 				<div className="flex flex-1 justify-between gap-4 sm:justify-end">

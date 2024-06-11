@@ -55,7 +55,7 @@ function EditForm(props: EditFormProps) {
 				'allowAnonymousResponse',
 				props.form.allowAnonymousResponse ? 'on' : 'off',
 				'Does the user need to be logged in to fill this form',
-				'toggler',
+				'togglerInput',
 				true,
 				{ defaultChecked: props.form.allowAnonymousResponse },
 			],
@@ -63,7 +63,7 @@ function EditForm(props: EditFormProps) {
 				'allowMultipleResponse',
 				props.form.allowMultipleResponse ? 'on' : 'off',
 				'Can the user submit multiple responses',
-				'toggler',
+				'togglerInput',
 				true,
 				{ defaultChecked: props.form.allowMultipleResponse },
 			],
@@ -71,11 +71,11 @@ function EditForm(props: EditFormProps) {
 				'allowResponseUpdate',
 				props.form.allowResponseUpdate ? 'on' : 'off',
 				'Can the user update their response',
-				'toggler',
+				'togglerInput',
 				true,
 				{ defaultChecked: props.form.allowResponseUpdate },
 			],
-			['active', props.form.active ? 'on' : 'off', 'Is this form active', 'toggler', true, { defaultChecked: props.form.active }],
+			['active', props.form.active ? 'on' : 'off', 'Is this form active', 'togglerInput', true, { defaultChecked: props.form.active }],
 		])
 	}, [props.form?.id])
 

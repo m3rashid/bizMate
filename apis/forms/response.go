@@ -3,7 +3,6 @@ package forms
 import (
 	"bizmate/models"
 	"bizmate/utils"
-	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -22,7 +21,6 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 	formId := ctx.Params("formId")
 
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil || formId == "" {
-		fmt.Println("ParseBodyAndValidate: ", err)
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 

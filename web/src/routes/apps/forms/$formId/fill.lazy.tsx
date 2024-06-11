@@ -1,9 +1,11 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { FormEvent, MouseEvent, useRef, useState } from 'react'
 import { createFileRoute, useParams } from '@tanstack/react-router'
+import FaceFrownIcon from '@heroicons/react/24/outline/FaceFrownIcon'
 
 import { Form } from '../../../../types'
 import apiClient from '../../../../api/client'
+import { useAuth } from '../../../../hooks/auth'
 import { PageLoader } from '../../../../components/lib/loader'
 import { PageNotFound } from '../../../../components/lib/notFound'
 import FormView, { ShowMetaType } from '../../../../components/apps/forms/formView'
@@ -14,6 +16,9 @@ export const Route = createFileRoute('/apps/forms/$formId/fill')({
 
 function FormFill() {
 	const formRef = useRef<HTMLFormElement>(null)
+	const {
+		auth: { isAuthenticated },
+	} = useAuth()
 	const { formId } = useParams({ from: '/apps/forms/$formId/fill' })
 	const [formStatus, setFormStatus] = useState<ShowMetaType>('body')
 	const { data: form, isPending } = useQuery<Form>({ queryKey: ['getForm', formId], queryFn: () => apiClient(`/forms/one/${formId}`) })
@@ -64,7 +69,24 @@ function FormFill() {
 
 	if (!formId || isNaN(parseInt(formId))) return <PageNotFound />
 	if (isPending) return <PageLoader />
+	if (!form) return <PageNotFound />
+	if (!form.active) {
+		return (
+			<div className="flex h-screen flex-col items-center justify-center gap-8 p-4">
+				<label className="text-3xl font-bold leading-6 text-gray-900">This Form is not accepting responses</label>
+				<FaceFrownIcon className="h-24 w-24" />
+			</div>
+		)
+	}
 
+	if (!form.allowAnonymousResponse && !isAuthenticated) {
+		return (
+			<div className="flex h-screen flex-col items-center justify-center gap-8 p-4">
+				<label className="text-3xl font-bold leading-6 text-gray-900">You need to be logged in to fill this form</label>
+				<FaceFrownIcon className="h-24 w-24" />
+			</div>
+		)
+	}
 	return (
 		<div className="flex justify-center p-4">
 			<FormView {...{ type: 'fill', formRef, handleCancel, handleSubmit, form, showMeta: formStatus }} />

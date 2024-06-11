@@ -20,8 +20,9 @@ function FormResponsesTable(props: FormResponseTableProps) {
 			title={`Form Responses (${props.form.title})`}
 			rootClassName="w-full"
 			tableExportprops={{
-				tableName: '',
 				mutationKeys: [],
+				formId: parseInt(props.formId),
+				tableName: 'form_response_table',
 			}}
 			description={props.form.description}
 			data={formResponses?.data.docs || []}

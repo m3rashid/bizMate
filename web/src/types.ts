@@ -152,3 +152,6 @@ export type ProjectTaskComment = BaseModel &
 		task: ProjectTask
 		comment: string
 	}
+
+export const exportableTables = ['form_response_table', 'user_table', 'forms_table'] as const
+export type ExportableTable = (typeof exportableTables)[number]

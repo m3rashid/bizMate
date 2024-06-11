@@ -180,7 +180,7 @@ func GormMigrate(gormDB *gorm.DB, Models []interface{}) error {
 }
 
 func GetTenantDbFromCtx(ctx *fiber.Ctx) (*gorm.DB, error) {
-	tenantOrigin, err := GetTenantUrlFromCtx(ctx)
+	tenantOrigin, err := GetTenantOriginFromCtx(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -188,7 +188,7 @@ func GetTenantDbFromCtx(ctx *fiber.Ctx) (*gorm.DB, error) {
 	return GetTenantDBFromTenantUrl(tenantOrigin)
 }
 
-func GetTenantUrlFromCtx(ctx *fiber.Ctx) (string, error) {
+func GetTenantOriginFromCtx(ctx *fiber.Ctx) (string, error) {
 	tenantOrigin := ctx.GetReqHeaders()["Origin"][0]
 	tenantOrigin = strings.Replace(tenantOrigin, "http://", "", 1)
 	tenantOrigin = strings.Replace(tenantOrigin, "https://", "", 1)
