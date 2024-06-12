@@ -5,15 +5,15 @@ const SkeletonTable = (props: { contentLength?: number }) => {
 				{Array(2)
 					.fill(1)
 					.map((_, i) => (
-						<div key={`skeleton-table-header-${i}`} className="bg-skeletonDark h-12 w-1/4 rounded"></div>
+						<div key={`skeleton-table-header-${i}`} className="bg-skeletonDark h-12 w-1/4 rounded" />
 					))}
 			</div>
-			<div className="bg-skeletonDark mb-4 rounded-lg p-6"></div>
+			<div className="bg-skeletonDark mb-4 p-6"></div>
 
 			{Array(props.contentLength ?? 10)
 				.fill(1)
 				.map((_, i) => (
-					<div key={`skeleton-table-contents-${i}`} className="bg-skeletonLight mb-1 rounded py-5"></div>
+					<div key={`skeleton-table-contents-${i}`} className="bg-skeletonLight mb-1 py-5" />
 				))}
 		</div>
 	)

@@ -20,7 +20,7 @@ function ShowRichTextData(props: { data: any; label: string }) {
 				Show Contents
 			</Button>
 			<Modal open={modalOpen} setOpen={setModalOpen} title={props.label}>
-				<ShowRichText data={props.data} />
+				<ShowRichText data={props.data} className="my-0 border-2 border-borderColor p-0 shadow-none" />
 			</Modal>
 		</>
 	)

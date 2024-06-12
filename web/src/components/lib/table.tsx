@@ -1,10 +1,10 @@
 import qs from 'query-string'
+import { FC, ReactNode } from 'react'
 import { twMerge } from 'tailwind-merge'
-import { FC, ReactNode, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import PlusIcon from '@heroicons/react/24/outline/PlusIcon'
+import { useNavigate, RouteIds } from '@tanstack/react-router'
 import ArrowPathIcon from '@heroicons/react/24/outline/ArrowPathIcon'
-import { useNavigate, RouteIds, useSearch } from '@tanstack/react-router'
 
 import apiClient from '../../api/client'
 import Button, { ButtonProps } from './button'
@@ -108,15 +108,13 @@ function Table<T extends Row>(props: TableProps<T>) {
 						<div className="inline-block min-w-full py-2 align-middle">
 							<table className="w-full">
 								<thead>
-									<tr className={twMerge('select-none rounded-lg bg-primary text-white', props.tableHeadingRowClassName)}>
+									<tr className={twMerge('select-none bg-pageBg', props.tableHeadingRowClassName)}>
 										{props.columns.map((column, columnIndex) => (
 											<th
 												scope="col"
 												key={column.title + columnIndex}
 												className={twMerge(
 													' p-3 text-left text-sm font-semibold',
-													columnIndex === 0 ? 'rounded-l-lg' : '',
-													columnIndex === props.columns.length - 1 ? 'rounded-r-lg' : '',
 													props.tableHeadingClassName ? props.tableHeadingClassName(columnIndex) : '',
 												)}
 											>
@@ -125,24 +123,16 @@ function Table<T extends Row>(props: TableProps<T>) {
 										))}
 									</tr>
 								</thead>
-								<tbody className="divide-y divide-gray-200 bg-white">
+								<tbody>
 									{(data.docs || []).map((row, rowIndex) => (
 										<tr
 											key={row.id}
-											className={twMerge(
-												'transition-colors duration-200 ease-in-out hover:bg-pageBg hover:shadow-sm',
-												props.tableRowClassName ? props.tableRowClassName(row, rowIndex) : '',
-											)}
+											className={twMerge('border-t-2 border-borderColor', props.tableRowClassName ? props.tableRowClassName(row, rowIndex) : '')}
 										>
 											{props.columns.map((column, columnIndex) => (
 												<td
 													key={row[column.dataKey] + String(columnIndex)}
-													className={twMerge(
-														'whitespace-nowrap px-3 py-3.5 text-left text-sm',
-														columnIndex === 0 ? 'rounded-l-lg' : '',
-														columnIndex === props.columns.length - 1 ? 'rounded-r-lg' : '',
-														column.tableTdClassName,
-													)}
+													className={twMerge('whitespace-nowrap px-3 py-3.5 text-left text-sm', column.tableTdClassName)}
 												>
 													{column.render ? <column.render {...{ row, rowIndex }} /> : (String(row[column.dataKey]) satisfies ReactNode)}
 												</td>

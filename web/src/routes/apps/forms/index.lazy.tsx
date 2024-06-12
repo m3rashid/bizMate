@@ -127,7 +127,6 @@ function Forms() {
 			<Table<Form>
 				title="Forms"
 				route="/apps/forms/"
-				pageSize={2}
 				columns={tableColumns}
 				paginateUrl="/forms/all"
 				queryKeys={['getForms']}
