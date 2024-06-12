@@ -65,15 +65,13 @@ function Projects() {
 			<Table<Project>
 				title="Projects"
 				columns={tableColumns}
+				route="/apps/projects/"
 				queryKeys={['getProjects']}
 				paginateUrl="/projects/all"
-				addButtonProps={{
-					label: 'New Project',
-					onClick: () => setOpen(true),
-				}}
 				defaultEmptyStateName="projects"
 				addButtonLink="/apps/projects/create"
 				description="Create and manage all projects"
+				addButtonProps={{ label: 'New Project', onClick: () => setOpen(true) }}
 			/>
 		</PageContainer>
 	)

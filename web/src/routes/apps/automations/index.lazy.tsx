@@ -16,6 +16,7 @@ function Automations() {
 			<Table<Workflow>
 				title="Workflows"
 				columns={tableColumns}
+				route="/apps/automations/"
 				queryKeys={['getWorkflows']}
 				paginateUrl="/automations/all"
 				defaultEmptyStateName="automations"

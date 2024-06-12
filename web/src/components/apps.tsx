@@ -31,7 +31,7 @@ export const apps: Array<App> = [
 		description: 'Create, publish, and get analytics for your forms',
 		routes: [
 			{ name: 'Designer', icon: DeviceTabletIcon, link: '/apps/forms/designer' },
-			{ name: 'All Forms', icon: ListBulletIcon, link: '/apps/forms/' },
+			{ name: 'All Forms', icon: ListBulletIcon, link: '/apps/forms?page=1' },
 		],
 	},
 	{
@@ -40,7 +40,7 @@ export const apps: Array<App> = [
 		description: 'Automate your daily processes',
 		routes: [
 			{ name: 'Designer', icon: AdjustmentsHorizontalIcon, link: '/apps/automations/designer' },
-			{ name: 'All Automations', icon: ListBulletIcon, link: '/apps/automations/' },
+			{ name: 'All Automations', icon: ListBulletIcon, link: '/apps/automations?page=1' },
 		],
 	},
 	{
@@ -49,7 +49,7 @@ export const apps: Array<App> = [
 		description: 'Create and manage your dashboards',
 		routes: [
 			{ name: 'Designer', icon: ChartBarIcon, link: '/apps/dashboards/designer' },
-			{ name: 'All Dashboards', icon: ListBulletIcon, link: '/apps/dashboards/' },
+			{ name: 'All Dashboards', icon: ListBulletIcon, link: '/apps/dashboards?page=1' },
 		],
 	},
 	{
@@ -57,7 +57,7 @@ export const apps: Array<App> = [
 		icon: ChatBubbleLeftRightIcon,
 		description: 'Handle your communications from here',
 		routes: [
-			{ name: 'Email Templates', icon: AtSymbolIcon, link: '/apps/communications/emails/' },
+			{ name: 'Email Templates', icon: AtSymbolIcon, link: '/apps/communications/emails?page=1' },
 			// { name: 'Schedule Emails', icon: AtSymbolIcon, link: '/apps/communications/emails/designer' },
 			{ name: 'Create Email Templates', icon: AtSymbolIcon, link: '/apps/communications/emails/designer' },
 		],
@@ -66,7 +66,7 @@ export const apps: Array<App> = [
 		name: 'Projects',
 		icon: ClipboardDocumentIcon,
 		description: 'Create and manage your projects',
-		routes: [{ name: 'All Projects', icon: ListBulletIcon, link: '/apps/projects/' }],
+		routes: [{ name: 'All Projects', icon: ListBulletIcon, link: '/apps/projects?page=1' }],
 	},
 ]
 

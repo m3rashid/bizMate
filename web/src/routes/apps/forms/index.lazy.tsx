@@ -15,10 +15,11 @@ import Button from '../../../components/lib/button'
 import Tooltip from '../../../components/lib/tooltip'
 import PageContainer from '../../../components/pageContainer'
 import EditForm from '../../../components/apps/forms/editForm'
-import Table, { TableProps } from '../../../components/lib/table'
+import Table, { PageSearchParams, TableProps } from '../../../components/lib/table'
 
 export const Route = createFileRoute('/apps/forms/')({
 	component: Forms,
+	validateSearch: (search: Record<string, unknown>): PageSearchParams => ({ page: Number(search?.page ?? 1) }),
 })
 
 function Forms() {
@@ -30,7 +31,7 @@ function Forms() {
 			dataKey: 'title',
 			title: 'Title',
 			render: ({ row }) => (
-				<Link to={`/apps/forms/${row.id}/preview`} className="underline hover:text-primary">
+				<Link to="/apps/forms/$formId/preview" params={{ formId: row.id.toString() }} className="underline hover:text-primary">
 					{row.title}
 				</Link>
 			),
@@ -86,7 +87,7 @@ function Forms() {
 					</Tooltip>
 
 					<Tooltip label="Show Form preview" show="right">
-						<Link to={`/apps/forms/${row.id}/preview`}>
+						<Link to="/apps/forms/$formId/preview" params={{ formId: row.id.toString() }}>
 							<Chip>
 								<EyeIcon className="h-4 w-4" />
 							</Chip>
@@ -94,13 +95,13 @@ function Forms() {
 					</Tooltip>
 
 					<Tooltip label="Show form Responses" show="right">
-						<Link to={`/apps/forms/${row.id}/responses`}>
+						<Link to="/apps/forms/$formId/responses" params={{ formId: row.id.toString() }}>
 							<Chip>Responses</Chip>
 						</Link>
 					</Tooltip>
 
 					<Tooltip label="Show form Analytics" show="right">
-						<Link to={`/apps/forms/${row.id}/analytics`}>
+						<Link to="/apps/forms/$formId/analytics" params={{ formId: row.id.toString() }}>
 							<Chip>Analytics</Chip>
 						</Link>
 					</Tooltip>
@@ -125,6 +126,8 @@ function Forms() {
 
 			<Table<Form>
 				title="Forms"
+				route="/apps/forms/"
+				pageSize={2}
 				columns={tableColumns}
 				paginateUrl="/forms/all"
 				queryKeys={['getForms']}

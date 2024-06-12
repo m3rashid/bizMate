@@ -1,13 +1,15 @@
+import qs from 'query-string'
 import { twMerge } from 'tailwind-merge'
 import { FC, ReactNode, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { useNavigate } from '@tanstack/react-router'
 import PlusIcon from '@heroicons/react/24/outline/PlusIcon'
 import ArrowPathIcon from '@heroicons/react/24/outline/ArrowPathIcon'
+import { useNavigate, RouteIds, useSearch } from '@tanstack/react-router'
 
 import apiClient from '../../api/client'
 import Button, { ButtonProps } from './button'
 import SkeletonTable from '../skeletons/table'
+import { routeTree } from '../../routeTree.gen'
 import TableExport, { TableExportProps } from './tableExport'
 import { ExplicitAndAllObject, PaginationResponse } from '../../types'
 
@@ -20,6 +22,7 @@ export type TableColumn<T> = {
 }
 
 export type TableProps<T> = {
+	route: RouteIds<typeof routeTree>
 	pageSize?: number
 	tableExportprops?: TableExportProps
 	paginateUrl: string
@@ -40,13 +43,16 @@ export type TableProps<T> = {
 }
 
 type Row = ExplicitAndAllObject<'id'>
-function Table<T extends Row>(props: TableProps<T>) {
-	const [page, setPage] = useState(1)
+export type PageSearchParams = { page: number }
 
+function Table<T extends Row>(props: TableProps<T>) {
 	const navigate = useNavigate()
+	const locationSearch = qs.parse(location.search)
+
 	const { isPending, data, refetch } = useQuery<PaginationResponse<T>>({
-		queryKey: [...props.queryKeys, page, props.pageSize || 15],
-		queryFn: () => apiClient(`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${page}&limit=${props.pageSize || 15}`),
+		queryKey: [...props.queryKeys, props.pageSize || 15, locationSearch.page],
+		queryFn: () =>
+			apiClient(`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${locationSearch.page}&limit=${props.pageSize || 15}`),
 	})
 
 	if (isPending || !data) return <SkeletonTable contentLength={5} />
@@ -157,10 +163,20 @@ function Table<T extends Row>(props: TableProps<T>) {
 					</p>
 				</div>
 				<div className="flex flex-1 justify-between gap-4 sm:justify-end">
-					<Button size="small" variant="simple" disabled={!data.hasPreviousPage} onClick={() => setPage((prev) => (prev !== 1 ? prev - 1 : prev))}>
+					<Button
+						size="small"
+						variant="simple"
+						disabled={!data.hasPreviousPage}
+						onClick={() => navigate({ search: (prev: PageSearchParams) => ({ page: prev.page !== 1 ? prev.page - 1 : prev }) })}
+					>
 						Previous
 					</Button>
-					<Button size="small" variant="simple" disabled={!data.hasNextPage} onClick={() => setPage((prev) => prev + 1)}>
+					<Button
+						size="small"
+						variant="simple"
+						disabled={!data.hasNextPage}
+						onClick={() => navigate({ search: (prev: PageSearchParams) => ({ page: prev.page + 1 }) })}
+					>
 						Next
 					</Button>
 				</div>
