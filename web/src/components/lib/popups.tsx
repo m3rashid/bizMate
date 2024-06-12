@@ -1,5 +1,6 @@
 import { createPortal } from 'react-dom'
 import { twMerge } from 'tailwind-merge'
+import XMarkIcon from '@heroicons/react/20/solid/XMarkIcon'
 import XCircleIcon from '@heroicons/react/20/solid/XCircleIcon'
 import CheckCircleIcon from '@heroicons/react/20/solid/CheckCircleIcon'
 import InformationCircleIcon from '@heroicons/react/20/solid/InformationCircleIcon'
@@ -23,19 +24,25 @@ export const PopupIcons: Record<PopupType, [any, string]> = {
 
 export function ActionPopup(props: ActionPopupType) {
 	const [Icon, color] = PopupIcons[props.type]
+	const { removeActionPopup } = usePopups()
+
 	return (
-		<div className={twMerge('w-full rounded-lg border-[1px] border-l-8 bg-white p-2 shadow-md', popupVariants[props.type])}>
+		<div className={twMerge('w-full rounded-lg border-[1px] border-l-8 bg-white p-2 shadow-md', popupVariants[props.type], 'relative')}>
+			<XMarkIcon
+				className="absolute right-1 top-1 h-6 w-6 cursor-pointer rounded-full hover:bg-danger hover:text-white"
+				onClick={() => removeActionPopup(props.id)}
+			/>
 			{props.title ? (
 				<div className="flex gap-2 rounded-md">
 					<div>
 						<Icon className={twMerge('h-5 w-5', color)} />
 					</div>
 
-					<div>{props.title}</div>
+					<div className="font-[500]">{props.title}</div>
 				</div>
-			) : (
-				props.children
-			)}
+			) : null}
+
+			<div className="mt-4">{props.children}</div>
 		</div>
 	)
 }

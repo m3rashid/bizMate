@@ -25,7 +25,7 @@ type formReqBody struct {
 }
 
 var createNewForm = controllers.Create(models.FORM_MODEL_NAME, controllers.CreateOptions[formReqBody, models.Form]{
-	GetDefaultValues: func(values *formReqBody, ctx *fiber.Ctx) *models.Form {
+	GetDefaultValues: func(values *formReqBody, ctx *fiber.Ctx) (*models.Form, error) {
 		userId := ctx.Locals("userId").(uint)
 		return &models.Form{
 			Title:                  values.Title,
@@ -42,7 +42,7 @@ var createNewForm = controllers.Create(models.FORM_MODEL_NAME, controllers.Creat
 			AllowResponseUpdate:    utils.Ternary(values.AllowResponseUpdate != nil, *values.AllowResponseUpdate, false),
 			AllowAnonymousResponse: utils.Ternary(values.AllowAnonymousResponse != nil, *values.AllowAnonymousResponse, false),
 			AllowMultipleResponse:  utils.Ternary(values.AllowMultipleResponse != nil, *values.AllowMultipleResponse, false),
-		}
+		}, nil
 	},
 })
 

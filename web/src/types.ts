@@ -168,7 +168,8 @@ export type EmailTemplate = BaseModel &
 		description: string
 		variables: string
 		subjectTemplate: string
-		bodyTemplate: string
+		bodyTemplateHtml: string
+		bodyTemplateDesignJson: string
 	}
 
 export type BulkEmailRequest = BaseModel &

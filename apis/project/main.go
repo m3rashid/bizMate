@@ -18,7 +18,7 @@ func Setup(app *fiber.App) {
 	}))
 
 	app.Post("/projects/create", utils.CheckAuthMiddleware, controllers.Create(models.PROJECT_MODEL_NAME, controllers.CreateOptions[projectReqBody, models.Project]{
-		GetDefaultValues: func(values *projectReqBody, ctx *fiber.Ctx) *models.Project {
+		GetDefaultValues: func(values *projectReqBody, ctx *fiber.Ctx) (*models.Project, error) {
 			userId := ctx.Locals("userId").(uint)
 			return &models.Project{
 				Name:        values.Name,
@@ -27,7 +27,7 @@ func Setup(app *fiber.App) {
 				Completed:   false,
 				People:      utils.Ternary(len(values.People) > 0, values.People, []*models.User{}),
 				CreatedBy:   models.CreatedBy{CreatedByID: userId},
-			}
+			}, nil
 		},
 	}))
 
@@ -58,7 +58,7 @@ func Setup(app *fiber.App) {
 	}))
 
 	app.Post("/tasks/create", utils.CheckAuthMiddleware, controllers.Create(models.TASK_MODEL_NAME, controllers.CreateOptions[ProjectTaskReqBody, models.ProjectTask]{
-		GetDefaultValues: func(values *ProjectTaskReqBody, ctx *fiber.Ctx) *models.ProjectTask {
+		GetDefaultValues: func(values *ProjectTaskReqBody, ctx *fiber.Ctx) (*models.ProjectTask, error) {
 			userId := ctx.Locals("userId").(uint)
 			return &models.ProjectTask{
 				Title:        values.Title,
@@ -70,7 +70,7 @@ func Setup(app *fiber.App) {
 				Tags:         utils.Ternary(len(values.Tags) > 0, values.Tags, []*models.ProjectTag{}),
 				ParentTaskID: values.ParentTaskID,
 				CreatedBy:    models.CreatedBy{CreatedByID: userId},
-			}
+			}, nil
 		},
 	}))
 

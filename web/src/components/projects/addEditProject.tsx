@@ -33,7 +33,7 @@ function AddEditProjectModal(props: AddEditProjectModalProps) {
 		mutationFn: (project: Partial<Project>) => apiClient(`/projects/${props.project?.id}/update`, { method: 'POST', body: JSON.stringify(project) }),
 	})
 
-	function handleEditForm(e: FormEvent<HTMLFormElement>) {
+	function handleAddEditProject(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault()
 		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any
 		props.project
@@ -52,7 +52,7 @@ function AddEditProjectModal(props: AddEditProjectModalProps) {
 
 	return (
 		<Modal open={props.open} setOpen={props.setOpen} title={props.project ? 'Edit Project' : 'Create Project'}>
-			<form className="flex h-full flex-col gap-4" onSubmit={handleEditForm}>
+			<form className="flex h-full flex-col gap-4" onSubmit={handleAddEditProject}>
 				<TextInput name="name" label="Name" placeholder="Project Name" required defaultValue={props.project?.name} />
 				<TextAreaInput name="description" label="Project Description" defaultValue={props.project?.description} />
 

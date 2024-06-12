@@ -1,8 +1,14 @@
-package emailtemplates
+package notifications
 
-import (
-	"regexp"
-)
+import "regexp"
+
+type emailTemplateReqBody struct {
+	Description            string `json:"description"`
+	Title                  string `json:"title" validate:"required"`
+	SubjectTemplate        string `json:"subjectTemplate" validate:"required"`
+	BodyTemplateHtml       string `json:"bodyTemplateHtml" validate:"required"`
+	BodyTemplateDesignJson string `json:"bodyTemplateDesignJson" validate:"required"`
+}
 
 type HTML struct {
 	HtmlString    string

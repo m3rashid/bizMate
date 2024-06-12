@@ -3,8 +3,9 @@ import { useState, Dispatch, useContext, createContext, SetStateAction, PropsWit
 import { getUniqueObjectsByKey } from '../utils/helpers'
 
 export type PopupType = 'error' | 'warning' | 'info' | 'success'
+type ID = string | number
 export type MessagePopupType = {
-	id: string | number
+	id: ID
 	message: string
 	type: PopupType
 	timeout?: number
@@ -13,7 +14,7 @@ export type MessagePopupType = {
 const DEFAULT_MESSAGE_POPUP_TIMEOUT = 5000 // 5 seconds
 
 export type ActionPopupType = {
-	id: string | number
+	id: ID
 	type: PopupType
 	title?: string
 	children?: ReactNode
@@ -52,7 +53,7 @@ export function usePopups() {
 		}, timeout)
 	}
 
-	function removeMessagePopup(id: string | number) {
+	function removeMessagePopup(id: ID) {
 		setPopups((prev) => ({
 			...prev,
 			messagePopups: prev.messagePopups.filter((n) => n.id !== id),
@@ -66,7 +67,7 @@ export function usePopups() {
 		}))
 	}
 
-	function removeActionPopup(id: string) {
+	function removeActionPopup(id: ID) {
 		setPopups((prev) => ({
 			...prev,
 			actionPopups: prev.actionPopups.filter((n) => n.id !== id),

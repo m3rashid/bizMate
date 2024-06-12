@@ -8,7 +8,7 @@ import (
 )
 
 type CreateOptions[CreateBodyType interface{}, Model interface{}] struct {
-	GetDefaultValues func(values *CreateBodyType, ctx *fiber.Ctx) *Model
+	GetDefaultValues func(values *CreateBodyType, ctx *fiber.Ctx) (*Model, error)
 	PreCreate        func(values *CreateBodyType, db *gorm.DB, ctx *fiber.Ctx) (*Model, error)
 	PostCreate       func(values *CreateBodyType, model *Model, db *gorm.DB, ctx *fiber.Ctx) (interface{}, error)
 }
@@ -32,7 +32,11 @@ func Create[CreateBodyType interface{}, Model interface{}](tableName string, _op
 		}
 
 		if options.GetDefaultValues != nil {
-			model = options.GetDefaultValues(&formBody, ctx)
+			_model, err := options.GetDefaultValues(&formBody, ctx)
+			if err != nil {
+				return ctx.SendStatus(fiber.StatusInternalServerError)
+			}
+			model = _model
 		}
 
 		db, err := utils.GetTenantDbFromCtx(ctx)

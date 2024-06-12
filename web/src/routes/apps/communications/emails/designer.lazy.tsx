@@ -3,8 +3,7 @@ import { createLazyFileRoute } from '@tanstack/react-router'
 import EmailEditor, { EditorRef, EmailEditorProps } from 'react-email-editor'
 
 import PageContainer from '../../../../components/pageContainer'
-import { PageLoader } from '../../../../components/lib/loader'
-import Button from '../../../../components/lib/button'
+import EmailEditorTopBar from '../../../../components/emailDesigner/topBar'
 
 export const Route = createLazyFileRoute('/apps/communications/emails/designer')({
 	component: EmailDesigner,
@@ -13,15 +12,6 @@ export const Route = createLazyFileRoute('/apps/communications/emails/designer')
 function EmailDesigner() {
 	const emailEditorRef = useRef<EditorRef>(null)
 	const [editorReady, setEditorReady] = useState(false)
-
-	const exportHtml = () => {
-		const unlayer = emailEditorRef.current?.editor
-
-		unlayer?.exportHtml((data) => {
-			const { design, html } = data
-			console.log('exportHtml', { design, html })
-		})
-	}
 
 	const onReady: EmailEditorProps['onReady'] = (unlayer) => {
 		setEditorReady(true)
@@ -35,7 +25,7 @@ function EmailDesigner() {
 
 	return (
 		<PageContainer>
-			{editorReady ? <Button onClick={exportHtml}>Export HTML</Button> : null}
+			{editorReady ? <EmailEditorTopBar emailEditorRef={emailEditorRef} /> : null}
 
 			<EmailEditor
 				ref={emailEditorRef}
@@ -43,7 +33,7 @@ function EmailDesigner() {
 				options={{
 					appearance: {},
 				}}
-				style={{ height: 'calc(100vh - 120px)' }}
+				style={{ height: 'calc(100vh - 125px)' }}
 			/>
 		</PageContainer>
 	)
