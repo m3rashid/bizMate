@@ -59,19 +59,16 @@ function Table<T extends Row>(props: TableProps<T>) {
 					</div>
 				) : null}
 
-				<div className="flex items-center justify-center gap-2">
+				<div className="mt-4 flex flex-wrap items-center justify-center gap-2 sm:ml-8 sm:mt-0">
 					{props.addButtonLink ? (
-						<div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-							<Button
-								size="small"
-								label={`Create ${props.title || props.defaultEmptyStateName}`}
-								LeftIcon={<PlusIcon className="h-5 w-5" />}
-								onClick={() => navigate({ to: props.addButtonLink })}
-								{...props.addButtonProps}
-							/>
-						</div>
+						<Button
+							size="small"
+							LeftIcon={<PlusIcon className="h-5 w-5" />}
+							onClick={() => navigate({ to: props.addButtonLink })}
+							label={`Create ${props.title || props.defaultEmptyStateName}`}
+							{...props.addButtonProps}
+						/>
 					) : null}
-
 					{props.tableExportprops ? <TableExport {...props.tableExportprops} /> : null}
 				</div>
 			</div>

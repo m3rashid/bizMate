@@ -56,7 +56,7 @@ function TableExport(props: TableExportProps) {
 
 	return (
 		<>
-			<Button size="small" variant="sucess" LeftIcon={<TableCellsIcon className="h-4 w-4" />} {...props.buttonProps} onClick={() => setOpen(true)}>
+			<Button size="small" variant="sucess" LeftIcon={<TableCellsIcon className="h-5 w-5" />} {...props.buttonProps} onClick={() => setOpen(true)}>
 				Export
 			</Button>
 
