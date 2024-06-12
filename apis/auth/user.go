@@ -29,7 +29,7 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 	}{}
 
 	if err := utils.ParseBodyAndValidate(ctx, &loginBody); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 
 	db, err := utils.GetTenantDbFromCtx(ctx)
@@ -39,15 +39,15 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 
 	user := models.User{}
 	if err := db.Where("email = ?", loginBody.Email).First(&user).Error; err != nil || user.ID == 0 {
-		return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User not found"})
+		return ctx.Status(fiber.StatusNotFound).JSON("User not found")
 	}
 
 	if user.Provider != models.PROVIDER_CREDENTIALS {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Wrong Provider"})
+		return ctx.Status(fiber.StatusBadRequest).JSON("Wrong Provider")
 	}
 
 	if !utils.VerifyPassword(user.Password, loginBody.Password) {
-		return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User not found"})
+		return ctx.Status(fiber.StatusNotFound).JSON("User not found")
 	}
 
 	token, err := utils.GenerateJWT(user.ID, user.Email)
@@ -67,7 +67,7 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 	}{}
 
 	if err := utils.ParseBodyAndValidate(ctx, &registerBody); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 
 	password, err := utils.HashPassword(registerBody.Password)

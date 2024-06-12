@@ -7,8 +7,8 @@ import PlusIcon from '@heroicons/react/24/outline/PlusIcon'
 import { PageLoader } from './loader'
 import apiClient from '../../api/client'
 import Button, { ButtonProps } from './button'
-import { ExplicitAndAllObject, PaginationResponse } from '../../types'
 import TableExport, { TableExportProps } from './tableExport'
+import { ExplicitAndAllObject, PaginationResponse } from '../../types'
 
 export type TableColumn<T> = {
 	title: string

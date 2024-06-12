@@ -1,17 +1,15 @@
-import {
-	LinkIcon,
-	PhoneIcon,
-	PhotoIcon,
-	ListBulletIcon,
-	ViewColumnsIcon,
-	CodeBracketIcon,
-	Square2StackIcon,
-	DocumentTextIcon,
-	AdjustmentsVerticalIcon,
-	Bars2Icon,
-	Bars3CenterLeftIcon,
-} from '@heroicons/react/24/outline'
 import { FC, PropsWithChildren, SVGProps } from 'react'
+import LinkIcon from '@heroicons/react/24/outline/LinkIcon'
+import PhoneIcon from '@heroicons/react/24/outline/PhoneIcon'
+import PhotoIcon from '@heroicons/react/24/outline/PhotoIcon'
+import Bars2Icon from '@heroicons/react/24/outline/Bars2Icon'
+import ListBulletIcon from '@heroicons/react/24/outline/ListBulletIcon'
+import ViewColumnsIcon from '@heroicons/react/24/outline/ViewColumnsIcon'
+import CodeBracketIcon from '@heroicons/react/24/outline/CodeBracketIcon'
+import Square2StackIcon from '@heroicons/react/24/outline/Square2StackIcon'
+import DocumentTextIcon from '@heroicons/react/24/outline/DocumentTextIcon'
+import Bars3CenterLeftIcon from '@heroicons/react/24/outline/Bars3CenterLeftIcon'
+import AdjustmentsVerticalIcon from '@heroicons/react/24/outline/AdjustmentsVerticalIcon'
 
 import {
 	codeProps,

@@ -35,7 +35,7 @@ func Update[UpdateBodyType interface{}, Model DbModel](_options ...UpdateOptions
 		paramValue := ctx.Params(options.ParamValue)
 		err := utils.ParseBodyAndValidate(ctx, &updateBody)
 		if err != nil {
-			return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "error in form validation"})
+			return ctx.Status(fiber.StatusBadRequest).JSON("error in form validation")
 		}
 
 		db, err := utils.GetTenantDbFromCtx(ctx)

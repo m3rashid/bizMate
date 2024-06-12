@@ -18,7 +18,7 @@ func createEmailTemplate(ctx *fiber.Ctx) error {
 
 	template := models.EmailTemplate{}
 	if err := utils.ParseBodyAndValidate(ctx, &template); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 
 	var emailHtmlTemplate = HTML{

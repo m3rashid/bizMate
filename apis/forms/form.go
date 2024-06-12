@@ -50,15 +50,15 @@ func updateFormById(ctx *fiber.Ctx) error {
 	updateBody := formReqBody{}
 	userId := ctx.Locals("userId").(uint)
 	if userId == 0 {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Unauthorized"})
+		return ctx.Status(fiber.StatusUnauthorized).JSON("Unauthorized")
 	}
 
 	if err := utils.ParseBodyAndValidate(ctx, &updateBody); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 
 	if updateBody.ID == 0 {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Bad Request"})
+		return ctx.Status(fiber.StatusBadRequest).JSON("Bad Request")
 	}
 
 	db, err := utils.GetTenantDbFromCtx(ctx)

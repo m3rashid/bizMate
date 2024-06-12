@@ -1,6 +1,9 @@
 import { FC } from 'react'
 import { useNavigate } from '@tanstack/react-router'
-import { ChartBarIcon, DocumentCheckIcon, DocumentIcon, DocumentTextIcon } from '@heroicons/react/24/outline'
+import ChartBarIcon from '@heroicons/react/24/outline/ChartBarIcon'
+import DocumentIcon from '@heroicons/react/24/outline/DocumentIcon'
+import DocumentTextIcon from '@heroicons/react/24/outline/DocumentTextIcon'
+import DocumentCheckIcon from '@heroicons/react/24/outline/DocumentCheckIcon'
 
 import { Project } from '../../types'
 import Button, { ButtonProps } from '../lib/button'

@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import { useState } from 'react'
-import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import { createLazyFileRoute, useNavigate } from '@tanstack/react-router'
+import PencilSquareIcon from '@heroicons/react/24/outline/PencilSquareIcon'
 
 import { Project } from '../../../types'
 import Button from '../../../components/lib/button'

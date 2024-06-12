@@ -50,7 +50,7 @@ func CheckAuthMiddleware(c *fiber.Ctx) error {
 
 	claims, err := CheckAuth(clientToken)
 	if err != nil {
-		c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": err.Error()})
+		c.Status(fiber.StatusUnauthorized).JSON(err.Error())
 	}
 
 	userIdU64, err := strconv.ParseUint(claims.UserID, 10, 32)

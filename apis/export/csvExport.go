@@ -4,26 +4,27 @@ import (
 	"bizmate/utils"
 	"encoding/csv"
 	"fmt"
-	"os"
 	"reflect"
+	"strings"
+
+	"github.com/gofiber/fiber/v2"
 )
 
-func gstCsvFileName(tableName string, tenantName string) string {
-	return fmt.Sprintf("%s-%s-records.csv", tenantName, tableName)
+func gstCsvFileName(tableName string, ctx *fiber.Ctx) string {
+	tenantOrigin, err := utils.GetTenantOriginFromCtx(ctx)
+	if err != nil {
+		return ""
+	}
+	tenantOrigin = strings.Replace(tenantOrigin, ":", "", 1)
+	return fmt.Sprintf("%s-%s-records.csv", tenantOrigin, tableName)
 }
 
-func handleCsvExport(data []map[string]interface{}, fields []string, fileName string) (string, error) {
-	file, err := os.CreateTemp("", fileName)
-	if err != nil {
-		return "", err
-	}
-	defer file.Close()
-
-	writer := csv.NewWriter(file)
+func handleCsvExport(data []map[string]interface{}, fields []string, ctx *fiber.Ctx) error {
+	writer := csv.NewWriter(ctx)
 	defer writer.Flush()
 
 	if err := writer.Write(fields); err != nil {
-		return "", err
+		return err
 	}
 
 	for _, record := range data {
@@ -42,9 +43,9 @@ func handleCsvExport(data []map[string]interface{}, fields []string, fileName st
 		}
 
 		if err := writer.Write(data); err != nil {
-			return "", err
+			return err
 		}
 	}
 
-	return file.Name(), nil
+	return nil
 }

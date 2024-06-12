@@ -1,17 +1,15 @@
 import { FC } from 'react'
-import {
-	ChartBarIcon,
-	ArrowPathIcon,
-	ListBulletIcon,
-	DeviceTabletIcon,
-	ClipboardDocumentIcon,
-	AdjustmentsHorizontalIcon,
-	PresentationChartLineIcon,
-	AtSymbolIcon,
-	ChatBubbleLeftRightIcon,
-} from '@heroicons/react/24/outline'
 import { useNavigate } from '@tanstack/react-router'
+import AtSymbolIcon from '@heroicons/react/24/outline/AtSymbolIcon'
+import ChartBarIcon from '@heroicons/react/24/outline/ChartBarIcon'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
+import ArrowPathIcon from '@heroicons/react/24/outline/ArrowPathIcon'
+import ListBulletIcon from '@heroicons/react/24/outline/ListBulletIcon'
+import DeviceTabletIcon from '@heroicons/react/24/outline/DeviceTabletIcon'
+import ClipboardDocumentIcon from '@heroicons/react/24/outline/ClipboardDocumentIcon'
+import ChatBubbleLeftRightIcon from '@heroicons/react/24/outline/ChatBubbleLeftRightIcon'
+import AdjustmentsHorizontalIcon from '@heroicons/react/24/outline/AdjustmentsHorizontalIcon'
+import PresentationChartLineIcon from '@heroicons/react/24/outline/PresentationChartLineIcon'
 
 export type Route = {
 	name: string

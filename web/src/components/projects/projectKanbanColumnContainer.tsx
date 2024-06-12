@@ -1,5 +1,5 @@
 import { SortableContext } from '@dnd-kit/sortable'
-import { PlusIcon } from '@heroicons/react/24/outline'
+import PlusIcon from '@heroicons/react/24/outline/PlusIcon'
 
 import ProjectTaskCard from './projectTaskCard'
 import { ProjectTask, TaskStatus } from '../../types'

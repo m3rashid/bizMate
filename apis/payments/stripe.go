@@ -20,12 +20,12 @@ func createStripePaymentIntent(ctx *fiber.Ctx) error {
 	}{}
 
 	if err := ctx.BodyParser(&intentBody); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request body"})
+		return ctx.Status(fiber.StatusBadRequest).JSON("Invalid request body")
 	}
 
 	validate := validator.New()
 	if err := validate.Struct(intentBody); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Required parameters missing"})
+		return ctx.Status(fiber.StatusBadRequest).JSON("Required parameters missing")
 	}
 
 	return ctx.SendString("createStripePaymentIntent")

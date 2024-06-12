@@ -21,7 +21,7 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 	formId := ctx.Params("formId")
 
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil || formId == "" {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 
 	db, err := utils.GetTenantDbFromCtx(ctx)
@@ -35,12 +35,12 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 	}
 
 	if !form.Active {
-		return ctx.Status(fiber.StatusTooEarly).JSON(fiber.Map{"error": "form_inactive"})
+		return ctx.Status(fiber.StatusTooEarly).JSON("form_inactive")
 	}
 
 	userId := utils.GetUserIdOrNullFromCtxMaybe(ctx)
 	if !form.AllowAnonymousResponse && userId == 0 {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "unauthorized"})
+		return ctx.Status(fiber.StatusUnauthorized).JSON("unauthorized")
 	}
 
 	formResponse := models.FormResponse{
@@ -67,11 +67,11 @@ func editFormResponse(ctx *fiber.Ctx) error {
 	userId := ctx.Locals("userId").(uint)
 
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil || formId == "" {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Bad Request"})
+		return ctx.Status(fiber.StatusBadRequest).JSON("Bad Request")
 	}
 
 	if reqBody.ID == 0 {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Bad Request"})
+		return ctx.Status(fiber.StatusBadRequest).JSON("Bad Request")
 	}
 
 	db, err := utils.GetTenantDbFromCtx(ctx)
@@ -85,11 +85,11 @@ func editFormResponse(ctx *fiber.Ctx) error {
 	}
 
 	if !form.Active {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "form_inactive"})
+		return ctx.Status(fiber.StatusUnauthorized).JSON("form_inactive")
 	}
 
 	if !form.AllowResponseUpdate {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "response updated not allowed"})
+		return ctx.Status(fiber.StatusUnauthorized).JSON("response updated not allowed")
 	}
 
 	formResponse := models.FormResponse{}
@@ -98,7 +98,7 @@ func editFormResponse(ctx *fiber.Ctx) error {
 	}
 
 	if *formResponse.CreatedByID == 0 || formResponse.CreatedByID != &userId {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "invalid form response"})
+		return ctx.Status(fiber.StatusUnauthorized).JSON("invalid form response")
 	}
 
 	formResponse.DeviceIP = utils.GetDeviceIP(ctx)

@@ -1,5 +1,5 @@
 import { FormEvent, MouseEvent, useMemo, useRef } from 'react'
-import { InformationCircleIcon } from '@heroicons/react/24/outline'
+import InformationCircleIcon from '@heroicons/react/24/outline/InformationCircleIcon'
 
 import Button from '../lib/button'
 import Tooltip from '../lib/tooltip'

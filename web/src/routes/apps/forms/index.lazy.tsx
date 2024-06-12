@@ -1,7 +1,12 @@
 import dayjs from 'dayjs'
 import { useState } from 'react'
+import EyeIcon from '@heroicons/react/24/outline/EyeIcon'
 import { Link, createFileRoute } from '@tanstack/react-router'
-import { LockOpenIcon, ArrowPathIcon, ClipboardIcon, LockClosedIcon, PencilSquareIcon, EyeIcon } from '@heroicons/react/24/outline'
+import LockOpenIcon from '@heroicons/react/24/outline/LockOpenIcon'
+import ArrowPathIcon from '@heroicons/react/24/outline/ArrowPathIcon'
+import ClipboardIcon from '@heroicons/react/24/outline/ClipboardIcon'
+import LockClosedIcon from '@heroicons/react/24/outline/LockClosedIcon'
+import PencilSquareIcon from '@heroicons/react/24/outline/PencilSquareIcon'
 
 import { Form } from '../../../types'
 import Chip from '../../../components/lib/chip'

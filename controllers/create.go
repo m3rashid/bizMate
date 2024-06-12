@@ -28,7 +28,7 @@ func Create[CreateBodyType interface{}, Model interface{}](tableName string, _op
 		var model *Model
 
 		if err := utils.ParseBodyAndValidate(ctx, &formBody); err != nil {
-			return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+			return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 		}
 
 		if options.GetDefaultValues != nil {

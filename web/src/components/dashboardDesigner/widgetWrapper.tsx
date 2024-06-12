@@ -2,7 +2,7 @@ import { CSS } from '@dnd-kit/utilities'
 import { twMerge } from 'tailwind-merge'
 import { PropsWithChildren } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
-import { XMarkIcon } from '@heroicons/react/24/outline'
+import XMarkIcon from '@heroicons/react/24/outline/XMarkIcon'
 
 import Tooltip from '../lib/tooltip'
 import { DashboardWidget, useDashboardDesigner } from '../../hooks/dashboardDesigner'

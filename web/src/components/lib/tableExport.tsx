@@ -9,12 +9,13 @@ import apiClient from '../../api/client'
 import { ExportableTable } from '../../types'
 import Button, { ButtonProps } from './button'
 import SingleSelectInput, { Option } from './singleSelectInput'
+import { usePopups } from '../../hooks/popups'
 
 export type TableExportProps = {
 	tableName: ExportableTable
+	formId?: number
 	mutationKeys?: string[]
 	buttonProps?: ButtonProps
-	formId?: number
 }
 
 const selectOptions: Array<Option> = [
@@ -23,9 +24,10 @@ const selectOptions: Array<Option> = [
 ]
 
 function TableExport(props: TableExportProps) {
+	const { addMessagePopup } = usePopups()
 	const [open, setOpen] = useState(false)
 
-	const { data: tableFields, isPending } = useQuery<Array<{ name: string; label: string }>>({
+	const { data: tableFieldsData, isPending } = useQuery<{ csvFileName: string; fields: Array<{ name: string; label: string }> }>({
 		queryKey: [props.tableName, ...(props.mutationKeys || []), ...(props.formId ? [props.formId] : [])],
 		queryFn: () =>
 			apiClient('/table/export/table-fields', {
@@ -36,8 +38,21 @@ function TableExport(props: TableExportProps) {
 
 	const { mutate: exportTable } = useMutation({
 		onSuccess: () => setOpen(false),
+		onError: (error, variables) => {
+			setOpen(false)
+			addMessagePopup({
+				type: 'error',
+				message: (error as any) || 'An error occurred',
+				id: tableFieldsData?.csvFileName || `${props.tableName}.${variables.format}`,
+			})
+		},
 		mutationKey: [props.tableName, ...(props.mutationKeys || [])],
-		mutationFn: (data: any) => apiClient('/table/export', { method: 'POST', body: JSON.stringify(data) }),
+		mutationFn: (data: any) =>
+			apiClient(
+				'/table/export',
+				{ method: 'POST', body: JSON.stringify(data) },
+				{ downloadableContent: { fileName: tableFieldsData?.csvFileName || `${props.tableName}.${data.format}` } },
+			),
 	})
 
 	function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -63,7 +78,7 @@ function TableExport(props: TableExportProps) {
 			<Modal title="Export Data" {...{ open, setOpen }}>
 				{isPending ? (
 					<PageLoader />
-				) : !tableFields || tableFields.length === 0 ? (
+				) : !tableFieldsData || tableFieldsData.fields.length === 0 ? (
 					<div>
 						<label className="block text-sm font-medium leading-6 text-gray-900">No columns to select</label>
 					</div>
@@ -80,7 +95,7 @@ function TableExport(props: TableExportProps) {
 						<label className="block text-sm font-medium leading-6 text-gray-900">Select Columns to include</label>
 
 						<div className="grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-4">
-							{tableFields.map((field) => (
+							{tableFieldsData.fields.map((field) => (
 								<TogglerInput key={field.name} name={field.name} label={field.label} defaultChecked />
 							))}
 						</div>
