@@ -68,7 +68,6 @@ func exportTable(ctx *fiber.Ctx) error {
 	if err := db.Raw(query).Scan(&res).Error; err != nil {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
-	fmt.Printf("%+v\n", res)
 
 	if reqBody.Format == csvFormat {
 		csvFileName := gstCsvFileName(reqBody.TableName, ctx)

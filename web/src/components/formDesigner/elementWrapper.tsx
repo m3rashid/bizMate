@@ -13,7 +13,7 @@ export type ElementWrapperProps = PropsWithChildren & {
 }
 function ElementWrapper(props: ElementWrapperProps) {
 	const { removeNode, setFormDesigner, selectedNode } = useFormDesigner()
-	const { attributes, setNodeRef, listeners, transform, transition } = useSortable({ id: props.item.id })
+	const { attributes, setNodeRef, listeners, transform, transition, isDragging } = useSortable({ id: props.item.id })
 
 	return (
 		<div
@@ -23,13 +23,14 @@ function ElementWrapper(props: ElementWrapperProps) {
 			className={twMerge(
 				'relative my-2 rounded-lg border-2 border-gray-200 p-4',
 				selectedNode?.id === props.item.id ? 'ring-2 ring-linkActive' : 'bg-gray-200',
+				isDragging ? 'cursor-grab' : '',
 			)}
-			style={{ transition, transform: CSS.Transform.toString(transform), viewTransitionName: `form-wrapper-${props.item.id}` }}
 			onClick={() => setFormDesigner((prev) => ({ ...prev, selectedNode: props.item }))}
+			style={{ transition, transform: CSS.Transform.toString(transform), viewTransitionName: `form-wrapper-${props.item.id}` }}
 		>
 			{props.children}
 			<div
-				className="absolute right-0 top-0 z-50 rounded-full bg-white hover:bg-danger"
+				className="absolute -right-3 -top-3 z-50 rounded-full border-[1px] border-borderColor bg-white p-1 hover:border-0 hover:bg-danger hover:text-white"
 				onClick={(e) => {
 					e.stopPropagation()
 					e.preventDefault()
@@ -37,7 +38,7 @@ function ElementWrapper(props: ElementWrapperProps) {
 				}}
 			>
 				<Tooltip show="right" label="Double Click to remove">
-					<XMarkIcon className="-mr-0.5 h-8 w-8" />
+					<XMarkIcon className="-mr-0.5 h-6 w-6" />
 				</Tooltip>
 			</div>
 		</div>

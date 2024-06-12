@@ -44,15 +44,15 @@ export type FormDesigner = {
 const formDesignerDefaultState: FormDesigner = {
 	meta: [
 		{
-			id: 'img',
-			name: 'image',
-			props: { src: 'https://via.placeholder.com/150', alt: 'placeholder image', className: 'w-full h-48 object-cover rounded-md' },
+			id: '$name$',
+			name: 'textInput',
+			props: { name: 'name', label: 'Name', required: true, descriptionText: 'Please enter your full name here' },
 		},
 	],
 	viewType: 'build',
 	selectedNode: null,
 	rootProps: {
-		title: 'New Form',
+		title: 'New Untitled Form',
 		cancelText: 'Cancel',
 		submitText: 'Submit Form',
 		sendResponseEmail: 'off',

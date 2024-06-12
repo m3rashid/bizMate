@@ -12,6 +12,7 @@ import SkeletonTable from '../skeletons/table'
 import { routeTree } from '../../routeTree.gen'
 import TableExport, { TableExportProps } from './tableExport'
 import { ExplicitAndAllObject, PaginationResponse } from '../../types'
+import Chip from './chip'
 
 export type TableColumn<T> = {
 	title: string
@@ -149,7 +150,8 @@ function Table<T extends Row>(props: TableProps<T>) {
 			<nav className="flex items-center justify-between border-b-2 border-pageBg bg-white p-2" aria-label="Pagination">
 				<div className="hidden sm:block">
 					<p className="text-sm text-gray-700">
-						Showing {Math.min(data.page * data.limit, data.count)} of {data.totalDocs} results
+						Showing <span className="font-semibold">{Math.min(data.page * data.limit, data.count)}</span> of&nbsp;
+						<span className="font-semibold">{data.totalDocs}</span> results
 					</p>
 				</div>
 				<div className="flex flex-1 justify-between gap-4 sm:justify-end">
@@ -161,6 +163,11 @@ function Table<T extends Row>(props: TableProps<T>) {
 					>
 						Previous
 					</Button>
+
+					<Chip variant="simple" className="h-full">
+						{data.page}
+					</Chip>
+
 					<Button
 						size="small"
 						variant="simple"

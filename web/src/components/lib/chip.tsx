@@ -13,7 +13,7 @@ const chipVariants = {
 	success: 'bg-success',
 	danger: 'bg-danger',
 	disabled: 'bg-disabled',
-	simple: 'bg-white',
+	simple: 'bg-white text-black border-2 border-borderColor',
 } as const
 
 const chipSizes = {

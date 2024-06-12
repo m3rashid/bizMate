@@ -1,9 +1,13 @@
-import { createLazyFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createLazyFileRoute('/apps/communications/emails/')({
+import PageContainer from '../../../../components/pageContainer'
+import { PageSearchParams } from '../../../../components/lib/table'
+
+export const Route = createFileRoute('/apps/communications/emails/')({
 	component: Emails,
+	validateSearch: (search: Record<string, unknown>): PageSearchParams => ({ page: Number(search?.page ?? 1) }),
 })
 
 function Emails() {
-	return <div>Hello /apps/communication/emails/!</div>
+	return <PageContainer></PageContainer>
 }

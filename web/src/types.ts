@@ -153,5 +153,31 @@ export type ProjectTaskComment = BaseModel &
 		comment: string
 	}
 
+export type WebUiNotification = BaseModel & {
+	title: string
+	description: string
+	link: string
+	scope: string
+	read: boolean
+}
+
+export type EmailTemplate = BaseModel &
+	CreatedBy &
+	UpdatedBy & {
+		title: string
+		description: string
+		variables: string
+		subjectTemplate: string
+		bodyTemplate: string
+	}
+
+export type BulkEmailRequest = BaseModel &
+	CreatedBy & {
+		emailTemplateId: number
+		emailTemplate: EmailTemplate
+		bodyVariableMapping: string
+		subjectVariableMapping: string
+	}
+
 export const exportableTables = ['form_response_table', 'user_table', 'forms_table'] as const
 export type ExportableTable = (typeof exportableTables)[number]

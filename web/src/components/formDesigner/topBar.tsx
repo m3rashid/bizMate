@@ -5,21 +5,28 @@ import InformationCircleIcon from '@heroicons/react/24/outline/InformationCircle
 import Button from '../lib/button'
 import Tooltip from '../lib/tooltip'
 import apiClient from '../../api/client'
+import { usePopups } from '../../hooks/popups'
 import { Form, StringBoolean } from '../../types'
 import { useFormDesigner } from '../../hooks/formDesigner'
 
 function FormDesignerTopBar() {
 	const navigate = useNavigate()
+	const { addMessagePopup } = usePopups()
 	const { viewType, changeViewType, meta, rootProps } = useFormDesigner()
+
 	const { isPending, mutate: saveForm } = useMutation({
 		mutationKey: ['saveForm'],
+		onError: () => addMessagePopup({ id: 'errorCreateForm', message: 'Error in creating form', type: 'error' }),
 		mutationFn: async (body: any) => apiClient('/forms/create', { method: 'POST', body: JSON.stringify(body) }),
-		onSuccess: () => navigate({ to: '/apps/forms' }),
+		onSuccess: () => {
+			navigate({ to: '/apps/forms', search: { page: 1 } })
+			addMessagePopup({ id: 'saveForm', message: 'Successfully created form', type: 'success' })
+		},
 	})
 
 	function handleSaveForm() {
 		if (meta.length === 0) {
-			window.alert('No form elements to save')
+			addMessagePopup({ id: 'zeroLength', type: 'error', message: 'No form elements to save in the form' })
 			return
 		}
 
