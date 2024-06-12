@@ -34,6 +34,7 @@ function Button(props: ButtonProps) {
 				'inline-flex items-center justify-center gap-x-2 rounded-md font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2',
 				buttonVariants[props.variant ?? 'primary'],
 				buttonSizes[props.size ?? 'medium'],
+				props.disabled ? `${buttonVariants['disabled']} cursor-not-allowed` : '',
 				props.className,
 			)}
 		>

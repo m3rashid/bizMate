@@ -93,7 +93,7 @@ function SimpleTable<T extends Row>(props: SimpleTableProps<T>) {
 												scope="col"
 												key={column.title + columnIndex}
 												className={twMerge(
-													' p-3 text-left text-sm font-semibold',
+													'p-3 text-left text-sm font-semibold',
 													columnIndex === 0 ? 'rounded-l-lg' : '',
 													columnIndex === props.columns.length - 1 ? 'rounded-r-lg' : '',
 													props.tableHeadingClassName ? props.tableHeadingClassName(columnIndex) : '',

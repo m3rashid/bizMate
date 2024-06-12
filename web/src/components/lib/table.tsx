@@ -3,10 +3,11 @@ import { FC, ReactNode, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import PlusIcon from '@heroicons/react/24/outline/PlusIcon'
+import ArrowPathIcon from '@heroicons/react/24/outline/ArrowPathIcon'
 
-import { PageLoader } from './loader'
 import apiClient from '../../api/client'
 import Button, { ButtonProps } from './button'
+import SkeletonTable from '../skeletons/table'
 import TableExport, { TableExportProps } from './tableExport'
 import { ExplicitAndAllObject, PaginationResponse } from '../../types'
 
@@ -43,12 +44,12 @@ function Table<T extends Row>(props: TableProps<T>) {
 	const [page, setPage] = useState(1)
 
 	const navigate = useNavigate()
-	const { isPending, data } = useQuery<PaginationResponse<T>>({
+	const { isPending, data, refetch } = useQuery<PaginationResponse<T>>({
 		queryKey: [...props.queryKeys, page, props.pageSize || 15],
 		queryFn: () => apiClient(`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${page}&limit=${props.pageSize || 15}`),
 	})
 
-	if (isPending || !data) return <PageLoader />
+	if (isPending || !data) return <SkeletonTable contentLength={5} />
 	return (
 		<div className={twMerge('h-full w-full', props.rootClassName)}>
 			<div className={twMerge('sm:flex sm:items-center', props.title || props.description || props.addButtonLink ? 'mb-8' : '')}>
@@ -60,6 +61,7 @@ function Table<T extends Row>(props: TableProps<T>) {
 				) : null}
 
 				<div className="mt-4 flex flex-wrap items-center justify-center gap-2 sm:ml-8 sm:mt-0">
+					<Button size="small" variant="simple" LeftIcon={<ArrowPathIcon className="h-4 w-4" />} onClick={() => refetch()} />
 					{props.addButtonLink ? (
 						<Button
 							size="small"
@@ -155,20 +157,10 @@ function Table<T extends Row>(props: TableProps<T>) {
 					</p>
 				</div>
 				<div className="flex flex-1 justify-between gap-4 sm:justify-end">
-					<Button
-						size="small"
-						disabled={!data.hasPreviousPage}
-						variant={data.hasPreviousPage ? 'simple' : 'disabled'}
-						onClick={() => setPage((prev) => (prev !== 1 ? prev - 1 : prev))}
-					>
+					<Button size="small" variant="simple" disabled={!data.hasPreviousPage} onClick={() => setPage((prev) => (prev !== 1 ? prev - 1 : prev))}>
 						Previous
 					</Button>
-					<Button
-						size="small"
-						disabled={!data.hasNextPage}
-						onClick={() => setPage((prev) => prev + 1)}
-						variant={data.hasNextPage ? 'simple' : 'disabled'}
-					>
+					<Button size="small" variant="simple" disabled={!data.hasNextPage} onClick={() => setPage((prev) => prev + 1)}>
 						Next
 					</Button>
 				</div>

@@ -40,17 +40,12 @@ function FormView(props: FormViewProps) {
 			{metaType === 'body' ? (
 				<div className="flex items-center justify-between rounded-lg border-[1px] border-gray-200 bg-white p-4 shadow-md">
 					<Button
+						variant="simple"
 						label={props.form.cancelText}
 						disabled={props.type === 'preview'}
-						variant={props.type === 'preview' ? 'disabled' : 'simple'}
 						{...(props.type === 'fill' ? { onClick: props.handleCancel } : {})}
 					/>
-					<Button
-						type="submit"
-						label={props.form.submitText}
-						disabled={props.type === 'preview'}
-						variant={props.type === 'preview' ? 'disabled' : 'primary'}
-					/>
+					<Button type="submit" variant="primary" label={props.form.submitText} disabled={props.type === 'preview'} />
 				</div>
 			) : null}
 		</form>
