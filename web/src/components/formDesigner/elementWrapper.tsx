@@ -24,12 +24,12 @@ function ElementWrapper(props: ElementWrapperProps) {
 				'relative my-2 rounded-lg border-2 border-gray-200 p-4',
 				selectedNode?.id === props.item.id ? 'ring-2 ring-linkActive' : 'bg-gray-200',
 			)}
-			style={{ transition, transform: CSS.Transform.toString(transform) }}
+			style={{ transition, transform: CSS.Transform.toString(transform), viewTransitionName: `form-wrapper-${props.item.id}` }}
 			onClick={() => setFormDesigner((prev) => ({ ...prev, selectedNode: props.item }))}
 		>
 			{props.children}
 			<div
-				className="absolute right-0 top-0 z-50 rounded-full bg-white hover:bg-pageBg"
+				className="absolute right-0 top-0 z-50 rounded-full bg-white hover:bg-danger"
 				onClick={(e) => {
 					e.stopPropagation()
 					e.preventDefault()

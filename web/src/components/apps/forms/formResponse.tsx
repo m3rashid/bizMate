@@ -3,30 +3,29 @@ import { useQuery } from '@tanstack/react-query'
 import { Form } from '../../../types'
 import apiClient from '../../../api/client'
 import { PageLoader } from '../../lib/loader'
+import { NotFound } from '../../lib/notFound'
 import SimpleTable from '../../lib/simpleTable'
 import { parseFormResponses } from './parseFormResponses'
 
-type FormResponseTableProps = { formId: string; form: Form }
-function FormResponsesTable(props: FormResponseTableProps) {
+type FormResponseTableProps = Form
+function FormResponsesTable(form: FormResponseTableProps) {
 	const { data: formResponses, isPending: isFormResponseFetchPending } = useQuery({
-		queryKey: ['getFormResponses', props.formId],
-		select: (data) => parseFormResponses(props.form, data),
-		queryFn: () => apiClient(`/forms/response/${props.formId}/all`),
+		queryKey: ['getFormResponses', form.id],
+		select: (data) => parseFormResponses(form, data),
+		queryFn: () => apiClient(`/forms/response/${form.id}/all`),
 	})
 
 	if (isFormResponseFetchPending) return <PageLoader />
+	if (!formResponses) return <NotFound />
+
 	return (
 		<SimpleTable<any>
-			title={`Form Responses (${props.form.title})`}
 			rootClassName="w-full"
-			tableExportprops={{
-				mutationKeys: [],
-				formId: parseInt(props.formId),
-				tableName: 'form_response_table',
-			}}
-			description={props.form.description}
-			data={formResponses?.data.docs || []}
-			columns={formResponses?.tableData || []}
+			description={form.description}
+			data={formResponses.data.docs || []}
+			columns={formResponses.tableData || []}
+			title={`Form Responses (${form.title})`}
+			tableExportprops={{ mutationKeys: [], formId: form.id, tableName: 'form_response_table' }}
 			emptyState={
 				<div className="flex h-72 flex-col items-center justify-center gap-4 rounded-md border-2 border-gray-200">
 					<div className="text-center">

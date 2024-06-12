@@ -22,3 +22,7 @@ a[href^="https://unlayer.com/"]
 {
 	display: none !important;
 }
+
+@view-transition {
+	navigation: auto;
+}

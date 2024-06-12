@@ -35,19 +35,8 @@ function SingleFormDesigner() {
 					selectedNode ? 'bg-gray-200' : 'ring-2 ring-linkActive',
 				)}
 			>
-				<Button
-					className="select-none"
-					label={rootProps.cancelText}
-					disabled={viewType === 'build'}
-					variant={viewType === 'build' ? 'disabled' : 'simple'}
-				/>
-				<Button
-					type="submit"
-					className="select-none"
-					label={rootProps.submitText}
-					disabled={viewType === 'build'}
-					variant={viewType === 'build' ? 'disabled' : 'primary'}
-				/>
+				<Button disabled className="select-none" label={rootProps.cancelText} variant={viewType === 'build' ? 'disabled' : 'simple'} />
+				<Button disabled type="submit" className="select-none" label={rootProps.submitText} variant={viewType === 'build' ? 'disabled' : 'primary'} />
 			</div>
 		</form>
 	)

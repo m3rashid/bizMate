@@ -1,4 +1,4 @@
-import { SortableContext, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
+import { sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 import { useSensor, useSensors, DndContext, PointerSensor, closestCorners, KeyboardSensor } from '@dnd-kit/core'
 
 import FormDesignerCore from './form'

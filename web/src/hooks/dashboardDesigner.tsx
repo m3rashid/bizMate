@@ -4,6 +4,7 @@ import { Dispatch, useState, useContext, createContext, SetStateAction, PropsWit
 
 import { Widget } from '../types'
 import { Props } from '../components/forms/exposedProps'
+import { handleViewTransitions } from '../utils/helpers'
 
 export type DashboardWidget = Widget & {
 	id: string
@@ -47,20 +48,24 @@ export function useDashboardDesigner() {
 
 	function handleDragEnd(e: DragEndEvent) {
 		if (!e.over || e.active.id === e.over.id) return
-		setDashboardDesigner((prev) => {
-			if (!e.over) return prev
-			const source = getWidgetPosition(prev.dashboardWidgets, e.active.id)
-			const destination = getWidgetPosition(prev.dashboardWidgets, e.over.id)
-			return { ...prev, dashboardWidgets: arrayMove(prev.dashboardWidgets, source, destination) }
-		})
+		handleViewTransitions(() =>
+			setDashboardDesigner((prev) => {
+				if (!e.over) return prev
+				const source = getWidgetPosition(prev.dashboardWidgets, e.active.id)
+				const destination = getWidgetPosition(prev.dashboardWidgets, e.over.id)
+				return { ...prev, dashboardWidgets: arrayMove(prev.dashboardWidgets, source, destination) }
+			}),
+		)
 	}
 
 	function changeViewType(viewType?: DashboardDesigner['viewType']) {
-		setDashboardDesigner((prev) => ({ ...prev, viewType: viewType || (prev.viewType === 'build' ? 'preview' : 'build') }))
+		handleViewTransitions(() =>
+			setDashboardDesigner((prev) => ({ ...prev, viewType: viewType || (prev.viewType === 'build' ? 'preview' : 'build') })),
+		)
 	}
 
 	function insertNewWidget(widget: DashboardWidget) {
-		setDashboardDesigner((prev) => ({ ...prev, dashboardWidgets: [...prev.dashboardWidgets, widget] }))
+		handleViewTransitions(() => setDashboardDesigner((prev) => ({ ...prev, dashboardWidgets: [...prev.dashboardWidgets, widget] })))
 	}
 
 	function getSelectedNodeProps(): { _props: Props; values: Record<string, any> } {
@@ -69,14 +74,18 @@ export function useDashboardDesigner() {
 	}
 
 	function updateWidget(widgetKey: string, props: Props) {
-		setDashboardDesigner((prev) => ({
-			...prev,
-			dashboardWidgets: prev.dashboardWidgets.map((widget) => (widget.id === widgetKey ? { ...widget, props } : widget)),
-		}))
+		handleViewTransitions(() =>
+			setDashboardDesigner((prev) => ({
+				...prev,
+				dashboardWidgets: prev.dashboardWidgets.map((widget) => (widget.id === widgetKey ? { ...widget, props } : widget)),
+			})),
+		)
 	}
 
 	function removeWidget(id: DashboardWidget['id']) {
-		setDashboardDesigner((prev) => ({ ...prev, dashboardWidgets: prev.dashboardWidgets.filter((widget) => widget.id !== id) }))
+		handleViewTransitions(() =>
+			setDashboardDesigner((prev) => ({ ...prev, dashboardWidgets: prev.dashboardWidgets.filter((widget) => widget.id !== id) })),
+		)
 	}
 
 	return {

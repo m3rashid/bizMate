@@ -25,7 +25,7 @@ function FormResponses() {
 
 	return (
 		<PageContainer>
-			<FormResponsesTable form={form} formId={formId} />
+			<FormResponsesTable {...form} />
 		</PageContainer>
 	)
 }

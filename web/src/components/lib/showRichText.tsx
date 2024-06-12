@@ -1,11 +1,9 @@
-import './style.css'
-
 import '@blocknote/mantine/style.css'
 import { twMerge } from 'tailwind-merge'
 import { BlockNoteView } from '@blocknote/mantine'
 import { useCreateBlockNote } from '@blocknote/react'
 
-import { safeJsonParse } from '../../../utils/helpers'
+import { safeJsonParse } from '../../utils/helpers'
 
 export type ShowRichTextProps = {
 	data: string

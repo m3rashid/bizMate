@@ -1,3 +1,5 @@
+import { flushSync } from 'react-dom'
+
 export function generateRandomString(len = 10) {
 	return Math.random()
 		.toString(36)
@@ -38,4 +40,15 @@ export function safeJsonParse(content: string, defaultReturn: any, validations?:
 	} catch (err: any) {
 		return defaultReturn
 	}
+}
+
+/**
+ * @param cb Function to be executed in the view transition
+ * @description Function to handle view transitions
+ * View transitions are used to animate the transition between two views and should be used when the transition between two views is not smooth
+ */
+export function handleViewTransitions(cb: () => void) {
+	document.startViewTransition(() => {
+		flushSync(cb)
+	})
 }

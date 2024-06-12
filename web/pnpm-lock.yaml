@@ -81,6 +81,9 @@ importers:
       '@tanstack/router-vite-plugin':
         specifier: ^1.31.18
         version: 1.31.18(vite@5.2.11)
+      '@types/dom-view-transitions':
+        specifier: ^1.0.4
+        version: 1.0.4
       '@types/react':
         specifier: ^18.3.1
         version: 18.3.1
@@ -1157,6 +1160,9 @@ packages:
 
   '@types/debug@4.1.12':
     resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
+
+  '@types/dom-view-transitions@1.0.4':
+    resolution: {integrity: sha512-oDuagM6G+xPLrLU4KeCKlr1oalMF5mJqV5pDPMDVIEaa8AkUW00i6u+5P02XCjdEEUQJC9dpnxqSLsZeAciSLQ==}
 
   '@types/estree@1.0.5':
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
@@ -4112,6 +4118,8 @@ snapshots:
   '@types/debug@4.1.12':
     dependencies:
       '@types/ms': 0.7.34
+
+  '@types/dom-view-transitions@1.0.4': {}
 
   '@types/estree@1.0.5': {}
 

@@ -1,9 +1,29 @@
 import dayjs from 'dayjs'
+import { useState } from 'react'
+
+import Modal from '../../lib/modal'
+import Button from '../../lib/button'
 import { TableColumn } from '../../lib/table'
+import ShowRichText from '../../lib/showRichText'
+import { FormElementInstance } from '../../forms/constants'
 import { CreatedBy, Form, FormResponse, PaginationResponse } from '../../../types'
 
 export type FormResponsesType = {
 	form: Form
+}
+
+function ShowRichTextData(props: { data: any; label: string }) {
+	const [modalOpen, setModalOpen] = useState(false)
+	return (
+		<>
+			<Button size="small" onClick={() => setModalOpen(true)}>
+				Show Contents
+			</Button>
+			<Modal open={modalOpen} setOpen={setModalOpen} title={props.label}>
+				<ShowRichText data={props.data} />
+			</Modal>
+		</>
+	)
 }
 
 export function parseFormResponses(
@@ -11,13 +31,17 @@ export function parseFormResponses(
 	data: PaginationResponse<FormResponse>,
 ): { data: PaginationResponse<FormResponse>; tableData: Array<TableColumn<any>> } {
 	try {
-		const formJson = JSON.parse(form.body)
+		const formJson: FormElementInstance[] = JSON.parse(form.body)
 		if (!Array.isArray(formJson)) throw new Error('Invalid form body')
 
-		const formFields: Record<string, [string, boolean]> = {}
+		const formFields: Record<string, [string, boolean, boolean]> = {} // Record<name, [label, required, isRichTextField]>
 		for (let i = 0; i < formJson.length; i++) {
 			if (!formJson[i].props || !formJson[i].props.name) continue
-			formFields[formJson[i].props.name] = [formJson[i].props.label || formJson[i].props.name, formJson[i].props.required || false]
+			formFields[formJson[i].props.name] = [
+				formJson[i].props.label || formJson[i].props.name,
+				formJson[i].props.required || false,
+				formJson[i].name === 'richTextInput',
+			]
 		}
 
 		const formFieldKeys = Object.keys(formFields)
@@ -44,7 +68,16 @@ export function parseFormResponses(
 		return {
 			data: { ...data, docs: responses },
 			tableData: Object.entries(formFields).reduce<Array<TableColumn<any>>>(
-				(acc, [name, [label]]) => [{ title: label, dataKey: name }, ...acc],
+				(acc, [name, [label, _, isRichTextField]]) => [
+					isRichTextField
+						? {
+								title: label,
+								dataKey: name,
+								render: ({ row }) => <ShowRichTextData data={row[name]} label={label} />,
+							}
+						: { title: label, dataKey: name },
+					...acc,
+				],
 				[
 					{
 						title: 'Created At',

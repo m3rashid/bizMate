@@ -3,8 +3,8 @@ import { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core'
 import { useState, Dispatch, useContext, createContext, SetStateAction, PropsWithChildren } from 'react'
 
 import { StringBoolean } from '../types'
-import { generateRandomString } from '../utils/helpers'
 import { Props } from '../components/forms/exposedProps'
+import { generateRandomString, handleViewTransitions } from '../utils/helpers'
 import { FormElementInstance, supportedWidgets } from '../components/forms/constants'
 
 const propsNodeNotSelected: Props = {
@@ -82,21 +82,23 @@ export function useFormDesigner() {
 
 	function handleDragEnd(e: DragEndEvent) {
 		if (!e.over || e.active.id === e.over.id) return
-		setFormDesigner((prev) => {
-			if (!e.over) return prev
-			const source = getTaskPosition(prev.meta, e.active.id)
-			const destination = getTaskPosition(prev.meta, e.over.id)
-			return { ...prev, meta: arrayMove(prev.meta, source, destination) }
-		})
+		handleViewTransitions(() =>
+			setFormDesigner((prev) => {
+				if (!e.over) return prev
+				const source = getTaskPosition(prev.meta, e.active.id)
+				const destination = getTaskPosition(prev.meta, e.over.id)
+				return { ...prev, meta: arrayMove(prev.meta, source, destination) }
+			}),
+		)
 	}
 
 	function changeViewType(viewType?: FormDesigner['viewType']) {
-		setFormDesigner((prev) => ({ ...prev, viewType: viewType || (prev.viewType === 'build' ? 'preview' : 'build') }))
+		handleViewTransitions(() => setFormDesigner((prev) => ({ ...prev, viewType: viewType || (prev.viewType === 'build' ? 'preview' : 'build') })))
 	}
 
 	function insertNewNode(newNode: Omit<FormElementInstance, 'id'>) {
 		const node: FormElementInstance = { ...newNode, props: {}, id: generateRandomString() }
-		setFormDesigner((prev) => ({ ...prev, selectedNode: node, meta: [...prev.meta, node] }))
+		handleViewTransitions(() => setFormDesigner((prev) => ({ ...prev, selectedNode: node, meta: [...prev.meta, node] })))
 	}
 
 	function getSelectedNodeProps(): { _props: Props; values: Record<string, any> } {
@@ -108,11 +110,13 @@ export function useFormDesigner() {
 	}
 
 	function updateNode(nodeKey: string, props: Props) {
-		setFormDesigner((prev) => ({ ...prev, meta: prev.meta.map((node) => ({ ...node, props: node.id === nodeKey ? props : node.props })) }))
+		handleViewTransitions(() =>
+			setFormDesigner((prev) => ({ ...prev, meta: prev.meta.map((node) => ({ ...node, props: node.id === nodeKey ? props : node.props })) })),
+		)
 	}
 
 	function removeNode(nodeKey: string) {
-		setFormDesigner((prev) => ({ ...prev, selectedNode: null, meta: prev.meta.filter((node) => node.id !== nodeKey) }))
+		handleViewTransitions(() => setFormDesigner((prev) => ({ ...prev, selectedNode: null, meta: prev.meta.filter((node) => node.id !== nodeKey) })))
 	}
 
 	return {
