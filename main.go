@@ -2,6 +2,7 @@ package main
 
 import (
 	"bizmate/apis/auth"
+	"bizmate/apis/contacts"
 	"bizmate/apis/dashboard"
 	"bizmate/apis/export"
 	"bizmate/apis/forms"
@@ -82,6 +83,8 @@ func main() {
 		models.Project{},
 		models.ProjectTaskComment{},
 
+		models.Contact{},
+
 		models.Workflow{},
 		models.WorkflowStep{},
 		models.WorkflowExectionLog{},
@@ -114,13 +117,14 @@ func main() {
 
 	auth.Setup(app)
 	forms.Setup(app)
+	export.Setup(app)
 	project.Setup(app)
 	scripts.Setup(app)
 	payments.Setup(app)
+	contacts.Setup(app)
 	dashboard.Setup(app)
 	workflows.Setup(app)
 	notifications.Setup(app)
-	export.Setup(app)
 
 	log.Println("Server is running in " + os.Getenv("SERVER_MODE") + " mode.")
 	app.Listen(":" + os.Getenv("SERVER_PORT"))

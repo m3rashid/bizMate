@@ -180,5 +180,17 @@ export type BulkEmailRequest = BaseModel &
 		subjectVariableMapping: string
 	}
 
+export type Contact = BaseModel &
+	CreatedBy &
+	UpdatedBy & {
+		name: string
+		email: string
+		phone: string
+		birthday: string
+		otherPhones: string
+		otherEmails: string
+		otherDetails: string
+	}
+
 export const exportableTables = ['form_response_table', 'user_table', 'forms_table'] as const
 export type ExportableTable = (typeof exportableTables)[number]

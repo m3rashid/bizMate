@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"encoding/json"
 	"strings"
 	"unicode"
 
@@ -49,4 +50,12 @@ func CamelCaseToSentenceCase(str string) string {
 	}
 	splitWords = append(splitWords, CapitalizeFirstLetter(currentWord))
 	return strings.Join(splitWords, " ")
+}
+
+func SafeStringify(value interface{}) string {
+	jsonByte, err := json.Marshal(value)
+	if err != nil {
+		return ""
+	}
+	return string(jsonByte)
 }

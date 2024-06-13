@@ -38,6 +38,9 @@ const AppsProjectsProjectIdIndexLazyImport = createFileRoute(
 const AppsCommunicationsEmailsIndexLazyImport = createFileRoute(
   '/apps/communications/emails/',
 )()
+const AppsCommunicationsContactsIndexLazyImport = createFileRoute(
+  '/apps/communications/contacts/',
+)()
 const AppsProjectsProjectIdReadmeLazyImport = createFileRoute(
   '/apps/projects/$projectId/readme',
 )()
@@ -157,6 +160,16 @@ const AppsCommunicationsEmailsIndexLazyRoute =
     getParentRoute: () => rootRoute,
   } as any).lazy(() =>
     import('./routes/apps/communications/emails/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const AppsCommunicationsContactsIndexLazyRoute =
+  AppsCommunicationsContactsIndexLazyImport.update({
+    path: '/apps/communications/contacts/',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/apps/communications/contacts/index.lazy').then(
       (d) => d.Route,
     ),
   )
@@ -345,6 +358,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppsProjectsProjectIdReadmeLazyImport
       parentRoute: typeof rootRoute
     }
+    '/apps/communications/contacts/': {
+      preLoaderRoute: typeof AppsCommunicationsContactsIndexLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/apps/communications/emails/': {
       preLoaderRoute: typeof AppsCommunicationsEmailsIndexLazyImport
       parentRoute: typeof rootRoute
@@ -384,6 +401,7 @@ export const routeTree = rootRoute.addChildren([
   AppsProjectsProjectIdDocsLazyRoute,
   AppsProjectsProjectIdGuidelinesLazyRoute,
   AppsProjectsProjectIdReadmeLazyRoute,
+  AppsCommunicationsContactsIndexLazyRoute,
   AppsCommunicationsEmailsIndexLazyRoute,
   AppsProjectsProjectIdIndexLazyRoute,
   AppsProjectsProjectIdTasksTaskIdIndexLazyRoute,

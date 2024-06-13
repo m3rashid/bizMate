@@ -14,11 +14,7 @@ function EmailTemplates() {
 	const tableColumns: TableProps<EmailTemplate>['columns'] = [
 		{ title: 'Title', dataKey: 'title' },
 		{ title: 'Description', dataKey: 'description' },
-		{
-			title: 'Created At',
-			dataKey: 'createdAt',
-			render: ({ row }) => dayjs(row.createdAt).format('DD MMM, YYYY - HH:mm A'),
-		},
+		{ title: 'Created At', dataKey: 'createdAt', render: ({ row }) => dayjs(row.createdAt).format('DD MMM, YYYY - HH:mm A') },
 	]
 
 	return (

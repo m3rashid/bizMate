@@ -37,11 +37,7 @@ function Forms() {
 			),
 		},
 		{ dataKey: 'description', title: 'Description' },
-		{
-			title: 'Created At',
-			dataKey: 'createdAt',
-			render: ({ row }) => dayjs(row.createdAt).format('DD MMM, YYYY - HH:mm A'),
-		},
+		{ title: 'Created At', dataKey: 'createdAt', render: ({ row }) => dayjs(row.createdAt).format('DD MMM, YYYY - HH:mm A') },
 		{
 			dataKey: 'active',
 			title: 'Indicators',

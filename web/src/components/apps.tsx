@@ -1,5 +1,6 @@
 import { FC } from 'react'
 import { Link, RouteIds } from '@tanstack/react-router'
+import UsersIcon from '@heroicons/react/24/outline/UsersIcon'
 import AtSymbolIcon from '@heroicons/react/24/outline/AtSymbolIcon'
 import ChartBarIcon from '@heroicons/react/24/outline/ChartBarIcon'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
@@ -60,6 +61,7 @@ export const apps: Array<App> = [
 		icon: ChatBubbleLeftRightIcon,
 		description: 'Handle your communications from here',
 		routes: [
+			{ name: 'Contacts', icon: UsersIcon, link: '/apps/communications/contacts/', search: { page: 1 } },
 			{ name: 'Create Email Templates', icon: AtSymbolIcon, link: '/apps/communications/emails/designer' },
 			{ name: 'Email Templates', icon: AtSymbolIcon, link: '/apps/communications/emails/templates', search: { 'page': 1 } },
 			// { name: 'Schedule Emails', icon: AtSymbolIcon, link: '/apps/communications/emails/designer' },

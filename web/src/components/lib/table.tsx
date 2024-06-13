@@ -6,13 +6,13 @@ import PlusIcon from '@heroicons/react/24/outline/PlusIcon'
 import { useNavigate, RouteIds } from '@tanstack/react-router'
 import ArrowPathIcon from '@heroicons/react/24/outline/ArrowPathIcon'
 
+import Chip from './chip'
 import apiClient from '../../api/client'
 import Button, { ButtonProps } from './button'
 import SkeletonTable from '../skeletons/table'
 import { routeTree } from '../../routeTree.gen'
 import TableExport, { TableExportProps } from './tableExport'
 import { ExplicitAndAllObject, PaginationResponse } from '../../types'
-import Chip from './chip'
 
 export type TableColumn<T> = {
 	title: string
@@ -41,6 +41,7 @@ export type TableProps<T> = {
 	onEdit?: (item: T) => void
 	emptyState?: ReactNode
 	defaultEmptyStateName?: string
+	otherActions?: ReactNode
 }
 
 type Row = ExplicitAndAllObject<'id'>
@@ -69,7 +70,8 @@ function Table<T extends Row>(props: TableProps<T>) {
 
 				<div className="mt-4 flex flex-wrap items-center justify-center gap-2 sm:ml-8 sm:mt-0">
 					<Button size="small" variant="simple" LeftIcon={<ArrowPathIcon className="h-4 w-4" />} onClick={() => refetch()} />
-					{props.addButtonLink ? (
+					{props.otherActions}
+					{props.addButtonLink || Object.keys(props.addButtonProps || {}).length > 0 ? (
 						<Button
 							size="small"
 							LeftIcon={<PlusIcon className="h-5 w-5" />}

@@ -5,15 +5,15 @@ import "github.com/gofiber/fiber/v2"
 const USER_MODEL_NAME string = "users"
 const PROFILE_MODEL_NAME string = "profiles"
 
-const PROVIDER_CREDENTIALS = "credentials"
 const PROVIDER_GOOGLE = "google"
+const PROVIDER_CREDENTIALS = "credentials"
 
 type User struct {
 	BaseModel
 	Name         string `json:"name" gorm:"column:name;not null" validate:"required"`
 	Email        string `json:"email" gorm:"column:email;unique;not null" validate:"required,email"`
-	Phone        string `json:"phone,omitempty" gorm:"column:phone"`
-	Avatar       string `json:"avatar,omitempty" gorm:"column:avatar"`
+	Phone        string `json:"phone" gorm:"column:phone"`
+	Avatar       string `json:"avatar" gorm:"column:avatar"`
 	Deactivated  bool   `json:"-" gorm:"column:deactivated"`
 	Provider     string `json:"-" gorm:"column:provider"`
 	Password     string `json:"-" gorm:"column:password;not null" validate:"required"`

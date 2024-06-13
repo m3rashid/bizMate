@@ -79,11 +79,7 @@ export function parseFormResponses(
 					...acc,
 				],
 				[
-					{
-						title: 'Created At',
-						dataKey: 'createdAt',
-						render: ({ row }) => dayjs(row.createdAt).format('DD MMM, YYYY - HH:mm A'),
-					},
+					{ title: 'Created At', dataKey: 'createdAt', render: ({ row }) => dayjs(row.createdAt).format('DD MMM, YYYY - HH:mm A') },
 					...(!form.allowAnonymousResponse
 						? [
 								{

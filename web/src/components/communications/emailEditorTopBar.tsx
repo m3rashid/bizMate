@@ -97,7 +97,7 @@ function EmailEditorTopBar(props: EmailEditorTopBarProps) {
 
 	if (!props.emailEditorRef.current) return null
 	return (
-		<div className="flex items-center justify-start gap-4">
+		<div className="mb-2 flex items-center justify-start gap-4">
 			<Button size="small" onClick={handleSaveTemplate}>
 				Save Template
 			</Button>

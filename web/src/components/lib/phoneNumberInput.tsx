@@ -10,6 +10,7 @@ export type PhoneNumberInputProps = {
 	icon?: FC<any>
 	errorText?: string
 	required?: boolean
+	defaultValue?: string
 	labelClassName?: string
 	descriptionText?: string
 }
@@ -45,9 +46,17 @@ function phoneNumberReducer(state: State, action: Action): State {
 	return state
 }
 
+function getDefaultValue(props: PhoneNumberInputProps): State {
+	if (!props.defaultValue) return initialState
+	const [ext, phoneNumber] = props.defaultValue.split(' ')
+	const _phoneExt = phoneOptions.find((op) => op.value === ext)
+	const phoneExt = _phoneExt ? _phoneExt.value : initialState.phoneExt
+	return { ...initialState, phoneNumber, phoneExt, phone: getPhoneNumber(phoneNumber, phoneExt) }
+}
+
 function Component(props: PhoneNumberInputProps, ref: ForwardedRef<{ getValue: () => string; clear: () => void }>) {
 	const inputRef = useRef(null)
-	const [{ phone, phoneExt, phoneNumber }, dispatch] = useReducer(phoneNumberReducer, initialState)
+	const [{ phone, phoneExt, phoneNumber }, dispatch] = useReducer(phoneNumberReducer, getDefaultValue(props))
 
 	useImperativeHandle(ref, () => ({
 		getValue: () => phone,
