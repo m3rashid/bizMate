@@ -4,7 +4,7 @@ import { useState, Dispatch, useContext, createContext, SetStateAction, PropsWit
 
 import { StringBoolean } from '../types'
 import { Props } from '../components/forms/exposedProps'
-import { generateRandomString, handleViewTransitions } from '../utils/helpers'
+import { generateRandomString, handleViewTransition } from '../utils/helpers'
 import { FormElementInstance, supportedWidgets } from '../components/forms/constants'
 
 const propsNodeNotSelected: Props = {
@@ -82,7 +82,7 @@ export function useFormDesigner() {
 
 	function handleDragEnd(e: DragEndEvent) {
 		if (!e.over || e.active.id === e.over.id) return
-		handleViewTransitions(() =>
+		handleViewTransition(() =>
 			setFormDesigner((prev) => {
 				if (!e.over) return prev
 				const source = getTaskPosition(prev.meta, e.active.id)
@@ -93,12 +93,12 @@ export function useFormDesigner() {
 	}
 
 	function changeViewType(viewType?: FormDesigner['viewType']) {
-		handleViewTransitions(() => setFormDesigner((prev) => ({ ...prev, viewType: viewType || (prev.viewType === 'build' ? 'preview' : 'build') })))
+		handleViewTransition(() => setFormDesigner((prev) => ({ ...prev, viewType: viewType || (prev.viewType === 'build' ? 'preview' : 'build') })))
 	}
 
 	function insertNewNode(newNode: Omit<FormElementInstance, 'id'>) {
 		const node: FormElementInstance = { ...newNode, props: {}, id: generateRandomString() }
-		handleViewTransitions(() => setFormDesigner((prev) => ({ ...prev, selectedNode: node, meta: [...prev.meta, node] })))
+		handleViewTransition(() => setFormDesigner((prev) => ({ ...prev, selectedNode: node, meta: [...prev.meta, node] })))
 	}
 
 	function getSelectedNodeProps(): { _props: Props; values: Record<string, any> } {
@@ -110,13 +110,13 @@ export function useFormDesigner() {
 	}
 
 	function updateNode(nodeKey: string, props: Props) {
-		handleViewTransitions(() =>
+		handleViewTransition(() =>
 			setFormDesigner((prev) => ({ ...prev, meta: prev.meta.map((node) => ({ ...node, props: node.id === nodeKey ? props : node.props })) })),
 		)
 	}
 
 	function removeNode(nodeKey: string) {
-		handleViewTransitions(() => setFormDesigner((prev) => ({ ...prev, selectedNode: null, meta: prev.meta.filter((node) => node.id !== nodeKey) })))
+		handleViewTransition(() => setFormDesigner((prev) => ({ ...prev, selectedNode: null, meta: prev.meta.filter((node) => node.id !== nodeKey) })))
 	}
 
 	return {

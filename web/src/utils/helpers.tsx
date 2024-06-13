@@ -47,7 +47,7 @@ export function safeJsonParse(content: string, defaultReturn: any, validations?:
  * @description Function to handle view transitions
  * View transitions are used to animate the transition between two views and should be used when the transition between two views is not smooth
  */
-export function handleViewTransitions(cb: () => void) {
+export function handleViewTransition(cb: () => void) {
 	document.startViewTransition(() => {
 		flushSync(cb)
 	})

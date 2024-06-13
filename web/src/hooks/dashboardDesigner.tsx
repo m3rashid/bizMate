@@ -3,8 +3,8 @@ import { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core'
 import { Dispatch, useState, useContext, createContext, SetStateAction, PropsWithChildren } from 'react'
 
 import { Widget } from '../types'
+import { handleViewTransition } from '../utils/helpers'
 import { Props } from '../components/forms/exposedProps'
-import { handleViewTransitions } from '../utils/helpers'
 
 export type DashboardWidget = Widget & {
 	id: string
@@ -48,7 +48,7 @@ export function useDashboardDesigner() {
 
 	function handleDragEnd(e: DragEndEvent) {
 		if (!e.over || e.active.id === e.over.id) return
-		handleViewTransitions(() =>
+		handleViewTransition(() =>
 			setDashboardDesigner((prev) => {
 				if (!e.over) return prev
 				const source = getWidgetPosition(prev.dashboardWidgets, e.active.id)
@@ -59,13 +59,11 @@ export function useDashboardDesigner() {
 	}
 
 	function changeViewType(viewType?: DashboardDesigner['viewType']) {
-		handleViewTransitions(() =>
-			setDashboardDesigner((prev) => ({ ...prev, viewType: viewType || (prev.viewType === 'build' ? 'preview' : 'build') })),
-		)
+		handleViewTransition(() => setDashboardDesigner((prev) => ({ ...prev, viewType: viewType || (prev.viewType === 'build' ? 'preview' : 'build') })))
 	}
 
 	function insertNewWidget(widget: DashboardWidget) {
-		handleViewTransitions(() => setDashboardDesigner((prev) => ({ ...prev, dashboardWidgets: [...prev.dashboardWidgets, widget] })))
+		handleViewTransition(() => setDashboardDesigner((prev) => ({ ...prev, dashboardWidgets: [...prev.dashboardWidgets, widget] })))
 	}
 
 	function getSelectedNodeProps(): { _props: Props; values: Record<string, any> } {
@@ -74,7 +72,7 @@ export function useDashboardDesigner() {
 	}
 
 	function updateWidget(widgetKey: string, props: Props) {
-		handleViewTransitions(() =>
+		handleViewTransition(() =>
 			setDashboardDesigner((prev) => ({
 				...prev,
 				dashboardWidgets: prev.dashboardWidgets.map((widget) => (widget.id === widgetKey ? { ...widget, props } : widget)),
@@ -83,7 +81,7 @@ export function useDashboardDesigner() {
 	}
 
 	function removeWidget(id: DashboardWidget['id']) {
-		handleViewTransitions(() =>
+		handleViewTransition(() =>
 			setDashboardDesigner((prev) => ({ ...prev, dashboardWidgets: prev.dashboardWidgets.filter((widget) => widget.id !== id) })),
 		)
 	}
