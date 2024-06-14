@@ -6,9 +6,15 @@ import SelectUploadFileType from './selectUploadType'
 import { BulkUplaodProvider, BulkUploadContactModalProps, modalTitleMap, useBulkUploadContact } from '../../../hooks/bulkUploadContact'
 
 function InnerModal(props: BulkUploadContactModalProps) {
-	const { modalState } = useBulkUploadContact()
+	const { modalState, resetModal } = useBulkUploadContact()
+
+	function handleCloseModal() {
+		props.setOpen(false)
+		resetModal()
+	}
+
 	return (
-		<Modal open={props.open} setOpen={props.setOpen} title={modalTitleMap[modalState]}>
+		<Modal open={props.open} setOpen={handleCloseModal} title={modalTitleMap[modalState]}>
 			{modalState === 'selectUploadType' ? (
 				<SelectUploadFileType />
 			) : modalState === 'upload' ? (

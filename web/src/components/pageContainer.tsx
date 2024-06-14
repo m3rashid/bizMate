@@ -12,7 +12,7 @@ function PageContainer(props: PageContainerProps) {
 	return (
 		<>
 			<Header {...props.headerProps} />
-			<div className={twMerge('p-4', props.bodyClassName)}>{props.children}</div>
+			<div className={twMerge('p-2 sm:p-4', props.bodyClassName)}>{props.children}</div>
 		</>
 	)
 }

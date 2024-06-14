@@ -1,5 +1,6 @@
 import { FC } from 'react'
 import { Link, RouteIds } from '@tanstack/react-router'
+import CogIcon from '@heroicons/react/24/outline/CogIcon'
 import UsersIcon from '@heroicons/react/24/outline/UsersIcon'
 import AtSymbolIcon from '@heroicons/react/24/outline/AtSymbolIcon'
 import ChartBarIcon from '@heroicons/react/24/outline/ChartBarIcon'
@@ -9,10 +10,10 @@ import DeviceTabletIcon from '@heroicons/react/24/outline/DeviceTabletIcon'
 import InformationCircleIcon from '@heroicons/react/24/outline/InformationCircleIcon'
 import AdjustmentsHorizontalIcon from '@heroicons/react/24/outline/AdjustmentsHorizontalIcon'
 
-import { routeTree } from '../routeTree.gen'
 import Tooltip from './lib/tooltip'
+import { routeTree } from '../routeTree.gen'
 
-export type Route = {
+type Route = {
 	name: string
 	icon: FC<any>
 	link: RouteIds<typeof routeTree>
@@ -20,14 +21,13 @@ export type Route = {
 	search?: Record<string, string | number>
 }
 
-export type App = {
+type App = {
 	name: string
-	// icon: FC<any>
 	description: string
 	routes: Route[]
 }
 
-export const apps: Array<App> = [
+const apps: Array<App> = [
 	{
 		name: 'Forms',
 		description: 'Create, publish, and get analytics for your forms',
@@ -75,43 +75,62 @@ export const apps: Array<App> = [
 	},
 ]
 
+const sideApp: App = {
+	name: 'Account',
+	description: '',
+	routes: [
+		{
+			name: 'Settings',
+			description: 'Manage settings',
+			icon: CogIcon,
+			link: '/about',
+		},
+	],
+}
+
+function RenderApp(app: App) {
+	return (
+		<div className="h-min select-none rounded-lg border-2 border-white p-2 shadow-lg hover:border-primary">
+			<div className="flex items-center gap-2">
+				<h3 className="font-semibold text-disabled">{app.name}</h3>
+				<Tooltip label={app.description} show="right">
+					<InformationCircleIcon className="h-5 w-5 text-disabled" />
+				</Tooltip>
+			</div>
+
+			<div className="mt-3 flex flex-col gap-4">
+				{app.routes.map((route) => (
+					<Link
+						to={route.link}
+						key={route.link}
+						search={route.search}
+						className="group flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 hover:bg-primaryLight hover:shadow-md"
+					>
+						<route.icon className="h-10 w-10 rounded-md bg-skeletonLight p-2 shadow-md group-hover:bg-white" />
+
+						<div className="text-sm">
+							<h4 className="py-0 font-semibold">{route.name}</h4>
+							<div className="text-disabled">{route.description}</div>
+						</div>
+					</Link>
+				))}
+			</div>
+		</div>
+	)
+}
+
 function AppsList() {
 	return (
 		<div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
 			<ResponsiveMasonry className="col-span-1 md:col-span-2 lg:col-span-3" columnsCountBreakPoints={{ 300: 1, 1100: 2, 1600: 3 }}>
 				<Masonry gutter="1rem" className="mb-4">
 					{apps.map((app) => (
-						<div key={app.name} className="select-none rounded-lg border-2 border-white p-2 shadow-lg hover:border-primary">
-							<div className="flex items-center gap-2">
-								<h3 className="font-semibold text-disabled">{app.name}</h3>
-								<Tooltip label={app.description} show="right">
-									<InformationCircleIcon className="h-5 w-5 text-disabled" />
-								</Tooltip>
-							</div>
-
-							<div className="mt-3 flex flex-col gap-4">
-								{app.routes.map((route) => (
-									<Link
-										to={route.link}
-										key={route.link}
-										search={route.search}
-										className="group flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 hover:bg-primaryLight hover:shadow-md"
-									>
-										<route.icon className="h-10 w-10 rounded-md bg-skeletonLight p-2 shadow-md group-hover:bg-white" />
-
-										<div className="text-sm">
-											<h4 className="py-0 font-semibold">{route.name}</h4>
-											<div className="text-disabled">{route.description}</div>
-										</div>
-									</Link>
-								))}
-							</div>
-						</div>
+						<RenderApp key={app.name} {...app} />
 					))}
 				</Masonry>
 			</ResponsiveMasonry>
 
-			<div className="">Other Links</div>
+			<RenderApp {...sideApp} />
 		</div>
 	)
 }
