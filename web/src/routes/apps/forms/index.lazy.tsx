@@ -131,7 +131,6 @@ function Forms() {
 				addButtonProps={{ label: 'New Form' }}
 				description="Create and manage all forms"
 				tableExportprops={{ tableName: 'forms_table', mutationKeys: [] }}
-				tableRowClassName={(row) => (row.active ? 'bg-green-100 hover:bg-green-200' : 'bg-red-100 hover:bg-red-200')}
 			/>
 		</PageContainer>
 	)

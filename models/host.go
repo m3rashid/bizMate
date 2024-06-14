@@ -3,10 +3,11 @@ package models
 import "time"
 
 const TENANT_MODEL_NAME string = "tenants"
+const CHANGELOG_MODEL_NAME string = "changelogs"
 const TENANT_OWNER_MODEL_NAME string = "tenant_owners"
 
 type Tenant struct {
-	ID            uint         `gorm:"primary_key;column:id" json:"id"`
+	BaseModel
 	Name          string       `gorm:"column:name;not null;unique" json:"name" validate:"required"`
 	TenantUrl     string       `gorm:"column:tenantUrl;not null;unique" json:"tenantUrl" validate:"required"`
 	CreatedAt     time.Time    `gorm:"column:createdAt; default:current_timestamp" json:"createdAt"`
@@ -16,11 +17,16 @@ type Tenant struct {
 }
 
 type TenantOwner struct {
-	ID        uint      `gorm:"primary_key;column:id" json:"id"`
+	BaseModel
 	Name      string    `gorm:"column:name;not null" json:"name" validate:"required"`
 	Email     string    `gorm:"column:email;not null" json:"email" validate:"required"`
 	Password  string    `gorm:"column:password;not null" json:"password" validate:"required"`
 	CreatedAt time.Time `gorm:"column:createdAt; default:current_timestamp" json:"createdAt"`
+}
+
+type Changelog struct {
+	BaseModel
+	Changes string `gorm:"column:changes;not null" json:"changes" validate:"required"`
 }
 
 func (Tenant) TableName() string {

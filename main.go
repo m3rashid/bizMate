@@ -81,6 +81,7 @@ func main() {
 		models.ProjectTag{},
 		models.ProjectTask{},
 		models.Project{},
+		models.ProjectCycle{},
 		models.ProjectTaskComment{},
 
 		models.Contact{},
@@ -109,7 +110,7 @@ func main() {
 	}
 
 	db := utils.GetHostDB()
-	utils.GormMigrate(db, []interface{}{&models.Tenant{}, &models.TenantOwner{}})
+	utils.GormMigrate(db, []interface{}{&models.Tenant{}, &models.TenantOwner{}, &models.Changelog{}})
 	if os.Getenv("SERVER_MODE") == "development" {
 		app.Use(logger.New())
 		db.Logger.LogMode(3)

@@ -5,6 +5,7 @@ import "time"
 const TAG_MODEL_NAME string = "project_tags"
 const TASK_MODEL_NAME string = "project_tasks"
 const PROJECT_MODEL_NAME string = "projects"
+const PROJECT_CYCLE_MODEL_NAME = "project_cycles"
 const PROJECT_TASK_COMMENT_MODEL_NAME = "project_task_comments"
 
 type TaskStatus string
@@ -16,6 +17,17 @@ const (
 	TaskStatusReview     TaskStatus = "review"
 	TaskStatusDone       TaskStatus = "done"
 )
+
+type ProjectCycle struct {
+	BaseModel
+	CreatedBy
+	UpdatedBy
+	CycleGoals     string    `json:"cycleGoals" gorm:"column:cycleGoals"`
+	ProjectID      uint      `json:"projectId" gorm:"column:projectId;not null" validate:"required"`
+	CycleDaysCount int       `json:"cycleDaysCount" gorm:"column:cycleDaysCount;not null" validate:"required"`
+	Project        *Project  `json:"project" gorm:"foreignKey:projectId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	StartDay       time.Time `json:"startDay" gorm:"column:startDay;not null" validate:"required"`
+}
 
 type Project struct {
 	BaseModel
@@ -75,4 +87,8 @@ func (ProjectTask) TableName() string {
 
 func (ProjectTaskComment) TableName() string {
 	return PROJECT_TASK_COMMENT_MODEL_NAME
+}
+
+func (ProjectCycle) TableName() string {
+	return PROJECT_CYCLE_MODEL_NAME
 }
