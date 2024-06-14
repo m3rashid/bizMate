@@ -4,26 +4,25 @@ import UsersIcon from '@heroicons/react/24/outline/UsersIcon'
 import AtSymbolIcon from '@heroicons/react/24/outline/AtSymbolIcon'
 import ChartBarIcon from '@heroicons/react/24/outline/ChartBarIcon'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
-import ArrowPathIcon from '@heroicons/react/24/outline/ArrowPathIcon'
 import ListBulletIcon from '@heroicons/react/24/outline/ListBulletIcon'
 import DeviceTabletIcon from '@heroicons/react/24/outline/DeviceTabletIcon'
-import ClipboardDocumentIcon from '@heroicons/react/24/outline/ClipboardDocumentIcon'
-import ChatBubbleLeftRightIcon from '@heroicons/react/24/outline/ChatBubbleLeftRightIcon'
+import InformationCircleIcon from '@heroicons/react/24/outline/InformationCircleIcon'
 import AdjustmentsHorizontalIcon from '@heroicons/react/24/outline/AdjustmentsHorizontalIcon'
-import PresentationChartLineIcon from '@heroicons/react/24/outline/PresentationChartLineIcon'
 
 import { routeTree } from '../routeTree.gen'
+import Tooltip from './lib/tooltip'
 
 export type Route = {
 	name: string
 	icon: FC<any>
 	link: RouteIds<typeof routeTree>
+	description: string
 	search?: Record<string, string | number>
 }
 
 export type App = {
 	name: string
-	icon: FC<any>
+	// icon: FC<any>
 	description: string
 	routes: Route[]
 }
@@ -31,47 +30,48 @@ export type App = {
 export const apps: Array<App> = [
 	{
 		name: 'Forms',
-		icon: ClipboardDocumentIcon,
 		description: 'Create, publish, and get analytics for your forms',
 		routes: [
-			{ name: 'Designer', icon: DeviceTabletIcon, link: '/apps/forms/designer' },
-			{ name: 'All Forms', icon: ListBulletIcon, link: '/apps/forms/', search: { 'page': 1 } },
+			{ name: 'Designer', icon: DeviceTabletIcon, link: '/apps/forms/designer', description: 'Design your forms' },
+			{ name: 'All Forms', icon: ListBulletIcon, link: '/apps/forms/', description: 'List all forms', search: { 'page': 1 } },
 		],
 	},
 	{
 		name: 'Automations',
-		icon: ArrowPathIcon,
 		description: 'Automate your daily processes',
 		routes: [
-			{ name: 'Designer', icon: AdjustmentsHorizontalIcon, link: '/apps/automations/designer' },
-			{ name: 'All Automations', icon: ListBulletIcon, link: '/apps/automations/', search: { 'page': 1 } },
+			{ name: 'Designer', icon: AdjustmentsHorizontalIcon, description: 'Create a new automation', link: '/apps/automations/designer' },
+			{ name: 'All Automations', icon: ListBulletIcon, link: '/apps/automations/', description: 'List all automations', search: { 'page': 1 } },
 		],
 	},
 	{
 		name: 'Dashboards',
-		icon: PresentationChartLineIcon,
 		description: 'Create and manage your dashboards',
 		routes: [
-			{ name: 'Designer', icon: ChartBarIcon, link: '/apps/dashboards/designer' },
-			{ name: 'All Dashboards', icon: ListBulletIcon, link: '/apps/dashboards/', search: { 'page': 1 } },
+			{ name: 'Designer', icon: ChartBarIcon, description: 'Create a new dashboard', link: '/apps/dashboards/designer' },
+			{ name: 'All Dashboards', icon: ListBulletIcon, description: 'List all dashboards', link: '/apps/dashboards/', search: { 'page': 1 } },
 		],
 	},
 	{
 		name: 'Communications',
-		icon: ChatBubbleLeftRightIcon,
 		description: 'Handle your communications from here',
 		routes: [
-			{ name: 'Contacts', icon: UsersIcon, link: '/apps/communications/contacts/', search: { page: 1 } },
-			{ name: 'Create Email Templates', icon: AtSymbolIcon, link: '/apps/communications/emails/designer' },
-			{ name: 'Email Templates', icon: AtSymbolIcon, link: '/apps/communications/emails/templates', search: { 'page': 1 } },
+			{ name: 'Contacts', icon: UsersIcon, link: '/apps/communications/contacts/', description: 'List all your contacts', search: { page: 1 } },
+			{ name: 'Designer', icon: AtSymbolIcon, description: 'Create a new email template', link: '/apps/communications/emails/designer' },
+			{
+				icon: AtSymbolIcon,
+				name: 'Email Templates',
+				link: '/apps/communications/emails/templates',
+				description: 'List all email templates',
+				search: { 'page': 1 },
+			},
 			// { name: 'Schedule Emails', icon: AtSymbolIcon, link: '/apps/communications/emails/designer' },
 		],
 	},
 	{
 		name: 'Projects',
-		icon: ClipboardDocumentIcon,
 		description: 'Create and manage your projects',
-		routes: [{ name: 'All Projects', icon: ListBulletIcon, link: '/apps/projects/', search: { 'page': 1 } }],
+		routes: [{ name: 'All Projects', icon: ListBulletIcon, link: '/apps/projects/', description: 'List all projects', search: { 'page': 1 } }],
 	},
 ]
 
@@ -81,23 +81,28 @@ function AppsList() {
 			<ResponsiveMasonry className="col-span-1 md:col-span-2 lg:col-span-3" columnsCountBreakPoints={{ 300: 1, 1100: 2, 1600: 3 }}>
 				<Masonry gutter="1rem" className="mb-4">
 					{apps.map((app) => (
-						<div key={app.name} className="select-none rounded-lg border-2 border-white p-4 shadow-lg hover:border-primary">
-							<div className="mb-2 cursor-pointer hover:text-primary">
-								<div className="flex gap-2">
-									<app.icon className="h-8 w-8" />
-
-									<div>
-										<h3 className="text-xl font-semibold">{app.name}</h3>
-										<p className="text-sm text-disabled">{app.description}</p>
-									</div>
-								</div>
+						<div key={app.name} className="select-none rounded-lg border-2 border-white p-2 shadow-lg hover:border-primary">
+							<div className="flex items-center gap-2">
+								<h3 className="font-semibold text-disabled">{app.name}</h3>
+								<Tooltip label={app.description} show="right">
+									<InformationCircleIcon className="h-5 w-5 text-disabled" />
+								</Tooltip>
 							</div>
 
-							<div className="ml-10 flex flex-col gap-2">
+							<div className="mt-3 flex flex-col gap-4">
 								{app.routes.map((route) => (
-									<Link to={route.link} search={route.search} key={route.link} className="flex cursor-pointer items-center hover:text-primary">
-										<route.icon className="h-4 w-4" />
-										<h4 className="text-md ml-1 font-semibold">{route.name}</h4>
+									<Link
+										to={route.link}
+										key={route.link}
+										search={route.search}
+										className="group flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 hover:bg-primaryLight hover:shadow-md"
+									>
+										<route.icon className="h-10 w-10 rounded-md bg-skeletonLight p-2 shadow-md group-hover:bg-white" />
+
+										<div className="text-sm">
+											<h4 className="py-0 font-semibold">{route.name}</h4>
+											<div className="text-disabled">{route.description}</div>
+										</div>
 									</Link>
 								))}
 							</div>

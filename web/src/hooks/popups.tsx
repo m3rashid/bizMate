@@ -41,6 +41,9 @@ export function usePopups() {
 	const [{ actionPopups, messagePopups: messagePopups }, setPopups] = useContext(popupContext)
 
 	function addMessagePopup(messagepopup: MessagePopupType) {
+		const found = messagePopups.find((n) => n.id === messagepopup.id)
+		if (found) return
+
 		const timeout = messagepopup.timeout || DEFAULT_MESSAGE_POPUP_TIMEOUT
 
 		setPopups((prev) => ({
@@ -61,6 +64,9 @@ export function usePopups() {
 	}
 
 	function addActionPopup(popup: ActionPopupType) {
+		const found = actionPopups.find((n) => n.id === popup.id)
+		if (found) return
+
 		setPopups((prev) => ({
 			...prev,
 			actionPopups: getUniqueObjectsByKey<ActionPopupType>([...prev.actionPopups, popup], 'id'),

@@ -12,7 +12,7 @@ import { Project } from '../../types'
 import apiClient from '../../api/client'
 import { PageLoader } from '../lib/loader'
 import { usePopups } from '../../hooks/popups'
-import { capitalizeFirstLetter, safeJsonParse } from '../../utils/helpers'
+import { toSentenceCase, safeJsonParse } from '../../utils/helpers'
 
 type ProjectDetailType = 'readme' | 'guidelines' | 'docs'
 export type EditProjectDetailsProps = {
@@ -81,7 +81,7 @@ function EditProjectDetails(props: EditProjectDetailsProps) {
 				<Button size="small" onClick={() => setEditable((p) => !p)} LeftIcon={<PencilSquareIcon className="h-4 w-4" />}>
 					{editable ? 'Confirm' : 'Edit'}
 				</Button>
-				<Chip className="border-2 bg-transparent text-black">{capitalizeFirstLetter(props.type)}</Chip>
+				<Chip className="border-2 bg-transparent text-black">{toSentenceCase(props.type)}</Chip>
 			</div>
 			<Editor {...{ editable, project, onSuccess, ...props }} />
 		</div>

@@ -14,7 +14,7 @@ export type SingleSelectInputProps = {
 	default: string
 	options: Array<Option>
 	name?: string
-	render: FC<{ option: string; selected: boolean; active: boolean }>
+	render?: FC<{ option: string; selected: boolean; active: boolean }>
 	label?: string
 	value?: string
 	className?: string
@@ -37,12 +37,16 @@ function SingleSelectInput(props: SingleSelectInputProps) {
 					{props.label ? <Label className="text-labelColor block text-sm font-medium leading-6">{props.label}</Label> : null}
 
 					<div className="relative w-full">
-						<ListboxButton className="text-labelColor relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm sm:leading-6">
-							<props.render
-								active={false}
-								selected={false}
-								option={props.options.find((option) => option.value === (props.value ? props.value : selectedOptionValue))?.value || props.default}
-							/>
+						<ListboxButton className="text-labelColor relative min-h-9 w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm sm:leading-6">
+							{props.render ? (
+								<props.render
+									active={false}
+									selected={false}
+									option={props.options.find((option) => option.value === (props.value ? props.value : selectedOptionValue))?.value || props.default}
+								/>
+							) : (
+								<div className="w-full">{props.options.find((option) => option.value === selectedOptionValue)?.label || props.default}</div>
+							)}
 
 							<span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
 								<ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -50,7 +54,7 @@ function SingleSelectInput(props: SingleSelectInputProps) {
 						</ListboxButton>
 
 						<Transition show={open} as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
-							<ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+							<ListboxOptions className="absolute z-20 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
 								{props.options.map((option) => (
 									<ListboxOption
 										key={option.id}
@@ -61,7 +65,11 @@ function SingleSelectInput(props: SingleSelectInputProps) {
 									>
 										{({ selected, focus }) => (
 											<Fragment>
-												<props.render {...{ option: option.value, selected, active: focus }} />
+												{props.render ? (
+													<props.render {...{ option: option.value, selected, active: focus }} />
+												) : (
+													<div className="w-full">{option.label}</div>
+												)}
 												{selected ? (
 													<span className={twMerge('absolute inset-y-0 right-0 flex items-center pr-4', focus ? 'text-white' : 'text-primary')}>
 														<CheckIcon className="h-5 w-5" aria-hidden="true" />

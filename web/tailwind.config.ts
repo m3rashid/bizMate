@@ -5,20 +5,20 @@ const config: Config = {
 	theme: {
 		extend: {
 			colors: {
-				primary: '#8b5cf6', // violet-500
-				primaryLight: '#a78bfa', // violet-400
+				primary: '#a78bfa', // violet-400
+				primaryLight: '#ddd6fe', // violet-200
 
-				danger: '#f43f5e', // rose-500
-				dangerLight: '#fb7185', // rose-400
+				danger: '#fb7185', // rose-400
+				dangerLight: '#fecdd3', // rose-200
 
-				secondary: '#06b6d4', // cyan-500
-				secondaryLight: '#22d3ee', // cyan-400
+				secondary: '#22d3ee', // cyan-400
+				secondaryLight: '#a5f3fc', // cyan-200
 
-				disabled: '#6b7280', // gray-500
-				disabledLight: '#9ca3af', // gray-400
+				disabled: '#9ca3af', // gray-400
+				disabledLight: '#e5e7eb', // gray-200
 
-				success: '#22c55e', // green-500
-				successLight: '#4ade80', // green-400
+				success: '#4ade80', // green-400
+				successLight: '#bbf7d0', // green-200
 
 				pageBg: '#e5e7eb', // gray-200
 				borderColor: '#d1d5db', // gray-300

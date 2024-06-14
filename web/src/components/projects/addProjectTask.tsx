@@ -7,7 +7,7 @@ import TextInput from '../lib/textInput'
 import apiClient from '../../api/client'
 import { ProjectTask, taskStatuses } from '../../types'
 import SingleSelectInput from '../lib/singleSelectInput'
-import { capitalizeFirstLetter } from '../../utils/helpers'
+import { toSentenceCase } from '../../utils/helpers'
 
 type AddProjectTaskProps = {
 	modalOpen: boolean
@@ -55,7 +55,7 @@ function AddProjectTask(props: AddProjectTaskProps) {
 						</div>
 					)}
 					default={taskStatuses[0]}
-					options={taskStatuses.map((status) => ({ id: status, value: status, label: capitalizeFirstLetter(status) }) as any)}
+					options={taskStatuses.map((status) => ({ id: status, value: status, label: toSentenceCase(status) }) as any)}
 				/>
 
 				<div className="flex flex-grow-0 items-center justify-between pt-3">

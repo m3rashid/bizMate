@@ -42,7 +42,7 @@ export function ActionPopup(props: ActionPopupType) {
 				</div>
 			) : null}
 
-			<div className="mt-4">{props.children}</div>
+			<div className="mt-2">{props.children}</div>
 		</div>
 	)
 }

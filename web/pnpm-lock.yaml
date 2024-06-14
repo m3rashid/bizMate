@@ -47,6 +47,9 @@ importers:
       dayjs:
         specifier: ^1.11.11
         version: 1.11.11
+      papaparse:
+        specifier: ^5.4.1
+        version: 5.4.1
       query-string:
         specifier: ^9.0.0
         version: 9.0.0
@@ -83,10 +86,13 @@ importers:
         version: 1.31.22(csstype@3.1.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@tanstack/router-vite-plugin':
         specifier: ^1.31.18
-        version: 1.31.18(vite@5.2.11(terser@5.31.1))
+        version: 1.31.18(vite@5.2.11(@types/node@20.14.2)(terser@5.31.1))
       '@types/dom-view-transitions':
         specifier: ^1.0.4
         version: 1.0.4
+      '@types/papaparse':
+        specifier: ^5.3.14
+        version: 5.3.14
       '@types/react':
         specifier: ^18.3.1
         version: 18.3.1
@@ -104,7 +110,7 @@ importers:
         version: 7.8.0(eslint@9.2.0)(typescript@5.4.5)
       '@vitejs/plugin-react-swc':
         specifier: ^3.6.0
-        version: 3.6.0(@swc/helpers@0.5.11)(vite@5.2.11(terser@5.31.1))
+        version: 3.6.0(@swc/helpers@0.5.11)(vite@5.2.11(@types/node@20.14.2)(terser@5.31.1))
       autoprefixer:
         specifier: ^10.4.19
         version: 10.4.19(postcss@8.4.38)
@@ -134,7 +140,7 @@ importers:
         version: 5.4.5
       vite:
         specifier: ^5.2.11
-        version: 5.2.11(terser@5.31.1)
+        version: 5.2.11(@types/node@20.14.2)(terser@5.31.1)
 
 packages:
 
@@ -1243,6 +1249,12 @@ packages:
   '@types/ms@0.7.34':
     resolution: {integrity: sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g==}
 
+  '@types/node@20.14.2':
+    resolution: {integrity: sha512-xyu6WAMVwv6AKFLB+e/7ySZVr/0zLCzOa7rSpq6jNwpqOrUbcACDWC+53d4n2QHOnDou0fbIsg8wZu/sxrnI4Q==}
+
+  '@types/papaparse@5.3.14':
+    resolution: {integrity: sha512-LxJ4iEFcpqc6METwp9f6BV6VVc43m6MfH0VqFosHvrUgfXiFe6ww7R3itkOQ+TCK6Y+Iv/+RnnvtRZnkc5Kc9g==}
+
   '@types/parse5@6.0.3':
     resolution: {integrity: sha512-SuT16Q1K51EAVPz1K29DJ/sXjhSQ0zjvsypYJ6tlwVsRV9jwW5Adq2ch8Dq8kDBCkYnELS7N7VNCSB5nC56t/g==}
 
@@ -2263,6 +2275,9 @@ packages:
     resolution: {integrity: sha512-LaNjtRWUBY++zB5nE/NwcaoMylSPk+S+ZHNB1TzdbMJMny6dynpAGt7X/tl/QYq3TIeE6nxHppbo2LGymrG5Pw==}
     engines: {node: '>=10'}
 
+  papaparse@5.4.1:
+    resolution: {integrity: sha512-HipMsgJkZu8br23pW15uvo6sib6wne/4woLZPlFf3rpDyMe9ywEXUsuD7+6K9PRkJlVT51j/sCOYDKGGS3ZJrw==}
+
   parent-module@1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
     engines: {node: '>=6'}
@@ -2821,6 +2836,9 @@ packages:
 
   uc.micro@2.1.0:
     resolution: {integrity: sha512-ARDJmphmdvUk6Glw7y9DQ2bFkKBHwQHLi2lsaH6PPmz/Ka9sFOBsBluozhDltWmnv9u/cF6Rt87znRTPV+yp/A==}
+
+  undici-types@5.26.5:
+    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
   unified@10.1.2:
     resolution: {integrity: sha512-pUSWAi/RAnVy1Pif2kAoeWNBa3JVrx0MId2LASj8G+7AiHWoKZNTomq6LG326T68U7/e263X6fTdcXIy7XnF7Q==}
@@ -3974,7 +3992,7 @@ snapshots:
       prettier: 3.2.5
       zod: 3.23.5
 
-  '@tanstack/router-vite-plugin@1.31.18(vite@5.2.11(terser@5.31.1))':
+  '@tanstack/router-vite-plugin@1.31.18(vite@5.2.11(@types/node@20.14.2)(terser@5.31.1))':
     dependencies:
       '@babel/core': 7.24.5
       '@babel/generator': 7.24.5
@@ -3990,7 +4008,7 @@ snapshots:
       '@types/babel__generator': 7.6.8
       '@types/babel__template': 7.4.4
       '@types/babel__traverse': 7.20.5
-      '@vitejs/plugin-react': 4.2.1(vite@5.2.11(terser@5.31.1))
+      '@vitejs/plugin-react': 4.2.1(vite@5.2.11(@types/node@20.14.2)(terser@5.31.1))
       zod: 3.23.5
     transitivePeerDependencies:
       - supports-color
@@ -4306,6 +4324,14 @@ snapshots:
 
   '@types/ms@0.7.34': {}
 
+  '@types/node@20.14.2':
+    dependencies:
+      undici-types: 5.26.5
+
+  '@types/papaparse@5.3.14':
+    dependencies:
+      '@types/node': 20.14.2
+
   '@types/parse5@6.0.3': {}
 
   '@types/prop-types@15.7.12': {}
@@ -4415,21 +4441,21 @@ snapshots:
       '@typescript-eslint/types': 7.8.0
       eslint-visitor-keys: 3.4.3
 
-  '@vitejs/plugin-react-swc@3.6.0(@swc/helpers@0.5.11)(vite@5.2.11(terser@5.31.1))':
+  '@vitejs/plugin-react-swc@3.6.0(@swc/helpers@0.5.11)(vite@5.2.11(@types/node@20.14.2)(terser@5.31.1))':
     dependencies:
       '@swc/core': 1.4.17(@swc/helpers@0.5.11)
-      vite: 5.2.11(terser@5.31.1)
+      vite: 5.2.11(@types/node@20.14.2)(terser@5.31.1)
     transitivePeerDependencies:
       - '@swc/helpers'
 
-  '@vitejs/plugin-react@4.2.1(vite@5.2.11(terser@5.31.1))':
+  '@vitejs/plugin-react@4.2.1(vite@5.2.11(@types/node@20.14.2)(terser@5.31.1))':
     dependencies:
       '@babel/core': 7.24.5
       '@babel/plugin-transform-react-jsx-self': 7.24.5(@babel/core@7.24.5)
       '@babel/plugin-transform-react-jsx-source': 7.24.1(@babel/core@7.24.5)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 5.2.11(terser@5.31.1)
+      vite: 5.2.11(@types/node@20.14.2)(terser@5.31.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -5555,6 +5581,8 @@ snapshots:
     dependencies:
       p-limit: 3.1.0
 
+  papaparse@5.4.1: {}
+
   parent-module@1.0.1:
     dependencies:
       callsites: 3.1.0
@@ -6171,6 +6199,8 @@ snapshots:
 
   uc.micro@2.1.0: {}
 
+  undici-types@5.26.5: {}
+
   unified@10.1.2:
     dependencies:
       '@types/unist': 2.0.10
@@ -6321,12 +6351,13 @@ snapshots:
       d3-time: 3.1.0
       d3-timer: 3.0.1
 
-  vite@5.2.11(terser@5.31.1):
+  vite@5.2.11(@types/node@20.14.2)(terser@5.31.1):
     dependencies:
       esbuild: 0.20.2
       postcss: 8.4.38
       rollup: 4.17.2
     optionalDependencies:
+      '@types/node': 20.14.2
       fsevents: 2.3.3
       terser: 5.31.1
 
