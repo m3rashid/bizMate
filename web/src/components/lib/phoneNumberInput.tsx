@@ -1,5 +1,5 @@
 import { twMerge } from 'tailwind-merge'
-import { FC, ForwardedRef, forwardRef, useImperativeHandle, useReducer, useRef } from 'react'
+import { FC, useReducer, useRef } from 'react'
 
 import TextInput from './textInput'
 import SingleSelectInput, { Option } from './singleSelectInput'
@@ -16,8 +16,8 @@ export type PhoneNumberInputProps = {
 }
 
 const phoneOptions: Array<Option> = [
-	{ id: 1, value: '+91', label: 'IND' },
-	{ id: 2, value: '+1', label: 'USA' },
+	{ value: '+91', label: 'IND' },
+	{ value: '+1', label: 'USA' },
 ]
 
 function getPhoneNumber(phone: string, ext: string) {
@@ -54,14 +54,9 @@ function getDefaultValue(props: PhoneNumberInputProps): State {
 	return { ...initialState, phoneNumber, phoneExt, phone: getPhoneNumber(phoneNumber, phoneExt) }
 }
 
-function Component(props: PhoneNumberInputProps, ref: ForwardedRef<{ getValue: () => string; clear: () => void }>) {
+function PhoneNumberInput(props: PhoneNumberInputProps) {
 	const inputRef = useRef(null)
 	const [{ phone, phoneExt, phoneNumber }, dispatch] = useReducer(phoneNumberReducer, getDefaultValue(props))
-
-	useImperativeHandle(ref, () => ({
-		getValue: () => phone,
-		clear: () => dispatch({ type: 'CLEAR' }),
-	}))
 
 	return (
 		<div>
@@ -79,11 +74,11 @@ function Component(props: PhoneNumberInputProps, ref: ForwardedRef<{ getValue: (
 					options={phoneOptions}
 					default={phoneOptions[0].value}
 					onChange={(value) => dispatch({ type: 'CHANGE_EXT', ext: value })}
-					render={({ active, option, selected }) => (
+					render={({ focus, option, selected }) => (
 						<div className="flex">
-							<span className={twMerge(selected ? 'font-semibold' : 'font-normal', 'min-w-7 truncate')}>{option}</span>
-							<span className={twMerge(active ? 'text-indigo-200' : 'text-gray-500', 'ml-2 truncate')}>
-								{phoneOptions.find((op) => op.value === option)?.label || phoneOptions[0].label}
+							<span className={twMerge('min-w-7 truncate', selected ? 'font-semibold' : 'font-normal')}>{option.value}</span>
+							<span className={twMerge('ml-2 truncate', focus ? 'text-indigo-200' : 'text-gray-500')}>
+								{phoneOptions.find((op) => op.value === option.value)?.label || phoneOptions[0].label}
 							</span>
 						</div>
 					)}
@@ -104,5 +99,4 @@ function Component(props: PhoneNumberInputProps, ref: ForwardedRef<{ getValue: (
 	)
 }
 
-const PhoneNumberInput = forwardRef(Component)
 export default PhoneNumberInput

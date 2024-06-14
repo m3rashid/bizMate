@@ -8,8 +8,8 @@ import { PageLoader } from './loader'
 import apiClient from '../../api/client'
 import { ExportableTable } from '../../types'
 import Button, { ButtonProps } from './button'
-import SingleSelectInput, { Option } from './singleSelectInput'
 import { usePopups } from '../../hooks/popups'
+import SingleSelectInput, { Option } from './singleSelectInput'
 
 export type TableExportProps = {
 	tableName: ExportableTable
@@ -19,8 +19,8 @@ export type TableExportProps = {
 }
 
 const selectOptions: Array<Option> = [
-	{ id: 'csv', label: 'CSV', value: 'csv' },
-	{ id: 'xlsx', label: 'Excel', value: 'xlsx' },
+	{ label: 'CSV', value: 'csv' },
+	{ label: 'Excel', value: 'xlsx' },
 ]
 
 function TableExport(props: TableExportProps) {
@@ -84,13 +84,7 @@ function TableExport(props: TableExportProps) {
 					</div>
 				) : (
 					<form className="flex w-full flex-col gap-4" onSubmit={handleSubmit}>
-						<SingleSelectInput
-							name="format"
-							label="Export format"
-							options={selectOptions}
-							default={selectOptions[0].value}
-							render={({ option }) => option}
-						/>
+						<SingleSelectInput name="format" label="Export format" options={selectOptions} default={selectOptions[0].value} />
 
 						<label className="block text-sm font-medium leading-6 text-gray-900">Select Columns to include</label>
 

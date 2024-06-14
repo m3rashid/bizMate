@@ -1,11 +1,10 @@
 import { twMerge } from 'tailwind-merge'
+import { ReactNode, useState, Fragment, FC } from 'react'
 import CheckIcon from '@heroicons/react/20/solid/CheckIcon'
-import { ReactNode, useState, Fragment, FC, Key } from 'react'
 import ChevronUpDownIcon from '@heroicons/react/20/solid/ChevronUpDownIcon'
 import { Label, Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react'
 
 export type Option = {
-	id: Key
 	value: string
 	label: ReactNode
 }
@@ -14,11 +13,11 @@ export type SingleSelectInputProps = {
 	default: string
 	options: Array<Option>
 	name?: string
-	render?: FC<{ option: string; selected: boolean; active: boolean }>
 	label?: string
 	value?: string
 	className?: string
 	onChange?: (value: string) => void
+	render?: FC<{ option: Option; selected: boolean; focus: boolean }>
 }
 
 function SingleSelectInput(props: SingleSelectInputProps) {
@@ -40,9 +39,9 @@ function SingleSelectInput(props: SingleSelectInputProps) {
 						<ListboxButton className="text-labelColor relative min-h-9 w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm sm:leading-6">
 							{props.render ? (
 								<props.render
-									active={false}
+									focus={false}
 									selected={false}
-									option={props.options.find((option) => option.value === (props.value ? props.value : selectedOptionValue))?.value || props.default}
+									option={props.options.find((option) => option.value === (props.value ? props.value : selectedOptionValue))!}
 								/>
 							) : (
 								<div className="w-full">{props.options.find((option) => option.value === selectedOptionValue)?.label || props.default}</div>
@@ -57,7 +56,7 @@ function SingleSelectInput(props: SingleSelectInputProps) {
 							<ListboxOptions className="absolute z-20 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
 								{props.options.map((option) => (
 									<ListboxOption
-										key={option.id}
+										key={option.value}
 										value={option}
 										className={({ focus }) =>
 											twMerge('relative cursor-default select-none py-2 pl-3 pr-9', focus ? 'bg-primary text-white' : 'text-gray-900')
@@ -65,13 +64,10 @@ function SingleSelectInput(props: SingleSelectInputProps) {
 									>
 										{({ selected, focus }) => (
 											<Fragment>
-												{props.render ? (
-													<props.render {...{ option: option.value, selected, active: focus }} />
-												) : (
-													<div className="w-full">{option.label}</div>
-												)}
+												{props.render ? <props.render {...{ option, selected, focus }} /> : <div className="w-full">{option.label}</div>}
+
 												{selected ? (
-													<span className={twMerge('absolute inset-y-0 right-0 flex items-center pr-4', focus ? 'text-white' : 'text-primary')}>
+													<span className={twMerge('absolute inset-y-0 right-0 flex items-center pr-4', focus ? 'text-white' : 'text-primaryLight')}>
 														<CheckIcon className="h-5 w-5" aria-hidden="true" />
 													</span>
 												) : null}

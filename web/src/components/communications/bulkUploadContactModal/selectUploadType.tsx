@@ -6,7 +6,7 @@ import { toSentenceCase } from '../../../utils/helpers'
 import SingleSelectInput, { Option } from '../../lib/singleSelectInput'
 import { uploadFileTypeOptions, useBulkUploadContact } from '../../../hooks/bulkUploadContact'
 
-const options: Array<Option> = uploadFileTypeOptions.map((op) => ({ id: op, label: toSentenceCase(op), value: op }))
+const options: Array<Option> = uploadFileTypeOptions.map((op) => ({ label: toSentenceCase(op), value: op }))
 
 function SelectUploadFileType() {
 	const { addMessagePopup } = usePopups()

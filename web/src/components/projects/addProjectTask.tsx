@@ -5,9 +5,9 @@ import Modal from '../lib/modal'
 import Button from '../lib/button'
 import TextInput from '../lib/textInput'
 import apiClient from '../../api/client'
+import { toSentenceCase } from '../../utils/helpers'
 import { ProjectTask, taskStatuses } from '../../types'
 import SingleSelectInput from '../lib/singleSelectInput'
-import { toSentenceCase } from '../../utils/helpers'
 
 type AddProjectTaskProps = {
 	modalOpen: boolean
@@ -49,13 +49,8 @@ function AddProjectTask(props: AddProjectTaskProps) {
 				<SingleSelectInput
 					name="status"
 					label="Status"
-					render={({ option }) => (
-						<div key={option} className="w-full">
-							{option}
-						</div>
-					)}
 					default={taskStatuses[0]}
-					options={taskStatuses.map((status) => ({ id: status, value: status, label: toSentenceCase(status) }) as any)}
+					options={taskStatuses.map((status) => ({ value: status, label: toSentenceCase(status) }) as any)}
 				/>
 
 				<div className="flex flex-grow-0 items-center justify-between pt-3">

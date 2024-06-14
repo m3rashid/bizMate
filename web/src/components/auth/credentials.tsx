@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import LockClosedIcon from '@heroicons/react/20/solid/LockClosedIcon'
 
@@ -11,7 +11,6 @@ import PhoneNumberInput from '../lib/phoneNumberInput'
 
 type LoginBody = { email: string; password: string }
 type RegisterBody = LoginBody & { name: string; phone?: string }
-type Errors = RegisterBody
 
 export type LoginWithCredentialsProps = {
 	type: 'login' | 'register'
@@ -21,7 +20,6 @@ export type LoginWithCredentialsProps = {
 
 function LoginWithCredentials(props: LoginWithCredentialsProps) {
 	const { setAuth } = useAuth()
-	const [errors, setErrors] = useState<Errors>({ email: '', password: '', name: '', phone: '' })
 	const { isPending: isLoginPending, mutate: handleLogin } = useMutation({
 		mutationKey: ['login'],
 		mutationFn: async (body: LoginBody) => apiClient('/auth/login', { method: 'POST', body: JSON.stringify(body) }),
@@ -47,26 +45,13 @@ function LoginWithCredentials(props: LoginWithCredentialsProps) {
 		e.stopPropagation()
 
 		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any
-		if (props.type === 'login') {
-			handleLogin({ email: formData.email, password: formData.password }, { onError, onSuccess })
-		} else {
-			handleRegister(
-				{
-					name: formData.name,
-					phone: formData.phone,
-					email: formData.email,
-					password: formData.password,
-				},
-				{ onError, onSuccess },
-			)
-		}
+		if (props.type === 'login') handleLogin({ email: formData.email, password: formData.password }, { onError, onSuccess })
+		else handleRegister({ name: formData.name, phone: formData.phone, email: formData.email, password: formData.password }, { onError, onSuccess })
 	}
 
 	return (
 		<form className="flex w-full flex-col gap-4" onSubmit={handleSubmit}>
-			{props.type === 'register' ? (
-				<TextInput name="name" type="name" label="Name" placeholder="BizMate Hero" required errorText={errors.name} />
-			) : null}
+			{props.type === 'register' ? <TextInput name="name" type="name" label="Name" placeholder="BizMate Hero" required /> : null}
 
 			<TextInput
 				name="email"
@@ -75,12 +60,11 @@ function LoginWithCredentials(props: LoginWithCredentialsProps) {
 				placeholder="rashid@bizmate.com"
 				required
 				descriptionText="We will never share your email."
-				errorText={errors.email}
 			/>
 
-			{props.type === 'register' ? <PhoneNumberInput name="phone" label="Phone" errorText={errors.phone} /> : null}
+			{props.type === 'register' ? <PhoneNumberInput name="phone" label="Phone" /> : null}
 
-			<TextInput placeholder="Shhh..." required name="password" type="password" label="Password" errorText={errors.password} />
+			<TextInput placeholder="Shhh..." required name="password" type="password" label="Password" />
 
 			<Button
 				type="submit"

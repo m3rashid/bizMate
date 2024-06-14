@@ -38,13 +38,9 @@ function Tabs(props: TabProps) {
 					value={selectedTab}
 					default={selectedTab}
 					onChange={setSelectedTab}
-					options={props.tabs.map((tab) => ({
-						id: tab.id,
-						value: tab.id,
-						label: tab.label || tab.id,
-					}))}
+					options={props.tabs.map((tab) => ({ value: tab.id, label: tab.label || tab.id }))}
 					render={({ option }) => {
-						return <SelectRender tab={props.tabs.find((tab) => tab.id === option) || props.tabs[0]} />
+						return <SelectRender tab={props.tabs.find((tab) => tab.id === option.value) || props.tabs[0]} />
 					}}
 				/>
 			</div>
