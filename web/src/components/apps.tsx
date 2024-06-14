@@ -77,7 +77,7 @@ const apps: Array<App> = [
 
 const sideApp: App = {
 	name: 'Account',
-	description: '',
+	description: 'Manage Account',
 	routes: [
 		{
 			name: 'Settings',
