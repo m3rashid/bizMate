@@ -4,15 +4,15 @@ import { twMerge } from 'tailwind-merge'
 import { useQuery } from '@tanstack/react-query'
 import PlusIcon from '@heroicons/react/24/outline/PlusIcon'
 import { useNavigate, RouteIds } from '@tanstack/react-router'
-import ArrowPathIcon from '@heroicons/react/24/outline/ArrowPathIcon'
 
-import Chip from './chip'
+import Pagination from './pagination'
 import apiClient from '../../api/client'
+import DataListHeader from './dataListHeader'
 import Button, { ButtonProps } from './button'
 import SkeletonTable from '../skeletons/table'
 import { routeTree } from '../../routeTree.gen'
-import TableExport, { TableExportProps } from './tableExport'
-import { ExplicitAndAllObject, PaginationResponse } from '../../types'
+import { TableExportProps } from './tableExport'
+import { ExplicitAndAllObject, PageSearchParams, PaginationResponse } from '../../types'
 
 export type TableColumn<T> = {
 	title: string
@@ -45,7 +45,6 @@ export type TableProps<T> = {
 }
 
 type Row = ExplicitAndAllObject<'id'>
-export type PageSearchParams = { page: number }
 
 function Table<T extends Row>(props: TableProps<T>) {
 	const navigate = useNavigate()
@@ -60,29 +59,18 @@ function Table<T extends Row>(props: TableProps<T>) {
 	if (isPending || !data) return <SkeletonTable contentLength={5} />
 	return (
 		<div className={twMerge('h-full w-full', props.rootClassName)}>
-			<div className={twMerge('sm:flex sm:items-center', props.title || props.description || props.addButtonLink ? 'mb-8' : '')}>
-				{props.title || props.description ? (
-					<div className="sm:flex-auto">
-						{props.title ? <h1 className="text-2xl font-semibold leading-6 text-gray-900">{props.title}</h1> : null}
-						{props.description ? <p className="mt-2 text-sm text-gray-700">{props.description}</p> : null}
-					</div>
-				) : null}
-
-				<div className="mt-4 flex flex-wrap items-center justify-center gap-2 sm:ml-8 sm:mt-0">
-					<Button size="small" variant="simple" LeftIcon={<ArrowPathIcon className="h-4 w-4" />} onClick={() => refetch()} />
-					{props.otherActions}
-					{props.addButtonLink || Object.keys(props.addButtonProps || {}).length > 0 ? (
-						<Button
-							size="small"
-							LeftIcon={<PlusIcon className="h-5 w-5" />}
-							onClick={() => navigate({ to: props.addButtonLink })}
-							label={`Create ${props.title || props.defaultEmptyStateName}`}
-							{...props.addButtonProps}
-						/>
-					) : null}
-					{props.tableExportprops ? <TableExport {...props.tableExportprops} /> : null}
-				</div>
-			</div>
+			<DataListHeader
+				{...{
+					refetch,
+					title: props.title,
+					description: props.description,
+					otherActions: props.otherActions,
+					addButtonLink: props.addButtonLink,
+					addButtonProps: props.addButtonProps,
+					tableExportprops: props.tableExportprops,
+					defaultEmptyStateName: props.defaultEmptyStateName,
+				}}
+			/>
 
 			<div className={twMerge('flow-root min-h-72 overflow-x-auto overflow-y-hidden', props.tableRootClassName)}>
 				{data.docs.length === 0 ? (
@@ -149,37 +137,18 @@ function Table<T extends Row>(props: TableProps<T>) {
 				)}
 			</div>
 
-			<nav className="flex items-center justify-between border-b-2 border-pageBg bg-white p-2" aria-label="Pagination">
-				<div className="hidden sm:block">
-					<p className="text-sm text-gray-700">
-						Showing <span className="font-semibold">{Math.min(data.page * data.limit, data.count)}</span> of&nbsp;
-						<span className="font-semibold">{data.totalDocs}</span> results
-					</p>
-				</div>
-				<div className="flex flex-1 justify-between gap-4 sm:justify-end">
-					<Button
-						size="small"
-						variant="simple"
-						disabled={!data.hasPreviousPage}
-						onClick={() => navigate({ search: (prev: PageSearchParams) => ({ page: prev.page !== 1 ? prev.page - 1 : prev }) })}
-					>
-						Previous
-					</Button>
-
-					<Chip variant="simple" className="h-full">
-						{data.page}
-					</Chip>
-
-					<Button
-						size="small"
-						variant="simple"
-						disabled={!data.hasNextPage}
-						onClick={() => navigate({ search: (prev: PageSearchParams) => ({ page: prev.page + 1 }) })}
-					>
-						Next
-					</Button>
-				</div>
-			</nav>
+			<Pagination
+				{...{
+					count: data.count,
+					hasNextPage: data.hasNextPage,
+					hasPreviousPage: data.hasPreviousPage,
+					limit: data.limit,
+					page: data.page,
+					totalDocs: data.totalDocs,
+					onNextClick: () => navigate({ search: (prev: PageSearchParams) => ({ page: prev.page + 1 }) }),
+					onPreviousClick: () => navigate({ search: (prev: PageSearchParams) => ({ page: prev.page !== 1 ? prev.page - 1 : prev }) }),
+				}}
+			/>
 		</div>
 	)
 }

@@ -30,7 +30,7 @@ type GetProps<T> = Record<keyof T, any>
 
 export type SupportedWidget =
 	| { name: 'button'; props: GetProps<typeof buttonProps> }
-	| { name: 'textInput'; props: GetProps<typeof textInputProps> }
+	| { name: 'input'; props: GetProps<typeof textInputProps> }
 	| { name: 'textareaInput'; props: GetProps<typeof textAreaInputProps> }
 	| { name: 'phoneNumberInput'; props: GetProps<typeof phoneNumberInputProps> }
 	| { name: 'richTextInput'; props: GetProps<typeof richTextInputProps> }
@@ -76,7 +76,7 @@ export const supportedWidgets: SupportedWidgetsArray = [
 	{ name: 'h6', props: headingProps, label: 'Heading 6' },
 	{ name: 'button', props: buttonProps, label: 'Button', icon: Square2StackIcon },
 	{ name: 'togglerInput', props: togglerInputProps, label: 'Toggle Input', icon: AdjustmentsVerticalIcon },
-	{ name: 'textInput', props: textInputProps, label: 'Text Input', icon: Bars2Icon },
+	{ name: 'input', props: textInputProps, label: 'Input', icon: Bars2Icon },
 	{ name: 'textareaInput', props: textAreaInputProps, label: 'Text Area Input', icon: Bars3CenterLeftIcon },
 	{ name: 'richTextInput', props: richTextInputProps, label: 'Rich Text Input', icon: DocumentTextIcon },
 	{ name: 'phoneNumberInput', props: phoneNumberInputProps, label: 'Phone No. Input', icon: PhoneIcon },

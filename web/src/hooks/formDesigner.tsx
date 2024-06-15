@@ -45,7 +45,7 @@ const formDesignerDefaultState: FormDesigner = {
 	meta: [
 		{
 			id: '$name$',
-			name: 'textInput',
+			name: 'input',
 			props: { name: 'name', label: 'Name', required: true, descriptionText: 'Please enter your full name here' },
 		},
 	],

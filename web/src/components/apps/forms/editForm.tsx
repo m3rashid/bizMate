@@ -47,10 +47,10 @@ function EditForm(props: EditFormProps) {
 	const meta = useMemo(() => {
 		if (!props.form) return []
 		return editFormMeta([
-			['title', props.form.title, 'Form title', 'textInput', true],
+			['title', props.form.title, 'Form title', 'input', true],
 			['description', props.form.description, 'Form description', 'textareaInput'],
-			['cancelText', props.form.cancelText, 'Cancel button text', 'textInput', true],
-			['submitText', props.form.submitText, 'Submit button text', 'textInput', true],
+			['cancelText', props.form.cancelText, 'Cancel button text', 'input', true],
+			['submitText', props.form.submitText, 'Submit button text', 'input', true],
 			[
 				'allowAnonymousResponse',
 				props.form.allowAnonymousResponse ? 'on' : 'off',

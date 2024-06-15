@@ -5,8 +5,9 @@ export type StringBoolean = 'on' | 'off'
 export type ExplicitAndAll<Universe, Partical> = Partical & Exclude<Universe, Partical>
 export type ExplicitAndAllObject<Partical> = Record<ExplicitAndAll<string, Partical>, any>
 
-export type PaginationResponse<T> = {
-	docs: Array<T>
+export type PageSearchParams = { page: number }
+
+export type PaginationType = {
 	limit: number
 	count: number
 	totalDocs: number
@@ -14,6 +15,8 @@ export type PaginationResponse<T> = {
 	hasNextPage: boolean
 	hasPreviousPage: boolean
 }
+
+export type PaginationResponse<T> = PaginationType & { docs: Array<T> }
 
 export type BaseModel = {
 	id: ID

@@ -1,9 +1,9 @@
 import { FC, useCallback, useState } from 'react'
 
 import Button from '../lib/button'
+import TextInput from '../lib/input'
 import FormRenderer from './renderer'
 import TogglerInput from '../lib/toggle'
-import TextInput from '../lib/textInput'
 import { ExplicitAndAll } from '../../types'
 import RichTextInput from '../lib/richTextInput'
 import TextAreaInput from '../lib/textAreaInput'
@@ -14,7 +14,7 @@ import { Code, Column, H1, H2, H3, H4, H5, H6, Image, Link, Paragraph } from '..
 export const widgetMap: Record<ExplicitAndAll<string, SupportedWidgetName>, { widget: FC<any>; fieldTransformer?: (field: any) => FC }> = {
 	button: { widget: Button },
 	togglerInput: { widget: TogglerInput },
-	textInput: { widget: TextInput },
+	input: { widget: TextInput },
 	textareaInput: { widget: TextAreaInput },
 	richTextInput: { widget: RichTextInput },
 	phoneNumberInput: { widget: PhoneNumberInput as any },

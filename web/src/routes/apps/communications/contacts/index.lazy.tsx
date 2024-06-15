@@ -3,11 +3,11 @@ import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import PencilSquareIcon from '@heroicons/react/24/outline/PencilSquareIcon'
 
-import { Contact } from '../../../../types'
 import Button from '../../../../components/lib/button'
 import Tooltip from '../../../../components/lib/tooltip'
+import { Contact, PageSearchParams } from '../../../../types'
 import PageContainer from '../../../../components/pageContainer'
-import Table, { PageSearchParams, TableProps } from '../../../../components/lib/table'
+import Table, { TableProps } from '../../../../components/lib/table'
 import AddEditContactModal from '../../../../components/communications/addEditContactModal'
 import BulkUploadContactModal from '../../../../components/communications/bulkUploadContactModal'
 

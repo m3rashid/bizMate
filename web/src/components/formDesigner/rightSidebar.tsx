@@ -20,7 +20,7 @@ function propsToMeta({ _props, values }: PropsToMetaProps): FormElementInstance[
 		if (value === 'string') {
 			meta.push({
 				id,
-				name: 'textInput',
+				name: 'input',
 				props: { name: key, defaultValue: values[key], descriptionText: description, label: camelCaseToSentenceCase(key) },
 			})
 		} else if (value === 'textarea') {
@@ -38,7 +38,7 @@ function propsToMeta({ _props, values }: PropsToMetaProps): FormElementInstance[
 		} else if (value === 'number') {
 			meta.push({
 				id,
-				name: 'textInput',
+				name: 'input',
 				props: { name: key, type: 'number', defaultValue: values[key], descriptionText: description, label: camelCaseToSentenceCase(key) },
 			})
 		} else if (value === 'boolean') {

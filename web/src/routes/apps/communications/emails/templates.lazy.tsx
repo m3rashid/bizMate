@@ -1,9 +1,9 @@
 import dayjs from 'dayjs'
 import { createFileRoute } from '@tanstack/react-router'
 
-import { EmailTemplate } from '../../../../types'
 import PageContainer from '../../../../components/pageContainer'
-import Table, { PageSearchParams, TableProps } from '../../../../components/lib/table'
+import { EmailTemplate, PageSearchParams } from '../../../../types'
+import Table, { TableProps } from '../../../../components/lib/table'
 
 export const Route = createFileRoute('/apps/communications/emails/templates')({
 	component: EmailTemplates,

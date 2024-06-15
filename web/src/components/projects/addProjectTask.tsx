@@ -3,7 +3,7 @@ import { Dispatch, FormEvent, MouseEvent, SetStateAction } from 'react'
 
 import Modal from '../lib/modal'
 import Button from '../lib/button'
-import TextInput from '../lib/textInput'
+import TextInput from '../lib/input'
 import apiClient from '../../api/client'
 import { toSentenceCase } from '../../utils/helpers'
 import { ProjectTask, taskStatuses } from '../../types'

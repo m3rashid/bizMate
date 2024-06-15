@@ -109,8 +109,8 @@ function RenderApp(app: App) {
 						<route.icon className="h-10 w-10 rounded-md bg-skeletonLight p-2 shadow-md group-hover:bg-white" />
 
 						<div className="text-sm">
-							<h4 className="py-0 font-semibold">{route.name}</h4>
-							<div className="text-disabled">{route.description}</div>
+							<h4 className="-mb-1 mt-1 py-0 font-semibold">{route.name}</h4>
+							<div className="-mt-1 text-disabled">{route.description}</div>
 						</div>
 					</Link>
 				))}

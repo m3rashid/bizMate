@@ -3,9 +3,9 @@ import { Dispatch, FormEvent, MouseEvent, SetStateAction } from 'react'
 
 import Modal from '../lib/modal'
 import Button from '../lib/button'
+import TextInput from '../lib/input'
 import { Project } from '../../types'
 import apiClient from '../../api/client'
-import TextInput from '../lib/textInput'
 import TogglerInput from '../lib/toggle'
 import TextAreaInput from '../lib/textAreaInput'
 

@@ -1,7 +1,7 @@
 import { twMerge } from 'tailwind-merge'
 import { FC, useReducer, useRef } from 'react'
 
-import TextInput from './textInput'
+import TextInput from './input'
 import SingleSelectInput, { Option } from './singleSelectInput'
 
 export type PhoneNumberInputProps = {

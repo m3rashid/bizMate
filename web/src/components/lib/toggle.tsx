@@ -7,6 +7,7 @@ import { filterBykeys } from '../../utils/helpers'
 export type TogglerProps = SwitchProps & {
 	label?: ReactNode
 	className?: string
+	required?: boolean
 	descriptionText?: string
 }
 
@@ -40,6 +41,7 @@ function Component(props: TogglerProps, ref: ForwardedRef<{ getValue: () => bool
 
 				{props.label ? (
 					<Label as="span" className="ml-3 text-sm">
+						{props.required ? <span className="text-red-500">*</span> : null}
 						{props.label}
 					</Label>
 				) : null}

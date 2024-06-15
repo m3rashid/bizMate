@@ -5,8 +5,8 @@ import { FormEvent, MouseEvent, RefObject, useState } from 'react'
 
 import Modal from '../lib/modal'
 import Button from '../lib/button'
+import TextInput from '../lib/input'
 import apiClient from '../../api/client'
-import TextInput from '../lib/textInput'
 import { usePopups } from '../../hooks/popups'
 import TextAreaInput from '../lib/textAreaInput'
 

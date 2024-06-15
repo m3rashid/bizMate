@@ -1,6 +1,6 @@
-import { useBulkUploadContact } from '../../../hooks/bulkUploadContact'
 import Button from '../../lib/button'
-import TextInput from '../../lib/textInput'
+import TextInput from '../../lib/input'
+import { useBulkUploadContact } from '../../../hooks/bulkUploadContact'
 
 function UploadFile() {
 	const { goBack, goAhead, onFileUpload } = useBulkUploadContact()

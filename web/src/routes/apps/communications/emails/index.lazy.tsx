@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+import { PageSearchParams } from '../../../../types'
 import PageContainer from '../../../../components/pageContainer'
-import { PageSearchParams } from '../../../../components/lib/table'
 
 export const Route = createFileRoute('/apps/communications/emails/')({
 	component: Emails,

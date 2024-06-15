@@ -102,7 +102,7 @@ var RichTextInputProps = Props{
 
 const (
 	Button           ElementNameType = "button"
-	TextInput        ElementNameType = "textInput"
+	Input            ElementNameType = "input"
 	TextareaInput    ElementNameType = "textareaInput"
 	PhoneNumberInput ElementNameType = "phoneNumberInput"
 	RichTextInput    ElementNameType = "richTextInput" //
@@ -122,7 +122,7 @@ const (
 
 var ElementPropsMap = map[ElementNameType]Props{
 	Button:           ButtonProps,
-	TextInput:        TextInputProps,
+	Input:            TextInputProps,
 	TextareaInput:    TextareaInputProps,
 	PhoneNumberInput: PhoneNumberInputProps,
 	RichTextInput:    RichTextInputProps,
@@ -141,7 +141,7 @@ var ElementPropsMap = map[ElementNameType]Props{
 }
 
 var inputElements = []ElementNameType{
-	TextInput, TextareaInput, PhoneNumberInput, RichTextInput, TogglerInput,
+	Input, TextareaInput, PhoneNumberInput, RichTextInput, TogglerInput,
 }
 
 func (elName ElementNameType) IsFormElement() bool {
