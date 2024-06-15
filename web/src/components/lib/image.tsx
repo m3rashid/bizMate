@@ -9,7 +9,7 @@ type ImageProps = {
 
 export function Image(props: ImageProps) {
 	function addDefaultSource(e: SyntheticEvent<HTMLImageElement, Event>) {
-		;(e.target as any).src = props.defaultImgUrl || '/logo.png'
+		;(e.target as any).src = props.defaultImgUrl || '/logo.png' // TODO: give a better default placeholder image here
 	}
 
 	return <img src={props.src} onError={addDefaultSource} className={props.className} />
