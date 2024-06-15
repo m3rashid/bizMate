@@ -60,7 +60,7 @@ function CardList<T extends DbRow>(props: CardListProps<T>) {
 			/>
 
 			<ResponsiveMasonry
-				columnsCountBreakPoints={{ 300: 1, 1100: 2, 1600: 3 }}
+				columnsCountBreakPoints={{ 350: 1, 700: 2, 1050: 3, 1400: 4, 1750: 5 }}
 				{...props.masonryProps}
 				className={twMerge('col-span-1 md:col-span-2 lg:col-span-3', props.masonryProps?.className)}
 			>

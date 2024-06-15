@@ -34,9 +34,7 @@ function AsyncSingleSelect<T extends DbRow>(props: AsyncSingleSelectProps<T>) {
 	const [selectedOptionValue, setSelectedOptionValue] = useState<string>(props.value || props.default || '')
 
 	function loadMore() {
-		if (hasNextPageRef.current) {
-			setPage((prev) => prev + 1)
-		}
+		if (hasNextPageRef.current) setPage((prev) => prev + 1)
 	}
 
 	const { isFetching } = useQuery<PaginationResponse<T>>({

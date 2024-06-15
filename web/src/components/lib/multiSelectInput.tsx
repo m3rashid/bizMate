@@ -1,6 +1,6 @@
 import { twMerge } from 'tailwind-merge'
+import { FC, Fragment, useMemo, useState } from 'react'
 import CheckIcon from '@heroicons/react/24/outline/CheckIcon'
-import { FC, Fragment, useMemo, useRef, useState } from 'react'
 import ChevronUpDownIcon from '@heroicons/react/24/outline/ChevronUpDownIcon'
 import { Label, Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react'
 
@@ -19,7 +19,6 @@ export type MultiSelectInputProps = {
 }
 
 function MultiSelectInput(props: MultiSelectInputProps) {
-	const inputRef = useRef(null)
 	const [selectedOptionsValues, setSelectedOptionsValues] = useState<string[]>(props.value || props.default)
 
 	const selectedValuesOptions = useMemo(() => {
@@ -44,7 +43,7 @@ function MultiSelectInput(props: MultiSelectInputProps) {
 		<Listbox multiple value={selectedOptionsValues} onChange={onListboxChange}>
 			{({ open }) => (
 				<div>
-					<input type="hidden" name={props.name} ref={inputRef} value={JSON.stringify(selectedOptionsValues)} />
+					<input type="hidden" name={props.name} value={JSON.stringify(selectedOptionsValues)} />
 					{props.label ? <Label className="text-labelColor block text-sm font-medium leading-6">{props.label}</Label> : null}
 
 					<div className="relative w-full">

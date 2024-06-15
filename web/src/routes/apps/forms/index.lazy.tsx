@@ -140,7 +140,6 @@ function Forms() {
 				description="Create and manage all forms"
 				tableExportprops={{ tableName: 'forms_table', mutationKeys: [] }}
 				cardRenderer={(form) => <FormCard {...{ ...form, onEdit: () => setEditRow(form) }} />}
-				masonryProps={{ columnsCountBreakPoints: { 350: 1, 700: 2, 1050: 3, 1400: 4, 1750: 5 } }}
 			/>
 		</PageContainer>
 	)
