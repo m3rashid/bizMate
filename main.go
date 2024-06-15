@@ -82,7 +82,7 @@ func main() {
 		models.ProjectTask{},
 		models.Project{},
 		models.ProjectCycle{},
-		models.ProjectTaskComment{},
+		models.ProjectTaskEvent{},
 
 		models.Contact{},
 

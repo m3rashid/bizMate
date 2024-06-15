@@ -6,7 +6,7 @@ const TAG_MODEL_NAME string = "project_tags"
 const TASK_MODEL_NAME string = "project_tasks"
 const PROJECT_MODEL_NAME string = "projects"
 const PROJECT_CYCLE_MODEL_NAME = "project_cycles"
-const PROJECT_TASK_COMMENT_MODEL_NAME = "project_task_comments"
+const PROJECT_TASK_EVENT_MODEL_NAME = "project_task_comments"
 
 type TaskStatus string
 
@@ -64,10 +64,11 @@ type ProjectTask struct {
 	ParentTask   *ProjectTask  `json:"parentTask" gorm:"foreignKey:parentTaskId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
-type ProjectTaskComment struct {
+type ProjectTaskEvent struct {
 	BaseModel
 	CreatedBy
 	UpdatedBy
+	// other fields
 	Comment string       `json:"comment" gorm:"column:comment;not null" validate:"required"`
 	TaskID  uint         `json:"taskId" gorm:"column:taskId;not null" validate:"required"`
 	Task    *ProjectTask `json:"task" gorm:"foreignKey:taskId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
@@ -85,8 +86,8 @@ func (ProjectTask) TableName() string {
 	return TASK_MODEL_NAME
 }
 
-func (ProjectTaskComment) TableName() string {
-	return PROJECT_TASK_COMMENT_MODEL_NAME
+func (ProjectTaskEvent) TableName() string {
+	return PROJECT_TASK_EVENT_MODEL_NAME
 }
 
 func (ProjectCycle) TableName() string {

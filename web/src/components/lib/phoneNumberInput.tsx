@@ -2,7 +2,8 @@ import { twMerge } from 'tailwind-merge'
 import { FC, useReducer, useRef } from 'react'
 
 import TextInput from './input'
-import SingleSelectInput, { Option } from './singleSelectInput'
+import { Option } from '../../types'
+import SingleSelectInput from './singleSelectInput'
 
 export type PhoneNumberInputProps = {
 	name: string
@@ -15,7 +16,7 @@ export type PhoneNumberInputProps = {
 	descriptionText?: string
 }
 
-const phoneOptions: Array<Option> = [
+const phoneOptions: Option[] = [
 	{ value: '+91', label: 'IND' },
 	{ value: '+1', label: 'USA' },
 ]

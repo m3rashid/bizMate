@@ -1,8 +1,8 @@
 import { parse } from 'papaparse'
 import { ChangeEvent, Dispatch, FormEvent, PropsWithChildren, SetStateAction, createContext, useContext, useReducer } from 'react'
 
+import { Option } from '../types'
 import { camelCaseToSentenceCase } from '../utils/helpers'
-import { Option } from '../components/lib/singleSelectInput'
 import { ActionPopupType, MessagePopupType, usePopups } from './popups'
 
 export const modalStates = ['selectUploadType', 'upload', 'mapping', 'confirm'] as const

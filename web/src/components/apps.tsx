@@ -27,7 +27,7 @@ type App = {
 	routes: Route[]
 }
 
-const apps: Array<App> = [
+const apps: App[] = [
 	{
 		name: 'Forms',
 		description: 'Create, publish, and get analytics for your forms',

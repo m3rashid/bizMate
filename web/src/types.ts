@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 export type UnionOfObject<T> = T[keyof T]
 
 export type ID = number
@@ -6,6 +8,7 @@ export type ExplicitAndAll<Universe, Partical> = Partical & Exclude<Universe, Pa
 export type ExplicitAndAllObject<Partical> = Record<ExplicitAndAll<string, Partical>, any>
 
 export type PageSearchParams = { page: number }
+export type Option = { value: string; label: ReactNode }
 
 export type PaginationType = {
 	limit: number

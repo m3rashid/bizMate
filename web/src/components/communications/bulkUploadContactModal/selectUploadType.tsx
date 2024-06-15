@@ -1,12 +1,13 @@
 import { FormEvent, MouseEvent } from 'react'
 
 import Button from '../../lib/button'
+import { Option } from '../../../types'
 import { usePopups } from '../../../hooks/popups'
 import { toSentenceCase } from '../../../utils/helpers'
-import SingleSelectInput, { Option } from '../../lib/singleSelectInput'
+import SingleSelectInput from '../../lib/singleSelectInput'
 import { uploadFileTypeOptions, useBulkUploadContact } from '../../../hooks/bulkUploadContact'
 
-const options: Array<Option> = uploadFileTypeOptions.map((op) => ({ label: toSentenceCase(op), value: op }))
+const options: Option[] = uploadFileTypeOptions.map((op) => ({ label: toSentenceCase(op), value: op }))
 
 function SelectUploadFileType() {
 	const { addMessagePopup } = usePopups()

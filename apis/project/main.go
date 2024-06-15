@@ -84,13 +84,13 @@ func Setup(app *fiber.App) {
 		ParamValue: "taskId",
 	}))
 
-	app.Get("/tasks/:taskId/comments/all", utils.CheckAuthMiddleware, controllers.Paginate[models.ProjectTaskComment](controllers.PaginateOptions{
+	app.Get("/tasks/:taskId/comments/all", utils.CheckAuthMiddleware, controllers.Paginate[models.ProjectTaskEvent](controllers.PaginateOptions{
 		ParamKeys: []string{"taskId"},
 	}))
 
-	app.Post("/tasks/comments/create", utils.CheckAuthMiddleware, controllers.Create[models.ProjectTaskComment, models.ProjectTaskComment](models.PROJECT_TASK_COMMENT_MODEL_NAME))
+	app.Post("/tasks/comments/create", utils.CheckAuthMiddleware, controllers.Create[models.ProjectTaskEvent, models.ProjectTaskEvent](models.PROJECT_TASK_EVENT_MODEL_NAME))
 
-	app.Post("/tasks/comments/:commentId/update", utils.CheckAuthMiddleware, controllers.Update(controllers.UpdateOptions[models.ProjectTaskComment, models.ProjectTaskComment]{
+	app.Post("/tasks/comments/:commentId/update", utils.CheckAuthMiddleware, controllers.Update(controllers.UpdateOptions[models.ProjectTaskEvent, models.ProjectTaskEvent]{
 		ParamKey:   "id",
 		ParamValue: "commentId",
 	}))

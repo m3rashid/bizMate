@@ -1,24 +1,21 @@
 import { twMerge } from 'tailwind-merge'
 import CheckIcon from '@heroicons/react/24/outline/CheckIcon'
-import { FC, Fragment, ReactNode, useMemo, useRef, useState } from 'react'
+import { FC, Fragment, useMemo, useRef, useState } from 'react'
 import ChevronUpDownIcon from '@heroicons/react/24/outline/ChevronUpDownIcon'
 import { Label, Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react'
 
-export type MultiSelectOption = {
-	value: string
-	label: ReactNode
-}
+import { Option } from '../../types'
 
 export type MultiSelectInputProps = {
 	default: string[]
-	options: MultiSelectOption[]
+	options: Option[]
 	name?: string
 	label?: string
 	value?: string[]
 	className?: string
 	onChange?: (value: string[]) => void
-	optionRender?: FC<{ option: MultiSelectOption; selected: boolean; focus: boolean }>
-	selectedRender?: FC<{ options: MultiSelectOption[]; removeOption: (s: string) => void }>
+	optionRender?: FC<{ option: Option; selected: boolean; focus: boolean }>
+	selectedRender?: FC<{ options: Option[]; removeOption: (s: string) => void }>
 }
 
 function MultiSelectInput(props: MultiSelectInputProps) {
@@ -26,7 +23,7 @@ function MultiSelectInput(props: MultiSelectInputProps) {
 	const [selectedOptionsValues, setSelectedOptionsValues] = useState<string[]>(props.value || props.default)
 
 	const selectedValuesOptions = useMemo(() => {
-		const _options: MultiSelectOption[] = []
+		const _options: Option[] = []
 		for (let i = 0; i < props.options.length; i++) {
 			if (selectedOptionsValues.includes(props.options[i].value)) _options.push(props.options[i])
 		}

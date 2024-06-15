@@ -6,10 +6,10 @@ import Modal from './modal'
 import TogglerInput from './toggle'
 import { PageLoader } from './loader'
 import apiClient from '../../api/client'
-import { ExportableTable } from '../../types'
 import Button, { ButtonProps } from './button'
 import { usePopups } from '../../hooks/popups'
-import SingleSelectInput, { Option } from './singleSelectInput'
+import SingleSelectInput from './singleSelectInput'
+import { ExportableTable, Option } from '../../types'
 
 export type TableExportProps = {
 	tableName: ExportableTable
@@ -18,7 +18,7 @@ export type TableExportProps = {
 	buttonProps?: ButtonProps
 }
 
-const selectOptions: Array<Option> = [
+const selectOptions: Option[] = [
 	{ label: 'CSV', value: 'csv' },
 	{ label: 'Excel', value: 'xlsx' },
 ]

@@ -1,17 +1,14 @@
 import { twMerge } from 'tailwind-merge'
-import { ReactNode, useState, Fragment, FC } from 'react'
+import { useState, Fragment, FC } from 'react'
 import CheckIcon from '@heroicons/react/20/solid/CheckIcon'
 import ChevronUpDownIcon from '@heroicons/react/20/solid/ChevronUpDownIcon'
 import { Label, Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react'
 
-export type Option = {
-	value: string
-	label: ReactNode
-}
+import { Option } from '../../types'
 
 export type SingleSelectInputProps = {
 	default: string
-	options: Array<Option>
+	options: Option[]
 	name?: string
 	label?: string
 	value?: string
