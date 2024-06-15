@@ -7,6 +7,7 @@ import TextInput from '../lib/input'
 import { Loader } from '../lib/loader'
 import apiClient from '../../api/client'
 import { useAuth } from '../../hooks/auth'
+import { usePopups } from '../../hooks/popups'
 import PhoneNumberInput from '../lib/phoneNumberInput'
 
 type LoginBody = { email: string; password: string }
@@ -20,6 +21,7 @@ export type LoginWithCredentialsProps = {
 
 function LoginWithCredentials(props: LoginWithCredentialsProps) {
 	const { setAuth } = useAuth()
+	const { addMessagePopup } = usePopups()
 	const { isPending: isLoginPending, mutate: handleLogin } = useMutation({
 		mutationKey: ['login'],
 		mutationFn: async (body: LoginBody) => apiClient('/auth/login', { method: 'POST', body: JSON.stringify(body) }),
@@ -32,11 +34,13 @@ function LoginWithCredentials(props: LoginWithCredentialsProps) {
 
 	function onSuccess(data: any) {
 		localStorage.setItem('token', data.token)
+		addMessagePopup({ id: 'Logged in Successfully', type: 'success', message: 'Logged in successfully' })
 		setAuth({ isAuthenticated: true, user: data.user })
 		if (props.onSuccess) props.onSuccess()
 	}
 
 	function onError() {
+		addMessagePopup({ id: 'Login Failed', type: 'error', message: 'Login failed. Please check your credentials and try again.' })
 		if (props.onFailure) props.onFailure()
 	}
 
