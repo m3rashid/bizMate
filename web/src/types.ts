@@ -7,6 +7,7 @@ export type StringBoolean = 'on' | 'off'
 export type ExplicitAndAll<Universe, Partical> = Partical & Exclude<Universe, Partical>
 export type ExplicitAndAllObject<Partical> = Record<ExplicitAndAll<string, Partical>, any>
 
+export type DbRow = ExplicitAndAllObject<'id'>
 export type PageSearchParams = { page: number }
 export type Option = { value: string; label: ReactNode }
 

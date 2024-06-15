@@ -25,7 +25,7 @@ function Modal(props: ModalProps) {
 				</TransitionChild>
 
 				<div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-					<div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+					<div className="flex min-h-full items-center justify-center p-4 text-center sm:items-center sm:p-0">
 						<TransitionChild
 							as={Fragment}
 							enter="ease-out duration-300"
@@ -44,7 +44,7 @@ function Modal(props: ModalProps) {
 									) : null}
 									<XMarkIcon className="h-6 w-6 cursor-pointer hover:text-gray-600" onClick={() => props.setOpen(false)} />
 								</div>
-								<div className="mt-2">{props.children}</div>
+								{props.children}
 							</DialogPanel>
 						</TransitionChild>
 					</div>

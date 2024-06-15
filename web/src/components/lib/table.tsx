@@ -12,7 +12,7 @@ import Button, { ButtonProps } from './button'
 import SkeletonTable from '../skeletons/table'
 import { routeTree } from '../../routeTree.gen'
 import { TableExportProps } from './tableExport'
-import { ExplicitAndAllObject, PageSearchParams, PaginationResponse } from '../../types'
+import { DbRow, PageSearchParams, PaginationResponse } from '../../types'
 
 export type TableColumn<T> = {
 	title: string
@@ -44,9 +44,7 @@ export type TableProps<T> = {
 	otherActions?: ReactNode
 }
 
-type Row = ExplicitAndAllObject<'id'>
-
-function Table<T extends Row>(props: TableProps<T>) {
+function Table<T extends DbRow>(props: TableProps<T>) {
 	const navigate = useNavigate()
 	const locationSearch = qs.parse(location.search)
 

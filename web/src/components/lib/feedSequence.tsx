@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { ExplicitAndAllObject } from '../../types'
+import { DbRow } from '../../types'
 
 export type FeedSequenceProps<T> = {
 	items: T[]
@@ -8,9 +8,7 @@ export type FeedSequenceProps<T> = {
 	endNode?: ReactNode
 }
 
-type Row = ExplicitAndAllObject<'id'>
-
-function FeedSequence<T extends Row>(props: FeedSequenceProps<T>) {
+function FeedSequence<T extends DbRow>(props: FeedSequenceProps<T>) {
 	return (
 		<div className="flow-root">
 			<ul role="list" className="-mb-8">

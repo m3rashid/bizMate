@@ -3,8 +3,8 @@ import { twMerge } from 'tailwind-merge'
 import { useNavigate } from '@tanstack/react-router'
 import { PlusIcon } from '@heroicons/react/24/outline'
 
+import { DbRow } from '../../types'
 import Button, { ButtonProps } from './button'
-import { ExplicitAndAllObject } from '../../types'
 import TableExport, { TableExportProps } from './tableExport'
 
 export type SimpleTableColumn<T> = {
@@ -33,8 +33,7 @@ export type SimpleTableProps<T> = {
 	defaultEmptyStateName?: string
 }
 
-type Row = ExplicitAndAllObject<'id'>
-function SimpleTable<T extends Row>(props: SimpleTableProps<T>) {
+function SimpleTable<T extends DbRow>(props: SimpleTableProps<T>) {
 	const navigate = useNavigate()
 
 	return (

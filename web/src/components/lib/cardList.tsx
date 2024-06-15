@@ -3,6 +3,7 @@ import { ReactNode } from 'react'
 import { twMerge } from 'tailwind-merge'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate, RouteIds } from '@tanstack/react-router'
+import Masonry, { ResponsiveMasonry, ResponsiveMasonryProps } from 'react-responsive-masonry'
 
 import Pagination from './pagination'
 import { ButtonProps } from './button'
@@ -10,8 +11,8 @@ import apiClient from '../../api/client'
 import DataListHeader from './dataListHeader'
 import { routeTree } from '../../routeTree.gen'
 import { TableExportProps } from './tableExport'
-import Masonry, { ResponsiveMasonry, ResponsiveMasonryProps } from 'react-responsive-masonry'
-import { ExplicitAndAllObject, PageSearchParams, PaginationResponse } from '../../types'
+import SkeletonCardList from '../skeletons/cardList'
+import { DbRow, PageSearchParams, PaginationResponse } from '../../types'
 
 export type CardListProps<T> = {
 	route: RouteIds<typeof routeTree>
@@ -32,9 +33,7 @@ export type CardListProps<T> = {
 	masonryProps?: { className?: string; columnsCountBreakPoints?: ResponsiveMasonryProps['columnsCountBreakPoints'] }
 }
 
-type Row = ExplicitAndAllObject<'id'>
-
-function CardList<T extends Row>(props: CardListProps<T>) {
+function CardList<T extends DbRow>(props: CardListProps<T>) {
 	const navigate = useNavigate()
 	const locationSearch = qs.parse(location.search)
 
@@ -44,7 +43,7 @@ function CardList<T extends Row>(props: CardListProps<T>) {
 			apiClient(`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${locationSearch.page}&limit=${props.pageSize || 15}`),
 	})
 
-	if (isPending || !data) return null // make a card skeleton loader
+	if (isPending || !data) return <SkeletonCardList />
 	return (
 		<div className={twMerge('h-full w-full', props.rootClassName)}>
 			<DataListHeader

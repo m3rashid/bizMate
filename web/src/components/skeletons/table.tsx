@@ -1,4 +1,4 @@
-const SkeletonTable = (props: { contentLength?: number }) => {
+function SkeletonTable(props: { contentLength?: number }) {
 	return (
 		<div className="animate-pulse">
 			<div className="mb-4 flex justify-between">
