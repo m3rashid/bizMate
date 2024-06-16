@@ -61,7 +61,7 @@ function PhoneNumberInput(props: PhoneNumberInputProps) {
 
 	return (
 		<div>
-			<input type="hidden" name={props.name} ref={inputRef} value={phone} />
+			<input type="hidden" name={props.name} required={props.required} ref={inputRef} value={phone} />
 			{props.label ? (
 				<label htmlFor="phone" className={twMerge('text-labelColor block text-sm font-medium leading-6', props.labelClassName)}>
 					{props.label}&nbsp;
@@ -90,6 +90,7 @@ function PhoneNumberInput(props: PhoneNumberInputProps) {
 					className="flex-1"
 					value={phoneNumber}
 					placeholder="XXXXXXXXXX"
+					required={props.required}
 					errorText={props.errorText}
 					labelClassName={props.labelClassName}
 					descriptionText={props.descriptionText}

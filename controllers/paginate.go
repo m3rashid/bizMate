@@ -50,15 +50,8 @@ func Paginate[Model DbModel](_options ...PaginateOptions) func(*fiber.Ctx) error
 
 		requestQueryParams := strings.Join(requestQueriesAndParams, " AND ")
 
-		if reqQuery.Page <= 0 {
-			reqQuery.Page = 1
-		}
-
-		if reqQuery.Limit <= 0 {
-			reqQuery.Limit = 10
-		}
-
-		reqQuery.Limit = min(reqQuery.Limit, 50)
+		reqPageNo := utils.Ternary(reqQuery.Page == 0, 1, reqQuery.Page)
+		reqPageLimit := min(utils.Ternary(reqQuery.Limit == 0, 10, reqQuery.Limit), 50)
 
 		db, err := utils.GetTenantDbFromCtx(ctx)
 		if err != nil {
@@ -79,25 +72,29 @@ func Paginate[Model DbModel](_options ...PaginateOptions) func(*fiber.Ctx) error
 			db = db.Where("deleted = true")
 		}
 
-		results := []Model{}
-		if err := db.Where(requestQueryParams).Order("id DESC").Limit(reqQuery.Limit).Offset((reqQuery.Page - 1) * reqQuery.Limit).Find(&results).Error; err != nil {
-			return ctx.SendStatus(fiber.StatusInternalServerError)
-		}
-
 		var docsCount int64 = 0
 		if err := db.Table(tableName).Where(requestQueryParams).Count(&docsCount).Error; err != nil {
 			return ctx.SendStatus(fiber.StatusInternalServerError)
 		}
 
+		results := []Model{}
+		if err := db.Where(requestQueryParams).Order("id DESC").Limit(reqPageLimit).Offset((reqPageNo - 1) * reqPageLimit).Find(&results).Error; err != nil {
+			return ctx.SendStatus(fiber.StatusInternalServerError)
+		}
+
 		paginationResponse := utils.PaginationResponse[Model]{
 			Docs:            results,
-			Limit:           reqQuery.Limit,
+			Limit:           reqPageLimit,
 			Count:           len(results),
 			TotalDocs:       docsCount,
-			CurrentPage:     reqQuery.Page,
-			HasNextPage:     docsCount > int64(reqQuery.Page*reqQuery.Limit),
-			HasPreviousPage: reqQuery.Page > 1,
+			CurrentPage:     reqPageNo,
+			HasNextPage:     docsCount > int64(reqPageNo*reqPageLimit),
+			HasPreviousPage: reqPageNo > 1,
 		}
+
+		fmt.Printf("count: %d\n", docsCount)
+		fmt.Printf("queryParams: %+v\n", requestQueryParams)
+		fmt.Printf("docs: %+v\n", results)
 
 		return ctx.Status(fiber.StatusOK).JSON(paginationResponse)
 	}

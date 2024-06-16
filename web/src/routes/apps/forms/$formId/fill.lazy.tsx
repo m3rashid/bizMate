@@ -6,8 +6,10 @@ import FaceFrownIcon from '@heroicons/react/24/outline/FaceFrownIcon'
 import { Form } from '../../../../types'
 import apiClient from '../../../../api/client'
 import { useAuth } from '../../../../hooks/auth'
+import { usePopups } from '../../../../hooks/popups'
 import { PageLoader } from '../../../../components/lib/loader'
 import { PageNotFound } from '../../../../components/lib/notFound'
+import { FormElementInstance } from '../../../../components/forms/constants'
 import FormView, { ShowMetaType } from '../../../../components/apps/forms/formView'
 
 export const Route = createFileRoute('/apps/forms/$formId/fill')({
@@ -15,10 +17,10 @@ export const Route = createFileRoute('/apps/forms/$formId/fill')({
 })
 
 function FormFill() {
+	const { auth } = useAuth()
+	const { addMessagePopup } = usePopups()
 	const formRef = useRef<HTMLFormElement>(null)
-	const {
-		auth: { isAuthenticated },
-	} = useAuth()
+
 	const { formId } = useParams({ from: '/apps/forms/$formId/fill' })
 	const [formStatus, setFormStatus] = useState<ShowMetaType>('body')
 	const { data: form, isPending } = useQuery<Form>({ queryKey: ['getForm', formId], queryFn: () => apiClient(`/forms/one/${formId}`) })
@@ -58,8 +60,27 @@ function FormFill() {
 
 	function handleSubmit(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault()
-		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any
-		mutate({ response: JSON.stringify(formData) })
+		if (!form) {
+			addMessagePopup({ id: 'noForm', message: 'Form not found', type: 'error' })
+			return
+		}
+
+		try {
+			const formBody: FormElementInstance[] = JSON.parse(form.body)
+			const toggleInputNames = formBody.reduce<string[]>((acc, el) => (el.name === 'togglerInput' ? [...acc, el.props.name] : acc), [])
+			const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any
+
+			for (let i = 0; i < toggleInputNames.length; i++) {
+				// make sure the toggle inputs give true/false as results rather than on and off
+				if (formData[toggleInputNames[i]] && formData[toggleInputNames[i]] === 'on') {
+					formData[toggleInputNames[i]] = true
+				} else formData[toggleInputNames[i]] = false
+			}
+
+			mutate({ response: JSON.stringify(formData) })
+		} catch (err: any) {
+			addMessagePopup({ id: 'errorSubmittingResponse', message: 'Unable to submit response, please try again', type: 'error' })
+		}
 	}
 
 	function handleCancel(e: MouseEvent<HTMLButtonElement>) {
@@ -79,7 +100,7 @@ function FormFill() {
 		)
 	}
 
-	if (!form.allowAnonymousResponse && !isAuthenticated) {
+	if (!form.allowAnonymousResponse && !auth.isAuthenticated) {
 		return (
 			<div className="flex h-screen flex-col items-center justify-center gap-8 p-4">
 				<label className="text-3xl font-bold leading-6 text-gray-900">You need to be logged in to fill this form</label>
@@ -87,6 +108,7 @@ function FormFill() {
 			</div>
 		)
 	}
+
 	return (
 		<div className="flex justify-center p-4">
 			<FormView {...{ type: 'fill', formRef, handleCancel, handleSubmit, form, showMeta: formStatus }} />

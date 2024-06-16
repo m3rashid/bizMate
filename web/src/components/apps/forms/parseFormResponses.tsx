@@ -50,7 +50,7 @@ export function parseFormResponses(
 			try {
 				const formRes = JSON.parse(data.docs[i].response as string)
 				for (let j = 0; j < formFieldKeys.length; j++) {
-					if (!formRes[formFieldKeys[j]]) formRes[formFieldKeys[j]] = 'N/A'
+					if (typeof formRes[formFieldKeys[j]] !== 'boolean' && !formRes[formFieldKeys[j]]) formRes[formFieldKeys[j]] = 'N/A'
 				}
 
 				responses.push({

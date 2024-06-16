@@ -19,6 +19,8 @@ func Setup(app *fiber.App) {
 
 	app.Post("/forms/update", utils.CheckAuthMiddleware, updateFormById)
 
+	app.Get("/forms/analysis/:formId", utils.CheckAuthMiddleware, getFormResponseAnalysis)
+
 	app.Post("/forms/delete/:formId", utils.CheckAuthMiddleware, controllers.Delete(
 		controllers.DeleteOptions[models.Form]{ParamValue: "formId", ParamKey: "id"},
 	))
