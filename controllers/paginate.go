@@ -92,10 +92,6 @@ func Paginate[Model DbModel](_options ...PaginateOptions) func(*fiber.Ctx) error
 			HasPreviousPage: reqPageNo > 1,
 		}
 
-		fmt.Printf("count: %d\n", docsCount)
-		fmt.Printf("queryParams: %+v\n", requestQueryParams)
-		fmt.Printf("docs: %+v\n", results)
-
 		return ctx.Status(fiber.StatusOK).JSON(paginationResponse)
 	}
 }
