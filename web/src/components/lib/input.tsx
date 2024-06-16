@@ -5,7 +5,7 @@ import { ChangeEvent, FC, InputHTMLAttributes, useState } from 'react'
 
 import { filterBykeys } from '../../utils/helpers'
 
-export type TextInputProps = InputHTMLAttributes<HTMLInputElement> & {
+export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
 	label?: string
 	icon?: FC<any>
 	errorText?: string
@@ -14,7 +14,7 @@ export type TextInputProps = InputHTMLAttributes<HTMLInputElement> & {
 	onChange?: (e: ChangeEvent<HTMLInputElement>) => void
 }
 
-function TextInput(props: TextInputProps) {
+function Input(props: InputProps) {
 	const [inputType, setInputType] = useState(props.type)
 
 	return (
@@ -67,4 +67,4 @@ function TextInput(props: TextInputProps) {
 	)
 }
 
-export default TextInput
+export default Input

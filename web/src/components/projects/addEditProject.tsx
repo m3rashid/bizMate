@@ -2,8 +2,8 @@ import { useMutation } from '@tanstack/react-query'
 import { Dispatch, FormEvent, MouseEvent, SetStateAction } from 'react'
 
 import Modal from '../lib/modal'
+import Input from '../lib/input'
 import Button from '../lib/button'
-import TextInput from '../lib/input'
 import { Project } from '../../types'
 import apiClient from '../../api/client'
 import TogglerInput from '../lib/toggle'
@@ -53,7 +53,7 @@ function AddEditProjectModal(props: AddEditProjectModalProps) {
 	return (
 		<Modal open={props.open} setOpen={props.setOpen} title={props.project ? 'Edit Project' : 'Create Project'}>
 			<form className="flex h-full flex-col gap-4" onSubmit={handleAddEditProject}>
-				<TextInput name="name" label="Name" placeholder="Project Name" required defaultValue={props.project?.name} />
+				<Input name="name" label="Name" placeholder="Project Name" required defaultValue={props.project?.name} />
 				<TextAreaInput name="description" label="Project Description" defaultValue={props.project?.description} />
 
 				{!!props.project ? (

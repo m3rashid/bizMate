@@ -4,7 +4,7 @@ import { Dispatch, FormEvent, MouseEvent, SetStateAction } from 'react'
 
 import Modal from '../lib/modal'
 import Button from '../lib/button'
-import TextInput from '../lib/input'
+import Input from '../lib/input'
 import { Contact } from '../../types'
 import apiClient from '../../api/client'
 import PhoneNumberInput from '../lib/phoneNumberInput'
@@ -50,10 +50,10 @@ function AddEditContactModal(props: AddEditContactModalProps) {
 	return (
 		<Modal open={props.open} setOpen={props.setOpen} title={props.contact ? 'Edit Contact' : 'Create Contact'}>
 			<form className="flex h-full flex-col gap-4" onSubmit={handleAddEditContact}>
-				<TextInput name="name" label="Name" defaultValue={props.contact?.name} required />
-				<TextInput name="email" label="Email" defaultValue={props.contact?.email} required />
+				<Input name="name" label="Name" defaultValue={props.contact?.name} required />
+				<Input name="email" label="Email" defaultValue={props.contact?.email} required />
 				<PhoneNumberInput name="phone" label="Phone" defaultValue={props.contact?.phone} />
-				<TextInput name="birthday" type="datetime-local" label="Birthday" defaultValue={props.contact?.birthday} />
+				<Input name="birthday" type="datetime-local" label="Birthday" defaultValue={props.contact?.birthday} />
 
 				<div className="flex flex-grow-0 items-center justify-between pt-3">
 					<Button variant="simple" onClick={handleReset}>

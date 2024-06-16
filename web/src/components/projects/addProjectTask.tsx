@@ -3,7 +3,7 @@ import { Dispatch, FormEvent, MouseEvent, SetStateAction } from 'react'
 
 import Modal from '../lib/modal'
 import Button from '../lib/button'
-import TextInput from '../lib/input'
+import Input from '../lib/input'
 import apiClient from '../../api/client'
 import { toSentenceCase } from '../../utils/helpers'
 import { ProjectTask, taskStatuses } from '../../types'
@@ -45,7 +45,7 @@ function AddProjectTask(props: AddProjectTaskProps) {
 	return (
 		<Modal open={props.modalOpen} setOpen={props.setModalOpen} title="Add Project Task">
 			<form className="flex h-full flex-col gap-4" onSubmit={handleAddEditForm}>
-				<TextInput name="title" placeholder="Create the sales pitchdeck" label="Title" />
+				<Input name="title" placeholder="Create the sales pitchdeck" label="Title" />
 				<SingleSelectInput
 					name="status"
 					label="Status"

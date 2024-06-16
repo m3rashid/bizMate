@@ -37,7 +37,7 @@ function CardList<T extends DbRow>(props: CardListProps<T>) {
 	const navigate = useNavigate()
 	const locationSearch = qs.parse(location.search)
 
-	const { isPending, data, refetch } = useQuery<PaginationResponse<T>>({
+	const { isPending, data, refetch, isFetching } = useQuery<PaginationResponse<T>>({
 		queryKey: [...props.queryKeys, props.pageSize || 15, locationSearch.page],
 		queryFn: () =>
 			apiClient(`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${locationSearch.page}&limit=${props.pageSize || 15}`),
@@ -49,6 +49,7 @@ function CardList<T extends DbRow>(props: CardListProps<T>) {
 			<DataListHeader
 				{...{
 					refetch,
+					isFetching,
 					title: props.title,
 					description: props.description,
 					otherActions: props.otherActions,

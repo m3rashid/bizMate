@@ -9,6 +9,7 @@ import TableExport, { TableExportProps } from './tableExport'
 
 type DataListHeaderProps = {
 	title?: string
+	isFetching: boolean
 	refetch: () => void
 	description?: string
 	addButtonLink?: string
@@ -31,7 +32,12 @@ function DataListHeader(props: DataListHeaderProps) {
 			) : null}
 
 			<div className="mt-4 flex flex-wrap items-center justify-center gap-2 sm:ml-8 sm:mt-0">
-				<Button size="small" variant="simple" LeftIcon={<ArrowPathIcon className="h-4 w-4" />} onClick={() => props.refetch()} />
+				<Button
+					size="small"
+					variant="simple"
+					LeftIcon={<ArrowPathIcon className={twMerge('h-4 w-4', props.isFetching ? 'animate-spin' : '')} />}
+					onClick={() => props.refetch()}
+				/>
 				{props.otherActions}
 				{props.addButtonLink || Object.keys(props.addButtonProps || {}).length > 0 ? (
 					<Button

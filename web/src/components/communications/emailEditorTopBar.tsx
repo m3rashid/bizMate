@@ -5,7 +5,7 @@ import { FormEvent, MouseEvent, RefObject, useState } from 'react'
 
 import Modal from '../lib/modal'
 import Button from '../lib/button'
-import TextInput from '../lib/input'
+import Input from '../lib/input'
 import apiClient from '../../api/client'
 import { usePopups } from '../../hooks/popups'
 import TextAreaInput from '../lib/textAreaInput'
@@ -108,7 +108,7 @@ function EmailEditorTopBar(props: EmailEditorTopBarProps) {
 
 			<Modal {...{ open, setOpen, title: 'Email Template Details' }}>
 				<form className="flex h-full flex-col gap-4" onSubmit={handleAddTemplateDetails}>
-					<TextInput name="title" label="Template Name" required defaultValue={emailBody.title} />
+					<Input name="title" label="Template Name" required defaultValue={emailBody.title} />
 					<TextAreaInput name="description" label="Description" defaultValue={emailBody.description} />
 					<TextAreaInput name="subjectTemplate" label="Template Subject Template" required defaultValue={emailBody.subjectTemplate} />
 

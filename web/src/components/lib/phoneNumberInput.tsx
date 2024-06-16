@@ -1,7 +1,7 @@
 import { twMerge } from 'tailwind-merge'
 import { FC, useReducer, useRef } from 'react'
 
-import TextInput from './input'
+import Input from './input'
 import { Option } from '../../types'
 import SingleSelectInput from './singleSelectInput'
 
@@ -85,7 +85,7 @@ function PhoneNumberInput(props: PhoneNumberInputProps) {
 					)}
 				/>
 
-				<TextInput
+				<Input
 					type="number"
 					className="flex-1"
 					value={phoneNumber}

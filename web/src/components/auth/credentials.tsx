@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query'
 import LockClosedIcon from '@heroicons/react/20/solid/LockClosedIcon'
 
 import Button from '../lib/button'
-import TextInput from '../lib/input'
+import Input from '../lib/input'
 import { Loader } from '../lib/loader'
 import apiClient from '../../api/client'
 import { useAuth } from '../../hooks/auth'
@@ -55,20 +55,13 @@ function LoginWithCredentials(props: LoginWithCredentialsProps) {
 
 	return (
 		<form className="flex w-full flex-col gap-4" onSubmit={handleSubmit}>
-			{props.type === 'register' ? <TextInput name="name" type="name" label="Name" placeholder="BizMate Hero" required /> : null}
+			{props.type === 'register' ? <Input name="name" type="name" label="Name" placeholder="BizMate Hero" required /> : null}
 
-			<TextInput
-				name="email"
-				type="email"
-				label="Email"
-				placeholder="rashid@bizmate.com"
-				required
-				descriptionText="We will never share your email."
-			/>
+			<Input name="email" type="email" label="Email" placeholder="rashid@bizmate.com" required descriptionText="We will never share your email." />
 
 			{props.type === 'register' ? <PhoneNumberInput name="phone" label="Phone" /> : null}
 
-			<TextInput placeholder="Shhh..." required name="password" type="password" label="Password" />
+			<Input placeholder="Shhh..." required name="password" type="password" label="Password" />
 
 			<Button
 				type="submit"
