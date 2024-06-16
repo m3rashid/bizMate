@@ -15,7 +15,11 @@ export const Route = createLazyFileRoute('/apps/forms/$formId/analytics')({
 	component: FormAnalytics,
 })
 
-type BooleanAnalysisResponse = Array<{ name: string; label: string; trueCount: number; falseCount: number }>
+type BooleanAnalysisResponse = {
+	title: string
+	description: string
+	analysis: Array<{ name: string; label: string; trueCount: number; falseCount: number }>
+}
 function FormAnalytics() {
 	const { formId } = useParams({ from: '/apps/forms/$formId/analytics' })
 
@@ -29,21 +33,21 @@ function FormAnalytics() {
 
 	return (
 		<PageContainer>
-			<DataListHeader hideRefresh isFetching={false} refetch={() => {}} title="Form Analytics" />
+			<DataListHeader hideRefresh isFetching={false} refetch={() => {}} title={`Form Analytics (${data.title})`} description={data.description} />
 
 			<div className="flex flex-wrap items-center gap-4">
-				{data.map((analysis) => (
-					<div key={analysis.name} className="w-full rounded-md p-4 shadow-md sm:max-w-xs">
-						<div className="flex items-center gap-2">
-							<h3 className="font-semibold text-disabled">{analysis.label}</h3>
-							<Tooltip label={`${analysis.trueCount} voted true for ${analysis.label}`} show="right">
+				{data.analysis.map((dataPoint) => (
+					<div key={dataPoint.name} className="w-full select-none rounded-lg border-2 border-white p-2 shadow-lg hover:border-primary sm:max-w-xs">
+						<div className="mb-4 flex items-center gap-2">
+							<h3 className="font-semibold text-disabled">{dataPoint.label}</h3>
+							<Tooltip label={`${dataPoint.trueCount} voted true for ${dataPoint.label}`} show="right">
 								<InformationCircleIcon className="h-5 w-5 text-disabled" />
 							</Tooltip>
 						</div>
 
 						<Pie
 							options={{ plugins: { legend: { display: false } } }}
-							data={{ labels: ['True', 'False'], datasets: [{ data: [analysis.trueCount, analysis.falseCount] }] }}
+							data={{ labels: ['True', 'False'], datasets: [{ data: [dataPoint.trueCount, dataPoint.falseCount] }] }}
 						/>
 					</div>
 				))}

@@ -16,7 +16,7 @@ function FormResponsesTable(form: FormResponseTableProps) {
 	const { data: formResponses, isPending: isFormResponseFetchPending } = useQuery({
 		queryKey: ['getFormResponses', form.id, page],
 		select: (data) => parseFormResponses(form, data),
-		queryFn: () => apiClient(`/forms/response/${form.id}/all?page=${page}&limit=2`),
+		queryFn: () => apiClient(`/forms/response/${form.id}/all?page=${page}&limit=10`),
 	})
 
 	if (isFormResponseFetchPending) return <PageLoader />

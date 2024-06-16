@@ -204,5 +204,5 @@ func getFormResponseAnalysis(ctx *fiber.Ctx) error {
 		booleanAnalysis = append(booleanAnalysis, analysis)
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(booleanAnalysis)
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"title": form.Title, "description": form.Description, "analysis": booleanAnalysis})
 }
