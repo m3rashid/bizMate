@@ -19,7 +19,8 @@ import {
 	columnProps,
 	headingProps,
 	paragraphProps,
-	textInputProps,
+	inputProps,
+	radioInputProps,
 	selectInputProps,
 	togglerInputProps,
 	textAreaInputProps,
@@ -31,7 +32,7 @@ type GetProps<T> = Record<keyof T, any>
 
 export type SupportedWidget =
 	| { name: 'button'; props: GetProps<typeof buttonProps> }
-	| { name: 'input'; props: GetProps<typeof textInputProps> }
+	| { name: 'input'; props: GetProps<typeof inputProps> }
 	| { name: 'textareaInput'; props: GetProps<typeof textAreaInputProps> }
 	| { name: 'phoneNumberInput'; props: GetProps<typeof phoneNumberInputProps> }
 	| { name: 'richTextInput'; props: GetProps<typeof richTextInputProps> }
@@ -48,6 +49,7 @@ export type SupportedWidget =
 	| { name: 'code'; props: GetProps<typeof codeProps> }
 	| { name: 'togglerInput'; props: GetProps<typeof togglerInputProps> }
 	| { name: 'singleSelectInput'; props: GetProps<typeof selectInputProps> }
+	| { name: 'radioInput'; props: GetProps<typeof radioInputProps> }
 	// these items are not for showing in left sidebar, just helper components
 	| { name: 'selectListInput'; props: any }
 
@@ -81,7 +83,7 @@ export const supportedWidgets: SupportedWidgetsArray = [
 	{ name: 'paragraph', props: paragraphProps, label: 'Paragraph', icon: ListBulletIcon },
 	{ name: 'button', props: buttonProps, label: 'Button', icon: Square2StackIcon },
 	{ name: 'togglerInput', props: togglerInputProps, label: 'Toggle Input', icon: AdjustmentsVerticalIcon },
-	{ name: 'input', props: textInputProps, label: 'Input', icon: Bars2Icon },
+	{ name: 'input', props: inputProps, label: 'Input', icon: Bars2Icon },
 	{ name: 'textareaInput', props: textAreaInputProps, label: 'Text Area Input', icon: Bars3CenterLeftIcon },
 	{ name: 'richTextInput', props: richTextInputProps, label: 'Rich Text Input', icon: DocumentTextIcon },
 	{ name: 'phoneNumberInput', props: phoneNumberInputProps, label: 'Phone No. Input', icon: PhoneIcon },
@@ -90,4 +92,5 @@ export const supportedWidgets: SupportedWidgetsArray = [
 	{ name: 'link', props: linkProps, label: 'Link', icon: LinkIcon },
 	{ name: 'code', props: codeProps, label: 'Code', icon: CodeBracketIcon },
 	{ name: 'singleSelectInput', props: selectInputProps, label: 'Single Select Input', icon: Bars2Icon },
+	{ name: 'radioInput', props: radioInputProps, label: 'Radio Input', icon: Bars2Icon },
 ]

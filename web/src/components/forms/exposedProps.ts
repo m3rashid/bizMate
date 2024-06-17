@@ -17,9 +17,14 @@ export const phoneNumberInputProps: Props = {
 	descriptionText: [false, 'Describe more about this field', 'string'],
 }
 
-export const textInputProps: Props = {
+export const inputProps: Props = {
 	name: [true, 'Name of the input element', 'string'],
 	label: [true, 'Label of this field', 'string'],
+	type: [
+		true,
+		'Type of the input field',
+		['text', 'color', 'time', 'datetime-local', 'email', 'month', 'number', 'password', 'tel', 'url', 'week', 'date'],
+	],
 	required: [false, 'It is required by the user to fill this field', 'boolean'],
 	descriptionText: [false, 'Describe more about this field', 'string'],
 }
@@ -39,6 +44,14 @@ export const richTextInputProps: Props = {
 }
 
 export const selectInputProps: Props = {
+	name: [true, 'Name of the input field', 'string'],
+	label: [true, 'Label of this field', 'string'],
+	required: [false, 'It is required by the user to fill this field', 'boolean'],
+	descriptionText: [false, 'Describe more about this field', 'string'],
+	options: [false, 'Options for this select field', 'selectOptions'],
+}
+
+export const radioInputProps: Props = {
 	name: [true, 'Name of the input field', 'string'],
 	label: [true, 'Label of this field', 'string'],
 	required: [false, 'It is required by the user to fill this field', 'boolean'],

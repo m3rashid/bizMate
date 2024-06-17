@@ -64,7 +64,7 @@ function propsToMeta({ _props, values }: PropsToMetaProps): FormElementInstance[
 					defaultValue: values[key],
 					descriptionText: description,
 					label: camelCaseToSentenceCase(key),
-					options: value.map((t) => (typeof t === 'string' ? { value: t, label: camelCaseToSentenceCase(t) } : t)),
+					options: value.map((t) => (typeof t === 'string' ? { name: key, value: t, label: camelCaseToSentenceCase(t) } : t)),
 				},
 			})
 		} else if (value === 'selectOptions') {
@@ -96,9 +96,9 @@ function RightSidebar() {
 		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any
 		if (selectedNode) {
 			let options: string[] = []
-			if (selectedNode.name === 'singleSelectInput') {
+			if (selectedNode.name === 'singleSelectInput' || selectedNode.name === 'radioInput') {
 				try {
-					options = JSON.parse(formData.options).map((t: string) => ({ value: t, label: t }))
+					options = JSON.parse(formData.options)
 				} catch (err) {
 					options = []
 				}

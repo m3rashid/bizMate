@@ -100,7 +100,7 @@ export function useFormDesigner() {
 
 	function insertNewNode(newNode: Omit<FormElementInstance, 'id'>) {
 		const node: FormElementInstance = { ...newNode, props: {}, id: generateRandomString() }
-		if (newNode.name === 'singleSelectInput') node.props = { options: [] }
+		if (newNode.name === 'singleSelectInput' || newNode.name === 'radioInput') node.props = { options: [] }
 		handleViewTransition(() => setFormDesigner((prev) => ({ ...prev, selectedNode: node, meta: [...prev.meta, node] })))
 	}
 

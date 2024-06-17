@@ -31,7 +31,6 @@ function FormDesignerTopBar() {
 		}
 
 		const checkCondition = (val?: StringBoolean | undefined) => (val && val === 'on' ? true : false)
-
 		const form: Partial<Form> = {
 			body: JSON.stringify(
 				meta.map((el) => ({
@@ -52,7 +51,6 @@ function FormDesignerTopBar() {
 			allowMultipleResponse: checkCondition(rootProps.allowMultipleResponse),
 			allowResponseUpdate: checkCondition(rootProps.allowResponseUpdate),
 		}
-
 		saveForm(form)
 	}
 

@@ -1,12 +1,12 @@
 import { twMerge } from 'tailwind-merge'
-import { InputHTMLAttributes } from 'react'
+import { InputHTMLAttributes, useMemo } from 'react'
 import { Radio, RadioGroup } from '@headlessui/react'
 import CheckCircleIcon from '@heroicons/react/24/solid/CheckCircleIcon'
 
 import { Option } from '../../types'
 
 export type SimpleRadioProps = InputHTMLAttributes<HTMLInputElement> & {
-	options: Option[]
+	options: Array<string | Option>
 	label?: string
 	errorText?: string
 	labelClassName?: string
@@ -17,6 +17,14 @@ export type SimpleRadioProps = InputHTMLAttributes<HTMLInputElement> & {
 }
 
 function RadioInput(props: SimpleRadioProps) {
+	const options = useMemo(() => {
+		if (props.options.length === 0) return [{ label: 'No options available', value: '' }]
+		if (typeof props.options[0] === 'string' || typeof props.options[0] === 'number') {
+			return props.options.map<Option>((op) => ({ label: op as string, value: op as string }))
+		}
+		return props.options as Option[]
+	}, [props.options])
+
 	return (
 		<fieldset className="w-full">
 			{props.label ? (
@@ -36,7 +44,7 @@ function RadioInput(props: SimpleRadioProps) {
 				)}
 				{...(props.value ? { value: props.value, onChange: props.onChange ? props.onChange : () => {} } : {})}
 			>
-				{props.options.map((option) => (
+				{options.map((option) => (
 					<Radio
 						key={option.value}
 						value={option.value}

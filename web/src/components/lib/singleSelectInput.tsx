@@ -1,5 +1,5 @@
 import { twMerge } from 'tailwind-merge'
-import { useState, Fragment, FC } from 'react'
+import { useState, Fragment, FC, useMemo } from 'react'
 import CheckIcon from '@heroicons/react/20/solid/CheckIcon'
 import ChevronUpDownIcon from '@heroicons/react/20/solid/ChevronUpDownIcon'
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react'
@@ -8,7 +8,7 @@ import { Option } from '../../types'
 
 export type SingleSelectInputProps = {
 	default?: string
-	options: Option[]
+	options: Array<string | Option>
 	name?: string
 	label?: string
 	value?: string
@@ -23,7 +23,15 @@ export type SingleSelectInputProps = {
 }
 
 function SingleSelectInput(props: SingleSelectInputProps) {
-	const [selectedOptionValue, setSelectedOptionValue] = useState<string>(props.value || props.default || props.options[0]?.value || '')
+	const options = useMemo(() => {
+		if (props.options.length === 0) return [{ label: 'No options available', value: '' }]
+		if (typeof props.options[0] === 'string' || typeof props.options[0] === 'number') {
+			return props.options.map<Option>((op) => ({ label: op as string, value: op as string }))
+		}
+		return props.options as Option[]
+	}, [props.options])
+
+	const [selectedOptionValue, setSelectedOptionValue] = useState<string>(props.value || props.default || options[0]?.value || '')
 
 	return (
 		<Listbox
@@ -50,10 +58,10 @@ function SingleSelectInput(props: SingleSelectInputProps) {
 								<props.render
 									focus={false}
 									selected={false}
-									option={props.options.find((option) => option.value === (props.value ? props.value : selectedOptionValue))!}
+									option={options.find((option) => option.value === (props.value ? props.value : selectedOptionValue))!}
 								/>
 							) : (
-								<div className="w-full">{props.options.find((option) => option.value === selectedOptionValue)?.label || props.default}</div>
+								<div className="w-full">{options.find((option) => option.value === selectedOptionValue)?.label || props.default}</div>
 							)}
 
 							<span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
@@ -63,7 +71,7 @@ function SingleSelectInput(props: SingleSelectInputProps) {
 
 						<Transition show={open} as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
 							<ListboxOptions className="absolute z-20 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-								{props.options.map((option) => (
+								{options.map((option) => (
 									<ListboxOption
 										key={option.value}
 										value={option}

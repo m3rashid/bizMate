@@ -1,13 +1,18 @@
+import { CSS } from '@dnd-kit/utilities'
+import { twMerge } from 'tailwind-merge'
 import PlusIcon from '@heroicons/react/24/outline/PlusIcon'
 import XMarkIcon from '@heroicons/react/24/outline/XMarkIcon'
 import PencilIcon from '@heroicons/react/24/outline/PencilIcon'
 import { Dispatch, FormEvent, SetStateAction, useCallback, useState } from 'react'
+import { SortableContext, sortableKeyboardCoordinates, useSortable } from '@dnd-kit/sortable'
+import { DndContext, DragEndEvent, KeyboardSensor, PointerSensor, closestCorners, useSensor, useSensors } from '@dnd-kit/core'
 
 import Input from './input'
 import Modal from './modal'
 import Button from './button'
 import Tooltip from './tooltip'
 import { usePopups } from '../../hooks/popups'
+import { handleViewTransition } from '../../utils/helpers'
 
 function AddEditModal(props: {
 	open: boolean
@@ -46,11 +51,20 @@ function AddEditModal(props: {
 
 function SingleOption(props: { option: string; onRemove: () => void; onEdit: () => void }) {
 	const [mouseOver, setMouseOver] = useState(false)
+	const { attributes, setNodeRef, listeners, transform, transition, isDragging } = useSortable({ id: props.option })
+
 	return (
 		<div
+			ref={setNodeRef}
+			{...attributes}
+			{...listeners}
 			onMouseEnter={() => setMouseOver(true)}
 			onMouseLeave={() => setMouseOver(false)}
-			className="relative h-min rounded-lg border-2 border-white bg-white px-2 py-1.5 hover:border-primary"
+			className={twMerge(
+				'relative h-min rounded-lg border-2 border-white bg-white px-2 py-1.5 hover:border-primary',
+				isDragging ? 'cursor-grab' : '',
+			)}
+			style={{ transition, transform: CSS.Transform.toString(transform), viewTransitionName: `form-wrapper-${props.option}` }}
 		>
 			{mouseOver ? (
 				<div className="absolute -right-0 -top-4 flex gap-1">
@@ -86,6 +100,13 @@ function SelectListInput(props: SelectListInputProps) {
 	const [options, setOptions] = useState<string[]>([])
 	const [editData, setEditData] = useState<string | undefined>(undefined)
 
+	const sensors = useSensors(
+		useSensor(PointerSensor),
+		useSensor(KeyboardSensor, {
+			coordinateGetter: sortableKeyboardCoordinates,
+		}),
+	)
+
 	const validateOptions = useCallback((opts: string[]) => {
 		if (opts.length !== 0) {
 			if (opts[opts.length - 1] === '') {
@@ -105,7 +126,9 @@ function SelectListInput(props: SelectListInputProps) {
 	}, [])
 
 	function onRemove(option: string) {
-		setOptions((prev) => prev.filter((opt) => opt !== option))
+		handleViewTransition(() => {
+			setOptions((prev) => prev.filter((opt) => opt !== option))
+		})
 	}
 
 	function onSubmit(newOption: string, previousOption?: string) {
@@ -122,38 +145,58 @@ function SelectListInput(props: SelectListInputProps) {
 		})
 	}
 
-	return (
-		<div className="w-full">
-			<div className="flex flex-col gap-2">
-				<AddEditModal {...{ open, setOpen, onSubmit, editData }} />
+	function handleDragEnd(e: DragEndEvent) {
+		if (!e.over || e.active.id === e.over.id) return
+		handleViewTransition(() => {
+			setOptions((prev) => {
+				if (!e.over) return prev
+				const sourceIndex = prev.findIndex((el) => el === e.active.id)
+				const destinationIndex = prev.findIndex((el) => el === e.over?.id)
+				const newOptions = [...prev]
+				newOptions.splice(sourceIndex, 1)
+				newOptions.splice(destinationIndex, 0, e.active.id as string)
+				return newOptions
+			})
+		})
+	}
 
-				<label className="block text-sm font-medium text-gray-900">Options</label>
-				<input type="hidden" name={props.name} required={props.required} value={JSON.stringify(options)} />
-				{options.map((option) => (
-					<SingleOption
-						option={option}
-						key={option}
-						onEdit={() => {
-							setEditData(option)
+	return (
+		<DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
+			<div className="w-full">
+				<div className="flex flex-col gap-2">
+					<AddEditModal {...{ open, setOpen, onSubmit, editData }} />
+
+					<label className="block text-sm font-medium text-gray-900">Options</label>
+					<input type="hidden" name={props.name} required={props.required} value={JSON.stringify(options)} />
+
+					<SortableContext items={options}>
+						{options.map((option) => (
+							<SingleOption
+								option={option}
+								key={option}
+								onEdit={() => {
+									setEditData(option)
+									setOpen(true)
+								}}
+								onRemove={() => onRemove(option)}
+							/>
+						))}
+					</SortableContext>
+
+					<Button
+						size="small"
+						className="mt-2"
+						LeftIcon={<PlusIcon className="h-6 w-6" />}
+						label="Add Option"
+						onClick={(e) => {
+							e.stopPropagation()
+							e.preventDefault()
 							setOpen(true)
 						}}
-						onRemove={() => onRemove(option)}
 					/>
-				))}
-
-				<Button
-					size="small"
-					className="mt-2"
-					LeftIcon={<PlusIcon className="h-6 w-6" />}
-					label="Add Option"
-					onClick={(e) => {
-						e.stopPropagation()
-						e.preventDefault()
-						setOpen(true)
-					}}
-				/>
+				</div>
 			</div>
-		</div>
+		</DndContext>
 	)
 }
 

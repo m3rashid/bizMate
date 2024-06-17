@@ -4,6 +4,7 @@ import Button from '../lib/button'
 import Input from '../lib/input'
 import FormRenderer from './renderer'
 import TogglerInput from '../lib/toggle'
+import RadioInput from '../lib/radioInput'
 import { ExplicitAndAll } from '../../types'
 import RichTextInput from '../lib/richTextInput'
 import TextAreaInput from '../lib/textAreaInput'
@@ -33,6 +34,7 @@ export const widgetMap: Record<ExplicitAndAll<string, SupportedWidgetName>, { wi
 	h6: { widget: H6 },
 	singleSelectInput: { widget: SingleSelectInput },
 	selectListInput: { widget: SelectListInput },
+	radioInput: { widget: RadioInput },
 }
 
 const FormBuilder: FormBuilderType = (props) => {
