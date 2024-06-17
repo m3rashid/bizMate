@@ -101,33 +101,31 @@ var RichTextInputProps = Props{
 }
 
 const (
-	Button           ElementNameType = "button"
-	Input            ElementNameType = "input"
-	TextareaInput    ElementNameType = "textareaInput"
-	PhoneNumberInput ElementNameType = "phoneNumberInput"
-	RichTextInput    ElementNameType = "richTextInput" //
-	Paragraph        ElementNameType = "paragraph"
-	Column           ElementNameType = "column"
-	Image            ElementNameType = "image"
-	Link             ElementNameType = "link"
-	H1               ElementNameType = "h1"
-	H2               ElementNameType = "h2"
-	H3               ElementNameType = "h3"
-	H4               ElementNameType = "h4"
-	H5               ElementNameType = "h5"
-	H6               ElementNameType = "h6"
-	Code             ElementNameType = "code"
-	TogglerInput     ElementNameType = "togglerInput"
+	Input             ElementNameType = "input"
+	TextareaInput     ElementNameType = "textareaInput"
+	PhoneNumberInput  ElementNameType = "phoneNumberInput"
+	RichTextInput     ElementNameType = "richTextInput" //
+	Paragraph         ElementNameType = "paragraph"
+	Image             ElementNameType = "image"
+	Link              ElementNameType = "link"
+	H1                ElementNameType = "h1"
+	H2                ElementNameType = "h2"
+	H3                ElementNameType = "h3"
+	H4                ElementNameType = "h4"
+	H5                ElementNameType = "h5"
+	H6                ElementNameType = "h6"
+	Code              ElementNameType = "code"
+	TogglerInput      ElementNameType = "togglerInput"
+	SingleSelectInput ElementNameType = "singleSelectInput"
+	RadioInput        ElementNameType = "radioInput"
 )
 
 var ElementPropsMap = map[ElementNameType]Props{
-	Button:           ButtonProps,
 	Input:            TextInputProps,
 	TextareaInput:    TextareaInputProps,
 	PhoneNumberInput: PhoneNumberInputProps,
 	RichTextInput:    RichTextInputProps,
 	Paragraph:        ParagraphProps,
-	Column:           ColumnProps,
 	Image:            ImageProps,
 	Link:             LinkProps,
 	H1:               HeadingProps,

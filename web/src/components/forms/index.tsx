@@ -1,6 +1,5 @@
 import { FC, useCallback, useState } from 'react'
 
-import Button from '../lib/button'
 import Input from '../lib/input'
 import FormRenderer from './renderer'
 import TogglerInput from '../lib/toggle'
@@ -12,17 +11,15 @@ import SelectListInput from '../lib/selectListInput'
 import PhoneNumberInput from '../lib/phoneNumberInput'
 import SingleSelectInput from '../lib/singleSelectInput'
 import { FormBuilder as FormBuilderType, SupportedWidgetName } from './constants'
-import { Code, Column, H1, H2, H3, H4, H5, H6, Image, Link, Paragraph } from '../lib/extras'
+import { Code, H1, H2, H3, H4, H5, H6, Image, Link, Paragraph } from '../lib/extras'
 
 export const widgetMap: Record<ExplicitAndAll<string, SupportedWidgetName>, { widget: FC<any>; fieldTransformer?: (field: any) => FC }> = {
-	button: { widget: Button },
 	togglerInput: { widget: TogglerInput },
 	input: { widget: Input },
 	textareaInput: { widget: TextAreaInput },
 	richTextInput: { widget: RichTextInput },
 	phoneNumberInput: { widget: PhoneNumberInput as any },
 	paragraph: { widget: Paragraph as any },
-	column: { widget: Column },
 	image: { widget: Image },
 	link: { widget: Link },
 	code: { widget: Code },

@@ -48,7 +48,7 @@ const formDesignerDefaultState: FormDesigner = {
 		{
 			id: '$name$',
 			name: 'input',
-			props: { name: 'name', label: 'Name', required: true, descriptionText: 'Please enter your full name here' },
+			props: { name: 'name', label: 'Name', descriptionText: 'Please enter your full name here' },
 		},
 	],
 	viewType: 'build',

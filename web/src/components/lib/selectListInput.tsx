@@ -61,7 +61,7 @@ function SingleOption(props: { option: string; onRemove: () => void; onEdit: () 
 			onMouseEnter={() => setMouseOver(true)}
 			onMouseLeave={() => setMouseOver(false)}
 			className={twMerge(
-				'relative h-min rounded-lg border-2 border-white bg-white px-2 py-1.5 hover:border-primary',
+				'relative h-min rounded-lg border-2 border-borderColor bg-white px-2 py-1.5 hover:border-primary',
 				isDragging ? 'cursor-grab' : '',
 			)}
 			style={{ transition, transform: CSS.Transform.toString(transform), viewTransitionName: `form-wrapper-${props.option}` }}
@@ -185,8 +185,8 @@ function SelectListInput(props: SelectListInputProps) {
 
 					<Button
 						size="small"
-						className="mt-2"
-						LeftIcon={<PlusIcon className="h-6 w-6" />}
+						variant="simple"
+						LeftIcon={<PlusIcon className="h-4 w-4" />}
 						label="Add Option"
 						onClick={(e) => {
 							e.stopPropagation()

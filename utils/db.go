@@ -91,19 +91,19 @@ func GetDbConnection(connectionString string) (*gorm.DB, error) {
 	return gormDB, nil
 }
 
-func GetHostDB() *gorm.DB {
+func GetHostDB() (*gorm.DB, error) {
 	if db == nil {
 		fmt.Println("Creating new host db connection")
 
 		gormDB, err := GetDbConnection(getDbString(os.Getenv("HOST_DB_NAME")))
 		if err != nil {
 			fmt.Println("Error initializing host db: ", err)
-			panic(err)
+			return nil, err
 		}
 		db = gormDB
 	}
 
-	return db
+	return db, nil
 }
 
 func GetTenantDBFromTenantUrl(tenantUrl string) (*gorm.DB, error) {
@@ -112,9 +112,13 @@ func GetTenantDBFromTenantUrl(tenantUrl string) (*gorm.DB, error) {
 	}
 
 	if tenantsDBMap[tenantUrl].Connection == nil || time.Since(tenantsDBMap[tenantUrl].CreatedAt) > CONNECTION_REFRESH_INTERVAL {
-		db := GetHostDB()
+		db, err := GetHostDB()
+		if err != nil {
+			return nil, err
+		}
+
 		var tenant models.Tenant
-		err := db.Where("\"tenantUrl\" = ?", tenantUrl).First(&tenant).Error
+		err = db.Where("\"tenantUrl\" = ?", tenantUrl).First(&tenant).Error
 		if err != nil {
 			fmt.Println("Error fetching tenant: ", err)
 			return nil, err

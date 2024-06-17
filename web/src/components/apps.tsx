@@ -75,18 +75,38 @@ const apps: App[] = [
 	},
 ]
 
-const sideApp: App = {
-	name: 'Account',
-	description: 'Manage Account',
-	routes: [
-		{
-			name: 'Settings',
-			description: 'Manage settings',
-			icon: CogIcon,
-			link: '/about',
-		},
-	],
-}
+const sideApps: App[] = [
+	{
+		name: 'Account',
+		description: 'Manage Account',
+		routes: [
+			{
+				name: 'Settings',
+				description: 'Manage settings',
+				icon: CogIcon,
+				link: '/about',
+			},
+		],
+	},
+	{
+		name: 'Platform',
+		description: 'About the platform',
+		routes: [
+			{
+				name: 'About',
+				description: 'About the platform',
+				icon: CogIcon,
+				link: '/about',
+			},
+			{
+				name: 'Changelogs',
+				description: "What's new on the platform",
+				icon: CogIcon,
+				link: '/changelogs',
+			},
+		],
+	},
+]
 
 function RenderApp(app: App) {
 	return (
@@ -130,7 +150,11 @@ function AppsList() {
 				</Masonry>
 			</ResponsiveMasonry>
 
-			<RenderApp {...sideApp} />
+			<div className="flex flex-col gap-4">
+				{sideApps.map((app) => (
+					<RenderApp key={app.name} {...app} />
+				))}
+			</div>
 		</div>
 	)
 }

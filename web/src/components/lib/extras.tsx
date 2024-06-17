@@ -8,11 +8,6 @@ export function Paragraph(props: ParagraphProps) {
 	return <p className={props.className}>{props.text}</p>
 }
 
-export type ColumnProps = HTMLAttributes<HTMLDivElement>
-export function Column(props: ColumnProps) {
-	return <div className={props.className}>{props.children}</div>
-}
-
 export type ImageProps = ImgHTMLAttributes<HTMLImageElement>
 export function Image(props: ImageProps) {
 	return <img {...props} className={twMerge('inline-block', props.className)} />

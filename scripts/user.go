@@ -18,7 +18,11 @@ type createTenantStruct struct {
 }
 
 func createTenant(props createTenantStruct) error {
-	db := utils.GetHostDB()
+	db, err := utils.GetHostDB()
+	if err != nil {
+		return err
+	}
+
 	hashedPassword, err := utils.HashPassword(props.OwnerPassword)
 	if err != nil {
 		return err

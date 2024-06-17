@@ -4,10 +4,12 @@ import { Radio, RadioGroup } from '@headlessui/react'
 import CheckCircleIcon from '@heroicons/react/24/solid/CheckCircleIcon'
 
 import { Option } from '../../types'
+import { shuffleArray } from '../../utils/helpers'
 
 export type SimpleRadioProps = InputHTMLAttributes<HTMLInputElement> & {
 	options: Array<string | Option>
 	label?: string
+	shuffle?: boolean
 	errorText?: string
 	labelClassName?: string
 	descriptionText?: string
@@ -19,6 +21,7 @@ export type SimpleRadioProps = InputHTMLAttributes<HTMLInputElement> & {
 function RadioInput(props: SimpleRadioProps) {
 	const options = useMemo(() => {
 		if (props.options.length === 0) return [{ label: 'No options available', value: '' }]
+		if (props.shuffle) shuffleArray(props.options)
 		if (typeof props.options[0] === 'string' || typeof props.options[0] === 'number') {
 			return props.options.map<Option>((op) => ({ label: op as string, value: op as string }))
 		}

@@ -18,6 +18,7 @@ import { Route as AppsFormsFormIdPreviewImport } from './routes/apps/forms/$form
 // Create Virtual Routes
 
 const PaymentLazyImport = createFileRoute('/payment')()
+const ChangelogsLazyImport = createFileRoute('/changelogs')()
 const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
 const AuthLoginLazyImport = createFileRoute('/auth/login')()
@@ -78,6 +79,11 @@ const PaymentLazyRoute = PaymentLazyImport.update({
   path: '/payment',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/payment.lazy').then((d) => d.Route))
+
+const ChangelogsLazyRoute = ChangelogsLazyImport.update({
+  path: '/changelogs',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/changelogs.lazy').then((d) => d.Route))
 
 const AboutLazyRoute = AboutLazyImport.update({
   path: '/about',
@@ -282,6 +288,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutLazyImport
       parentRoute: typeof rootRoute
     }
+    '/changelogs': {
+      preLoaderRoute: typeof ChangelogsLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/payment': {
       preLoaderRoute: typeof PaymentLazyImport
       parentRoute: typeof rootRoute
@@ -382,6 +392,7 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren([
   IndexLazyRoute,
   AboutLazyRoute,
+  ChangelogsLazyRoute,
   PaymentLazyRoute,
   AuthLoginLazyRoute,
   AppsAutomationsDesignerLazyRoute,

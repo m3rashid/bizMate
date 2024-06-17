@@ -105,7 +105,7 @@ function RightSidebar() {
 				formData.options = options
 			}
 
-			updateNode(selectedNode.id, formData)
+			updateNode(selectedNode.id, { ...formData, ...(formData.shuffle ? { shuffle: formData.shuffle === 'on' } : {}) })
 		} else {
 			setFormDesigner((prev) => ({
 				...prev,
@@ -124,9 +124,9 @@ function RightSidebar() {
 	}
 
 	return (
-		<div className="w-full min-w-80 max-w-96 overflow-y-auto bg-gray-100 p-4 shadow-lg">
+		<div className="w-full min-w-80 max-w-96 overflow-y-auto bg-gray-100 shadow-lg">
 			<form ref={formRef} className="flex h-full flex-col gap-4" onSubmit={handleSave}>
-				<div className="flex items-center justify-between gap-2 border-b-2 border-b-gray-200 pb-3">
+				<div className="flex items-center justify-between gap-2 border-b-2 border-b-gray-200 p-3">
 					<h2 className="text-xl font-semibold">{selectedNode ? `Settings for ${camelCaseToSentenceCase(selectedNode.name)}` : 'Form Settings'}</h2>
 					{selectedNode ? (
 						<Tooltip show="left" label={selectedNode ? `Properties of the selected element: ${selectedNode.name}` : ''}>
@@ -135,11 +135,11 @@ function RightSidebar() {
 					) : null}
 				</div>
 
-				<div className="flex h-full flex-grow flex-col gap-4 overflow-y-auto">
+				<div className="flex h-full flex-grow flex-col gap-4 overflow-y-auto p-3">
 					<FormRenderer meta={meta} />
 				</div>
 
-				<div className="flex flex-grow-0 items-center justify-between border-t-2 pt-3">
+				<div className="flex flex-grow-0 items-center justify-between border-t-2 p-3">
 					<Button type="submit">Save</Button>
 					<Button variant="simple" onClick={handleReset}>
 						Reset

@@ -6,6 +6,7 @@ import (
 	"bizmate/apis/dashboard"
 	"bizmate/apis/export"
 	"bizmate/apis/forms"
+	"bizmate/apis/host"
 	"bizmate/apis/notifications"
 	"bizmate/apis/payments"
 	"bizmate/apis/project"
@@ -109,13 +110,18 @@ func main() {
 		}))
 	}
 
-	db := utils.GetHostDB()
+	db, err := utils.GetHostDB()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	utils.GormMigrate(db, []interface{}{&models.Tenant{}, &models.TenantOwner{}, &models.Changelog{}})
 	if os.Getenv("SERVER_MODE") == "development" {
 		app.Use(logger.New())
 		db.Logger.LogMode(3)
 	}
 
+	host.Setup(app)
 	auth.Setup(app)
 	forms.Setup(app)
 	export.Setup(app)

@@ -2,9 +2,7 @@ package forms
 
 import (
 	"bizmate/models"
-	"bizmate/models/forms"
 	"bizmate/utils"
-	"encoding/json"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -12,10 +10,6 @@ import (
 type formResponseReqBody struct {
 	ID       uint   `json:"id"`
 	Response string `json:"response" validate:"required"`
-}
-
-func getFormReports(ctx *fiber.Ctx) error {
-	return ctx.SendString("Hello, World!")
 }
 
 func submitFormResponse(ctx *fiber.Ctx) error {
@@ -144,65 +138,15 @@ func getFormResponseAnalysis(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusTooEarly).JSON("Form is active now, analysis is available once the form is inactive/complete its duration")
 	}
 
-	type BooleanField struct {
-		Name  string `json:"name"`
-		Label string `json:"label"`
-	}
-	booleanFields := []BooleanField{}
-	formBody := []forms.FormElementInstanceType{}
-	if err := json.Unmarshal([]byte(form.Body), &formBody); err != nil {
-		return ctx.SendStatus(fiber.StatusInternalServerError)
-	}
-
-	for _, formElement := range formBody {
-		if formElement.Name == forms.TogglerInput {
-			booleanFieldName, ok := formElement.Props["name"]
-			if !ok {
-				continue
-			}
-
-			booleanFieldLabel, ok := formElement.Props["label"]
-			if !ok {
-				continue
-			}
-
-			booleanFields = append(booleanFields, BooleanField{Name: booleanFieldName.(string), Label: booleanFieldLabel.(string)})
-		}
-	}
-
 	formResponseRes := []models.FormResponse{}
 	if err := db.Where("\"formId\" = ?", formId).Find(&formResponseRes).Error; err != nil {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
-	responses := []map[string]interface{}{}
-	for _, formResponse := range formResponseRes {
-		temp := map[string]interface{}{}
-		if err := json.Unmarshal([]byte(formResponse.Response), &temp); err != nil {
-			return ctx.SendStatus(fiber.StatusInternalServerError)
-		}
-		responses = append(responses, temp)
+	formAnalysis, err := analyzeForm(&form, &formResponseRes)
+	if err != nil {
+		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
-	type BooleanAnalysis struct {
-		Name       string `json:"name"`
-		Label      string `json:"label"`
-		TrueCount  int    `json:"trueCount"`
-		FalseCount int    `json:"falseCount"`
-	}
-
-	booleanAnalysis := []BooleanAnalysis{}
-	for _, booleanField := range booleanFields {
-		analysis := BooleanAnalysis{Name: booleanField.Name, Label: booleanField.Label, TrueCount: 0, FalseCount: 0}
-		for _, response := range responses {
-			if response[booleanField.Name] == true {
-				analysis.TrueCount += 1
-			} else {
-				analysis.FalseCount += 1
-			}
-		}
-		booleanAnalysis = append(booleanAnalysis, analysis)
-	}
-
-	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"title": form.Title, "description": form.Description, "analysis": booleanAnalysis})
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"title": form.Title, "description": form.Description, "analysis": formAnalysis})
 }

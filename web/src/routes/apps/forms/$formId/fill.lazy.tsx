@@ -77,6 +77,18 @@ function FormFill() {
 				} else formData[toggleInputNames[i]] = false
 			}
 
+			for (let i = 0; i < formBody.length; i++) {
+				if (typeof formData[formBody[i].props.name] === 'boolean') continue
+				if (formBody[i].props.required && !formData[formBody[i].props.name]) {
+					addMessagePopup({
+						id: 'missingRequiredFields',
+						message: `"${formBody[i].props.label}" is a required field, it must have a value`,
+						type: 'error',
+					})
+					return
+				}
+			}
+
 			mutate({ response: JSON.stringify(formData) })
 		} catch (err: any) {
 			addMessagePopup({ id: 'errorSubmittingResponse', message: 'Unable to submit response, please try again', type: 'error' })

@@ -27,8 +27,6 @@ func Setup(app *fiber.App) {
 
 	app.Post("/forms/response/:formId/submit", utils.CheckAuthMiddlewareButAllowUnauthorized, submitFormResponse)
 
-	app.Get("/forms/response/:formId/report", utils.CheckAuthMiddleware, getFormReports)
-
 	app.Post("/forms/response/:formId/edit", utils.CheckAuthMiddleware, editFormResponse)
 
 	app.Get("/forms/response/:formId/count", utils.CheckAuthMiddleware, getFormResponseCount)

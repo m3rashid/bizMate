@@ -5,6 +5,7 @@ import ChevronUpDownIcon from '@heroicons/react/20/solid/ChevronUpDownIcon'
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react'
 
 import { Option } from '../../types'
+import { shuffleArray } from '../../utils/helpers'
 
 export type SingleSelectInputProps = {
 	default?: string
@@ -15,6 +16,7 @@ export type SingleSelectInputProps = {
 	className?: string
 	onChange?: (value: string) => void
 	render?: FC<{ option: Option; selected: boolean; focus: boolean }>
+	shuffle?: boolean
 
 	errorText?: string
 	required?: boolean
@@ -23,8 +25,9 @@ export type SingleSelectInputProps = {
 }
 
 function SingleSelectInput(props: SingleSelectInputProps) {
-	const options = useMemo(() => {
+	const options: Option[] = useMemo(() => {
 		if (props.options.length === 0) return [{ label: 'No options available', value: '' }]
+		if (props.shuffle) shuffleArray(props.options)
 		if (typeof props.options[0] === 'string' || typeof props.options[0] === 'number') {
 			return props.options.map<Option>((op) => ({ label: op as string, value: op as string }))
 		}
@@ -38,7 +41,7 @@ function SingleSelectInput(props: SingleSelectInputProps) {
 			name={props.name}
 			value={selectedOptionValue}
 			onChange={(val) =>
-				props.onChange ? props.onChange((val as unknown as Option).value) : setSelectedOptionValue((val as unknown as Option).value)
+				props.onChange ? props.onChange((val as unknown as Option)?.value) : setSelectedOptionValue((val as unknown as Option).value)
 			}
 		>
 			{({ open }) => (
