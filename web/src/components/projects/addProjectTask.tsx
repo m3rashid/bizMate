@@ -36,10 +36,6 @@ function AddProjectTask(props: AddProjectTaskProps) {
 		})
 	}
 
-	function handleReset(e: MouseEvent<HTMLButtonElement>) {
-		e.preventDefault()
-	}
-
 	if (!props.modalOpen) return null
 
 	return (
@@ -49,12 +45,11 @@ function AddProjectTask(props: AddProjectTaskProps) {
 				<SingleSelectInput
 					name="status"
 					label="Status"
-					default={taskStatuses[0]}
 					options={taskStatuses.map((status) => ({ value: status, label: toSentenceCase(status) }) as any)}
 				/>
 
 				<div className="flex flex-grow-0 items-center justify-between pt-3">
-					<Button variant="simple" onClick={handleReset}>
+					<Button variant="simple" type="reset">
 						Reset
 					</Button>
 					<Button type="submit">Save</Button>

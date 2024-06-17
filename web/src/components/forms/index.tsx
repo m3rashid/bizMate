@@ -7,7 +7,9 @@ import TogglerInput from '../lib/toggle'
 import { ExplicitAndAll } from '../../types'
 import RichTextInput from '../lib/richTextInput'
 import TextAreaInput from '../lib/textAreaInput'
+import SelectListInput from '../lib/selectListInput'
 import PhoneNumberInput from '../lib/phoneNumberInput'
+import SingleSelectInput from '../lib/singleSelectInput'
 import { FormBuilder as FormBuilderType, SupportedWidgetName } from './constants'
 import { Code, Column, H1, H2, H3, H4, H5, H6, Image, Link, Paragraph } from '../lib/extras'
 
@@ -29,6 +31,8 @@ export const widgetMap: Record<ExplicitAndAll<string, SupportedWidgetName>, { wi
 	h4: { widget: H4 },
 	h5: { widget: H5 },
 	h6: { widget: H6 },
+	singleSelectInput: { widget: SingleSelectInput },
+	selectListInput: { widget: SelectListInput },
 }
 
 const FormBuilder: FormBuilderType = (props) => {

@@ -2,7 +2,7 @@ import { twMerge } from 'tailwind-merge'
 import { FC, Fragment, useMemo, useState } from 'react'
 import CheckIcon from '@heroicons/react/24/outline/CheckIcon'
 import ChevronUpDownIcon from '@heroicons/react/24/outline/ChevronUpDownIcon'
-import { Label, Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react'
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react'
 
 import { Option } from '../../types'
 
@@ -16,6 +16,11 @@ export type MultiSelectInputProps = {
 	onChange?: (value: string[]) => void
 	optionRender?: FC<{ option: Option; selected: boolean; focus: boolean }>
 	selectedRender?: FC<{ options: Option[]; removeOption: (s: string) => void }>
+
+	errorText?: string
+	required?: boolean
+	labelClassName?: string
+	descriptionText?: string
 }
 
 function MultiSelectInput(props: MultiSelectInputProps) {
@@ -44,7 +49,14 @@ function MultiSelectInput(props: MultiSelectInputProps) {
 			{({ open }) => (
 				<div>
 					<input type="hidden" name={props.name} value={JSON.stringify(selectedOptionsValues)} />
-					{props.label ? <Label className="text-labelColor block text-sm font-medium leading-6">{props.label}</Label> : null}
+					{props.label ? (
+						<label htmlFor={props.name} className={twMerge('block text-sm font-medium leading-6 text-gray-900', props.labelClassName)}>
+							{props.label}&nbsp;
+							<span className="text-red-500">{props.required ? '*' : ''}</span>
+						</label>
+					) : null}
+
+					{props.errorText ? <p className="mt-1 text-sm text-red-500">{props.errorText}</p> : null}
 
 					<div className="relative w-full">
 						<ListboxButton className="text-labelColor relative min-h-9 w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm sm:leading-6">
@@ -108,6 +120,8 @@ function MultiSelectInput(props: MultiSelectInputProps) {
 							</ListboxOptions>
 						</Transition>
 					</div>
+
+					{props.descriptionText ? <p className="mt-1 text-sm text-gray-500">{props.descriptionText}</p> : null}
 				</div>
 			)}
 		</Listbox>

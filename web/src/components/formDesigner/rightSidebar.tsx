@@ -15,37 +15,32 @@ function propsToMeta({ _props, values }: PropsToMetaProps): FormElementInstance[
 
 	const props = Object.entries(_props)
 	for (let i = 0; i < props.length; i++) {
-		const [key, [description, value]] = props[i]
+		const [key, [required, description, value]] = props[i]
 		const id = generateRandomString()
 		if (value === 'string') {
 			meta.push({
 				id,
 				name: 'input',
-				props: { name: key, defaultValue: values[key], descriptionText: description, label: camelCaseToSentenceCase(key) },
+				props: { required, name: key, defaultValue: values[key], descriptionText: description, label: camelCaseToSentenceCase(key) },
 			})
 		} else if (value === 'textarea') {
 			meta.push({
 				id,
 				name: 'textareaInput',
-				props: { name: key, defaultValue: values[key], descriptionText: description, label: camelCaseToSentenceCase(key) },
-			})
-		} else if (value === 'richText') {
-			meta.push({
-				id,
-				name: 'richTextInput',
-				props: { name: key, defaultValue: values[key], descriptionText: description, label: camelCaseToSentenceCase(key) },
+				props: { required, name: key, defaultValue: values[key], descriptionText: description, label: camelCaseToSentenceCase(key) },
 			})
 		} else if (value === 'number') {
 			meta.push({
 				id,
 				name: 'input',
-				props: { name: key, type: 'number', defaultValue: values[key], descriptionText: description, label: camelCaseToSentenceCase(key) },
+				props: { required, name: key, type: 'number', defaultValue: values[key], descriptionText: description, label: camelCaseToSentenceCase(key) },
 			})
 		} else if (value === 'boolean') {
 			meta.push({
 				id,
 				name: 'togglerInput',
 				props: {
+					required,
 					name: key,
 					descriptionText: description,
 					label: camelCaseToSentenceCase(key),
@@ -53,8 +48,28 @@ function propsToMeta({ _props, values }: PropsToMetaProps): FormElementInstance[
 					defaultChecked: values[key] ? values[key] === 'on' : false,
 				},
 			})
-		} else if (value === 'children') {
+		} else if (value === 'richText') {
+			meta.push({
+				id,
+				name: 'richTextInput',
+				props: { required, name: key, defaultValue: values[key], descriptionText: description, label: camelCaseToSentenceCase(key) },
+			})
 		} else if (Array.isArray(value)) {
+			meta.push({
+				id,
+				name: 'singleSelectInput',
+				props: {
+					required,
+					name: key,
+					defaultValue: values[key],
+					descriptionText: description,
+					label: camelCaseToSentenceCase(key),
+					options: value.map((t) => (typeof t === 'string' ? { value: t, label: camelCaseToSentenceCase(t) } : t)),
+				},
+			})
+		} else if (value === 'selectOptions') {
+			meta.push({ id, name: 'selectListInput', props: { name: 'options', required: true } })
+		} else if (value === 'children') {
 		}
 	}
 	return meta
@@ -79,8 +94,19 @@ function RightSidebar() {
 		e.stopPropagation()
 
 		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any
-		if (selectedNode) updateNode(selectedNode.id, formData)
-		else {
+		if (selectedNode) {
+			let options: string[] = []
+			if (selectedNode.name === 'singleSelectInput') {
+				try {
+					options = JSON.parse(formData.options).map((t: string) => ({ value: t, label: t }))
+				} catch (err) {
+					options = []
+				}
+				formData.options = options
+			}
+
+			updateNode(selectedNode.id, formData)
+		} else {
 			setFormDesigner((prev) => ({
 				...prev,
 				rootProps: {

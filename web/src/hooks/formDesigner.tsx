@@ -8,17 +8,19 @@ import { generateRandomString, handleViewTransition } from '../utils/helpers'
 import { FormElementInstance, supportedWidgets } from '../components/forms/constants'
 
 const propsNodeNotSelected: Props = {
-	title: ['Form title', 'string'],
-	description: ['Form description', 'textarea'],
-	cancelText: ['Cancel button text', 'string'],
-	submitText: ['Submit button text', 'string'],
-	allowAnonymousResponse: ['Does the user need to be logged in to fill this form?', 'boolean'],
-	allowMultipleResponse: ['Do you want the user to respond multiple times to the same form?', 'boolean'],
+	title: [true, 'Form title', 'string'],
+	description: [true, 'Form description', 'textarea'],
+	cancelText: [true, 'Cancel button text', 'string'],
+	submitText: [true, 'Submit button text', 'string'],
+	allowAnonymousResponse: [true, 'Does the user need to be logged in to fill this form?', 'boolean'],
+	allowMultipleResponse: [true, 'Do you want the user to respond multiple times to the same form?', 'boolean'],
 	allowResponseUpdate: [
+		true,
 		'Do you want the user to update their responses? Please make sure, If the form is anonymous, this cant be ensured',
 		'boolean',
 	],
 	sendResponseEmail: [
+		true,
 		'Do you want to send a copy of response to your audience via email? Only applicable if the form is not marked as anonymous ',
 		'boolean',
 	],
@@ -98,6 +100,7 @@ export function useFormDesigner() {
 
 	function insertNewNode(newNode: Omit<FormElementInstance, 'id'>) {
 		const node: FormElementInstance = { ...newNode, props: {}, id: generateRandomString() }
+		if (newNode.name === 'singleSelectInput') node.props = { options: [] }
 		handleViewTransition(() => setFormDesigner((prev) => ({ ...prev, selectedNode: node, meta: [...prev.meta, node] })))
 	}
 

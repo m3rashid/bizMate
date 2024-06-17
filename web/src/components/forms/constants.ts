@@ -17,10 +17,11 @@ import {
 	imageProps,
 	buttonProps,
 	columnProps,
-	togglerInputProps,
 	headingProps,
 	paragraphProps,
 	textInputProps,
+	selectInputProps,
+	togglerInputProps,
 	textAreaInputProps,
 	richTextInputProps,
 	phoneNumberInputProps,
@@ -46,6 +47,9 @@ export type SupportedWidget =
 	| { name: 'h6'; props: GetProps<typeof headingProps> }
 	| { name: 'code'; props: GetProps<typeof codeProps> }
 	| { name: 'togglerInput'; props: GetProps<typeof togglerInputProps> }
+	| { name: 'singleSelectInput'; props: GetProps<typeof selectInputProps> }
+	// these items are not for showing in left sidebar, just helper components
+	| { name: 'selectListInput'; props: any }
 
 export type SupportedWidgetName = SupportedWidget['name']
 
@@ -74,15 +78,16 @@ export const supportedWidgets: SupportedWidgetsArray = [
 	{ name: 'h4', props: headingProps, label: 'Heading 4' },
 	{ name: 'h5', props: headingProps, label: 'Heading 5' },
 	{ name: 'h6', props: headingProps, label: 'Heading 6' },
+	{ name: 'paragraph', props: paragraphProps, label: 'Paragraph', icon: ListBulletIcon },
 	{ name: 'button', props: buttonProps, label: 'Button', icon: Square2StackIcon },
 	{ name: 'togglerInput', props: togglerInputProps, label: 'Toggle Input', icon: AdjustmentsVerticalIcon },
 	{ name: 'input', props: textInputProps, label: 'Input', icon: Bars2Icon },
 	{ name: 'textareaInput', props: textAreaInputProps, label: 'Text Area Input', icon: Bars3CenterLeftIcon },
 	{ name: 'richTextInput', props: richTextInputProps, label: 'Rich Text Input', icon: DocumentTextIcon },
 	{ name: 'phoneNumberInput', props: phoneNumberInputProps, label: 'Phone No. Input', icon: PhoneIcon },
-	{ name: 'paragraph', props: paragraphProps, label: 'Paragraph', icon: ListBulletIcon },
 	{ name: 'column', props: columnProps, label: 'Column', icon: ViewColumnsIcon },
 	{ name: 'image', props: imageProps, label: 'Image', icon: PhotoIcon },
 	{ name: 'link', props: linkProps, label: 'Link', icon: LinkIcon },
 	{ name: 'code', props: codeProps, label: 'Code', icon: CodeBracketIcon },
+	{ name: 'singleSelectInput', props: selectInputProps, label: 'Single Select Input', icon: Bars2Icon },
 ]

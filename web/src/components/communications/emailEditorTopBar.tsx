@@ -30,10 +30,6 @@ function EmailEditorTopBar(props: EmailEditorTopBarProps) {
 			apiClient('/email-templates/create', { method: 'POST', body: JSON.stringify(data) }),
 	})
 
-	function handleReset(e: MouseEvent<HTMLButtonElement>) {
-		e.preventDefault()
-	}
-
 	function handleAddTemplateDetails(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault()
 		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any
@@ -113,7 +109,7 @@ function EmailEditorTopBar(props: EmailEditorTopBarProps) {
 					<TextAreaInput name="subjectTemplate" label="Template Subject Template" required defaultValue={emailBody.subjectTemplate} />
 
 					<div className="flex flex-grow-0 items-center justify-between pt-3">
-						<Button variant="simple" onClick={handleReset}>
+						<Button variant="simple" type="reset">
 							Reset
 						</Button>
 						<Button type="submit">Save</Button>

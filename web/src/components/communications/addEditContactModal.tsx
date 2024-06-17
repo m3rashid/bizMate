@@ -43,10 +43,6 @@ function AddEditContactModal(props: AddEditContactModalProps) {
 			: createNewContact({ ...formData, birthday, otherPhones: [], otherEmails: [], otherDetails: {} })
 	}
 
-	function handleReset(e: MouseEvent<HTMLButtonElement>) {
-		e.preventDefault()
-	}
-
 	return (
 		<Modal open={props.open} setOpen={props.setOpen} title={props.contact ? 'Edit Contact' : 'Create Contact'}>
 			<form className="flex h-full flex-col gap-4" onSubmit={handleAddEditContact}>
@@ -56,7 +52,7 @@ function AddEditContactModal(props: AddEditContactModalProps) {
 				<Input name="birthday" type="datetime-local" label="Birthday" defaultValue={props.contact?.birthday} />
 
 				<div className="flex flex-grow-0 items-center justify-between pt-3">
-					<Button variant="simple" onClick={handleReset}>
+					<Button variant="simple" type="reset">
 						Reset
 					</Button>
 					<Button type="submit">Save</Button>

@@ -1,92 +1,79 @@
-export type SupportedValues = 'string' | 'textarea' | 'number' | 'boolean' | 'children' | 'richText' | Array<string>
-export type Props = Record<string, [string, SupportedValues]> // [description, supportedValues]
+import { Option } from '../../types'
+
+export type SupportedValues = 'string' | 'textarea' | 'number' | 'boolean' | 'richText' | Array<string | Option> | 'selectOptions' | 'children'
+export type Props = Record<string, [boolean, string, SupportedValues]> // [required, description, supportedValues]
 
 export const buttonProps: Props = {
-	label: ['Text written on the button', 'string'],
-	// onClick: ['Function to be called on button click', 'textarea'],
-	className: ['Tailwindcss classNames for button', 'string'],
-	type: ['HTML type of button', ['button', 'submit']],
-	size: ['Size of the button', ['sm', 'md', 'lg']],
-	variant: ['Variant(presets) of the button', ['primary', 'danger', 'secondary', 'disabled', 'sucess']],
+	label: [true, 'Text written on the button', 'string'],
+	type: [false, 'HTML type of button', ['button', 'reset']],
+	size: [false, 'Size of the button', ['sm', 'md', 'lg']],
+	variant: [false, 'Variant(presets) of the button', ['primary', 'danger', 'secondary', 'disabled', 'sucess']],
 }
 
 export const phoneNumberInputProps: Props = {
-	name: ['Name of the input element', 'string'],
-	label: ['Label of this field', 'string'],
-	required: ['It is required by the user to fill this field', 'boolean'],
-	// errorText: ['', 'string'],
-	labelClassName: ['Tailwindcss classNames to style the label', 'string'],
-	descriptionText: ['Describe more about this field', 'string'],
+	name: [true, 'Name of the input element', 'string'],
+	label: [true, 'Label of this field', 'string'],
+	required: [false, 'It is required by the user to fill this field', 'boolean'],
+	descriptionText: [false, 'Describe more about this field', 'string'],
 }
 
 export const textInputProps: Props = {
-	name: ['Name of the input element', 'string'],
-	label: ['Label of this field', 'string'],
-	required: ['It is required by the user to fill this field', 'boolean'],
-	labelClassName: ['Tailwindcss classNames to style the label', 'string'],
-	descriptionText: ['Describe more about this field', 'string'],
+	name: [true, 'Name of the input element', 'string'],
+	label: [true, 'Label of this field', 'string'],
+	required: [false, 'It is required by the user to fill this field', 'boolean'],
+	descriptionText: [false, 'Describe more about this field', 'string'],
 }
 
 export const textAreaInputProps: Props = {
-	name: ['Name of the input element', 'string'],
-	label: ['Label of this field', 'string'],
-	required: ['It is required by the user to fill this field', 'boolean'],
-	labelClassName: ['Tailwindcss classNames to style the label', 'string'],
-	descriptionText: ['Describe more about this field', 'string'],
+	name: [true, 'Name of the input element', 'string'],
+	label: [true, 'Label of this field', 'string'],
+	required: [false, 'It is required by the user to fill this field', 'boolean'],
+	descriptionText: [false, 'Describe more about this field', 'string'],
 }
 
 export const richTextInputProps: Props = {
-	name: ['Name of the input element', 'string'],
-	label: ['Label of this field', 'string'],
-	required: ['It is required by the user to fill this field', 'boolean'],
-	labelClassName: ['Tailwindcss classNames to style the label', 'string'],
-	descriptionText: ['Describe more about this field', 'string'],
+	name: [true, 'Name of the input element', 'string'],
+	label: [true, 'Label of this field', 'string'],
+	required: [false, 'It is required by the user to fill this field', 'boolean'],
+	descriptionText: [false, 'Describe more about this field', 'string'],
 }
 
-// export const selectInputProps: Props = {
-// 	label: ["Label of this field", 'string'],
-// 	required: ["It is required by the user to fill this field", 'boolean'],
-// 	labelClassName: ["Tailwindcss classNames to style the label", 'string'],
-// 	descriptionText: ["Describe more about this field", 'string'],
-// 	options: ["", ['_string_']],
-// }
+export const selectInputProps: Props = {
+	name: [true, 'Name of the input field', 'string'],
+	label: [true, 'Label of this field', 'string'],
+	required: [false, 'It is required by the user to fill this field', 'boolean'],
+	descriptionText: [false, 'Describe more about this field', 'string'],
+	options: [false, 'Options for this select field', 'selectOptions'],
+}
 
 // Extra components (Native web to react components mapping)
 export const paragraphProps: Props = {
-	text: ['Paragraph text you want to show', 'textarea'],
-	className: ['Tailwindcss classNames to style', 'string'],
+	text: [false, 'Paragraph text you want to show', 'textarea'],
 }
 
-export const columnProps: Props = {
-	className: ['Tailwindcss classNames to style', 'string'],
-}
+export const columnProps: Props = {}
 
 export const imageProps: Props = {
-	src: ['URL of the image you want to show', 'string'],
-	className: ['Tailwindcss classNames to style the field', 'string'],
+	src: [true, 'URL of the image you want to show', 'string'],
 }
 
 export const linkProps: Props = {
-	href: ['Link of the asset you want to open', 'string'],
-	text: ['Text you want to show for the link', 'string'],
-	className: ['Tailwindcss classNames to style the field', 'string'],
-	target: ['Where should the link open: _blank(new tab), _self(same tab)', ['_blank', '_self']],
+	href: [true, 'Link of the asset you want to open', 'string'],
+	text: [true, 'Text you want to show for the link', 'string'],
+	target: [false, 'Where should the link open: _blank(new tab), _self(same tab)', ['_blank', '_self']],
 }
 
 export const headingProps: Props = {
-	text: ['Text you want to show', 'string'],
-	className: ['Tailwindcss classNames to style the field', 'string'],
+	text: [false, 'Text you want to show', 'string'],
 }
 
 export const codeProps: Props = {
-	code: ['Code you want to show', 'textarea'],
-	className: ['Tailwindcss classNames to style the field', 'string'],
+	code: [false, 'Code you want to show', 'textarea'],
 }
 
 export const togglerInputProps: Props = {
-	label: ['Label of this field', 'string'],
-	name: ['Name of the input element', 'string'],
-	className: ['Tailwindcss classNames to style the field', 'string'],
-	required: ['It is required by the user to fill this field', 'boolean'],
-	descriptionText: ['Describe more about this field', 'string'],
+	label: [true, 'Label of this field', 'string'],
+	name: [true, 'Name of the input element', 'string'],
+	required: [false, 'It is required by the user to fill this field', 'boolean'],
+	descriptionText: [false, 'Describe more about this field', 'string'],
 }

@@ -46,10 +46,6 @@ function AddEditProjectModal(props: AddEditProjectModalProps) {
 			: createNewProject(formData)
 	}
 
-	function handleReset(e: MouseEvent<HTMLButtonElement>) {
-		e.preventDefault()
-	}
-
 	return (
 		<Modal open={props.open} setOpen={props.setOpen} title={props.project ? 'Edit Project' : 'Create Project'}>
 			<form className="flex h-full flex-col gap-4" onSubmit={handleAddEditProject}>
@@ -64,7 +60,7 @@ function AddEditProjectModal(props: AddEditProjectModalProps) {
 				) : null}
 
 				<div className="flex flex-grow-0 items-center justify-between pt-3">
-					<Button variant="simple" onClick={handleReset}>
+					<Button variant="simple" type="reset">
 						Reset
 					</Button>
 					<Button type="submit">Save</Button>

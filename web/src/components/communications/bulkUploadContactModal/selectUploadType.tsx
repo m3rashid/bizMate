@@ -31,7 +31,7 @@ function SelectUploadFileType() {
 
 	return (
 		<form className="flex h-full flex-col gap-4" onSubmit={submitResponse}>
-			<SingleSelectInput name="fileType" options={options} default={options[0].value} />
+			<SingleSelectInput name="fileType" options={options} />
 
 			<div className="flex flex-grow-0 items-center justify-between pt-3">
 				<Button variant="simple" onClick={handleReset}>

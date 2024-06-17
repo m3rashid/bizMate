@@ -1,5 +1,5 @@
+import { FC, useReducer } from 'react'
 import { twMerge } from 'tailwind-merge'
-import { FC, useReducer, useRef } from 'react'
 
 import Input from './input'
 import { Option } from '../../types'
@@ -56,12 +56,11 @@ function getDefaultValue(props: PhoneNumberInputProps): State {
 }
 
 function PhoneNumberInput(props: PhoneNumberInputProps) {
-	const inputRef = useRef(null)
 	const [{ phone, phoneExt, phoneNumber }, dispatch] = useReducer(phoneNumberReducer, getDefaultValue(props))
 
 	return (
 		<div>
-			<input type="hidden" name={props.name} required={props.required} ref={inputRef} value={phone} />
+			<input type="hidden" name={props.name} required={props.required} value={phone} />
 			{props.label ? (
 				<label htmlFor="phone" className={twMerge('text-labelColor block text-sm font-medium leading-6', props.labelClassName)}>
 					{props.label}&nbsp;
@@ -73,7 +72,6 @@ function PhoneNumberInput(props: PhoneNumberInputProps) {
 				<SingleSelectInput
 					value={phoneExt}
 					options={phoneOptions}
-					default={phoneOptions[0].value}
 					onChange={(value) => dispatch({ type: 'CHANGE_EXT', ext: value })}
 					render={({ focus, option, selected }) => (
 						<div className="flex">

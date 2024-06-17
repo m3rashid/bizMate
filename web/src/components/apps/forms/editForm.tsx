@@ -100,10 +100,6 @@ function EditForm(props: EditFormProps) {
 		mutate(form)
 	}
 
-	function handleReset(e: MouseEvent<HTMLButtonElement>) {
-		e.preventDefault()
-	}
-
 	return (
 		<Modal open={!!props.form} setOpen={props.setOpen} title={`Edit Form ${props.form ? `(${props.form.title})` : ''}`}>
 			<form className="flex h-full flex-col gap-4" onSubmit={handleEditForm}>
@@ -112,7 +108,7 @@ function EditForm(props: EditFormProps) {
 				</div>
 
 				<div className="flex flex-grow-0 items-center justify-between pt-3">
-					<Button variant="simple" onClick={handleReset}>
+					<Button variant="simple" type="reset">
 						Reset
 					</Button>
 					<Button type="submit">Save</Button>
