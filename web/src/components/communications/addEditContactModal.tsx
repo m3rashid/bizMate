@@ -45,7 +45,7 @@ function AddEditContactModal(props: AddEditContactModalProps) {
 
 	return (
 		<Modal open={props.open} setOpen={props.setOpen} title={props.contact ? 'Edit Contact' : 'Create Contact'}>
-			<form className="flex h-full flex-col gap-4" onSubmit={handleAddEditContact}>
+			<form className="flex h-full flex-col gap-4 p-4" onSubmit={handleAddEditContact}>
 				<Input name="name" label="Name" defaultValue={props.contact?.name} required />
 				<Input name="email" label="Email" defaultValue={props.contact?.email} required />
 				<PhoneNumberInput name="phone" label="Phone" defaultValue={props.contact?.phone} />

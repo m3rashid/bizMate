@@ -10,6 +10,7 @@ import Button, { ButtonProps } from './button'
 import { usePopups } from '../../hooks/popups'
 import SingleSelectInput from './singleSelectInput'
 import { ExportableTable, Option } from '../../types'
+import { handleViewTransition } from '../../utils/helpers'
 
 export type TableExportProps = {
 	tableName: ExportableTable
@@ -71,7 +72,7 @@ function TableExport(props: TableExportProps) {
 				Export
 			</Button>
 
-			<Modal title="Export Data" {...{ open, setOpen }}>
+			<Modal title="Export Data" open={open} setOpen={() => handleViewTransition(() => setOpen(false))}>
 				{isPending ? (
 					<PageLoader />
 				) : !tableFieldsData || tableFieldsData.fields.length === 0 ? (
@@ -80,17 +81,19 @@ function TableExport(props: TableExportProps) {
 					</div>
 				) : (
 					<form className="flex w-full flex-col gap-4" onSubmit={handleSubmit}>
-						<SingleSelectInput name="format" label="Export format" options={selectOptions} />
+						<div className="px-4">
+							<SingleSelectInput name="format" label="Export format" options={selectOptions} />
+						</div>
 
-						<label className="block text-sm font-medium leading-6 text-gray-900">Select Columns to include</label>
+						<label className="block px-4 text-sm font-medium leading-6 text-gray-900">Select Columns to include</label>
 
-						<div className="grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-4">
+						<div className="grid max-h-80 grid-cols-1 gap-2 overflow-auto p-4 pt-0 md:grid-cols-2 md:gap-4">
 							{tableFieldsData.fields.map((field) => (
 								<TogglerInput key={field.name} name={field.name} label={field.label} defaultChecked />
 							))}
 						</div>
 
-						<div className="flex flex-grow-0 items-center justify-between pt-3">
+						<div className="flex flex-grow-0 items-center justify-between p-4">
 							<Button variant="simple" type="reset">
 								Reset
 							</Button>

@@ -20,6 +20,7 @@ import { Form, PageSearchParams } from '../../../types'
 import CardList from '../../../components/lib/cardList'
 import PageContainer from '../../../components/pageContainer'
 import EditForm from '../../../components/apps/forms/editForm'
+import { handleViewTransition } from '../../../utils/helpers'
 
 export const Route = createFileRoute('/apps/forms/')({
 	component: Forms,
@@ -127,7 +128,10 @@ function Forms() {
 
 	return (
 		<PageContainer>
-			<EditForm setOpen={() => setEditRow(undefined)} {...(!!editRow ? { form: editRow, refetch: () => {} } : { form: undefined })} />
+			<EditForm
+				setOpen={() => handleViewTransition(() => setEditRow(undefined))}
+				{...(!!editRow ? { form: editRow, refetch: () => {} } : { form: undefined })}
+			/>
 
 			<CardList<Form>
 				title="Forms"

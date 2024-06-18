@@ -1,20 +1,18 @@
 import { useMutation } from '@tanstack/react-query'
-import { Dispatch, FormEvent, MouseEvent, SetStateAction, useMemo } from 'react'
+import { Dispatch, FormEvent, SetStateAction, useMemo } from 'react'
 
 import Modal from '../../lib/modal'
 import Button from '../../lib/button'
 import apiClient from '../../../api/client'
 import FormRenderer from '../../forms/renderer'
 import { Form, StringBoolean } from '../../../types'
-import { camelCaseToSentenceCase } from '../../../utils/helpers'
 import { FormElementInstance, SupportedWidgetName } from '../../forms/constants'
+import { camelCaseToSentenceCase, handleViewTransition } from '../../../utils/helpers'
 
 export type EditFormProps = { setOpen: Dispatch<SetStateAction<boolean>> } & ({ form: undefined } | { form: Form; refetch: () => void })
 
-/**
- * @param form Array<[name, value, descriptionText, type, required]>
- */
 function editFormMeta(form: Array<[keyof Form, string | boolean, string, SupportedWidgetName, boolean?, Record<string, any>?]>) {
+	// Array<[name, value, descriptionText, type, required]>
 	const meta: FormElementInstance[] = []
 	for (let i = 0; i < form.length; i++) {
 		meta.push({
@@ -101,13 +99,17 @@ function EditForm(props: EditFormProps) {
 	}
 
 	return (
-		<Modal open={!!props.form} setOpen={props.setOpen} title={`Edit Form ${props.form ? `(${props.form.title})` : ''}`}>
+		<Modal
+			open={!!props.form}
+			setOpen={() => handleViewTransition(() => props.setOpen(false))}
+			title={`Edit Form ${props.form ? `(${props.form.title})` : ''}`}
+		>
 			<form className="flex h-full flex-col gap-4" onSubmit={handleEditForm}>
-				<div className="flex h-full flex-grow flex-col gap-4 overflow-y-auto">
+				<div className="flex h-full max-h-96 flex-grow flex-col gap-4 overflow-y-auto p-4">
 					<FormRenderer meta={meta} />
 				</div>
 
-				<div className="flex flex-grow-0 items-center justify-between pt-3">
+				<div className="flex flex-grow-0 items-center justify-between p-4">
 					<Button variant="simple" type="reset">
 						Reset
 					</Button>

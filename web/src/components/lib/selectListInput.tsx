@@ -35,7 +35,7 @@ function AddEditModal(props: {
 
 	return (
 		<Modal open={props.open} setOpen={props.setOpen} title={!!props.editData ? 'Edit option' : 'Add Option'}>
-			<form className="flex h-full flex-col gap-4" onSubmit={handleSubmit}>
+			<form className="flex h-full flex-col gap-4 p-4" onSubmit={handleSubmit}>
 				<Input name="value" label="Value" required defaultValue={props.editData ?? ''} />
 
 				<div className="flex flex-grow-0 items-center justify-between pt-3">

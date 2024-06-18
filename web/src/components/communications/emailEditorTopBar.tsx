@@ -103,7 +103,7 @@ function EmailEditorTopBar(props: EmailEditorTopBarProps) {
 			</Button>
 
 			<Modal {...{ open, setOpen, title: 'Email Template Details' }}>
-				<form className="flex h-full flex-col gap-4" onSubmit={handleAddTemplateDetails}>
+				<form className="flex h-full flex-col gap-4 p-4" onSubmit={handleAddTemplateDetails}>
 					<Input name="title" label="Template Name" required defaultValue={emailBody.title} />
 					<TextAreaInput name="description" label="Description" defaultValue={emailBody.description} />
 					<TextAreaInput name="subjectTemplate" label="Template Subject Template" required defaultValue={emailBody.subjectTemplate} />

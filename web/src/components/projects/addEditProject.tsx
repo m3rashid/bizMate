@@ -48,7 +48,7 @@ function AddEditProjectModal(props: AddEditProjectModalProps) {
 
 	return (
 		<Modal open={props.open} setOpen={props.setOpen} title={props.project ? 'Edit Project' : 'Create Project'}>
-			<form className="flex h-full flex-col gap-4" onSubmit={handleAddEditProject}>
+			<form className="flex h-full flex-col gap-4 p-4" onSubmit={handleAddEditProject}>
 				<Input name="name" label="Name" placeholder="Project Name" required defaultValue={props.project?.name} />
 				<TextAreaInput name="description" label="Project Description" defaultValue={props.project?.description} />
 
