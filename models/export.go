@@ -7,6 +7,15 @@ type TableExportLog struct {
 	CreatedBy
 }
 
+var TableExportLogJsonModel = DashboardIndexableJsonModel{
+	ModelName: TABLE_EXPORT_LOGS_MODEL_NAME,
+	Fields: map[string]JsonFieldType{
+		"id":        JsonNumber,
+		"createdAt": JsonDate,
+		"createdBy": JsonCreatedBy,
+	},
+}
+
 func (TableExportLog) TableName() string {
 	return TABLE_EXPORT_LOGS_MODEL_NAME
 }

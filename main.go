@@ -66,26 +66,31 @@ func main() {
 
 	utils.TenantModels = []interface{}{
 		models.User{},
-		models.Profile{},
 
-		models.EmailTemplate{},
-		models.BulkEmailRequest{},
-		models.WebUiNotification{},
-
-		models.Form{},
-		models.FormResponse{},
+		models.Contact{},
 
 		models.Kpi{},
 		models.Widget{},
 		models.Dashboard{},
+
+		models.EmailTemplate{},
+		models.BulkEmailRequest{},
+
+		models.TableExportLog{},
+
+		models.Form{},
+		models.FormResponse{},
+
+		models.Employee{},
+		models.Attendance{},
+
+		models.WebUiNotification{},
 
 		models.ProjectTag{},
 		models.ProjectTask{},
 		models.Project{},
 		models.ProjectCycle{},
 		models.ProjectTaskEvent{},
-
-		models.Contact{},
 
 		models.Workflow{},
 		models.WorkflowStep{},

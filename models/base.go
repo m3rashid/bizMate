@@ -38,3 +38,8 @@ const (
 	JsonDate      JsonFieldType = "date"
 	JsonCreatedBy JsonFieldType = "createdBy"
 )
+
+type DashboardIndexableJsonModel struct {
+	Fields    map[string]JsonFieldType `json:"fields"`
+	ModelName string                   `json:"modelName"`
+}

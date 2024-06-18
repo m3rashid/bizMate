@@ -1,7 +1,7 @@
 package forms
 
 import (
-	"bizmate/models/forms"
+	"bizmate/models"
 	"bizmate/utils"
 	"encoding/json"
 	"errors"
@@ -9,7 +9,7 @@ import (
 	"reflect"
 )
 
-func validateFormElementInstance(el forms.FormElementInstanceType) []string {
+func validateFormElementInstance(el models.FormElementInstanceType) []string {
 	errorArr := []string{}
 	elementProps := el.Props
 	supportedProps := el.Name.GetSupportedProps()
@@ -30,15 +30,15 @@ func validateFormElementInstance(el forms.FormElementInstanceType) []string {
 			continue
 		}
 
-		if (propValueType == forms.FORM_STRING || propValueType == forms.FORM_TEXTAREA) && reflect.TypeOf(elementProps[propName]) != reflect.TypeOf("") {
+		if (propValueType == models.FORM_STRING || propValueType == models.FORM_TEXTAREA) && reflect.TypeOf(elementProps[propName]) != reflect.TypeOf("") {
 			errorArr = append(errorArr, "invalid data type for "+propName)
-		} else if propValueType == forms.FORM_NUMBER && reflect.TypeOf(elementProps[propName]) != reflect.TypeOf(1) {
+		} else if propValueType == models.FORM_NUMBER && reflect.TypeOf(elementProps[propName]) != reflect.TypeOf(1) {
 			errorArr = append(errorArr, "invalid data type for "+propName)
-		} else if propValueType == forms.FORM_BOOLEAN && reflect.TypeOf(elementProps[propName]) != reflect.TypeOf(true) {
+		} else if propValueType == models.FORM_BOOLEAN && reflect.TypeOf(elementProps[propName]) != reflect.TypeOf(true) {
 			errorArr = append(errorArr, "invalid data type for "+propName)
 			// } else if propValueType == _FORM_CHILDREN {
 			// this will be formElement instance
-		} else if propValueType == forms.FORM_STRING_ARRAY && reflect.TypeOf(elementProps[propName]) != reflect.TypeOf([]string{}) {
+		} else if propValueType == models.FORM_STRING_ARRAY && reflect.TypeOf(elementProps[propName]) != reflect.TypeOf([]string{}) {
 			errorArr = append(errorArr, "invalid data type for "+propName)
 		}
 	}
@@ -47,7 +47,7 @@ func validateFormElementInstance(el forms.FormElementInstanceType) []string {
 }
 
 func ValidateFormJsonString(jsonStr string) error {
-	jsonArr := []forms.FormElementInstanceType{}
+	jsonArr := []models.FormElementInstanceType{}
 	errorArr := []string{}
 
 	err := json.Unmarshal([]byte(jsonStr), &jsonArr)

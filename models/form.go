@@ -22,6 +22,23 @@ type Form struct {
 	PreviousVersionIDs     string `json:"previousVersionIDs,omitempty" gorm:"column:previousVersionIDs;default:[]" validate:"required"`
 }
 
+var FormJsonModel = DashboardIndexableJsonModel{
+	ModelName: FORM_MODEL_NAME,
+	Fields: map[string]JsonFieldType{
+		"id":                     JsonNumber,
+		"title":                  JsonString,
+		"active":                 JsonBool,
+		"createdBy":              JsonCreatedBy,
+		"updatedBy":              JsonCreatedBy,
+		"createdAt":              JsonDate,
+		"description":            JsonString,
+		"sendResponseEmail":      JsonBool,
+		"allowAnonymousResponse": JsonBool,
+		"allowResponseUpdate":    JsonBool,
+		"allowMultipleResponse":  JsonBool,
+	},
+}
+
 type FormResponse struct {
 	BaseModel
 	UpdatedBy
@@ -30,6 +47,16 @@ type FormResponse struct {
 	Form     *Form  `json:"form" gorm:"foreignKey:formId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Response string `json:"response" gorm:"column:response;not null" validate:"required"`
 	DeviceIP string `json:"deviceIp,omitempty" gorm:"column:deviceIp"`
+}
+
+var FormResponseJsonModel = DashboardIndexableJsonModel{
+	ModelName: FORM_RESPONSE_MODEL_NAME,
+	Fields: map[string]JsonFieldType{
+		"id":        JsonNumber,
+		"formId":    JsonNumber,
+		"createdBy": JsonCreatedBy,
+		"createdAt": JsonDate,
+	},
 }
 
 func (Form) TableName() string {

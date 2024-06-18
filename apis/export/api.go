@@ -2,7 +2,6 @@ package export
 
 import (
 	"bizmate/models"
-	modelForms "bizmate/models/forms"
 	"bizmate/utils"
 	"encoding/json"
 	"fmt"
@@ -133,7 +132,7 @@ func getExportTableFields(ctx *fiber.Ctx) error {
 			return ctx.Status(fiber.StatusNotFound).JSON("form not found")
 		}
 
-		formMeta := []modelForms.FormElementInstanceType{}
+		formMeta := []models.FormElementInstanceType{}
 		if err := json.Unmarshal([]byte(form.Body), &formMeta); err != nil {
 			return ctx.Status(fiber.StatusNotFound).JSON("error in form json")
 		}

@@ -1,15 +1,17 @@
 package models
 
-const CLOCKIN_MODEL_NAME string = "clockins"
+import "time"
+
 const EMPLOYEE_MODEL_NAME string = "employees"
+const ATTENDANCE_MODEL_NAME string = "attendance"
 
 type EmployementType uint
 
 const (
-	FullTime   EmployementType = 6
-	PartTime   EmployementType = 5
-	Contract   EmployementType = 4
-	Consultant EmployementType = 3
+	FullTime   EmployementType = 32
+	PartTime   EmployementType = 16
+	Contract   EmployementType = 8
+	Consultant EmployementType = 4
 	Intern     EmployementType = 2
 	FreeLancer EmployementType = 1
 )
@@ -25,17 +27,45 @@ type Employee struct {
 	WeeklyHours     float64         `json:"weeklyHours" gorm:"column:weeklyHours;not null" validate:"required"`
 }
 
-type ClockIn struct {
+var EmployeeJsonModel = DashboardIndexableJsonModel{
+	ModelName: EMPLOYEE_MODEL_NAME,
+	Fields: map[string]JsonFieldType{
+		"id":              JsonNumber,
+		"userId":          JsonNumber,
+		"createdBy":       JsonCreatedBy,
+		"updatedBy":       JsonCreatedBy,
+		"createdAt":       JsonDate,
+		"weeklyHours":     JsonNumber,
+		"monthlySalary":   JsonNumber,
+		"employementType": JsonNumber,
+	},
+}
+
+type Attendance struct {
 	BaseModel
 	CreatedBy
-	StartTime string `json:"startTime" gorm:"column:startTime;not null" validate:"required"`
-	EndTime   string `json:"endTime" gorm:"column:endTime;not null" validate:"required"`
+	EmployeeID uint      `json:"employeeId" gorm:"column:employeeId;not null" validate:"required"`
+	Employee   *Employee `json:"employee" gorm:"foreignKey:employeeId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	StartTime  time.Time `json:"startTime" gorm:"column:startTime;not null" validate:"required"`
+	EndTime    time.Time `json:"endTime" gorm:"column:endTime" validate:""`
+}
+
+var AttendanceJsonModel = DashboardIndexableJsonModel{
+	ModelName: ATTENDANCE_MODEL_NAME,
+	Fields: map[string]JsonFieldType{
+		"id":         JsonNumber,
+		"endTime":    JsonDate,
+		"startTime":  JsonDate,
+		"createdAt":  JsonDate,
+		"createdBy":  JsonCreatedBy,
+		"employeeId": JsonNumber,
+	},
 }
 
 func (Employee) TableName() string {
 	return EMPLOYEE_MODEL_NAME
 }
 
-func (ClockIn) TableName() string {
-	return CLOCKIN_MODEL_NAME
+func (Attendance) TableName() string {
+	return ATTENDANCE_MODEL_NAME
 }

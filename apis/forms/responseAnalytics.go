@@ -2,7 +2,6 @@ package forms
 
 import (
 	"bizmate/models"
-	"bizmate/models/forms"
 	"encoding/json"
 )
 
@@ -26,14 +25,14 @@ type Analysis struct {
 }
 
 func analyzeForm(form *models.Form, responses *[]models.FormResponse) ([]Analysis, error) {
-	formBody := []forms.FormElementInstanceType{}
+	formBody := []models.FormElementInstanceType{}
 	if err := json.Unmarshal([]byte((*form).Body), &formBody); err != nil {
 		return []Analysis{}, err
 	}
 
 	fields := []Analysis{}
 	for _, formElement := range formBody {
-		if formElement.Name == forms.TogglerInput || formElement.Name == forms.SingleSelectInput || formElement.Name == forms.RadioInput {
+		if formElement.Name == models.TogglerInput || formElement.Name == models.SingleSelectInput || formElement.Name == models.RadioInput {
 			booleanFieldName, ok := formElement.Props["name"]
 			if !ok {
 				continue
@@ -44,12 +43,12 @@ func analyzeForm(form *models.Form, responses *[]models.FormResponse) ([]Analysi
 				continue
 			}
 
-			if formElement.Name == forms.TogglerInput {
+			if formElement.Name == models.TogglerInput {
 				fields = append(fields, Analysis{
 					Field:  Field{Name: booleanFieldName.(string), Label: booleanFieldLabel.(string), Type: booleanField},
 					Counts: map[string]int{"true": 0, "false": 0},
 				})
-			} else if formElement.Name == forms.RadioInput || formElement.Name == forms.SingleSelectInput {
+			} else if formElement.Name == models.RadioInput || formElement.Name == models.SingleSelectInput {
 				fieldCountMap := map[string]int{}
 				for _, o := range formElement.Props["options"].([]interface{}) {
 					if o == nil {

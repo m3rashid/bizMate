@@ -17,6 +17,19 @@ type Contact struct {
 	OtherDetails string    `json:"otherDetails" gorm:"column:otherDetails"` // stringified json
 }
 
+var ContactJsonModel = DashboardIndexableJsonModel{
+	ModelName: CONTACT_MODEL_NAME,
+	Fields: map[string]JsonFieldType{
+		"id":        JsonNumber,
+		"name":      JsonString,
+		"email":     JsonString,
+		"phone":     JsonString,
+		"birthday":  JsonDate,
+		"createdAt": JsonDate,
+		"createdBy": JsonCreatedBy,
+	},
+}
+
 func (Contact) TableName() string {
 	return CONTACT_MODEL_NAME
 }

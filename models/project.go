@@ -29,6 +29,19 @@ type ProjectCycle struct {
 	StartDay       time.Time `json:"startDay" gorm:"column:startDay;not null" validate:"required"`
 }
 
+var ProjectCycleJsonModel = DashboardIndexableJsonModel{
+	ModelName: PROJECT_CYCLE_MODEL_NAME,
+	Fields: map[string]JsonFieldType{
+		"id":             JsonNumber,
+		"startDay":       JsonDate,
+		"createdAt":      JsonDate,
+		"createdBy":      JsonCreatedBy,
+		"projectId":      JsonNumber,
+		"cycleGoals":     JsonString,
+		"cycleDaysCount": JsonNumber,
+	},
+}
+
 type Project struct {
 	BaseModel
 	CreatedBy
@@ -43,9 +56,31 @@ type Project struct {
 	People      []*User `json:"users" gorm:"many2many:users_project_relation"`
 }
 
+var ProjectJsonModel = DashboardIndexableJsonModel{
+	ModelName: PROJECT_MODEL_NAME,
+	Fields: map[string]JsonFieldType{
+		"id":          JsonNumber,
+		"name":        JsonString,
+		"abandoned":   JsonBool,
+		"completed":   JsonBool,
+		"createdAt":   JsonDate,
+		"createdBy":   JsonCreatedBy,
+		"description": JsonString,
+	},
+}
+
 type ProjectTag struct {
 	BaseModel
 	Name string `json:"name" gorm:"column:name;not null" validate:"required"`
+}
+
+var ProjectTagJsonModel = DashboardIndexableJsonModel{
+	ModelName: TAG_MODEL_NAME,
+	Fields: map[string]JsonFieldType{
+		"id":        JsonNumber,
+		"name":      JsonString,
+		"createdAt": JsonDate,
+	},
 }
 
 type ProjectTask struct {
@@ -64,14 +99,54 @@ type ProjectTask struct {
 	ParentTask   *ProjectTask  `json:"parentTask" gorm:"foreignKey:parentTaskId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
+var ProjectTaskJsonModel = DashboardIndexableJsonModel{
+	ModelName: TASK_MODEL_NAME,
+	Fields: map[string]JsonFieldType{
+		"id":           JsonNumber,
+		"title":        JsonString,
+		"status":       JsonString,
+		"deadline":     JsonDate,
+		"createdAt":    JsonDate,
+		"createdBy":    JsonCreatedBy,
+		"projectId":    JsonNumber,
+		"description":  JsonString,
+		"parentTaskId": JsonNumber,
+	},
+}
+
+type ProjectTaskEventType string
+
+const (
+	ProjectTaskEventAddComment     ProjectTaskEventType = "add_comment"
+	ProjectTaskEventEditComment    ProjectTaskEventType = "edit_comment"
+	ProjectTaskEventDeleteComment  ProjectTaskEventType = "delete_comment"
+	ProjectTaskEventStatusChange   ProjectTaskEventType = "status_change"
+	ProjectTaskEventAddAssignee    ProjectTaskEventType = "add_assignee"
+	ProjectTaskEventRemoveAssignee ProjectTaskEventType = "remove_assignee"
+	ProjectTaskEventAddTag         ProjectTaskEventType = "add_tag"
+	ProjectTaskEventRemoveTag      ProjectTaskEventType = "remove_tag"
+)
+
 type ProjectTaskEvent struct {
 	BaseModel
 	CreatedBy
 	UpdatedBy
-	// other fields
-	Comment string       `json:"comment" gorm:"column:comment;not null" validate:"required"`
-	TaskID  uint         `json:"taskId" gorm:"column:taskId;not null" validate:"required"`
-	Task    *ProjectTask `json:"task" gorm:"foreignKey:taskId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	TaskID uint                 `json:"taskId" gorm:"column:taskId;not null" validate:"required"`
+	Task   *ProjectTask         `json:"task" gorm:"foreignKey:taskId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Type   ProjectTaskEventType `json:"type" gorm:"column:type;not null" validate:"required"`
+	Data   string               `json:"data" gorm:"column:data;not null" validate:"required"` // the actual change that happened
+}
+
+var ProjectTaskEventJsonModel = DashboardIndexableJsonModel{
+	ModelName: PROJECT_TASK_EVENT_MODEL_NAME,
+	Fields: map[string]JsonFieldType{
+		"id":        JsonNumber,
+		"type":      JsonString,
+		"data":      JsonString,
+		"taskId":    JsonNumber,
+		"createdAt": JsonDate,
+		"createdBy": JsonCreatedBy,
+	},
 }
 
 func (Project) TableName() string {

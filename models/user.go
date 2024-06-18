@@ -3,7 +3,6 @@ package models
 import "github.com/gofiber/fiber/v2"
 
 const USER_MODEL_NAME string = "users"
-const PROFILE_MODEL_NAME string = "profiles"
 
 const PROVIDER_GOOGLE = "google"
 const PROVIDER_CREDENTIALS = "credentials"
@@ -21,6 +20,18 @@ type User struct {
 	RefreshToken string `json:"-" gorm:"refreshToken"`
 }
 
+var UserJsonModel = DashboardIndexableJsonModel{
+	ModelName: USER_MODEL_NAME,
+	Fields: map[string]JsonFieldType{
+		"id":          JsonString,
+		"name":        JsonString,
+		"email":       JsonString,
+		"phone":       JsonString,
+		"createdAt":   JsonDate,
+		"deactivated": JsonBool,
+	},
+}
+
 func (user *User) ToPartialUser() fiber.Map {
 	return fiber.Map{
 		"id":        user.ID,
@@ -31,16 +42,6 @@ func (user *User) ToPartialUser() fiber.Map {
 	}
 }
 
-type Profile struct {
-	BaseModel
-	UserID uint  `json:"userId" gorm:"column:userId;not null" validate:"required"`
-	User   *User `json:"user" gorm:"column:userId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-}
-
 func (User) TableName() string {
 	return USER_MODEL_NAME
-}
-
-func (Profile) TableName() string {
-	return PROFILE_MODEL_NAME
 }
