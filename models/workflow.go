@@ -14,14 +14,10 @@ type Workflow struct {
 	BaseModel
 	CreatedBy
 	UpdatedBy
-	Name        string        `json:"name" gorm:"column:name;not null" validate:"required"`
-	Description string        `json:"description" gorm:"column:description;not null" validate:"required"`
-	Active      bool          `json:"active" gorm:"column:active;not null" validate:"required"`
-	StartNodeID uint          `json:"startNodeId" gorm:"column:startNodeId;not null" validate:"required"`
-	StartNode   *WorkflowStep `json:"startNode" gorm:"foreignKey:startNodeId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	EndNodeID   uint          `json:"endNodeId" gorm:"column:endNodeId;not null" validate:"required"`
-	EndNode     *WorkflowStep `json:"endNode" gorm:"foreignKey:endNodeId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Edges       string        `json:"edges" gorm:"column:edges;not null" validate:"required"`
+	Name        string `json:"name" gorm:"column:name;not null" validate:"required"`
+	Description string `json:"description" gorm:"column:description;not null" validate:"required"`
+	Active      bool   `json:"active" gorm:"column:active;not null" validate:"required"`
+	Edges       string `json:"edges" gorm:"column:edges;not null" validate:"required"`
 }
 
 type FunctionNameType string

@@ -140,7 +140,7 @@ func GetTenantDBFromTenantUrl(tenantUrl string) (*gorm.DB, error) {
 			return nil, err
 		}
 
-		// GormMigrate(gormDB, TenantModels)
+		GormMigrate(gormDB, TenantModels)
 		tenantsDBMap[tenantUrl] = TenantConnection{
 			Connection: gormDB,
 			CreatedAt:  time.Now(),
