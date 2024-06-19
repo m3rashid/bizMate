@@ -66,8 +66,6 @@ export const paragraphProps: Props = {
 	text: [false, 'Paragraph text you want to show', 'textarea'],
 }
 
-// export const columnProps: Props = {}
-
 export const imageProps: Props = {
 	src: [true, 'URL of the image you want to show', 'string'],
 }

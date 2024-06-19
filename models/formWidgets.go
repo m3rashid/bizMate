@@ -8,7 +8,7 @@ const (
 	FORM_NUMBER   string = "number"
 	// FORM_BOOLEAN      string = "boolean"
 	FORM_BOOLEAN      bool   = false
-	FORM_STRING_ARRAY string = "Array<string>"
+	FORM_STRING_ARRAY string = "options"
 	// _FORM_CHILDREN     supportedFormType = "children"
 )
 
@@ -100,6 +100,24 @@ var RichTextInputProps = Props{
 	"descriptionText": FORM_STRING,
 }
 
+var SingleSelectInputProps = Props{
+	"name":            FORM_STRING,
+	"label":           FORM_STRING,
+	"shuffle":         FORM_BOOLEAN,
+	"required":        FORM_BOOLEAN,
+	"descriptionText": FORM_STRING,
+	"options":         FORM_STRING_ARRAY,
+}
+
+var RadioInputProps = Props{
+	"name":            FORM_STRING,
+	"label":           FORM_STRING,
+	"shuffle":         FORM_BOOLEAN,
+	"required":        FORM_BOOLEAN,
+	"descriptionText": FORM_STRING,
+	"options":         FORM_STRING_ARRAY,
+}
+
 const (
 	Input             ElementNameType = "input"
 	TextareaInput     ElementNameType = "textareaInput"
@@ -121,25 +139,27 @@ const (
 )
 
 var ElementPropsMap = map[ElementNameType]Props{
-	Input:            TextInputProps,
-	TextareaInput:    TextareaInputProps,
-	PhoneNumberInput: PhoneNumberInputProps,
-	RichTextInput:    RichTextInputProps,
-	Paragraph:        ParagraphProps,
-	Image:            ImageProps,
-	Link:             LinkProps,
-	H1:               HeadingProps,
-	H2:               HeadingProps,
-	H3:               HeadingProps,
-	H4:               HeadingProps,
-	H5:               HeadingProps,
-	H6:               HeadingProps,
-	Code:             CodeProps,
-	TogglerInput:     TogglerInputProps,
+	Input:             TextInputProps,
+	TextareaInput:     TextareaInputProps,
+	PhoneNumberInput:  PhoneNumberInputProps,
+	RichTextInput:     RichTextInputProps,
+	Paragraph:         ParagraphProps,
+	Image:             ImageProps,
+	Link:              LinkProps,
+	H1:                HeadingProps,
+	H2:                HeadingProps,
+	H3:                HeadingProps,
+	H4:                HeadingProps,
+	H5:                HeadingProps,
+	H6:                HeadingProps,
+	Code:              CodeProps,
+	TogglerInput:      TogglerInputProps,
+	SingleSelectInput: SingleSelectInputProps,
+	RadioInput:        RadioInputProps,
 }
 
 var inputElements = []ElementNameType{
-	Input, TextareaInput, PhoneNumberInput, RichTextInput, TogglerInput,
+	Input, TextareaInput, PhoneNumberInput, RichTextInput, TogglerInput, SingleSelectInput, RadioInput,
 }
 
 func (elName ElementNameType) IsFormElement() bool {

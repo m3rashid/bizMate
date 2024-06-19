@@ -1,24 +1,25 @@
 package export
 
 import (
-	"bizmate/models"
+	"bizmate/utils"
+	"fmt"
+	"strings"
+
+	"github.com/gofiber/fiber/v2"
 )
 
-func handleFormResponsesExport(formResponses []models.FormResponse, exportFormat ExportFormat, fields []string) {
-
+type exportTableReqBodyType = struct {
+	TableName string       `json:"tableName" validate:"required"`
+	Fields    []string     `json:"fields" validate:"required"`
+	Format    ExportFormat `json:"format" validate:"required"`
+	FormId    uint         `json:"formId"`
 }
 
-// func interfaceToMap(data []any) ([]map[string]interface{}, error) {
-// 	resultsMap := []map[string]interface{}{}
-
-// 	jsonStr, err := json.Marshal(data)
-// 	if err != nil {
-// 		return resultsMap, err
-// 	}
-
-// 	if err = json.Unmarshal([]byte(jsonStr), &resultsMap); err != nil {
-// 		return resultsMap, err
-// 	}
-
-// 	return resultsMap, nil
-// }
+func getFileName(tableName string, ctx *fiber.Ctx) string {
+	tenantOrigin, err := utils.GetTenantOriginFromCtx(ctx)
+	if err != nil {
+		return ""
+	}
+	tenantOrigin = strings.Replace(tenantOrigin, ":", "", 1)
+	return fmt.Sprintf("%s-%s-records", tenantOrigin, tableName)
+}

@@ -18,18 +18,12 @@ const (
 )
 
 func exportTable(ctx *fiber.Ctx) error {
-	reqBody := struct {
-		TableName string       `json:"tableName" validate:"required"`
-		Fields    []string     `json:"fields" validate:"required"`
-		Format    ExportFormat `json:"format" validate:"required"`
-		FormId    uint         `json:"formId"`
-	}{}
-
 	userId := ctx.Locals("userId").(uint)
 	if userId == 0 {
 		return ctx.Status(fiber.StatusUnauthorized).JSON("Unauthorized")
 	}
 
+	reqBody := exportTableReqBodyType{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
@@ -48,55 +42,69 @@ func exportTable(ctx *fiber.Ctx) error {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
-	if table.name == models.FORM_RESPONSE_MODEL_NAME {
-		responses := []models.FormResponse{}
-		if err := db.Where("formId = ?", reqBody.FormId).Find(&responses).Error; err != nil {
-			return ctx.Status(fiber.StatusNotFound).JSON("form not found")
-		}
+	if utils.Includes(reqBody.Fields, "createdBy") {
+		db = db.Preload("CreatedByUser")
+	}
+
+	if utils.Includes(reqBody.Fields, "updatedBy") {
+		db = db.Preload("UpdatedByUser")
 	}
 
 	res := []map[string]interface{}{}
+	if table.name == models.FORM_RESPONSE_MODEL_NAME {
+		responses := []models.FormResponse{}
+		// TODO: point of error (in case of large data from database)
+		if err := db.Where("\"formId\" = ?", reqBody.FormId).Find(&responses).Error; err != nil {
+			return ctx.Status(fiber.StatusNotFound).JSON("form not found")
+		}
 
-	tableFields := []string{}
-	for _, field := range reqBody.Fields {
-		tableFields = append(tableFields, fmt.Sprintf("\"%s\"", field))
-	}
+		for _, response := range responses {
+			temp := map[string]interface{}{}
+			if err := json.Unmarshal([]byte(response.Response), &temp); err != nil {
+				continue
+			}
 
-	query := fmt.Sprintf("SELECT %s FROM %s;", strings.Join(tableFields, ", "), table.name)
-	// point of error (in case of large data from database)
-	if err := db.Raw(query).Scan(&res).Error; err != nil {
-		return ctx.SendStatus(fiber.StatusInternalServerError)
+			temp["id"] = response.ID
+			temp["formId"] = response.FormID
+			temp["deviceIp"] = utils.Ternary(response.DeviceIP == "", "-", response.DeviceIP)
+			temp["createdAt"] = response.CreatedAt
+			res = append(res, temp)
+		}
+	} else {
+		tableFields := []string{}
+		for _, field := range reqBody.Fields {
+			if field == "createdBy" || field == "updatedBy" {
+				continue
+			}
+			tableFields = append(tableFields, fmt.Sprintf("\"%s\"", field))
+		}
+		// TODO: point of error (in case of large data from database)
+		if err := db.Raw(fmt.Sprintf("SELECT %s FROM %s;", strings.Join(tableFields, ", "), table.name)).Scan(&res).Error; err != nil {
+			return ctx.SendStatus(fiber.StatusInternalServerError)
+		}
 	}
 
 	if reqBody.Format == csvFormat {
-		csvFileName := gstCsvFileName(reqBody.TableName, ctx)
-		if csvFileName == "" {
-			ctx.SendStatus(fiber.StatusInternalServerError)
-		}
-
-		ctx.Set("Content-Disposition", fmt.Sprintf("attachment; filename=%s", csvFileName))
-		ctx.Set("Content-Type", "text/csv")
-		return handleCsvExport(res, reqBody.Fields, ctx)
-	}
-
-	if reqBody.Format == excelFormat {
-
+		return handleCsvExport(reqBody, res, ctx)
+	} else if reqBody.Format == excelFormat {
+		return handleExcelExport(reqBody, res, ctx)
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(reqBody)
 }
 
-func getExportTableFields(ctx *fiber.Ctx) error {
-	reqBody := struct {
-		TableName string `json:"tableName" validate:"required"`
-		FormId    uint   `json:"formId"`
-	}{}
+type exportTableFieldsReqBody = struct {
+	TableName string `json:"tableName" validate:"required"`
+	FormId    uint   `json:"formId"`
+}
 
+func getExportTableFields(ctx *fiber.Ctx) error {
 	userId := ctx.Locals("userId").(uint)
 	if userId == 0 {
 		return ctx.Status(fiber.StatusUnauthorized).JSON("Unauthorized")
 	}
 
+	reqBody := exportTableFieldsReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
@@ -115,10 +123,7 @@ func getExportTableFields(ctx *fiber.Ctx) error {
 		Label string `json:"label"`
 	}
 
-	csvFileName := gstCsvFileName(reqBody.TableName, ctx)
-	if csvFileName == "" {
-		ctx.SendStatus(fiber.StatusInternalServerError)
-	}
+	fileNameWithoutExt := getFileName(reqBody.TableName, ctx)
 
 	if table.name == models.FORM_RESPONSE_MODEL_NAME {
 		db, err := utils.GetTenantDbFromCtx(ctx)
@@ -152,7 +157,7 @@ func getExportTableFields(ctx *fiber.Ctx) error {
 			}
 		}
 
-		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"fields": results, "csvFileName": csvFileName})
+		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"fields": results, "fileNameWithoutExt": fileNameWithoutExt})
 	}
 
 	results := []resultStr{}
@@ -160,5 +165,5 @@ func getExportTableFields(ctx *fiber.Ctx) error {
 		results = append(results, resultStr{Name: key, Label: utils.CamelCaseToSentenceCase(key)})
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"fields": results, "csvFileName": csvFileName})
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"fields": results, "fileNameWithoutExt": fileNameWithoutExt})
 }

@@ -28,7 +28,7 @@ function TableExport(props: TableExportProps) {
 	const { addMessagePopup } = usePopups()
 	const [open, setOpen] = useState(false)
 
-	const { data: tableFieldsData, isPending } = useQuery<{ csvFileName: string; fields: Array<{ name: string; label: string }> }>({
+	const { data: tableFieldsData, isPending } = useQuery<{ fileNameWithoutExt: string; fields: Array<{ name: string; label: string }> }>({
 		queryKey: [props.tableName, ...(props.mutationKeys || []), ...(props.formId ? [props.formId] : [])],
 		queryFn: () =>
 			apiClient('/table/export/table-fields', {
@@ -44,7 +44,7 @@ function TableExport(props: TableExportProps) {
 			addMessagePopup({
 				type: 'error',
 				message: (error as any) || 'An error occurred',
-				id: tableFieldsData?.csvFileName || `${props.tableName}.${variables.format}`,
+				id: `${tableFieldsData?.fileNameWithoutExt}.${variables.format}` || `${props.tableName}.${variables.format}`,
 			})
 		},
 		mutationKey: [props.tableName, ...(props.mutationKeys || [])],
@@ -52,7 +52,7 @@ function TableExport(props: TableExportProps) {
 			apiClient(
 				'/table/export',
 				{ method: 'POST', body: JSON.stringify(data) },
-				{ downloadableContent: { fileName: tableFieldsData?.csvFileName || `${props.tableName}.${data.format}` } },
+				{ downloadableContent: { fileName: `${tableFieldsData?.fileNameWithoutExt}.${data.format}` || `${props.tableName}.${data.format}` } },
 			),
 	})
 
