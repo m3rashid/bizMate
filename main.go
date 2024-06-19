@@ -4,6 +4,7 @@ import (
 	"bizmate/apis/auth"
 	"bizmate/apis/contacts"
 	"bizmate/apis/dashboard"
+	"bizmate/apis/drive"
 	"bizmate/apis/export"
 	"bizmate/apis/forms"
 	"bizmate/apis/host"
@@ -128,6 +129,7 @@ func main() {
 
 	host.Setup(app)
 	auth.Setup(app)
+	drive.Setup(app)
 	forms.Setup(app)
 	export.Setup(app)
 	project.Setup(app)

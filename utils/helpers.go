@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"math/rand"
 	"strings"
 	"unicode"
 
@@ -58,4 +59,14 @@ func SafeStringify(value interface{}) string {
 		return ""
 	}
 	return string(jsonByte)
+}
+
+const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+func RandomString32() string {
+	b := make([]byte, 32)
+	for i := range b {
+		b[i] = letterBytes[rand.Int63()%int64(len(letterBytes))]
+	}
+	return string(b)
 }
