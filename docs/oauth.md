@@ -1,7 +1,7 @@
-Backend OAUTH Explicit Flow
+### Backend OAUTH Explicit Flow
 
-Server := Our backend server
-Provider := Provider's server (google, github etc)
+**Server**: Our backend server \
+**Provider** : Provider's server (google, github etc)
 
 1. Client makes a call to the server to start the auth flow
 2. Server Makes a call to the provider's backend
@@ -11,11 +11,9 @@ Provider := Provider's server (google, github etc)
 6. The server does its things with the data (like validation etc.), saves the RefreshToken in its database and return JWT to the Client
 7. On Getting the response from the server, the user is authenticated
 
+---
 
-===============================================================================================================================================
-
-
-Frontend OAUTH Explicit Flow
+#### Frontend OAUTH Explicit Flow
 
 1. Client opens a new window, with the URL of the server (to initiate the process)
 2. The client keeps a reference of the original window and adds an event Listener for any message events
