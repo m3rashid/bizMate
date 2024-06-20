@@ -30,6 +30,7 @@ export type SimpleTableProps<T> = {
 	tableHeadingClassName?: (columnIndex: number) => string
 	onEdit?: (item: T) => void
 	emptyState?: ReactNode
+	otherActions?: ReactNode
 	defaultEmptyStateName?: string
 }
 
@@ -47,6 +48,7 @@ function SimpleTable<T extends DbRow>(props: SimpleTableProps<T>) {
 				) : null}
 
 				<div className="mt-4 flex flex-wrap items-center justify-center gap-2 sm:ml-8 sm:mt-0">
+					{props.otherActions}
 					{props.addButtonLink ? (
 						<Button
 							label={`New ${props.title || props.defaultEmptyStateName}`}

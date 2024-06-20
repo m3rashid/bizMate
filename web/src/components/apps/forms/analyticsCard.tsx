@@ -27,7 +27,17 @@ function AnalyticsCard(props: AnalyticsCardProps) {
 					/>
 				) : (
 					<Bar
-						options={{ plugins: { legend: { display: false } }, maintainAspectRatio: false }}
+						options={{
+							plugins: {
+								legend: { display: false },
+								tooltip: { enabled: false },
+							},
+							maintainAspectRatio: false,
+							scales: {
+								x: { border: { display: false }, grid: { display: false } },
+								y: { border: { display: false }, grid: { display: false } },
+							},
+						}}
 						data={{ labels: scoreArr.map((t) => t[0]), datasets: [{ data: scoreArr.map((t) => t[1]) }] }}
 					/>
 				)}
