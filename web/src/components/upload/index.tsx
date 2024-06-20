@@ -1,42 +1,81 @@
-import { FormEvent } from 'react'
-import { useMutation } from '@tanstack/react-query'
+import { useReducer } from 'react'
+import { twMerge } from 'tailwind-merge'
 
-import Input from '../lib/input'
-import Button from '../lib/button'
-import apiClient from '../../api/client'
+import Uploader from './upload'
+import Modal from '../lib/modal'
+import Button, { ButtonProps } from '../lib/button'
 
-type UploadProps = {}
+type UploadProps = {
+	buttonProps?: ButtonProps
+	onFinalize: (urls: string[]) => void
+}
+
+type UploadModalState = {
+	open: boolean
+	type: 'select' | 'upload'
+}
+
+const modalTitle: Record<UploadModalState['type'], string> = {
+	select: 'Select files',
+	upload: 'Upload files',
+}
+
+type Action = { type: 'OPEN' } | { type: 'CLOSE' } | { type: 'SELECT' } | { type: 'UPLOAD' } | { type: 'ADD_FILES'; files: File[] }
+
+function uploadModalReducer(state: UploadModalState, action: Action): UploadModalState {
+	if (action.type === 'OPEN') return { ...state, open: true }
+	if (action.type === 'CLOSE') return { ...state, open: false }
+	if (action.type === 'SELECT') return { ...state, open: true, type: 'select' }
+	if (action.type === 'UPLOAD') return { ...state, open: true, type: 'upload' }
+	return state
+}
 
 function Upload(props: UploadProps) {
-	const { mutate: uploadFile } = useMutation({
-		mutationKey: ['drive', 'upload-file'],
-		mutationFn: (data: { url: string; key: string; file: File }) =>
-			fetch(data.url, { method: 'PUT', body: data.file, headers: { 'Content-Type': 'multipart/form-data' } }),
-	})
+	const [{ open, type }, dispatch] = useReducer(uploadModalReducer, { type: 'select', open: false })
 
-	const { mutate: handleUpload } = useMutation({
-		mutationKey: ['drive', 'get-signed-url'],
-		mutationFn: (file: File) => {
-			const fileType = file.type || file.name.split('.').pop()
-			return apiClient('/drive/get-signed-url', { method: 'POST', body: JSON.stringify({ name: file.name, type: fileType }) })
-		},
-		onSuccess: (data: { key: string; url: string }, file) => uploadFile({ ...data, file }),
-	})
-
-	function handleEditForm(e: FormEvent<HTMLFormElement>) {
-		e.preventDefault()
-		const formData = new FormData(e.target as HTMLFormElement)
-		const file = formData.get('file') as File
-		if (!file) return
-
-		handleUpload(file)
-	}
+	function handleFinalize() {}
 
 	return (
-		<form className="mb-8 flex h-full max-w-sm flex-col gap-4" onSubmit={handleEditForm}>
-			<Input type="file" name="file" />
-			<Button type="submit">Save</Button>
-		</form>
+		<>
+			<Button size="small" onClick={() => dispatch({ type: 'OPEN' })} {...props.buttonProps}>
+				Choose Files
+			</Button>
+
+			<Modal title={modalTitle[type]} open={open} setOpen={() => dispatch({ type: 'CLOSE' })}>
+				<div className="flex items-center gap-8 bg-primaryLight p-3 pb-0">
+					{Object.keys(modalTitle).map((key) => (
+						<div
+							key={key}
+							onClick={() => dispatch({ type: key === 'upload' ? 'UPLOAD' : 'SELECT' })}
+							className={twMerge(
+								'cursor-pointer rounded-sm border-b-[3px] border-b-primaryLight hover:border-b-white ',
+								type === key ? 'border-b-primary font-bold hover:border-b-primary' : '',
+							)}
+						>
+							{modalTitle[key as UploadModalState['type']]}
+						</div>
+					))}
+				</div>
+
+				<div className="my-1 h-96 overflow-auto p-4">
+					{type === 'select' ? (
+						Array.from({ length: 20 }).map((_, i) => (
+							<div key={i} className="h-20">
+								Not implemented {i}
+							</div>
+						))
+					) : (
+						<div className="flex h-full items-center justify-center">
+							<Uploader onFinalize={props.onFinalize} />
+						</div>
+					)}
+				</div>
+				<div className="flex items-center justify-between p-4">
+					<Button variant="simple">Cancel</Button>
+					<Button onClick={handleFinalize}>Done</Button>
+				</div>
+			</Modal>
+		</>
 	)
 }
 

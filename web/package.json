@@ -30,6 +30,7 @@
 		"react": "^18.3.1",
 		"react-chartjs-2": "^5.2.0",
 		"react-dom": "^18.3.1",
+		"react-dropzone": "^14.2.3",
 		"react-email-editor": "^1.7.10",
 		"react-responsive-masonry": "^2.2.0",
 		"reactflow": "^11.11.3",

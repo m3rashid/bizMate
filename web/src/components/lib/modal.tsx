@@ -35,7 +35,7 @@ function Modal(props: ModalProps) {
 							leaveFrom="opacity-100 translate-y-0 sm:scale-100"
 							leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
 						>
-							<DialogPanel className="relative transform rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+							<DialogPanel className="relative w-full transform rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:max-w-xl md:max-w-3xl">
 								<div className="flex w-full items-center justify-between gap-4 p-4">
 									{props.title ? (
 										<DialogTitle as="h3" className="text-base font-semibold leading-6 text-gray-900">

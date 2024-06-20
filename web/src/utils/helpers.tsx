@@ -59,3 +59,8 @@ export function shuffleArray(array: Array<any>) {
 		;[array[i], array[j]] = [array[j], array[i]]
 	}
 }
+
+export const mimeTypes = {
+	pdf: 'application/pdf',
+	image: 'image/*',
+}
