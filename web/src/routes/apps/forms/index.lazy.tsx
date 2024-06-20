@@ -19,8 +19,8 @@ import Tooltip from '../../../components/lib/tooltip'
 import { Form, PageSearchParams } from '../../../types'
 import CardList from '../../../components/lib/cardList'
 import PageContainer from '../../../components/pageContainer'
-import EditForm from '../../../components/apps/forms/editForm'
 import { handleViewTransition } from '../../../utils/helpers'
+import EditForm from '../../../components/apps/forms/editForm'
 
 export const Route = createFileRoute('/apps/forms/')({
 	component: Forms,
@@ -135,7 +135,6 @@ function Forms() {
 
 			<CardList<Form>
 				title="Forms"
-				route="/apps/forms/"
 				paginateUrl="/forms/all"
 				queryKeys={['getForms']}
 				defaultEmptyStateName="forms"

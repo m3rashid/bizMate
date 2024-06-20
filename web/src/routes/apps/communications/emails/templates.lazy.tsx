@@ -24,7 +24,6 @@ function EmailTemplates() {
 				title="Email Templates"
 				queryKeys={['getEmailTemplates']}
 				paginateUrl="/email-templates/all"
-				route="/apps/communications/emails/"
 				defaultEmptyStateName="email Templates"
 				addButtonProps={{ label: 'New Email Template' }}
 				description="Create and manage all email template"

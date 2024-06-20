@@ -6,7 +6,6 @@ import apiClient from '../../../../api/client'
 import { PageLoader } from '../../../../components/lib/loader'
 import PageContainer from '../../../../components/pageContainer'
 import ProjectHeader from '../../../../components/projects/projectHeader'
-import ProjectKanbanBoard from '../../../../components/projects/projectKanbanBoard'
 
 export const Route = createLazyFileRoute('/apps/projects/$projectId/')({
 	component: ProjectDetails,
@@ -25,8 +24,6 @@ function ProjectDetails() {
 	return (
 		<PageContainer>
 			<ProjectHeader {...project} />
-
-			<ProjectKanbanBoard projectId={projectId} />
 		</PageContainer>
 	)
 }

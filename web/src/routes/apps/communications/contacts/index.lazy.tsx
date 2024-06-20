@@ -59,7 +59,6 @@ function Contacts() {
 				paginateUrl="/contacts/all"
 				queryKeys={['getContacts']}
 				defaultEmptyStateName="contacts"
-				route="/apps/communications/contacts/"
 				description="Create and manage all contacts"
 				addButtonProps={{ label: 'New Contact', onClick: () => setOpen('addEdit') }}
 				otherActions={<Button label="Bulk Upload" size="small" variant="secondary" onClick={() => setOpen('bulkUpload')} />}

@@ -24,7 +24,7 @@ function TaskDetails() {
 		queryFn: () => apiClient(`/tasks/one/${taskId}`),
 	})
 
-	const { docs: childrenProjectTasks } = usePaginate<ProjectTask>({
+	const { docs: childrenProjectTasks, refetch } = usePaginate<ProjectTask>({
 		queryKeys: ['getProjectTaskChildren', taskId],
 		url: `/tasks/children?parentTaskId=${taskId}`,
 	})
@@ -33,7 +33,7 @@ function TaskDetails() {
 
 	return (
 		<PageContainer>
-			<AddProjectTask modalOpen={modalOpen} setModalOpen={setModalOpen} projectId={projectId} parentTaskId={parseInt(taskId)} />
+			<AddProjectTask refetch={refetch} modalOpen={modalOpen} setModalOpen={setModalOpen} projectId={projectId} parentTaskId={parseInt(taskId)} />
 
 			<h1 className="text-xl font-bold">{projectTaskDetails.title}</h1>
 			<Button size="small" onClick={() => setModalOpen(true)}>

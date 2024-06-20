@@ -14,7 +14,7 @@ func validateFormElementInstance(el models.FormElementInstanceType) []string {
 	elementProps := el.Props
 	supportedProps := el.Name.GetSupportedProps()
 
-	if _, ok := el.Props["name"]; el.Name.IsFormElement() && !ok {
+	if _, ok := el.Props["name"]; el.Name.IsFormInputElement() && !ok {
 		errorArr = append(errorArr, "name attribute not present in "+el.ID+"_"+string(el.Name))
 	}
 

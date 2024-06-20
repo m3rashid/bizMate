@@ -2,15 +2,14 @@ import qs from 'query-string'
 import { FC, ReactNode } from 'react'
 import { twMerge } from 'tailwind-merge'
 import { useQuery } from '@tanstack/react-query'
+import { useNavigate } from '@tanstack/react-router'
 import PlusIcon from '@heroicons/react/24/outline/PlusIcon'
-import { useNavigate, RouteIds } from '@tanstack/react-router'
 
 import Pagination from './pagination'
 import apiClient from '../../api/client'
 import DataListHeader from './dataListHeader'
 import Button, { ButtonProps } from './button'
 import SkeletonTable from '../skeletons/table'
-import { routeTree } from '../../routeTree.gen'
 import { TableExportProps } from './tableExport'
 import { DbRow, PageSearchParams, PaginationResponse } from '../../types'
 
@@ -23,7 +22,6 @@ export type TableColumn<T> = {
 }
 
 export type TableProps<T> = {
-	route: RouteIds<typeof routeTree>
 	pageSize?: number
 	tableExportprops?: TableExportProps
 	paginateUrl: string

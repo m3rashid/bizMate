@@ -85,7 +85,6 @@ function Projects() {
 
 			<CardList<Project>
 				title="Projects"
-				route="/apps/projects/"
 				queryKeys={['getProjects']}
 				paginateUrl="/projects/all"
 				defaultEmptyStateName="projects"

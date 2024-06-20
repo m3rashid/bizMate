@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
-import { Dispatch, FormEvent, MouseEvent, SetStateAction } from 'react'
+import { Dispatch, FormEvent, SetStateAction } from 'react'
 
 import Modal from '../lib/modal'
 import Button from '../lib/button'
@@ -40,7 +40,7 @@ function AddProjectTask(props: AddProjectTaskProps) {
 
 	return (
 		<Modal open={props.modalOpen} setOpen={props.setModalOpen} title="Add Project Task">
-			<form className="flex h-full flex-col gap-4" onSubmit={handleAddEditForm}>
+			<form className="flex h-full flex-col gap-4 p-4" onSubmit={handleAddEditForm}>
 				<Input name="title" placeholder="Create the sales pitchdeck" label="Title" />
 				<SingleSelectInput
 					name="status"

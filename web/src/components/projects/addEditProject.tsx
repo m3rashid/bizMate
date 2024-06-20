@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
-import { Dispatch, FormEvent, MouseEvent, SetStateAction } from 'react'
+import { Dispatch, FormEvent, SetStateAction } from 'react'
 
 import Modal from '../lib/modal'
 import Input from '../lib/input'

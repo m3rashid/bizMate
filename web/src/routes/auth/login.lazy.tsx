@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Navigate, createFileRoute, useNavigate } from '@tanstack/react-router'
+import { Navigate, createFileRoute, useNavigate, useRouterState } from '@tanstack/react-router'
 
 import { useAuth } from '../../hooks/auth'
 import BrandLogo from '../../components/lib/brandLogo'
@@ -13,6 +13,14 @@ function Login() {
 	const transitionStartedRef = useRef(false)
 	const { auth: user, checkAuth } = useAuth()
 	const [type, setType] = useState<LoginWithCredentialsProps['type']>('register')
+	const nextLocation = useRouterState({
+		select: (s) => {
+			const state = s.location.state
+			if (!state || !(state as any).prevLocation) return '/'
+			const loc: Location = JSON.parse((state as any).prevLocation)
+			return loc.pathname + loc.search + loc.hash
+		},
+	})
 
 	async function onSuccess() {
 		await checkAuth()
@@ -20,12 +28,12 @@ function Login() {
 	}
 
 	useEffect(() => {
-		if (transitionStartedRef?.current) navigate({ to: '/' })
+		if (transitionStartedRef?.current) navigate({ to: nextLocation })
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	if (user.isAuthenticated) {
-		return <Navigate to="/" /> // handle redirects and protected routes
+		return <Navigate to={nextLocation} />
 	}
 
 	return (

@@ -149,7 +149,7 @@ func getExportTableFields(ctx *fiber.Ctx) error {
 			{Name: "deviceIp", Label: utils.CamelCaseToSentenceCase("deviceIp")},
 		}
 		for _, meta := range formMeta {
-			if meta.Name.IsFormElement() && meta.Props["name"] != "" && meta.Props["label"] != "" {
+			if meta.Name.IsFormInputElement() && meta.Props["name"] != "" && meta.Props["label"] != "" {
 				results = append(results, resultStr{
 					Name:  (meta.Props["name"]).(string),
 					Label: (meta.Props["label"]).(string),

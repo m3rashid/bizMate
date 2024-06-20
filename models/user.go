@@ -14,8 +14,8 @@ type User struct {
 	Phone        string `json:"phone" gorm:"column:phone"`
 	Avatar       string `json:"avatar" gorm:"column:avatar"`
 	Deactivated  bool   `json:"-" gorm:"column:deactivated"`
-	Provider     string `json:"-" gorm:"column:provider"`
-	Password     string `json:"-" gorm:"column:password;not null" validate:"required"`
+	Provider     string `json:"provider" gorm:"column:provider"`
+	Password     string `json:"password" gorm:"column:password;not null" validate:"required"`
 	TenantOwner  bool   `json:"-" gorm:"column:tenantOwner"`
 	RefreshToken string `json:"-" gorm:"refreshToken"`
 }

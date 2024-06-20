@@ -29,7 +29,7 @@ function Header() {
 					{auth.user?.avatar ? <img className="h-7 w-7 rounded-full" src={auth.user.avatar} /> : null}
 				</div>
 			) : (
-				<Link to="/auth/login" className="[&.active]:font-bold">
+				<Link to="/auth/login" viewTransition state={{ prevLocation: JSON.stringify(window.location) } as any}>
 					Login
 				</Link>
 			)}

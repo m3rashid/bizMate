@@ -1,5 +1,7 @@
 package models
 
+import "encoding/json"
+
 const FORM_MODEL_NAME string = "forms"
 const FORM_RESPONSE_MODEL_NAME string = "form_responses"
 
@@ -39,30 +41,32 @@ var FormJsonModel = DashboardIndexableJsonModel{
 	},
 }
 
-type FormResponse struct {
-	BaseModel
-	UpdatedBy
-	OptionalCreatedBy
-	FormID   uint   `json:"formId" gorm:"column:formId;not null" validate:"required"`
-	Form     *Form  `json:"form" gorm:"foreignKey:formId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Response string `json:"response" gorm:"column:response;not null" validate:"required"`
-	DeviceIP string `json:"deviceIp,omitempty" gorm:"column:deviceIp"`
-}
-
-var FormResponseJsonModel = DashboardIndexableJsonModel{
-	ModelName: FORM_RESPONSE_MODEL_NAME,
-	Fields: map[string]JsonFieldType{
-		"id":        JsonNumber,
-		"formId":    JsonNumber,
-		"createdBy": JsonCreatedBy,
-		"createdAt": JsonDate,
-	},
-}
-
 func (Form) TableName() string {
 	return FORM_MODEL_NAME
 }
 
-func (FormResponse) TableName() string {
-	return FORM_RESPONSE_MODEL_NAME
+func (f *Form) GetFormElements() ([]FormElementInstanceType, error) {
+	elements := []FormElementInstanceType{}
+	if err := json.Unmarshal([]byte((*f).Body), &elements); err != nil {
+		return elements, err
+	}
+
+	return elements, nil
+}
+
+func (f *Form) GetInputElements() ([]FormElementInstanceType, error) {
+	inputElements := []FormElementInstanceType{}
+
+	elements, err := f.GetFormElements()
+	if err != nil {
+		return inputElements, err
+	}
+
+	for _, element := range elements {
+		if _, ok := element.Props["name"]; ok && element.Name.IsFormInputElement() {
+			inputElements = append(inputElements, element)
+		}
+	}
+
+	return inputElements, nil
 }

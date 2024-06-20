@@ -21,7 +21,6 @@ function Dashboards() {
 			<Table<Dashboard>
 				title="Dashboards"
 				columns={tableColumns}
-				route="/apps/dashboards/"
 				paginateUrl="/dashboards/all"
 				queryKeys={['getAllDashboards']}
 				defaultEmptyStateName="dashboards"

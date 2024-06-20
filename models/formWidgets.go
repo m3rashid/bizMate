@@ -162,7 +162,7 @@ var inputElements = []ElementNameType{
 	Input, TextareaInput, PhoneNumberInput, RichTextInput, TogglerInput, SingleSelectInput, RadioInput,
 }
 
-func (elName ElementNameType) IsFormElement() bool {
+func (elName ElementNameType) IsFormInputElement() bool {
 	for _, item := range inputElements {
 		if item == elName {
 			return true

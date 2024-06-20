@@ -2,20 +2,18 @@ import qs from 'query-string'
 import { ReactNode } from 'react'
 import { twMerge } from 'tailwind-merge'
 import { useQuery } from '@tanstack/react-query'
-import { useNavigate, RouteIds } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 import Masonry, { ResponsiveMasonry, ResponsiveMasonryProps } from 'react-responsive-masonry'
 
 import Pagination from './pagination'
 import { ButtonProps } from './button'
 import apiClient from '../../api/client'
 import DataListHeader from './dataListHeader'
-import { routeTree } from '../../routeTree.gen'
 import { TableExportProps } from './tableExport'
 import SkeletonCardList from '../skeletons/cardList'
 import { DbRow, PageSearchParams, PaginationResponse } from '../../types'
 
 export type CardListProps<T> = {
-	route: RouteIds<typeof routeTree>
 	pageSize?: number
 	tableExportprops?: TableExportProps
 	paginateUrl: string
