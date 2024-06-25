@@ -23,7 +23,7 @@ function SingleFormDesigner() {
 		<form className="flex w-full min-w-80 max-w-[800px] flex-col gap-4">
 			<SortableContext items={meta}>
 				<FormBuilder
-					className="flex flex-col gap-4 rounded-lg border-[1px] border-gray-200 bg-white p-4 shadow-md"
+					className="flex flex-col gap-2 rounded-md border border-gray-200 bg-white p-3 shadow-sm"
 					meta={viewType === 'build' ? transformedMeta : meta}
 				/>
 			</SortableContext>
@@ -31,8 +31,8 @@ function SingleFormDesigner() {
 			<div
 				onClick={() => setFormDesigner((prev) => ({ ...prev, selectedNode: null }))}
 				className={twMerge(
-					'flex items-center justify-between rounded-lg border-[1px] border-gray-200 bg-white p-4 shadow-md',
-					selectedNode ? 'bg-gray-200' : 'ring-2 ring-linkActive',
+					'flex items-center justify-between rounded-md border border-gray-100 bg-white px-3 py-2 shadow-sm',
+					selectedNode ? 'bg-gray-100' : 'ring-2 ring-danger',
 				)}
 			>
 				<Button disabled className="select-none" label={rootProps.cancelText} variant={viewType === 'build' ? 'disabled' : 'simple'} />

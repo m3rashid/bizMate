@@ -88,13 +88,13 @@ function SimpleTable<T extends DbRow>(props: SimpleTableProps<T>) {
 						<div className="inline-block min-w-full py-2 align-middle">
 							<table className="w-full">
 								<thead>
-									<tr className={twMerge('select-none bg-pageBg', props.tableHeadingRowClassName)}>
+									<tr className={twMerge('select-none bg-gray-100', props.tableHeadingRowClassName)}>
 										{props.columns.map((column, columnIndex) => (
 											<th
 												scope="col"
 												key={column.title + columnIndex}
 												className={twMerge(
-													'p-3 text-left text-sm font-semibold',
+													'px-3 py-2.5 text-left text-sm font-semibold',
 													props.tableHeadingClassName ? props.tableHeadingClassName(columnIndex) : '',
 												)}
 											>
@@ -107,12 +107,12 @@ function SimpleTable<T extends DbRow>(props: SimpleTableProps<T>) {
 									{(props.data || []).map((row, rowIndex) => (
 										<tr
 											key={row.id}
-											className={twMerge('border-t-2 border-borderColor', props.tableRowClassName ? props.tableRowClassName(rowIndex) : '')}
+											className={twMerge('border-t border-borderColor', props.tableRowClassName ? props.tableRowClassName(rowIndex) : '')}
 										>
 											{props.columns.map((column, columnIndex) => (
 												<td
 													key={row[column.dataKey] + String(columnIndex)}
-													className={twMerge('whitespace-nowrap px-3 py-3.5 text-left text-sm', column.tableTdClassName)}
+													className={twMerge('whitespace-nowrap px-3 py-2.5 text-left text-sm', column.tableTdClassName)}
 												>
 													{column.render ? <column.render {...{ row, rowIndex }} /> : (String(row[column.dataKey]) satisfies ReactNode)}
 												</td>

@@ -6,6 +6,7 @@ import { StringBoolean } from '../types'
 import { Props } from '../components/forms/exposedProps'
 import { generateRandomString, handleViewTransition } from '../utils/helpers'
 import { FormElementInstance, supportedWidgets } from '../components/forms/constants'
+import { usePopups } from './popups'
 
 const propsNodeNotSelected: Props = {
 	title: [true, 'Form title', 'string'],
@@ -76,6 +77,7 @@ export function FormDesignerProvider(props: PropsWithChildren) {
 }
 
 export function useFormDesigner() {
+	const { addMessagePopup } = usePopups()
 	const [{ meta, viewType, selectedNode, rootProps }, setFormDesigner] = useContext(formDesignerContext)
 
 	function getTaskPosition(meta: FormElementInstance[], id: string | UniqueIdentifier): number {
@@ -113,6 +115,7 @@ export function useFormDesigner() {
 	}
 
 	function updateNode(nodeKey: string, props: Props) {
+		addMessagePopup({ id: nodeKey, message: 'Updated Element', type: 'success' })
 		handleViewTransition(() =>
 			setFormDesigner((prev) => ({ ...prev, meta: prev.meta.map((node) => ({ ...node, props: node.id === nodeKey ? props : node.props })) })),
 		)

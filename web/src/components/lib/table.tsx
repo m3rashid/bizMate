@@ -115,12 +115,12 @@ function Table<T extends DbRow>(props: TableProps<T>) {
 									{(data.docs || []).map((row, rowIndex) => (
 										<tr
 											key={row.id}
-											className={twMerge('border-t-2 border-borderColor', props.tableRowClassName ? props.tableRowClassName(row, rowIndex) : '')}
+											className={twMerge('border-t border-borderColor', props.tableRowClassName ? props.tableRowClassName(row, rowIndex) : '')}
 										>
 											{props.columns.map((column, columnIndex) => (
 												<td
 													key={row[column.dataKey] + String(columnIndex)}
-													className={twMerge('whitespace-nowrap px-3 py-3.5 text-left text-sm', column.tableTdClassName)}
+													className={twMerge('whitespace-nowrap px-3 py-1 text-left text-sm', column.tableTdClassName)}
 												>
 													{column.render ? <column.render {...{ row, rowIndex }} /> : (String(row[column.dataKey]) satisfies ReactNode)}
 												</td>

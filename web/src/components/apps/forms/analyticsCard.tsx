@@ -15,7 +15,7 @@ function AnalyticsCard(props: AnalyticsCardProps) {
 	return (
 		<div
 			key={props.analytics.name}
-			className="flex w-full select-none flex-col justify-between rounded-lg border-2 border-white p-2 shadow-lg hover:border-primary sm:max-w-xs"
+			className="flex w-full select-none flex-col justify-between rounded-md border-2 border-white p-2 shadow-lg hover:border-primary sm:max-w-xs"
 		>
 			<h3 className="mb-4 font-semibold text-disabled">{props.analytics.label}</h3>
 

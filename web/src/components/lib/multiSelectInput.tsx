@@ -59,7 +59,7 @@ function MultiSelectInput(props: MultiSelectInputProps) {
 					{props.errorText ? <p className="mt-1 text-sm text-red-500">{props.errorText}</p> : null}
 
 					<div className="relative w-full">
-						<ListboxButton className="text-labelColor relative min-h-9 w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm sm:leading-6">
+						<ListboxButton className="text-labelColor relative min-h-9 w-full cursor-default rounded-md bg-white py-1 pl-3 pr-10 text-left shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm sm:leading-6">
 							<div className="flex flex-wrap gap-1">
 								{props.selectedRender ? (
 									<props.selectedRender options={selectedValuesOptions} removeOption={removeSelectedValue} />

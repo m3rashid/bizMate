@@ -21,15 +21,15 @@ function FormDesigner() {
 	return (
 		<DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
 			<div className="flex h-screen overflow-hidden">
-				<div className="min-w-80 max-w-96 overflow-y-auto bg-gray-100 p-2 shadow-lg">
-					<div className="grid grid-cols-2 gap-4">
+				<div className="min-w-80 max-w-96 overflow-y-auto bg-gray-100 p-2 drop-shadow-sm">
+					<div className="grid grid-cols-2 gap-3">
 						{supportedWidgets.map((widgetConfig) => (
 							<FormWidgetItem key={widgetConfig.name} {...widgetConfig} />
 						))}
 					</div>
 				</div>
 
-				<div className="flex w-full flex-col items-center overflow-auto bg-[url(/paper.svg)] p-4 pb-10">
+				<div className="flex w-full flex-col items-center overflow-auto bg-white p-4 pb-10">
 					<FormDesignerTopBar />
 					<FormDesignerCore />
 				</div>

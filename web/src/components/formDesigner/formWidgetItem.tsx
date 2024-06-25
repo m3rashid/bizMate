@@ -1,5 +1,3 @@
-import { twMerge } from 'tailwind-merge'
-
 import { useFormDesigner } from '../../hooks/formDesigner'
 import { SupportedWidgetsArray } from '../forms/constants'
 
@@ -11,10 +9,7 @@ function FormWidgetItem(props: FormWidgetItemProps) {
 	return (
 		<div
 			onClick={() => insertNewNode(props)}
-			className={twMerge(
-				'flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-white bg-white px-4 py-2 text-gray-800 shadow-md hover:border-primary hover:font-semibold hover:text-primary',
-				props.icon ? '' : 'py-3',
-			)}
+			className="flex cursor-pointer flex-col items-center justify-center gap-1 rounded-md border-2 border-white bg-white p-2 text-gray-800 shadow-md hover:border-primary hover:font-semibold hover:text-primary"
 		>
 			{props.icon ? <props.icon className="h-6 w-6" /> : null}
 			<h3 className="mx-0 block select-none text-center text-sm">{props.label}</h3>

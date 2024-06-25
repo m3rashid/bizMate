@@ -55,7 +55,7 @@ function FormDesignerTopBar() {
 	}
 
 	return (
-		<div className="mb-2 flex w-full items-center justify-between rounded-lg border-[1px] border-gray-200 bg-white px-4 py-2 shadow-md">
+		<div className="mb-2 flex w-full items-center justify-between rounded-md border border-gray-200 bg-gray-100 px-3 py-2 shadow-sm">
 			<Button
 				size="small"
 				variant="simple"
@@ -75,7 +75,7 @@ function FormDesignerTopBar() {
 							<li className="list-item">Set Extra properties for elements in the right panel</li>
 							<li className="list-item">
 								All the
-								<span className="mx-[2px] rounded-md bg-gray-700 px-2 py-[2px] text-white">className</span>
+								<span className="mx-[2px] rounded-md bg-gray-700 px-1 py-[1px] text-white">className</span>
 								props mean tailwind classes
 							</li>
 						</ul>

@@ -48,7 +48,7 @@ function Upload(props: UploadProps) {
 							key={key}
 							onClick={() => dispatch({ type: key === 'upload' ? 'UPLOAD' : 'SELECT' })}
 							className={twMerge(
-								'cursor-pointer rounded-sm border-b-[3px] border-b-primaryLight hover:border-b-white ',
+								'cursor-pointer rounded-md border-b-[3px] border-b-primaryLight hover:border-b-white ',
 								type === key ? 'border-b-primary font-bold hover:border-b-primary' : '',
 							)}
 						>

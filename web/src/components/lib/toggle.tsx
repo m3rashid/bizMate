@@ -47,7 +47,7 @@ function Component(props: TogglerProps, ref: ForwardedRef<{ getValue: () => bool
 				) : null}
 			</SwitchGroup>
 
-			{props.descriptionText ? <p className="mb-2 mt-1.5 text-sm text-gray-500">{props.descriptionText}</p> : null}
+			{props.descriptionText ? <p className="text-sm text-gray-500">{props.descriptionText}</p> : null}
 		</div>
 	)
 }

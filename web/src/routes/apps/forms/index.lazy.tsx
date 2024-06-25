@@ -21,6 +21,7 @@ import CardList from '../../../components/lib/cardList'
 import PageContainer from '../../../components/pageContainer'
 import { handleViewTransition } from '../../../utils/helpers'
 import EditForm from '../../../components/apps/forms/editForm'
+import Button from '../../../components/lib/button'
 
 export const Route = createFileRoute('/apps/forms/')({
 	component: Forms,
@@ -28,7 +29,7 @@ export const Route = createFileRoute('/apps/forms/')({
 })
 
 function FormCard(props: Form & { onEdit: () => void }) {
-	const { addMessagePopup } = usePopups()
+	const { addMessagePopup, addActionPopup, removeActionPopup } = usePopups()
 	const arr = JSON.parse(props.previousVersionIDs)
 
 	const { mutate: deleteForm } = useMutation({
@@ -38,8 +39,37 @@ function FormCard(props: Form & { onEdit: () => void }) {
 		onSuccess: () => addMessagePopup({ id: props.id, message: 'Form deleted successfully', type: 'success' }),
 	})
 
+	function handleDeleteForm() {
+		addActionPopup({
+			type: 'warning',
+			id: 'sureToDeleteForm',
+			title: 'Are you sure ?',
+			children: (
+				<>
+					<h3 className="text-sm text-disabled">This is a potentially destructive action! Once deleted, the form cannot be retrieved again</h3>
+					<div className="mt-2 flex items-center justify-between">
+						<Button size="small" variant="simple" onClick={() => removeActionPopup('sureToDeleteForm')} className="py-1">
+							Cancel
+						</Button>
+						<Button
+							size="small"
+							variant="danger"
+							onClick={() => {
+								deleteForm()
+								removeActionPopup('sureToDeleteForm')
+							}}
+							className="py-1"
+						>
+							Delete
+						</Button>
+					</div>
+				</>
+			),
+		})
+	}
+
 	return (
-		<div className="h-min select-none rounded-lg border-2 border-white p-2 shadow-lg hover:border-primary sm:p-3 md:p-4">
+		<div className="h-min select-none rounded-lg border-2 border-white p-2.5 shadow-lg hover:border-primary">
 			<div className="flex justify-between gap-2">
 				<div>
 					<div className="flex flex-grow gap-2">
@@ -83,7 +113,7 @@ function FormCard(props: Form & { onEdit: () => void }) {
 						<PencilSquareIcon onClick={props.onEdit} className="h-8 w-8 rounded-md p-1.5 text-disabled hover:bg-primaryLight" />
 					</Tooltip>
 					<Tooltip label="Delete Form" show="right">
-						<TrashIcon className="h-8 w-8 rounded-md p-1.5 text-disabled hover:bg-dangerLight" onClick={() => deleteForm()} />
+						<TrashIcon className="h-8 w-8 rounded-md p-1.5 text-disabled hover:bg-dangerLight" onClick={handleDeleteForm} />
 					</Tooltip>
 				</div>
 			</div>

@@ -1,8 +1,0 @@
-web
-.gitignore
-.idea
-.vscode
-bin
-*.Dockerfile
-*.docker-compose.yml
-data

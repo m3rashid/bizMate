@@ -28,7 +28,7 @@ function Tooltip(props: TooltipProps) {
 			</div>
 			{createPortal(
 				show ? (
-					<div style={getTooltipStyles()} className="absolute z-50 rounded-lg border-[1px] border-gray-200 bg-white px-2 py-1 text-sm shadow-md">
+					<div style={getTooltipStyles()} className="absolute z-50 rounded-md border border-gray-200 bg-white px-2 py-1 text-sm shadow-md">
 						{props.label}
 					</div>
 				) : null,

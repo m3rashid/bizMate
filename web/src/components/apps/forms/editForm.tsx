@@ -8,6 +8,7 @@ import FormRenderer from '../../forms/renderer'
 import { Form, StringBoolean } from '../../../types'
 import { FormElementInstance, SupportedWidgetName } from '../../forms/constants'
 import { camelCaseToSentenceCase, handleViewTransition } from '../../../utils/helpers'
+import { usePopups } from '../../../hooks/popups'
 
 export type EditFormProps = { setOpen: Dispatch<SetStateAction<boolean>> } & ({ form: undefined } | { form: Form; refetch: () => void })
 
@@ -33,12 +34,17 @@ function editFormMeta(form: Array<[keyof Form, string | boolean, string, Support
 }
 
 function EditForm(props: EditFormProps) {
+	const { addMessagePopup } = usePopups()
 	const { mutate } = useMutation({
 		mutationKey: ['editForm'],
 		mutationFn: (form: Partial<Form>) => apiClient('/forms/update', { method: 'POST', body: JSON.stringify(form) }),
 		onSuccess: () => {
 			props.setOpen(false)
+			addMessagePopup({ id: 'successUpdatingForm', message: 'Form updated successfully', type: 'success' })
 			if (props.form) props.refetch()
+		},
+		onError: () => {
+			addMessagePopup({ id: 'errorUpdatingForm', message: 'An Error occured in updating form', type: 'error' })
 		},
 	})
 
@@ -104,12 +110,12 @@ function EditForm(props: EditFormProps) {
 			setOpen={() => handleViewTransition(() => props.setOpen(false))}
 			title={`Edit Form ${props.form ? `(${props.form.title})` : ''}`}
 		>
-			<form className="flex h-full flex-col gap-4" onSubmit={handleEditForm}>
+			<form className="h-full" onSubmit={handleEditForm}>
 				<div className="flex h-full max-h-96 flex-grow flex-col gap-4 overflow-y-auto p-4">
 					<FormRenderer meta={meta} />
 				</div>
 
-				<div className="flex flex-grow-0 items-center justify-between p-4">
+				<div className="flex flex-grow-0 items-center justify-between border-t border-borderColor px-3 py-2">
 					<Button variant="simple" type="reset">
 						Reset
 					</Button>

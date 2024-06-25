@@ -1,8 +1,6 @@
-.idea
-.vscode
-bin/*
-!bin/.gitkeep
-.env
-.data/*
-!.data/.gitkeep
-tmp/*
+web-shadcn
+node_modules
+backend/.data
+backend/tmp
+.data
+backend/.env

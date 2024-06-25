@@ -1,0 +1,110 @@
+package controllers
+
+import (
+	"bizMate/utils"
+	"fmt"
+	"strings"
+
+	"github.com/gofiber/fiber/v2"
+)
+
+type PaginateOptions struct {
+	ParamKeys          []string
+	QueryKeys          []string
+	Populate           []string
+	IncludeSoftDeleted bool // default false: dont include soft deleted
+	ReturnOnlyDeleted  bool // to show deleted items
+	GetTenantID        func(*fiber.Ctx) (uint, error)
+}
+
+func Paginate[Model DbModel](_options ...PaginateOptions) func(*fiber.Ctx) error {
+	var _mod Model
+	tableName := _mod.TableName()
+
+	if len(_options) > 1 {
+		panic("Only one pagination option is allowed")
+	}
+
+	paginationOptions := PaginateOptions{}
+	if len(_options) > 0 {
+		paginationOptions = _options[0]
+	}
+
+	return func(ctx *fiber.Ctx) error {
+		reqQuery := utils.PaginationRequestQuery{}
+		if err := ctx.QueryParser(&reqQuery); err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON("Bad Request")
+		}
+
+		var tenantId uint
+		if paginationOptions.GetTenantID != nil {
+			tId, err := paginationOptions.GetTenantID(ctx)
+			if err != nil {
+				return ctx.SendStatus(fiber.StatusBadRequest)
+			}
+			tenantId = tId
+		} else {
+			_, tenantId = utils.GetUserAndTenantIdsOrZero(ctx)
+		}
+
+		requestQueriesAndParams := []string{}
+		for _, queryKey := range paginationOptions.QueryKeys {
+			if queryValue := ctx.Query(queryKey); queryValue != "" {
+				requestQueriesAndParams = append(requestQueriesAndParams, fmt.Sprintf("\"%s\" = %s", queryKey, queryValue))
+			}
+		}
+
+		for _, paramKey := range paginationOptions.ParamKeys {
+			if paramValue := ctx.Params(paramKey); paramValue != "" {
+				requestQueriesAndParams = append(requestQueriesAndParams, fmt.Sprintf("\"%s\" = %s", paramKey, paramValue))
+			}
+		}
+
+		requestQueryParams := strings.Join(requestQueriesAndParams, " AND ")
+
+		reqPageNo := utils.Ternary(reqQuery.Page == 0, 1, reqQuery.Page)
+		reqPageLimit := min(utils.Ternary(reqQuery.Limit == 0, 10, reqQuery.Limit), 50)
+
+		db, err := utils.GetDB()
+		if err != nil {
+			return ctx.SendStatus(fiber.StatusInternalServerError)
+		}
+
+		if paginationOptions.Populate != nil {
+			for _, populate := range paginationOptions.Populate {
+				db = db.Preload(populate)
+			}
+		}
+
+		if !paginationOptions.IncludeSoftDeleted {
+			db = db.Where("deleted = false")
+		}
+
+		if paginationOptions.ReturnOnlyDeleted {
+			db = db.Where("deleted = true")
+		}
+
+		var docsCount int64 = 0
+		db = db.Where("\"tenantId\" = ?", tenantId)
+		if err := db.Table(tableName).Where(requestQueryParams).Count(&docsCount).Error; err != nil {
+			return ctx.SendStatus(fiber.StatusInternalServerError)
+		}
+
+		results := []Model{}
+		if err := db.Where(requestQueryParams).Order("id DESC").Limit(reqPageLimit).Offset((reqPageNo - 1) * reqPageLimit).Find(&results).Error; err != nil {
+			return ctx.SendStatus(fiber.StatusInternalServerError)
+		}
+
+		paginationResponse := utils.PaginationResponse[Model]{
+			Docs:            results,
+			Limit:           reqPageLimit,
+			Count:           len(results),
+			TotalDocs:       docsCount,
+			CurrentPage:     reqPageNo,
+			HasNextPage:     docsCount > int64(reqPageNo*reqPageLimit),
+			HasPreviousPage: reqPageNo > 1,
+		}
+
+		return ctx.Status(fiber.StatusOK).JSON(paginationResponse)
+	}
+}
