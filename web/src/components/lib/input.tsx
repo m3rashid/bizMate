@@ -40,7 +40,7 @@ function Input(props: InputProps) {
 					id={props.name}
 					type={props.type === 'password' ? inputType : props.type}
 					className={twMerge(
-						'block w-full rounded-md border-0 px-2 py-1 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6',
+						'block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-disabledLight sm:text-sm sm:leading-6',
 						!props.icon ? '' : 'pl-10',
 						props.type === 'password' ? 'pr-10' : '',
 						props.errorText ? 'text-red-500 ring-1 ring-inset ring-red-300 placeholder:text-red-300' : '',

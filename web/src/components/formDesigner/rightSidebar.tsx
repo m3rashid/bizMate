@@ -1,12 +1,11 @@
-import { FormEvent, MouseEvent, useMemo, useRef } from 'react'
-
-import Button from '../lib/button'
-import FormRenderer from '../forms/renderer'
-import { Props } from '../forms/exposedProps'
-import { FormElementInstance } from '../forms/constants'
 import { useFormDesigner } from '../../hooks/formDesigner'
-import { camelCaseToSentenceCase, generateRandomString } from '../../utils/helpers'
 import { usePopups } from '../../hooks/popups'
+import { camelCaseToSentenceCase, generateRandomString } from '../../utils/helpers'
+import { FormElementInstance } from '../forms/constants'
+import { Props } from '../forms/exposedProps'
+import FormRenderer from '../forms/renderer'
+import Button from '../lib/button'
+import { FormEvent, MouseEvent, useMemo, useRef } from 'react'
 
 type PropsToMetaProps = { _props: Props; values: Record<string, any> }
 function propsToMeta({ _props, values }: PropsToMetaProps): FormElementInstance[] {
@@ -126,8 +125,8 @@ function RightSidebar() {
 
 	return (
 		<div className="w-full min-w-80 max-w-96 overflow-y-auto bg-gray-100 shadow-sm">
-			<form ref={formRef} className="flex h-full flex-col gap-4" onSubmit={handleSave}>
-				<div className="flex items-center justify-between gap-2 border-b-2 border-b-gray-200 px-3 py-2">
+			<form ref={formRef} className="flex h-full flex-col" onSubmit={handleSave}>
+				<div className="flex items-center justify-between gap-2 border-b-2 border-b-gray-200 p-2.5">
 					<h2 className="text-lg font-semibold">{selectedNode ? 'Element settings' : 'Form Settings'}</h2>
 					<div className="flex items-center gap-2">
 						<Button size="small" type="submit" className="py-1">

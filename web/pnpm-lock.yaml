@@ -96,6 +96,9 @@ importers:
       '@tanstack/router-vite-plugin':
         specifier: ^1.31.18
         version: 1.31.18(vite@5.2.11(@types/node@20.14.2)(terser@5.31.1))
+      '@trivago/prettier-plugin-sort-imports':
+        specifier: ^4.3.0
+        version: 4.3.0(prettier@3.2.5)
       '@types/dom-view-transitions':
         specifier: ^1.0.4
         version: 1.0.4
@@ -2877,8 +2880,8 @@ packages:
   unist-util-visit@4.1.2:
     resolution: {integrity: sha512-MSd8OUGISqHdVvfY9TPhyK2VdUrPgxkUtWSuMHF6XAAFuL4LokseigBnZtPnJMu+FbynTkFNnFlyjxpVKujMRg==}
 
-  unlayer-types@1.33.0:
-    resolution: {integrity: sha512-Px6uMWKSPsmVgW3Bc6g1UDiIN1/7xKsEUlm+BjiVIwGD7osUEJUQfh5GYLOseStQT6bISfuGMsKg1OkjJ2ABtQ==}
+  unlayer-types@1.47.0:
+    resolution: {integrity: sha512-FahED+IKCtkpeXFC/q7rqfpdVbVIbdyDdIEnmjIKHJBqsQ/WZAqNsethE4IEWXJa1zm4bDqVrELQ8gHwPh8Jrw==}
 
   update-browserslist-db@1.0.14:
     resolution: {integrity: sha512-JixKH8GR2pWYshIPUg/NujK3JO7JiqEEUiNArE86NQyrgUuZeTlZQN3xuS/yiV5Kb48ev9K6RqNkaJjXsdg7Jw==}
@@ -3094,7 +3097,6 @@ snapshots:
     dependencies:
       '@babel/highlight': 7.24.7
       picocolors: 1.0.0
-    optional: true
 
   '@babel/compat-data@7.24.4': {}
 
@@ -3123,7 +3125,6 @@ snapshots:
       '@babel/types': 7.24.7
       jsesc: 2.5.2
       source-map: 0.5.7
-    optional: true
 
   '@babel/generator@7.24.5':
     dependencies:
@@ -3138,7 +3139,6 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
       jsesc: 2.5.2
-    optional: true
 
   '@babel/helper-annotate-as-pure@7.22.5':
     dependencies:
@@ -3170,7 +3170,6 @@ snapshots:
   '@babel/helper-environment-visitor@7.24.7':
     dependencies:
       '@babel/types': 7.24.7
-    optional: true
 
   '@babel/helper-function-name@7.23.0':
     dependencies:
@@ -3181,7 +3180,6 @@ snapshots:
     dependencies:
       '@babel/template': 7.24.7
       '@babel/types': 7.24.7
-    optional: true
 
   '@babel/helper-hoist-variables@7.22.5':
     dependencies:
@@ -3190,7 +3188,6 @@ snapshots:
   '@babel/helper-hoist-variables@7.24.7':
     dependencies:
       '@babel/types': 7.24.7
-    optional: true
 
   '@babel/helper-member-expression-to-functions@7.24.5':
     dependencies:
@@ -3237,17 +3234,14 @@ snapshots:
   '@babel/helper-split-export-declaration@7.24.7':
     dependencies:
       '@babel/types': 7.24.7
-    optional: true
 
   '@babel/helper-string-parser@7.24.1': {}
 
-  '@babel/helper-string-parser@7.24.7':
-    optional: true
+  '@babel/helper-string-parser@7.24.7': {}
 
   '@babel/helper-validator-identifier@7.24.5': {}
 
-  '@babel/helper-validator-identifier@7.24.7':
-    optional: true
+  '@babel/helper-validator-identifier@7.24.7': {}
 
   '@babel/helper-validator-option@7.23.5': {}
 
@@ -3272,7 +3266,6 @@ snapshots:
       chalk: 2.4.2
       js-tokens: 4.0.0
       picocolors: 1.0.0
-    optional: true
 
   '@babel/parser@7.24.5':
     dependencies:
@@ -3281,7 +3274,6 @@ snapshots:
   '@babel/parser@7.24.7':
     dependencies:
       '@babel/types': 7.24.7
-    optional: true
 
   '@babel/plugin-syntax-jsx@7.24.1(@babel/core@7.24.5)':
     dependencies:
@@ -3335,7 +3327,6 @@ snapshots:
       '@babel/code-frame': 7.24.7
       '@babel/parser': 7.24.7
       '@babel/types': 7.24.7
-    optional: true
 
   '@babel/traverse@7.23.2':
     dependencies:
@@ -3351,7 +3342,6 @@ snapshots:
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
-    optional: true
 
   '@babel/traverse@7.24.5':
     dependencies:
@@ -3372,7 +3362,6 @@ snapshots:
     dependencies:
       '@babel/helper-validator-identifier': 7.24.7
       to-fast-properties: 2.0.0
-    optional: true
 
   '@babel/types@7.24.5':
     dependencies:
@@ -3385,7 +3374,6 @@ snapshots:
       '@babel/helper-string-parser': 7.24.7
       '@babel/helper-validator-identifier': 7.24.7
       to-fast-properties: 2.0.0
-    optional: true
 
   '@blocknote/core@0.14.0':
     dependencies:
@@ -4162,7 +4150,6 @@ snapshots:
       prettier: 3.2.5
     transitivePeerDependencies:
       - supports-color
-    optional: true
 
   '@types/babel__core@7.20.5':
     dependencies:
@@ -5137,8 +5124,7 @@ snapshots:
     optionalDependencies:
       '@pkgjs/parseargs': 0.11.0
 
-  javascript-natural-sort@0.7.1:
-    optional: true
+  javascript-natural-sort@0.7.1: {}
 
   jiti@1.21.0: {}
 
@@ -5191,8 +5177,7 @@ snapshots:
 
   lodash.merge@4.6.2: {}
 
-  lodash@4.17.21:
-    optional: true
+  lodash@4.17.21: {}
 
   longest-streak@3.1.0: {}
 
@@ -5808,7 +5793,7 @@ snapshots:
   react-email-editor@1.7.10(react@18.3.1):
     dependencies:
       react: 18.3.1
-      unlayer-types: 1.33.0
+      unlayer-types: 1.47.0
 
   react-icons@5.2.1(react@18.3.1):
     dependencies:
@@ -6039,8 +6024,7 @@ snapshots:
       source-map: 0.6.1
     optional: true
 
-  source-map@0.5.7:
-    optional: true
+  source-map@0.5.7: {}
 
   source-map@0.6.1:
     optional: true
@@ -6236,7 +6220,7 @@ snapshots:
       unist-util-is: 5.2.1
       unist-util-visit-parents: 5.1.3
 
-  unlayer-types@1.33.0: {}
+  unlayer-types@1.47.0: {}
 
   update-browserslist-db@1.0.14(browserslist@4.23.0):
     dependencies:

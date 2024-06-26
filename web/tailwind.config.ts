@@ -4,12 +4,6 @@ const config: Config = {
 	content: ['./index.html', './src/**/*.{html,js,jsx,tx,tsx}'],
 	theme: {
 		extend: {
-			borderRadius: {
-				sm: '2px',
-				md: '4px',
-				lg: '6px',
-				xl: '8px',
-			},
 			colors: {
 				primary: '#a78bfa', // violet-400
 				primaryLight: '#ddd6fe', // violet-200
