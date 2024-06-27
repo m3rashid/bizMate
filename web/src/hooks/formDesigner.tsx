@@ -1,12 +1,11 @@
-import { arrayMove } from '@dnd-kit/sortable'
-import { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core'
-import { useState, Dispatch, useContext, createContext, SetStateAction, PropsWithChildren } from 'react'
-
-import { StringBoolean } from '../types'
-import { Props } from '../components/forms/exposedProps'
-import { generateRandomString, handleViewTransition } from '../utils/helpers'
 import { FormElementInstance, supportedWidgets } from '../components/forms/constants'
+import { Props } from '../components/forms/exposedProps'
+import { StringBoolean } from '../types'
+import { generateRandomString, handleViewTransition } from '../utils/helpers'
 import { usePopups } from './popups'
+import { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core'
+import { arrayMove } from '@dnd-kit/sortable'
+import { atom, useRecoilState } from 'recoil'
 
 const propsNodeNotSelected: Props = {
 	title: [true, 'Form title', 'string'],
@@ -66,19 +65,14 @@ const formDesignerDefaultState: FormDesigner = {
 	},
 }
 
-const formDesignerContext = createContext<[formDesigner: FormDesigner, setFormDesigner: Dispatch<SetStateAction<FormDesigner>>]>([
-	formDesignerDefaultState,
-	() => {},
-])
-
-export function FormDesignerProvider(props: PropsWithChildren) {
-	const [formDesigner, setFormDesigner] = useState<FormDesigner>(formDesignerDefaultState)
-	return <formDesignerContext.Provider value={[formDesigner, setFormDesigner]}>{props.children}</formDesignerContext.Provider>
-}
+const formDesignerAtom = atom<FormDesigner>({
+	key: 'formDesignerAtom',
+	default: formDesignerDefaultState,
+})
 
 export function useFormDesigner() {
 	const { addMessagePopup } = usePopups()
-	const [{ meta, viewType, selectedNode, rootProps }, setFormDesigner] = useContext(formDesignerContext)
+	const [{ meta, viewType, selectedNode, rootProps }, setFormDesigner] = useRecoilState(formDesignerAtom)
 
 	function getTaskPosition(meta: FormElementInstance[], id: string | UniqueIdentifier): number {
 		return meta.findIndex((el) => el.id === id)

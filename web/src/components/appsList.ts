@@ -44,7 +44,7 @@ export const apps: App[] = [
 		name: 'Dashboards',
 		description: 'Create and manage your dashboards',
 		routes: [
-			{ name: 'Designer', icon: ChartBarIcon, description: 'Create a new dashboard', link: '/dashboards/designer' },
+			{ name: 'Designer', icon: ChartBarIcon, description: 'Create a new dashboard', link: '/dashboards/$dashboardId/designer' },
 			{ name: 'All Dashboards', icon: ListBulletIcon, description: 'List all dashboards', link: '/dashboards/', search: { 'page': 1 } },
 		],
 	},

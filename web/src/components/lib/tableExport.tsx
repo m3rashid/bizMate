@@ -1,16 +1,15 @@
-import { FormEvent, MouseEvent, useState } from 'react'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import TableCellsIcon from '@heroicons/react/24/outline/TableCellsIcon'
-
-import Modal from './modal'
-import TogglerInput from './toggle'
-import { PageLoader } from './loader'
 import apiClient from '../../api/client'
-import Button, { ButtonProps } from './button'
 import { usePopups } from '../../hooks/popups'
-import SingleSelectInput from './singleSelectInput'
 import { ExportableTable, Option } from '../../types'
 import { handleViewTransition } from '../../utils/helpers'
+import Button, { ButtonProps } from './button'
+import { PageLoader } from './loader'
+import Modal from './modal'
+import SingleSelectInput from './singleSelectInput'
+import TogglerInput from './toggle'
+import TableCellsIcon from '@heroicons/react/24/outline/TableCellsIcon'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { FormEvent, useState } from 'react'
 
 export type TableExportProps = {
 	tableName: ExportableTable

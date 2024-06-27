@@ -1,21 +1,10 @@
-import { FC, PropsWithChildren, SVGProps } from 'react'
-import LinkIcon from '@heroicons/react/24/outline/LinkIcon'
-import PhoneIcon from '@heroicons/react/24/outline/PhoneIcon'
-import PhotoIcon from '@heroicons/react/24/outline/PhotoIcon'
-import Bars2Icon from '@heroicons/react/24/outline/Bars2Icon'
-import ListBulletIcon from '@heroicons/react/24/outline/ListBulletIcon'
-import CodeBracketIcon from '@heroicons/react/24/outline/CodeBracketIcon'
-import DocumentTextIcon from '@heroicons/react/24/outline/DocumentTextIcon'
-import Bars3CenterLeftIcon from '@heroicons/react/24/outline/Bars3CenterLeftIcon'
-import AdjustmentsVerticalIcon from '@heroicons/react/24/outline/AdjustmentsVerticalIcon'
-
 import {
 	codeProps,
 	linkProps,
 	imageProps,
+	inputProps,
 	headingProps,
 	paragraphProps,
-	inputProps,
 	radioInputProps,
 	selectInputProps,
 	togglerInputProps,
@@ -23,9 +12,18 @@ import {
 	richTextInputProps,
 	phoneNumberInputProps,
 } from './exposedProps'
+import AdjustmentsVerticalIcon from '@heroicons/react/24/outline/AdjustmentsVerticalIcon'
+import Bars2Icon from '@heroicons/react/24/outline/Bars2Icon'
+import Bars3CenterLeftIcon from '@heroicons/react/24/outline/Bars3CenterLeftIcon'
+import CodeBracketIcon from '@heroicons/react/24/outline/CodeBracketIcon'
+import DocumentTextIcon from '@heroicons/react/24/outline/DocumentTextIcon'
+import LinkIcon from '@heroicons/react/24/outline/LinkIcon'
+import ListBulletIcon from '@heroicons/react/24/outline/ListBulletIcon'
+import PhoneIcon from '@heroicons/react/24/outline/PhoneIcon'
+import PhotoIcon from '@heroicons/react/24/outline/PhotoIcon'
+import { FC, PropsWithChildren, SVGProps } from 'react'
 
 type GetProps<T> = Record<keyof T, any>
-
 export type SupportedWidget =
 	| { name: 'input'; props: GetProps<typeof inputProps> }
 	| { name: 'textareaInput'; props: GetProps<typeof textAreaInputProps> }

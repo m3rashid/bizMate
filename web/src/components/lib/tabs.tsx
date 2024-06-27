@@ -19,6 +19,7 @@ export type TabsProps = {
 }
 
 function Tabs(props: TabsProps) {
+	console.log(props)
 	return (
 		<div>
 			<div className="sm:hidden">

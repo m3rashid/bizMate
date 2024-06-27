@@ -19,7 +19,7 @@ function FormDesigner() {
 
 	return (
 		<DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
-			<div className="flex h-screen overflow-hidden">
+			<div className="flex h-[calc(100vh-48px)] overflow-hidden">
 				<div className="min-w-80 max-w-96 overflow-y-auto bg-gray-100 p-3 drop-shadow-sm">
 					<div className="grid grid-cols-2 gap-3">
 						{supportedWidgets.map((widgetConfig) => (

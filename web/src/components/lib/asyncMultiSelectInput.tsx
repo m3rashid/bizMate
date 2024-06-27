@@ -1,14 +1,13 @@
-import { twMerge } from 'tailwind-merge'
-import { useQuery } from '@tanstack/react-query'
-import CheckIcon from '@heroicons/react/24/outline/CheckIcon'
-import { FC, Fragment, useMemo, useRef, useState } from 'react'
-import ChevronUpDownIcon from '@heroicons/react/24/outline/ChevronUpDownIcon'
-import { Label, Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react'
-
-import { Loader } from './loader'
 import apiClient from '../../api/client'
 import { DbRow, PaginationResponse } from '../../types'
 import { getUniqueObjectsByKey } from '../../utils/helpers'
+import { Loader } from './loader'
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react'
+import CheckIcon from '@heroicons/react/24/outline/CheckIcon'
+import ChevronUpDownIcon from '@heroicons/react/24/outline/ChevronUpDownIcon'
+import { useQuery } from '@tanstack/react-query'
+import { FC, Fragment, useMemo, useRef, useState } from 'react'
+import { twMerge } from 'tailwind-merge'
 
 export type AsyncMultiSelectProps<T> = {
 	valueKey: keyof T

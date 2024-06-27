@@ -1,10 +1,9 @@
-import { arrayMove } from '@dnd-kit/sortable'
-import { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core'
-import { Dispatch, useState, useContext, createContext, SetStateAction, PropsWithChildren } from 'react'
-
+import { Props } from '../components/forms/exposedProps'
 import { Widget } from '../types'
 import { handleViewTransition } from '../utils/helpers'
-import { Props } from '../components/forms/exposedProps'
+import { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core'
+import { arrayMove } from '@dnd-kit/sortable'
+import { atom, useRecoilState } from 'recoil'
 
 export type DashboardWidget = Widget & {
 	id: string
@@ -30,17 +29,13 @@ const dashboardDesignerDefaultState: DashboardDesigner = {
 	dashboardWidgets: [],
 }
 
-const dashboardDesignerContext = createContext<
-	[dashboardDesigner: DashboardDesigner, setDashboardDesigner: Dispatch<SetStateAction<DashboardDesigner>>]
->([dashboardDesignerDefaultState, () => {}])
-
-export function DashboardDesignerProvider({ children }: PropsWithChildren) {
-	const [dashboardDesigner, setDashboardDesigner] = useState<DashboardDesigner>(dashboardDesignerDefaultState)
-	return <dashboardDesignerContext.Provider value={[dashboardDesigner, setDashboardDesigner]}>{children}</dashboardDesignerContext.Provider>
-}
+const dashboardDesignerAtom = atom<DashboardDesigner>({
+	key: 'dashboardDesignerAtom',
+	default: dashboardDesignerDefaultState,
+})
 
 export function useDashboardDesigner() {
-	const [{ rootProps, viewType, dashboardWidgets, selectedNode }, setDashboardDesigner] = useContext(dashboardDesignerContext)
+	const [{ rootProps, viewType, dashboardWidgets, selectedNode }, setDashboardDesigner] = useRecoilState(dashboardDesignerAtom)
 
 	function getWidgetPosition(widgets: DashboardWidget[], id: string | UniqueIdentifier): number {
 		return widgets.findIndex((el) => el.id === id)

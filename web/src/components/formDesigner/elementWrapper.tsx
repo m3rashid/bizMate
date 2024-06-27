@@ -1,12 +1,11 @@
-import { CSS } from '@dnd-kit/utilities'
-import { twMerge } from 'tailwind-merge'
-import { PropsWithChildren } from 'react'
-import { useSortable } from '@dnd-kit/sortable'
-import XMarkIcon from '@heroicons/react/20/solid/XMarkIcon'
-
-import Tooltip from '../lib/tooltip'
-import { FormElementInstance } from '../forms/constants'
 import { useFormDesigner } from '../../hooks/formDesigner'
+import { FormElementInstance } from '../forms/constants'
+import Tooltip from '../lib/tooltip'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+import XMarkIcon from '@heroicons/react/20/solid/XMarkIcon'
+import { PropsWithChildren } from 'react'
+import { twMerge } from 'tailwind-merge'
 
 export type ElementWrapperProps = PropsWithChildren & {
 	item: FormElementInstance
@@ -30,7 +29,7 @@ function ElementWrapper(props: ElementWrapperProps) {
 		>
 			{props.children}
 			<div
-				className="absolute -right-3 -top-3 z-50 rounded-full border border-borderColor bg-white p-1 hover:border-0 hover:bg-danger hover:text-white"
+				className="absolute -right-3 -top-3 z-10 rounded-full border border-borderColor bg-white p-1 hover:border-0 hover:bg-danger hover:text-white"
 				onClick={(e) => {
 					e.stopPropagation()
 					e.preventDefault()

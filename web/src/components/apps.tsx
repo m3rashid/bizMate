@@ -1,8 +1,7 @@
-import { App, apps, sideApp } from './appsList'
+import { App } from './appsList'
 import Tooltip from './lib/tooltip'
 import InformationCircleIcon from '@heroicons/react/24/outline/InformationCircleIcon'
 import { Link } from '@tanstack/react-router'
-import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 
 export function RenderApp(app: App) {
 	return (
@@ -35,23 +34,3 @@ export function RenderApp(app: App) {
 		</div>
 	)
 }
-
-function AppsList() {
-	return (
-		<div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
-			<ResponsiveMasonry className="col-span-1 md:col-span-2 lg:col-span-3" columnsCountBreakPoints={{ 300: 1, 1100: 2, 1600: 3 }}>
-				<Masonry gutter="1rem" className="mb-4">
-					{apps.map((app) => (
-						<RenderApp key={app.name} {...app} />
-					))}
-				</Masonry>
-			</ResponsiveMasonry>
-
-			<div className="flex flex-col gap-4">
-				<RenderApp {...sideApp} />
-			</div>
-		</div>
-	)
-}
-
-export default AppsList

@@ -1,11 +1,10 @@
-import { ReactNode } from 'react'
-import { twMerge } from 'tailwind-merge'
-import { useNavigate } from '@tanstack/react-router'
-import PlusIcon from '@heroicons/react/24/outline/PlusIcon'
-import ArrowPathIcon from '@heroicons/react/24/outline/ArrowPathIcon'
-
 import Button, { ButtonProps } from './button'
 import TableExport, { TableExportProps } from './tableExport'
+import ArrowPathIcon from '@heroicons/react/24/outline/ArrowPathIcon'
+import PlusIcon from '@heroicons/react/24/outline/PlusIcon'
+import { useNavigate } from '@tanstack/react-router'
+import { ReactNode } from 'react'
+import { twMerge } from 'tailwind-merge'
 
 type DataListHeaderProps = {
 	title?: string
@@ -37,8 +36,8 @@ function DataListHeader(props: DataListHeaderProps) {
 					<Button
 						size="small"
 						variant="simple"
-						LeftIcon={<ArrowPathIcon className={twMerge('h-4 w-4', props.isFetching ? 'animate-spin' : '')} />}
 						onClick={() => props.refetch()}
+						LeftIcon={<ArrowPathIcon className={twMerge('h-[18px] w-[18px]', props.isFetching ? 'animate-spin' : '')} />}
 					/>
 				) : null}
 				{props.otherActions}

@@ -23,7 +23,6 @@ function Dashboards() {
 				paginateUrl="/dashboards/all"
 				queryKeys={['getAllDashboards']}
 				defaultEmptyStateName="dashboards"
-				addButtonLink="/dashboards/designer"
 				description="Create and manage all custom dashboards"
 			/>
 		</PageContainer>

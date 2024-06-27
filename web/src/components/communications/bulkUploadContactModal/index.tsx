@@ -1,9 +1,9 @@
+import { BulkUploadContactModalProps, modalTitleMap, useBulkUploadContact } from '../../../hooks/bulkUploadContact'
+import Modal from '../../lib/modal'
 import Confirm from './confirm'
 import MapFields from './mapFields'
-import Modal from '../../lib/modal'
-import UploadFile from './uploadFile'
 import SelectUploadFileType from './selectUploadType'
-import { BulkUplaodProvider, BulkUploadContactModalProps, modalTitleMap, useBulkUploadContact } from '../../../hooks/bulkUploadContact'
+import UploadFile from './uploadFile'
 
 function InnerModal(props: BulkUploadContactModalProps) {
 	const { modalState, resetModal } = useBulkUploadContact()
@@ -29,11 +29,7 @@ function InnerModal(props: BulkUploadContactModalProps) {
 }
 
 function BulkUploadContactModal(props: BulkUploadContactModalProps) {
-	return (
-		<BulkUplaodProvider>
-			<InnerModal {...props} />
-		</BulkUplaodProvider>
-	)
+	return <InnerModal {...props} />
 }
 
 export default BulkUploadContactModal

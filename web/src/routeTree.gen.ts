@@ -26,7 +26,6 @@ const FormsIndexLazyImport = createFileRoute('/forms/')()
 const DashboardsIndexLazyImport = createFileRoute('/dashboards/')()
 const AutomationsIndexLazyImport = createFileRoute('/automations/')()
 const FormsDesignerLazyImport = createFileRoute('/forms/designer')()
-const DashboardsDesignerLazyImport = createFileRoute('/dashboards/designer')()
 const AutomationsDesignerLazyImport = createFileRoute('/automations/designer')()
 const AuthLoginLazyImport = createFileRoute('/auth/login')()
 const ProjectsProjectIdIndexLazyImport = createFileRoute(
@@ -56,6 +55,9 @@ const FormsFormIdResponsesLazyImport = createFileRoute(
 const FormsFormIdFillLazyImport = createFileRoute('/forms/$formId/fill')()
 const FormsFormIdAnalyticsLazyImport = createFileRoute(
   '/forms/$formId/analytics',
+)()
+const DashboardsDashboardIdDesignerLazyImport = createFileRoute(
+  '/dashboards/$dashboardId/designer',
 )()
 const CommunicationsEmailsTemplatesLazyImport = createFileRoute(
   '/communications/emails/templates',
@@ -120,13 +122,6 @@ const FormsDesignerLazyRoute = FormsDesignerLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() =>
   import('./routes/forms/designer.lazy').then((d) => d.Route),
-)
-
-const DashboardsDesignerLazyRoute = DashboardsDesignerLazyImport.update({
-  path: '/dashboards/designer',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/dashboards/designer.lazy').then((d) => d.Route),
 )
 
 const AutomationsDesignerLazyRoute = AutomationsDesignerLazyImport.update({
@@ -218,6 +213,16 @@ const FormsFormIdAnalyticsLazyRoute = FormsFormIdAnalyticsLazyImport.update({
   import('./routes/forms/$formId/analytics.lazy').then((d) => d.Route),
 )
 
+const DashboardsDashboardIdDesignerLazyRoute =
+  DashboardsDashboardIdDesignerLazyImport.update({
+    path: '/dashboards/$dashboardId/designer',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/dashboards/$dashboardId/designer.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
 const CommunicationsEmailsTemplatesLazyRoute =
   CommunicationsEmailsTemplatesLazyImport.update({
     path: '/communications/emails/templates',
@@ -279,10 +284,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AutomationsDesignerLazyImport
       parentRoute: typeof rootRoute
     }
-    '/dashboards/designer': {
-      preLoaderRoute: typeof DashboardsDesignerLazyImport
-      parentRoute: typeof rootRoute
-    }
     '/forms/designer': {
       preLoaderRoute: typeof FormsDesignerLazyImport
       parentRoute: typeof rootRoute
@@ -313,6 +314,10 @@ declare module '@tanstack/react-router' {
     }
     '/communications/emails/templates': {
       preLoaderRoute: typeof CommunicationsEmailsTemplatesLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/dashboards/$dashboardId/designer': {
+      preLoaderRoute: typeof DashboardsDashboardIdDesignerLazyImport
       parentRoute: typeof rootRoute
     }
     '/forms/$formId/analytics': {
@@ -371,7 +376,6 @@ export const routeTree = rootRoute.addChildren([
   PaymentLazyRoute,
   AuthLoginLazyRoute,
   AutomationsDesignerLazyRoute,
-  DashboardsDesignerLazyRoute,
   FormsDesignerLazyRoute,
   AutomationsIndexLazyRoute,
   DashboardsIndexLazyRoute,
@@ -380,6 +384,7 @@ export const routeTree = rootRoute.addChildren([
   FormsFormIdPreviewRoute,
   CommunicationsEmailsDesignerLazyRoute,
   CommunicationsEmailsTemplatesLazyRoute,
+  DashboardsDashboardIdDesignerLazyRoute,
   FormsFormIdAnalyticsLazyRoute,
   FormsFormIdFillLazyRoute,
   FormsFormIdResponsesLazyRoute,

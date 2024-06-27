@@ -1,5 +1,5 @@
 import FormDesignerComponent from '../../components/formDesigner'
-import { FormDesignerProvider } from '../../hooks/formDesigner'
+import PageContainer from '../../components/pageContainer'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/forms/designer')({
@@ -8,8 +8,8 @@ export const Route = createFileRoute('/forms/designer')({
 
 function FormDesigner() {
 	return (
-		<FormDesignerProvider>
+		<PageContainer bodyClassName="p-0 sm:p-0">
 			<FormDesignerComponent />
-		</FormDesignerProvider>
+		</PageContainer>
 	)
 }

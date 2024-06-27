@@ -19,8 +19,8 @@ function App() {
 
 	const checkAuthInit = useCallback(async () => {
 		try {
-			const res = await checkAuth()
-			setInitRes(res)
+			const user = await checkAuth()
+			setInitRes({ isAuthenticated: true, user })
 		} catch (err: any) {
 			setInitRes({ isAuthenticated: false, user: null })
 		}

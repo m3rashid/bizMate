@@ -7,6 +7,7 @@ export const Route = createLazyFileRoute('/projects/$projectId/analytics')({
 
 function ProjectAnalytics() {
 	const { projectId } = useParams({ from: '/projects/$projectId/analytics' })
+	console.log(projectId)
 
 	return (
 		<PageContainer>
