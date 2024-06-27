@@ -38,6 +38,11 @@ function FormCard(props: Form & { onEdit: () => void }) {
 		onSuccess: () => addMessagePopup({ id: props.id, message: 'Form deleted successfully', type: 'success' }),
 	})
 
+	function onDeleteConfirm() {
+		deleteForm()
+		removeActionPopup('sureToDeleteForm')
+	}
+
 	function handleDeleteForm() {
 		addActionPopup({
 			type: 'warning',
@@ -50,15 +55,7 @@ function FormCard(props: Form & { onEdit: () => void }) {
 						<Button size="small" variant="simple" onClick={() => removeActionPopup('sureToDeleteForm')} className="py-1">
 							Cancel
 						</Button>
-						<Button
-							size="small"
-							variant="danger"
-							onClick={() => {
-								deleteForm()
-								removeActionPopup('sureToDeleteForm')
-							}}
-							className="py-1"
-						>
+						<Button size="small" variant="danger" onClick={onDeleteConfirm} className="py-1">
 							Delete
 						</Button>
 					</div>

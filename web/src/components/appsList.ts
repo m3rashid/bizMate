@@ -33,19 +33,19 @@ export const apps: App[] = [
 		],
 	},
 	{
+		name: 'Dashboards',
+		description: 'Create and manage your dashboards',
+		routes: [
+			{ name: 'All Dashboards', icon: ListBulletIcon, description: 'List all dashboards', link: '/dashboards/', search: { 'page': 1 } },
+			//
+		],
+	},
+	{
 		name: 'Automations',
 		description: 'Automate your daily processes',
 		routes: [
 			{ name: 'Designer', icon: AdjustmentsHorizontalIcon, description: 'Create a new automation', link: '/automations/designer' },
 			{ name: 'All Automations', icon: ListBulletIcon, link: '/automations/', description: 'List all automations', search: { 'page': 1 } },
-		],
-	},
-	{
-		name: 'Dashboards',
-		description: 'Create and manage your dashboards',
-		routes: [
-			{ name: 'Designer', icon: ChartBarIcon, description: 'Create a new dashboard', link: '/dashboards/$dashboardId/designer' },
-			{ name: 'All Dashboards', icon: ListBulletIcon, description: 'List all dashboards', link: '/dashboards/', search: { 'page': 1 } },
 		],
 	},
 	{
@@ -67,7 +67,10 @@ export const apps: App[] = [
 	{
 		name: 'Projects',
 		description: 'Create and manage your projects',
-		routes: [{ name: 'All Projects', icon: ListBulletIcon, link: '/projects/', description: 'List all projects', search: { 'page': 1 } }],
+		routes: [
+			{ name: 'All Projects', icon: ListBulletIcon, link: '/projects/', description: 'List all projects', search: { 'page': 1 } },
+			//
+		],
 	},
 ]
 

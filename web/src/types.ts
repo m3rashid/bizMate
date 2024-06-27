@@ -105,6 +105,7 @@ export type Dashboard = BaseModel &
 	UpdatedBy & {
 		title: string
 		description: string
+		active: boolean
 	}
 
 export type Workflow = BaseModel &
@@ -201,5 +202,5 @@ export type Contact = BaseModel &
 
 export type Changelog = BaseModel & {}
 
-export const exportableTables = ['form_response_table', 'user_table', 'forms_table'] as const
+export const exportableTables = ['form_response_table', 'user_table', 'forms_table', 'dashboard_table'] as const
 export type ExportableTable = (typeof exportableTables)[number]

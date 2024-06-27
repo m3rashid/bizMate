@@ -31,6 +31,9 @@ const AuthLoginLazyImport = createFileRoute('/auth/login')()
 const ProjectsProjectIdIndexLazyImport = createFileRoute(
   '/projects/$projectId/',
 )()
+const DashboardsDashboardIdIndexLazyImport = createFileRoute(
+  '/dashboards/$dashboardId/',
+)()
 const CommunicationsEmailsIndexLazyImport = createFileRoute(
   '/communications/emails/',
 )()
@@ -144,6 +147,14 @@ const ProjectsProjectIdIndexLazyRoute = ProjectsProjectIdIndexLazyImport.update(
 ).lazy(() =>
   import('./routes/projects/$projectId/index.lazy').then((d) => d.Route),
 )
+
+const DashboardsDashboardIdIndexLazyRoute =
+  DashboardsDashboardIdIndexLazyImport.update({
+    path: '/dashboards/$dashboardId/',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/dashboards/$dashboardId/index.lazy').then((d) => d.Route),
+  )
 
 const CommunicationsEmailsIndexLazyRoute =
   CommunicationsEmailsIndexLazyImport.update({
@@ -356,6 +367,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CommunicationsEmailsIndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/dashboards/$dashboardId/': {
+      preLoaderRoute: typeof DashboardsDashboardIdIndexLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/projects/$projectId/': {
       preLoaderRoute: typeof ProjectsProjectIdIndexLazyImport
       parentRoute: typeof rootRoute
@@ -394,6 +409,7 @@ export const routeTree = rootRoute.addChildren([
   ProjectsProjectIdReadmeLazyRoute,
   CommunicationsContactsIndexLazyRoute,
   CommunicationsEmailsIndexLazyRoute,
+  DashboardsDashboardIdIndexLazyRoute,
   ProjectsProjectIdIndexLazyRoute,
   ProjectsProjectIdTasksTaskIdIndexLazyRoute,
 ])

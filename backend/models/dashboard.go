@@ -65,15 +65,19 @@ type Dashboard struct {
 	UpdatedBy
 	Title       string `json:"title" gorm:"column:title;not null" validate:"required"`
 	Description string `json:"description" gorm:"column:description;not null"`
+	Active      bool   `json:"active" gorm:"column:active;default:false"`
 }
 
 var DashboardJsonModel = DashboardIndexableJsonModel{
 	ModelName: WIDGET_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
-		"id":        JsonNumber,
-		"createdBy": JsonCreatedBy,
-		"updatedBy": JsonCreatedBy,
-		"createdAt": JsonDate,
+		"id":          JsonNumber,
+		"title":       JsonString,
+		"description": JsonString,
+		"active":      JsonBool,
+		"createdBy":   JsonCreatedBy,
+		"updatedBy":   JsonCreatedBy,
+		"createdAt":   JsonDate,
 	},
 }
 
