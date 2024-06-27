@@ -1,12 +1,11 @@
-import { FC } from 'react'
-import { useNavigate } from '@tanstack/react-router'
-import ChartBarIcon from '@heroicons/react/24/outline/ChartBarIcon'
-import DocumentIcon from '@heroicons/react/24/outline/DocumentIcon'
-import DocumentTextIcon from '@heroicons/react/24/outline/DocumentTextIcon'
-import DocumentCheckIcon from '@heroicons/react/24/outline/DocumentCheckIcon'
-
 import { Project } from '../../types'
 import Button, { ButtonProps } from '../lib/button'
+import ChartBarIcon from '@heroicons/react/24/outline/ChartBarIcon'
+import DocumentCheckIcon from '@heroicons/react/24/outline/DocumentCheckIcon'
+import DocumentIcon from '@heroicons/react/24/outline/DocumentIcon'
+import DocumentTextIcon from '@heroicons/react/24/outline/DocumentTextIcon'
+import { useNavigate } from '@tanstack/react-router'
+import { FC } from 'react'
 
 const buttons: Array<{ label: string; name: string; icon: FC<any>; btnVariant: ButtonProps['variant'] }> = [
 	{ name: 'analytics', label: 'Analytics', icon: ChartBarIcon, btnVariant: 'primary' },
@@ -16,7 +15,7 @@ const buttons: Array<{ label: string; name: string; icon: FC<any>; btnVariant: B
 ]
 
 function ProjectHeader(project: Project) {
-	const navigate = useNavigate({ from: '/apps/projects/$projectId' })
+	const navigate = useNavigate({ from: '/projects/$projectId' })
 
 	if (!project.id) return null
 	return (
@@ -29,7 +28,7 @@ function ProjectHeader(project: Project) {
 						key={btn.name}
 						variant={btn.btnVariant}
 						LeftIcon={<btn.icon className="h-4 w-4" />}
-						onClick={() => navigate({ to: `/apps/projects/${project.id}/${btn.name}` })}
+						onClick={() => navigate({ to: `/projects/${project.id}/${btn.name}` })}
 					>
 						{btn.label}
 					</Button>

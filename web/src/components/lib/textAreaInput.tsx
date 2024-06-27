@@ -1,7 +1,6 @@
-import { twMerge } from 'tailwind-merge'
-import { ChangeEvent, FC, TextareaHTMLAttributes } from 'react'
-
 import { filterBykeys } from '../../utils/helpers'
+import { ChangeEvent, FC, TextareaHTMLAttributes } from 'react'
+import { twMerge } from 'tailwind-merge'
 
 export type TextAreaInputProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
 	label?: string
@@ -43,7 +42,7 @@ function TextAreaInput(props: TextAreaInputProps) {
 				/>
 			</div>
 
-			{props.descriptionText ? <p className="mt-[2px] text-sm text-gray-500">{props.descriptionText}</p> : null}
+			{props.descriptionText ? <p className="mt-1 text-sm text-gray-500">{props.descriptionText}</p> : null}
 		</div>
 	)
 }

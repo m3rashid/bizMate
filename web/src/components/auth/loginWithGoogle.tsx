@@ -1,9 +1,8 @@
-import { Suspense, useEffect, useRef } from 'react'
-import { useRouterState } from '@tanstack/react-router'
-
+import { baseUrl } from '../../api/client'
 import Button from '../lib/button'
 import { PageLoader } from '../lib/loader'
-import { baseUrl } from '../../api/client'
+import { useRouterState } from '@tanstack/react-router'
+import { Suspense, useEffect, useRef } from 'react'
 
 function GoogleIcon() {
 	return (

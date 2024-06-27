@@ -1,9 +1,13 @@
 import { Config } from 'tailwindcss'
+import defaultTheme from 'tailwindcss/defaultTheme'
 
 const config: Config = {
 	content: ['./index.html', './src/**/*.{html,js,jsx,tx,tsx}'],
 	theme: {
 		extend: {
+			fontFamily: {
+				sans: ['Inter var', ...defaultTheme.fontFamily.sans],
+			},
 			colors: {
 				primary: '#a78bfa', // violet-400
 				primaryLight: '#ddd6fe', // violet-200

@@ -1,13 +1,12 @@
-import { useMutation } from '@tanstack/react-query'
-import { useNavigate } from '@tanstack/react-router'
-import InformationCircleIcon from '@heroicons/react/24/outline/InformationCircleIcon'
-
-import Button from '../lib/button'
-import Tooltip from '../lib/tooltip'
 import apiClient from '../../api/client'
+import { useFormDesigner } from '../../hooks/formDesigner'
 import { usePopups } from '../../hooks/popups'
 import { Form, StringBoolean } from '../../types'
-import { useFormDesigner } from '../../hooks/formDesigner'
+import Button from '../lib/button'
+import Tooltip from '../lib/tooltip'
+import InformationCircleIcon from '@heroicons/react/24/outline/InformationCircleIcon'
+import { useMutation } from '@tanstack/react-query'
+import { useNavigate } from '@tanstack/react-router'
 
 function FormDesignerTopBar() {
 	const navigate = useNavigate()
@@ -19,7 +18,7 @@ function FormDesignerTopBar() {
 		onError: () => addMessagePopup({ id: 'errorCreateForm', message: 'Error in creating form', type: 'error' }),
 		mutationFn: async (body: any) => apiClient('/forms/create', { method: 'POST', body: JSON.stringify(body) }),
 		onSuccess: () => {
-			navigate({ to: '/apps/forms', search: { page: 1 } })
+			navigate({ to: '/forms', search: { page: 1 } })
 			addMessagePopup({ id: 'saveForm', message: 'Successfully created form', type: 'success' })
 		},
 	})

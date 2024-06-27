@@ -1,52 +1,39 @@
-import { Dispatch, PropsWithChildren, SetStateAction, createContext, useContext, useState } from 'react'
-
-import { User } from '../types'
 import { baseUrl } from '../api/client'
+import { User } from '../types'
+import { atom, useRecoilState } from 'recoil'
 
-export type Auth = {
+export type AuthState = {
 	isAuthenticated: boolean
 	user: User | null
 }
 
-const authDefaultState: Auth = {
-	isAuthenticated: false,
-	user: null,
-}
+export const authAtom = atom<AuthState>({
+	key: 'authAtom',
+	default: { isAuthenticated: false, user: null },
+})
 
-const authContext = createContext<[auth: Auth, setAuth: Dispatch<SetStateAction<Auth>>]>([authDefaultState, () => {}])
-
-export function AuthProvider(props: PropsWithChildren) {
-	const [auth, setAuth] = useState<Auth>(authDefaultState)
-	return <authContext.Provider value={[auth, setAuth]}>{props.children}</authContext.Provider>
+export async function checkAuth() {
+	const res = await fetch(baseUrl + '/auth/user', {
+		headers: {
+			Authorization: `Bearer ${localStorage.getItem('token')}`,
+		},
+	})
+	const data = await res.json()
+	if (!data.id) return null
+	return data
 }
 
 export function useAuth() {
-	const [auth, setAuth] = useContext(authContext)
+	const [auth, setAuth] = useRecoilState(authAtom)
 
 	function logout() {
 		localStorage.removeItem('token')
 		setAuth({ isAuthenticated: false, user: null })
 	}
 
-	async function checkAuth() {
-		try {
-			const res = await fetch(baseUrl + '/auth/user', {
-				headers: {
-					Authorization: `Bearer ${localStorage.getItem('token')}`,
-				},
-			})
-			const data = await res.json()
-			if (!data.id) throw new Error('No User')
-			setAuth({ isAuthenticated: true, user: data })
-		} catch (err: unknown) {
-			setAuth({ isAuthenticated: false, user: null })
-		}
-	}
-
 	return {
 		auth,
 		logout,
 		setAuth,
-		checkAuth,
 	}
 }

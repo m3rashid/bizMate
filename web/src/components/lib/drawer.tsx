@@ -1,11 +1,14 @@
-import { PropsWithChildren, ReactNode } from 'react'
-import XMarkIcon from '@heroicons/react/20/solid/XMarkIcon'
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react'
+import XMarkIcon from '@heroicons/react/20/solid/XMarkIcon'
+import { PropsWithChildren, ReactNode } from 'react'
+import { twMerge } from 'tailwind-merge'
 
 export type DrawerProps = PropsWithChildren & {
 	open: boolean
 	title?: ReactNode
 	setOpen: (val: boolean) => void
+	from: 'left' | 'right'
+	className?: string
 }
 
 function Drawer(props: DrawerProps) {
@@ -24,17 +27,17 @@ function Drawer(props: DrawerProps) {
 				</TransitionChild>
 
 				<div className="fixed inset-0 z-10 overflow-hidden">
-					<div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+					<div className={twMerge('pointer-events-none fixed inset-y-0 flex max-w-full', props.from === 'left' ? 'left-0' : 'right-0')}>
 						<TransitionChild
 							enter="transform transition ease-in-out duration-300"
-							enterFrom="translate-x-full"
+							enterFrom={props.from === 'left' ? '-translate-x-full' : 'translate-x-full'}
 							enterTo="translate-x-0"
 							leave="transform transition ease-in-out duration-200"
 							leaveFrom="translate-x-0"
-							leaveTo="translate-x-full"
+							leaveTo={props.from === 'left' ? '-translate-x-full' : 'translate-x-full'}
 						>
-							<DialogPanel className="pointer-events-auto h-screen w-screen max-w-md overflow-auto bg-white shadow-xl">
-								<div className="mb-4 flex w-full items-center justify-between gap-4">
+							<DialogPanel className={twMerge('pointer-events-auto h-screen w-screen max-w-md overflow-auto bg-white shadow-xl', props.className)}>
+								<div className="flex w-full items-center justify-between gap-4 border-b border-borderColor p-3">
 									{props.title ? (
 										<DialogTitle as="h3" className="text-base font-semibold leading-6 text-gray-900">
 											{props.title}

@@ -1,9 +1,8 @@
-import { twMerge } from 'tailwind-merge'
+import { filterBykeys } from '../../utils/helpers'
 import EyeOpen from '@heroicons/react/20/solid/EyeIcon'
 import EyeClosed from '@heroicons/react/20/solid/EyeSlashIcon'
 import { ChangeEvent, FC, InputHTMLAttributes, useState } from 'react'
-
-import { filterBykeys } from '../../utils/helpers'
+import { twMerge } from 'tailwind-merge'
 
 export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
 	label?: string
@@ -40,7 +39,7 @@ function Input(props: InputProps) {
 					id={props.name}
 					type={props.type === 'password' ? inputType : props.type}
 					className={twMerge(
-						'block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-disabledLight sm:text-sm sm:leading-6',
+						'block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-disabled sm:text-sm sm:leading-6',
 						!props.icon ? '' : 'pl-10',
 						props.type === 'password' ? 'pr-10' : '',
 						props.errorText ? 'text-red-500 ring-1 ring-inset ring-red-300 placeholder:text-red-300' : '',
@@ -62,7 +61,7 @@ function Input(props: InputProps) {
 				) : null}
 			</div>
 
-			{props.descriptionText ? <p className="mt-[2px] text-sm text-gray-500">{props.descriptionText}</p> : null}
+			{props.descriptionText ? <p className="mt-1 text-sm text-gray-500">{props.descriptionText}</p> : null}
 		</div>
 	)
 }

@@ -1,17 +1,15 @@
-import { useEffect, useRef, useState } from 'react'
-import { Navigate, createFileRoute, useNavigate, useRouterState } from '@tanstack/react-router'
-
-import { useAuth } from '../../hooks/auth'
-import BrandLogo from '../../components/lib/brandLogo'
-import LoginWithGoogle from '../../components/auth/loginWithGoogle'
 import LoginWithCredentials, { LoginWithCredentialsProps } from '../../components/auth/credentials'
+import LoginWithGoogle from '../../components/auth/loginWithGoogle'
+import BrandLogo from '../../components/lib/brandLogo'
+import { useAuth } from '../../hooks/auth'
+import { createFileRoute, useNavigate, useRouterState } from '@tanstack/react-router'
+import { useEffect, useState } from 'react'
 
 export const Route = createFileRoute('/auth/login')({ component: Login })
 
 function Login() {
 	const navigate = useNavigate()
-	const transitionStartedRef = useRef(false)
-	const { auth: user, checkAuth } = useAuth()
+	const { auth } = useAuth()
 	const [type, setType] = useState<LoginWithCredentialsProps['type']>('register')
 	const nextLocation = useRouterState({
 		select: (s) => {
@@ -22,19 +20,9 @@ function Login() {
 		},
 	})
 
-	async function onSuccess() {
-		await checkAuth()
-		transitionStartedRef.current = true
-	}
-
 	useEffect(() => {
-		if (transitionStartedRef?.current) navigate({ to: nextLocation })
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
-
-	if (user.isAuthenticated) {
-		return <Navigate to={nextLocation} />
-	}
+		if (auth.isAuthenticated) navigate({ to: nextLocation })
+	}, [auth.isAuthenticated])
 
 	return (
 		<div className="flex h-screen items-center justify-center bg-pageBg">
@@ -52,7 +40,7 @@ function Login() {
 
 				<div className="flex w-full flex-col">
 					<p className="mb-1 text-center text-sm text-gray-500">Login in with a different method</p>
-					<LoginWithGoogle onSuccess={onSuccess} />
+					<LoginWithGoogle />
 				</div>
 			</div>
 		</div>

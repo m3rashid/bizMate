@@ -1,8 +1,8 @@
-import { Link, useNavigate } from '@tanstack/react-router'
-
-import Search from './search'
-import BrandLogo from './lib/brandLogo'
 import { useAuth } from '../hooks/auth'
+import AppDrawer from './appDrawer'
+import BrandLogo from './lib/brandLogo'
+import Search from './search'
+import { Link, useNavigate } from '@tanstack/react-router'
 
 export type HeaderProps = {
 	//
@@ -13,10 +13,13 @@ function Header() {
 	const { auth, logout } = useAuth()
 
 	return (
-		<div className="flex h-12 items-center justify-between border-b-2 print:hidden">
-			<div className="flex cursor-pointer select-none items-center gap-2 hover:text-primary" onClick={() => navigate({ to: '/' })}>
-				<BrandLogo imgClassName="h-7 w-7 ml-2" />
-				<h2 className="m-0 p-0 text-lg font-bold">Bizmate</h2>
+		<div className="flex h-12 items-center justify-between border-b-2 px-2 print:hidden">
+			<div className="flex gap-2">
+				<AppDrawer />
+				<div className="flex cursor-pointer select-none items-center gap-1 hover:text-primary" onClick={() => navigate({ to: '/' })}>
+					<BrandLogo imgClassName="h-8 w-8" />
+					<h2 className="m-0 p-0 text-xl font-bold">Bizmate</h2>
+				</div>
 			</div>
 
 			<Search />

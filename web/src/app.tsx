@@ -1,8 +1,10 @@
-import { useEffect } from 'react'
-import { RouterProvider, createRouter } from '@tanstack/react-router'
-
-import { useAuth } from './hooks/auth'
+import { PageLoader } from './components/lib/loader'
+import { ActionPopupContainer, MessagePopupContainer } from './components/lib/popups'
+import { AuthState, authAtom, checkAuth } from './hooks/auth'
 import { routeTree } from './routeTree.gen'
+import { RouterProvider, createRouter } from '@tanstack/react-router'
+import { useCallback, useEffect, useState } from 'react'
+import { RecoilRoot } from 'recoil'
 
 const router = createRouter({ routeTree })
 
@@ -13,14 +15,30 @@ declare module '@tanstack/react-router' {
 }
 
 function App() {
-	const { checkAuth } = useAuth()
+	const [initRes, setInitRes] = useState<AuthState | null>(null)
+
+	const checkAuthInit = useCallback(async () => {
+		try {
+			const res = await checkAuth()
+			setInitRes(res)
+		} catch (err: any) {
+			setInitRes({ isAuthenticated: false, user: null })
+		}
+	}, [])
 
 	useEffect(() => {
-		checkAuth().catch(console.log)
+		checkAuthInit()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
-	return <RouterProvider router={router} />
+	if (!initRes) return <PageLoader />
+	return (
+		<RecoilRoot initializeState={({ set }) => set(authAtom, initRes)}>
+			<RouterProvider router={router} />
+			<MessagePopupContainer />
+			<ActionPopupContainer />
+		</RecoilRoot>
+	)
 }
 
 export default App

@@ -1,8 +1,7 @@
-import { twMerge } from 'tailwind-merge'
+import { filterBykeys } from '../../utils/helpers'
 import { Label, Switch, SwitchGroup, SwitchProps } from '@headlessui/react'
 import { ForwardedRef, ReactNode, forwardRef, useImperativeHandle, useState } from 'react'
-
-import { filterBykeys } from '../../utils/helpers'
+import { twMerge } from 'tailwind-merge'
 
 export type TogglerProps = SwitchProps & {
 	label?: ReactNode
@@ -47,7 +46,7 @@ function Component(props: TogglerProps, ref: ForwardedRef<{ getValue: () => bool
 				) : null}
 			</SwitchGroup>
 
-			{props.descriptionText ? <p className="text-sm text-gray-500">{props.descriptionText}</p> : null}
+			{props.descriptionText ? <p className="mt-1 text-sm text-gray-500">{props.descriptionText}</p> : null}
 		</div>
 	)
 }

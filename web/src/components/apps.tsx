@@ -1,21 +1,20 @@
+import { App, apps, sideApp } from './appsList'
+import Tooltip from './lib/tooltip'
+import InformationCircleIcon from '@heroicons/react/24/outline/InformationCircleIcon'
 import { Link } from '@tanstack/react-router'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
-import InformationCircleIcon from '@heroicons/react/24/outline/InformationCircleIcon'
 
-import Tooltip from './lib/tooltip'
-import { App, apps, sideApps } from './appsList'
-
-function RenderApp(app: App) {
+export function RenderApp(app: App) {
 	return (
-		<div className="h-min select-none rounded-lg border-2 border-white p-2 shadow-lg hover:border-primary">
+		<div className="h-min select-none">
 			<div className="flex items-center gap-2">
-				<h3 className="font-semibold text-disabled">{app.name}</h3>
+				<h3 className="text-sm font-semibold text-disabled">{app.name}</h3>
 				<Tooltip label={app.description} show="right">
-					<InformationCircleIcon className="h-5 w-5 text-disabled" />
+					<InformationCircleIcon className="h-4 w-4 text-disabled" />
 				</Tooltip>
 			</div>
 
-			<div className="mt-3 flex flex-col gap-4">
+			<div className="mt-1.5 flex flex-col gap-2">
 				{app.routes.map((route) => (
 					<Link
 						viewTransition
@@ -26,9 +25,9 @@ function RenderApp(app: App) {
 					>
 						<route.icon className="h-10 w-10 rounded-md bg-skeletonLight p-2 shadow-md group-hover:bg-white" />
 
-						<div className="text-sm">
-							<h4 className="-mb-1 mt-1 py-0 font-semibold">{route.name}</h4>
-							<div className="-mt-1 text-disabled">{route.description}</div>
+						<div className="flex flex-col gap-1.5">
+							<h4 className="-mb-1 mt-1 py-0 text-sm font-semibold">{route.name}</h4>
+							<div className="-mt-1 text-xs text-disabled">{route.description}</div>
 						</div>
 					</Link>
 				))}
@@ -49,9 +48,7 @@ function AppsList() {
 			</ResponsiveMasonry>
 
 			<div className="flex flex-col gap-4">
-				{sideApps.map((app) => (
-					<RenderApp key={app.name} {...app} />
-				))}
+				<RenderApp {...sideApp} />
 			</div>
 		</div>
 	)

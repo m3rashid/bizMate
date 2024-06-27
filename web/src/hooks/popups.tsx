@@ -1,6 +1,6 @@
-import { useState, Dispatch, useContext, createContext, SetStateAction, PropsWithChildren, ReactNode } from 'react'
-
 import { getUniqueObjectsByKey } from '../utils/helpers'
+import { ReactNode } from 'react'
+import { atom, useRecoilState } from 'recoil'
 
 export type PopupType = 'error' | 'warning' | 'info' | 'success'
 type ID = string | number
@@ -20,25 +20,18 @@ export type ActionPopupType = {
 	children?: ReactNode
 }
 
-export type PopupStateType = {
+export type PopupState = {
 	messagePopups: Array<MessagePopupType>
 	actionPopups: Array<ActionPopupType>
 }
 
-const defaultPopupContext: PopupStateType = {
-	actionPopups: [],
-	messagePopups: [],
-}
-
-const popupContext = createContext<[popups: PopupStateType, setPopups: Dispatch<SetStateAction<PopupStateType>>]>([defaultPopupContext, () => {}])
-
-export function PopupProvider(props: PropsWithChildren) {
-	const [popups, setPopups] = useState<PopupStateType>(defaultPopupContext)
-	return <popupContext.Provider value={[popups, setPopups]}>{props.children}</popupContext.Provider>
-}
+const popupAtom = atom<PopupState>({
+	key: 'popupAtom',
+	default: { messagePopups: [], actionPopups: [] },
+})
 
 export function usePopups() {
-	const [{ actionPopups, messagePopups: messagePopups }, setPopups] = useContext(popupContext)
+	const [{ actionPopups, messagePopups }, setPopups] = useRecoilState(popupAtom)
 
 	function addMessagePopup(messagepopup: MessagePopupType) {
 		const found = messagePopups.find((n) => n.id === messagepopup.id)

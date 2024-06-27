@@ -1,16 +1,15 @@
-import { useState } from 'react'
-import { Link } from '@tanstack/react-router'
-import { useQuery } from '@tanstack/react-query'
-
-import Button from '../../lib/button'
-import { Form } from '../../../types'
 import apiClient from '../../../api/client'
+import { Form } from '../../../types'
+import Button from '../../lib/button'
 import { PageLoader } from '../../lib/loader'
 import { NotFound } from '../../lib/notFound'
 import Pagination from '../../lib/pagination'
 import SimpleTable from '../../lib/simpleTable'
 import { parseFormResponses } from './parseFormResponses'
 import { ChartBarIcon } from '@heroicons/react/24/outline'
+import { useQuery } from '@tanstack/react-query'
+import { Link } from '@tanstack/react-router'
+import { useState } from 'react'
 
 type FormResponseTableProps = Form
 function FormResponsesTable(form: FormResponseTableProps) {
@@ -34,7 +33,7 @@ function FormResponsesTable(form: FormResponseTableProps) {
 				title={`Form Responses (${form.title})`}
 				tableExportprops={{ mutationKeys: [], formId: form.id, tableName: 'form_response_table' }}
 				otherActions={
-					<Link to="/apps/forms/$formId/analytics" params={{ formId: form.id.toString() }}>
+					<Link to="/forms/$formId/analytics" params={{ formId: form.id.toString() }}>
 						<Button size="small" LeftIcon={<ChartBarIcon className="h-4 w-4" />}>
 							Analytics
 						</Button>

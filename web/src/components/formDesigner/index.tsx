@@ -1,12 +1,11 @@
-import { sortableKeyboardCoordinates } from '@dnd-kit/sortable'
-import { useSensor, useSensors, DndContext, PointerSensor, closestCorners, KeyboardSensor } from '@dnd-kit/core'
-
-import FormDesignerCore from './form'
-import FormDesignerTopBar from './topBar'
-import RightSidebar from './rightSidebar'
-import FormWidgetItem from './formWidgetItem'
-import { supportedWidgets } from '../forms/constants'
 import { useFormDesigner } from '../../hooks/formDesigner'
+import { supportedWidgets } from '../forms/constants'
+import FormDesignerCore from './form'
+import FormWidgetItem from './formWidgetItem'
+import RightSidebar from './rightSidebar'
+import FormDesignerTopBar from './topBar'
+import { useSensor, useSensors, DndContext, PointerSensor, closestCorners, KeyboardSensor } from '@dnd-kit/core'
+import { sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 
 function FormDesigner() {
 	const { handleDragEnd } = useFormDesigner()
@@ -21,7 +20,7 @@ function FormDesigner() {
 	return (
 		<DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
 			<div className="flex h-screen overflow-hidden">
-				<div className="min-w-80 max-w-96 overflow-y-auto bg-gray-100 p-2 drop-shadow-sm">
+				<div className="min-w-80 max-w-96 overflow-y-auto bg-gray-100 p-3 drop-shadow-sm">
 					<div className="grid grid-cols-2 gap-3">
 						{supportedWidgets.map((widgetConfig) => (
 							<FormWidgetItem key={widgetConfig.name} {...widgetConfig} />
