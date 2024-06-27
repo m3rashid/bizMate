@@ -90,7 +90,7 @@ func Setup(app *fiber.App) {
 		ParamKeys: []string{"taskId"},
 	}))
 
-	app.Post("/tasks/comments/create", utils.CheckAuthMiddleware, controllers.Create[models.ProjectTaskEvent, models.ProjectTaskEvent](models.PROJECT_TASK_EVENT_MODEL_NAME, controllers.CreateOptions[models.ProjectTaskEvent, models.ProjectTaskEvent]{
+	app.Post("/tasks/comments/create", utils.CheckAuthMiddleware, controllers.Create(models.PROJECT_TASK_EVENT_MODEL_NAME, controllers.CreateOptions[models.ProjectTaskEvent, models.ProjectTaskEvent]{
 		GetDefaultValues: func(values *models.ProjectTaskEvent, ctx *fiber.Ctx) (*models.ProjectTaskEvent, error) {
 			userId, tenantId := utils.GetUserAndTenantIdsOrZero(ctx)
 			return &models.ProjectTaskEvent{
@@ -109,7 +109,7 @@ func Setup(app *fiber.App) {
 
 	app.Get("/tags/all", utils.CheckAuthMiddleware, controllers.Paginate[models.ProjectTag]())
 
-	app.Post("/tags/create", utils.CheckAuthMiddleware, controllers.Create[models.ProjectTag, models.ProjectTag](models.TAG_MODEL_NAME, controllers.CreateOptions[models.ProjectTag, models.ProjectTag]{
+	app.Post("/tags/create", utils.CheckAuthMiddleware, controllers.Create(models.TAG_MODEL_NAME, controllers.CreateOptions[models.ProjectTag, models.ProjectTag]{
 		GetDefaultValues: func(values *models.ProjectTag, ctx *fiber.Ctx) (*models.ProjectTag, error) {
 			_, tenantId := utils.GetUserAndTenantIdsOrZero(ctx)
 			return &models.ProjectTag{

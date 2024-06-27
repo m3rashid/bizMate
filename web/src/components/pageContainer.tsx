@@ -1,7 +1,6 @@
-import { twMerge } from 'tailwind-merge'
-import { PropsWithChildren } from 'react'
-
 import Header, { HeaderProps } from './header'
+import { PropsWithChildren } from 'react'
+import { twMerge } from 'tailwind-merge'
 
 export type PageContainerProps = PropsWithChildren & {
 	headerProps?: HeaderProps
@@ -12,7 +11,7 @@ function PageContainer(props: PageContainerProps) {
 	return (
 		<>
 			<Header {...props.headerProps} />
-			<div className={twMerge('p-2 sm:p-4', props.bodyClassName)}>{props.children}</div>
+			<div className={twMerge('max-h-[calc(100vh-48px)] min-h-max overflow-y-auto p-2 sm:p-4', props.bodyClassName)}>{props.children}</div>
 		</>
 	)
 }

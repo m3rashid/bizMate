@@ -9,9 +9,10 @@ import (
 )
 
 func Setup(app *fiber.App) {
-	app.Get("/forms/one/:formId", utils.CheckAuthMiddlewareButAllowUnauthorized, controllers.Get[models.Form](
-		controllers.GetOptions{ParamValue: "formId", ParamKey: "id"},
-	))
+	app.Get("/forms/one/:formId", utils.CheckAuthMiddlewareButAllowUnauthorized, controllers.Get[models.Form](controllers.GetOptions{
+		ParamKey:   "id",
+		ParamValue: "formId",
+	}))
 
 	app.Post("/forms/create", utils.CheckAuthMiddleware, createNewForm)
 
@@ -21,9 +22,10 @@ func Setup(app *fiber.App) {
 
 	app.Get("/forms/analysis/:formId", utils.CheckAuthMiddleware, getFormResponseAnalysis)
 
-	app.Post("/forms/delete/:formId", utils.CheckAuthMiddleware, controllers.Delete(
-		controllers.DeleteOptions[models.Form]{ParamValue: "formId", ParamKey: "id"},
-	))
+	app.Post("/forms/delete/:formId", utils.CheckAuthMiddleware, controllers.Delete(controllers.DeleteOptions[models.Form]{
+		ParamKey:   "id",
+		ParamValue: "formId",
+	}))
 
 	app.Post("/forms/response/:formId/submit", utils.CheckAuthMiddlewareButAllowUnauthorized, submitFormResponse)
 
@@ -31,7 +33,7 @@ func Setup(app *fiber.App) {
 
 	app.Get("/forms/response/:formId/count", utils.CheckAuthMiddleware, getFormResponseCount)
 
-	app.Get("/forms/response/:formId/all", utils.CheckAuthMiddleware, controllers.Paginate[models.FormResponse](
-		controllers.PaginateOptions{ParamKeys: []string{"formId"}},
-	))
+	app.Get("/forms/response/:formId/all", utils.CheckAuthMiddleware, controllers.Paginate[models.FormResponse](controllers.PaginateOptions{
+		ParamKeys: []string{"formId"},
+	}))
 }

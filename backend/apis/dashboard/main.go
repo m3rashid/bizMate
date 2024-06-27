@@ -9,7 +9,9 @@ import (
 )
 
 func Setup(app *fiber.App) {
-	app.Get("/dashboards/models", utils.CheckAuthMiddleware, getAllModels)
+	app.Get("/dashboards/models", utils.CheckAuthMiddleware, func(ctx *fiber.Ctx) error {
+		return ctx.Status(fiber.StatusOK).JSON(models.DashboardIndexableJsonModels)
+	})
 
 	app.Get("/dashboards/all", utils.CheckAuthMiddleware, controllers.Paginate[models.Dashboard]())
 
@@ -43,19 +45,24 @@ func Setup(app *fiber.App) {
 
 	app.Post("/dashboards/kpis/delete/:kpiId", utils.CheckAuthMiddleware, deleteKPI)
 
-	app.Get("/dashboards/kpis/:route", utils.CheckAuthMiddleware, controllers.Paginate[models.Kpi](
-		controllers.PaginateOptions{ParamKeys: []string{"route"}},
-	))
+	app.Get("/dashboards/kpis/:route", utils.CheckAuthMiddleware, controllers.Paginate[models.Kpi](controllers.PaginateOptions{
+		ParamKeys: []string{"route"},
+	}))
 
-	app.Get("/dashboards/widgets/all", utils.CheckAuthMiddleware, controllers.Paginate[models.Widget]())
+	app.Get("/dashboards/widgets/:dashboardId/all", utils.CheckAuthMiddleware, controllers.Paginate[models.Widget](controllers.PaginateOptions{
+		ParamKeys: []string{"dashboardId"},
+	}))
 
-	app.Post("/dashboards/widgets/:dashboardId", utils.CheckAuthMiddleware, controllers.Paginate[models.Widget](
-		controllers.PaginateOptions{ParamKeys: []string{"dashboardId"}},
-	))
+	app.Get("/dashboards/kpis/:dashboardId/all", utils.CheckAuthMiddleware, controllers.Paginate[models.Kpi](controllers.PaginateOptions{
+		ParamKeys: []string{"dashboardId"},
+	}))
 
 	app.Post("/dashboards/widgets/:dashboardId/create", utils.CheckAuthMiddleware, createWidgetForDashboard)
 
 	app.Post("/dashboards/widgets/:dashboardId/update", utils.CheckAuthMiddleware, updateWidgetForDashboard)
 
 	app.Post("/dashboards/widgets/:dashboardId/delete/:widgetId", utils.CheckAuthMiddleware, deleteWidgetForDashboard)
+
+	// data routes
+	app.Get("/dashboards/data/:dashboardId/:widgetId/", utils.CheckAuthMiddleware, getDataForWidget)
 }

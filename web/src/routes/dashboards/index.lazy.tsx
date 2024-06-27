@@ -81,9 +81,9 @@ function DashboardCard(props: Dashboard & { onEdit: () => void }) {
 				</div>
 			</div>
 
-			<div className="mt-3 flex w-full flex-wrap gap-2">
+			<div className="mt-4 w-full">
 				<Link to="/dashboards/$dashboardId/designer" params={{ dashboardId: props.id.toString() }}>
-					<Chip>Go to Dashboard Designer</Chip>
+					<Chip className="w-full">Go to Dashboard Designer</Chip>
 				</Link>
 			</div>
 		</div>

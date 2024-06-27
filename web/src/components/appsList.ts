@@ -1,7 +1,6 @@
 import { routeTree } from '../routeTree.gen'
 import AdjustmentsHorizontalIcon from '@heroicons/react/24/outline/AdjustmentsHorizontalIcon'
 import AtSymbolIcon from '@heroicons/react/24/outline/AtSymbolIcon'
-import ChartBarIcon from '@heroicons/react/24/outline/ChartBarIcon'
 import CogIcon from '@heroicons/react/24/outline/CogIcon'
 import DeviceTabletIcon from '@heroicons/react/24/outline/DeviceTabletIcon'
 import ListBulletIcon from '@heroicons/react/24/outline/ListBulletIcon'

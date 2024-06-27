@@ -11,20 +11,23 @@ type Kpi struct {
 	BaseModel
 	CreatedBy
 	UpdatedBy
-	Title           string `json:"title" gorm:"column:title;not null" validate:"required"`
-	Description     string `json:"description" gorm:"column:description;not null"`
-	Model           string `json:"model" gorm:"column:model;not null" validate:"required"` // model name of the kpi
-	RefreshInterval int    `json:"refreshInterval" gorm:"column:refreshInterval;not null" validate:"required"`
-	PageRoute       string `json:"pageRoute" gorm:"column:pageRoute;not null" validate:"required"`
+	DashboardID     uint       `json:"dashboardId" gorm:"column:dashboardId;not null" validate:"required"`
+	Dashboard       *Dashboard `json:"dashboard" gorm:"foreignKey:dashboardId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Title           string     `json:"title" gorm:"column:title;not null" validate:"required"`
+	Description     string     `json:"description" gorm:"column:description;not null"`
+	Model           string     `json:"model" gorm:"column:model;not null" validate:"required"` // model name of the kpi
+	RefreshInterval int        `json:"refreshInterval" gorm:"column:refreshInterval;not null" validate:"required"`
+	PageRoute       string     `json:"pageRoute" gorm:"column:pageRoute;not null" validate:"required"`
 }
 
 var KpiJsonModel = DashboardIndexableJsonModel{
 	ModelName: KPI_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
-		"id":        JsonNumber,
-		"createdBy": JsonCreatedBy,
-		"updatedBy": JsonCreatedBy,
-		"createdAt": JsonDate,
+		"id":          JsonNumber,
+		"dashboardId": JsonNumber,
+		"createdBy":   JsonCreatedBy,
+		"updatedBy":   JsonCreatedBy,
+		"createdAt":   JsonDate,
 	},
 }
 
@@ -50,12 +53,12 @@ type Widget struct {
 var WidgetJsonModel = DashboardIndexableJsonModel{
 	ModelName: WIDGET_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
-		"id":        JsonNumber,
-		"createdBy": JsonCreatedBy,
-		"updatedBy": JsonCreatedBy,
-		"createdAt": JsonDate,
-		"dashboard": JsonString,
-		"model":     JsonString,
+		"id":          JsonNumber,
+		"dashboardId": JsonNumber,
+		"createdBy":   JsonCreatedBy,
+		"updatedBy":   JsonCreatedBy,
+		"createdAt":   JsonDate,
+		"model":       JsonString,
 	},
 }
 

@@ -124,7 +124,7 @@ function RightSidebar() {
 	}
 
 	return (
-		<div className="w-full min-w-80 max-w-96 overflow-y-auto bg-gray-100 shadow-sm">
+		<div className="w-full min-w-80 max-w-96 bg-gray-100 shadow-sm">
 			<form ref={formRef} className="flex h-full flex-col" onSubmit={handleSave}>
 				<div className="flex items-center justify-between gap-2 border-b-2 border-b-gray-200 px-4 py-2.5">
 					<h2 className="text-lg font-semibold">{selectedNode ? 'Element settings' : 'Form Settings'}</h2>
@@ -138,7 +138,7 @@ function RightSidebar() {
 					</div>
 				</div>
 
-				<div className="flex h-full flex-grow flex-col gap-4 overflow-y-auto p-4">
+				<div className="flex h-full max-h-[calc(100vh-100px)] flex-grow flex-col gap-4 overflow-y-auto p-4">
 					<FormRenderer meta={meta} />
 				</div>
 			</form>
