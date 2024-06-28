@@ -4,6 +4,7 @@ import (
 	"bizMate/controllers"
 	"bizMate/models"
 	"bizMate/utils"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -11,6 +12,10 @@ import (
 func Setup(app *fiber.App) {
 	app.Get("/dashboards/models", utils.CheckAuthMiddleware, func(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusOK).JSON(models.DashboardIndexableJsonModels)
+	})
+
+	app.Get("/dashboards/model-names/all", utils.CheckAuthMiddleware, func(c *fiber.Ctx) error {
+		return c.Status(fiber.StatusOK).JSON(models.DashboardIndexableModelNames)
 	})
 
 	app.Get("/dashboards/all", utils.CheckAuthMiddleware, controllers.Paginate[models.Dashboard]())
@@ -37,25 +42,47 @@ func Setup(app *fiber.App) {
 		ParamValue: "dashboardId",
 	}))
 
-	app.Get("/dashboards/kpis/all", utils.CheckAuthMiddleware, controllers.Paginate[models.Kpi]())
-
-	app.Post("/dashboards/kpis/create", utils.CheckAuthMiddleware, createKPI)
-
-	app.Post("/dashboards/kpis/update", utils.CheckAuthMiddleware, updateKPI)
-
-	app.Post("/dashboards/kpis/delete/:kpiId", utils.CheckAuthMiddleware, deleteKPI)
-
-	app.Get("/dashboards/kpis/:route", utils.CheckAuthMiddleware, controllers.Paginate[models.Kpi](controllers.PaginateOptions{
-		ParamKeys: []string{"route"},
+	app.Post("/dashboards/kpis/:dashboardId/create", utils.CheckAuthMiddleware, controllers.Create(models.DASHBOARD_KPI_MODEL_NAME, controllers.CreateOptions[CreateKPIBody, models.DashboardKpi]{
+		GetDefaultValues: func(values *CreateKPIBody, ctx *fiber.Ctx) (*models.DashboardKpi, error) {
+			dashboardId := ctx.Params("dashboardId")
+			dIdU64, err := strconv.ParseUint(dashboardId, 10, 32)
+			if err != nil {
+				return nil, err
+			}
+			userId, tenantId := utils.GetUserAndTenantIdsOrZero(ctx)
+			return &models.DashboardKpi{
+				Title:           values.Title,
+				Description:     values.Description,
+				DashboardID:     uint(dIdU64),
+				Model:           values.Model,
+				ModelField:      values.ModelField,
+				AggregationType: values.AggregationType,
+				TimePeriod:      values.TimePeriod,
+				CreatedBy:       models.CreatedBy{CreatedByID: userId},
+				BaseModel:       models.BaseModel{TenantID: tenantId},
+			}, nil
+		},
 	}))
 
-	app.Get("/dashboards/widgets/:dashboardId/all", utils.CheckAuthMiddleware, controllers.Paginate[models.Widget](controllers.PaginateOptions{
+	app.Post("/dashboards/kpis/:kpiId/update", utils.CheckAuthMiddleware, controllers.Update(controllers.UpdateOptions[CreateKPIBody, models.DashboardKpi]{
+		ParamKey:   "id",
+		ParamValue: "kpiId",
+	}))
+
+	app.Post("/dashboards/kpis/delete/:kpiId", utils.CheckAuthMiddleware, controllers.Delete(controllers.DeleteOptions[models.DashboardKpi]{
+		ParamKey:   "id",
+		ParamValue: "kpiId",
+	}))
+
+	// app.Get("/dashboards/kpis/:route", utils.CheckAuthMiddleware, controllers.Paginate[models.Kpi](controllers.PaginateOptions{
+	// 	ParamKeys: []string{"route"},
+	// }))
+
+	app.Get("/dashboards/widgets/:dashboardId/all", utils.CheckAuthMiddleware, controllers.Paginate[models.DashboardChart](controllers.PaginateOptions{
 		ParamKeys: []string{"dashboardId"},
 	}))
 
-	app.Get("/dashboards/kpis/:dashboardId/all", utils.CheckAuthMiddleware, controllers.Paginate[models.Kpi](controllers.PaginateOptions{
-		ParamKeys: []string{"dashboardId"},
-	}))
+	app.Get("/dashboards/kpis/:dashboardId/all", utils.CheckAuthMiddleware, getAllKpiData)
 
 	app.Post("/dashboards/widgets/:dashboardId/create", utils.CheckAuthMiddleware, createWidgetForDashboard)
 

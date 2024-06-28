@@ -72,17 +72,20 @@ export type FormResponse = BaseModel &
 		deviceIp?: string
 	}
 
-export type Kpi = BaseModel &
+export const kpiAggregationType = ['count', 'sum', 'avg', 'min', 'max', 'median', 'mode'] as const
+export type KpiAggregationType = (typeof kpiAggregationType)[number]
+export type DashboardKpi = BaseModel &
 	CreatedBy &
 	UpdatedBy & {
 		title: string
 		description: string
 		model: string
-		refreshInterval: number
-		pageRoute: string
+		modelField: string
+		aggregationType: KpiAggregationType
+		TimePeriod: number // days
 	}
 
-export type Widget = BaseModel &
+export type DashboardChart = BaseModel &
 	CreatedBy &
 	UpdatedBy & {
 		dashboardId: ID

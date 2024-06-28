@@ -1,11 +1,10 @@
-import { twMerge } from 'tailwind-merge'
-import { useState, Fragment, FC, useMemo } from 'react'
-import CheckIcon from '@heroicons/react/20/solid/CheckIcon'
-import ChevronUpDownIcon from '@heroicons/react/20/solid/ChevronUpDownIcon'
-import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react'
-
 import { Option } from '../../types'
 import { shuffleArray } from '../../utils/helpers'
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react'
+import CheckIcon from '@heroicons/react/20/solid/CheckIcon'
+import ChevronUpDownIcon from '@heroicons/react/20/solid/ChevronUpDownIcon'
+import { useState, Fragment, FC, useMemo } from 'react'
+import { twMerge } from 'tailwind-merge'
 
 export type SingleSelectInputProps = {
 	default?: string
@@ -40,9 +39,10 @@ function SingleSelectInput(props: SingleSelectInputProps) {
 		<Listbox
 			name={props.name}
 			value={selectedOptionValue}
-			onChange={(val) =>
-				props.onChange ? props.onChange((val as unknown as Option)?.value) : setSelectedOptionValue((val as unknown as Option).value)
-			}
+			onChange={(val) => {
+				setSelectedOptionValue((val as unknown as Option).value)
+				if (props.onChange) props.onChange((val as unknown as Option)?.value)
+			}}
 		>
 			{({ open }) => (
 				<div>

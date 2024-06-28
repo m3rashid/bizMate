@@ -1,37 +1,66 @@
 package models
 
-const KPI_MODEL_NAME string = "kpis"
-const WIDGET_MODEL_NAME string = "widgets"
 const DASHBOARD_MODEL_NAME string = "dashboards"
+const DASHBOARD_KPI_MODEL_NAME string = "dashboard_kpis"
+const DASHBOARD_CHART_MODEL_NAME string = "dashboard_charts"
 
-type WidgetChartType string
+type KpiAggregationType string
+
+const (
+	KpiAggregationTypeSum     KpiAggregationType = "sum"
+	KpiAggregationTypeCount   KpiAggregationType = "count"
+	KpiAggregationTypeMax     KpiAggregationType = "max"
+	KpiAggregationTypeMin     KpiAggregationType = "min"
+	KpiAggregationTypeAverage KpiAggregationType = "avg"
+	KpiAggregationTypeMedian  KpiAggregationType = "median"
+	KpiAggregationTypeMode    KpiAggregationType = "mode"
+)
+
+var kpiAggregationTypes = []KpiAggregationType{
+	KpiAggregationTypeSum,
+	KpiAggregationTypeCount,
+	KpiAggregationTypeMax,
+	KpiAggregationTypeMin,
+	KpiAggregationTypeAverage,
+	KpiAggregationTypeMedian,
+	KpiAggregationTypeMode,
+}
+
+func GetKpiAggregationTypes() []KpiAggregationType {
+	return kpiAggregationTypes
+}
 
 // KPIs can be used to display key performance indicators on any page
-type Kpi struct {
+type DashboardKpi struct {
 	BaseModel
 	CreatedBy
 	UpdatedBy
-	DashboardID     uint       `json:"dashboardId" gorm:"column:dashboardId;not null" validate:"required"`
-	Dashboard       *Dashboard `json:"dashboard" gorm:"foreignKey:dashboardId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Title           string     `json:"title" gorm:"column:title;not null" validate:"required"`
-	Description     string     `json:"description" gorm:"column:description;not null"`
-	Model           string     `json:"model" gorm:"column:model;not null" validate:"required"` // model name of the kpi
-	RefreshInterval int        `json:"refreshInterval" gorm:"column:refreshInterval;not null" validate:"required"`
-	PageRoute       string     `json:"pageRoute" gorm:"column:pageRoute;not null" validate:"required"`
+	DashboardID     uint               `json:"dashboardId" gorm:"column:dashboardId;not null" validate:"required"`
+	Dashboard       *Dashboard         `json:"dashboard" gorm:"foreignKey:dashboardId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Title           string             `json:"title" gorm:"column:title;not null" validate:"required"`
+	Description     string             `json:"description" gorm:"column:description;not null"`
+	Model           string             `json:"model" gorm:"column:model;not null" validate:"required"`           // model name of the kpi
+	ModelField      string             `json:"modelField" gorm:"column:modelField;not null" validate:"required"` // field name of the model to aggregate
+	AggregationType KpiAggregationType `json:"aggregationType" gorm:"column:aggregationType;not null" validate:"required"`
+	TimePeriod      int                `json:"timePeriod" gorm:"column:timePeriod;not null" validate:"required"` // in days
 }
 
 var KpiJsonModel = DashboardIndexableJsonModel{
-	ModelName: KPI_MODEL_NAME,
+	ModelName: DASHBOARD_KPI_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
-		"id":          JsonNumber,
-		"dashboardId": JsonNumber,
-		"createdBy":   JsonCreatedBy,
-		"updatedBy":   JsonCreatedBy,
-		"createdAt":   JsonDate,
+		"id":              JsonNumber,
+		"dashboardId":     JsonNumber,
+		"aggregationType": JsonString,
+		"model":           JsonString,
+		"createdBy":       JsonCreatedBy,
+		"updatedBy":       JsonCreatedBy,
+		"createdAt":       JsonDate,
 	},
 }
 
-type Widget struct {
+type WidgetChartType string
+
+type DashboardChart struct {
 	BaseModel
 	CreatedBy
 	UpdatedBy
@@ -40,8 +69,8 @@ type Widget struct {
 	Title           string          `json:"title" gorm:"column:title;not null" validate:"required"`
 	Description     string          `json:"description" gorm:"column:description;not null"`
 	RefreshInterval int             `json:"refreshInterval" gorm:"column:refreshInterval;not null" validate:"required"`
-	Position        int             `json:"position" gorm:"column:position;not null" validate:"required"` // index of the widget in the dashboard
-	Model           string          `json:"model" gorm:"column:model;not null" validate:"required"`       // model name of the widget
+	Position        int             `json:"position" gorm:"column:position;not null" validate:"required"` // index of the chart in the dashboard
+	Model           string          `json:"model" gorm:"column:model;not null" validate:"required"`       // model name of the chart
 	XLabel          string          `json:"xLabel" gorm:"column:xLabel"`
 	YLabel          string          `json:"yLabel" gorm:"column:yLabel"`
 	XDataKey        string          `json:"xDataKey" gorm:"column:xDataKey"` // field name of the x-axis data
@@ -51,7 +80,7 @@ type Widget struct {
 }
 
 var WidgetJsonModel = DashboardIndexableJsonModel{
-	ModelName: WIDGET_MODEL_NAME,
+	ModelName: DASHBOARD_CHART_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
 		"id":          JsonNumber,
 		"dashboardId": JsonNumber,
@@ -72,7 +101,7 @@ type Dashboard struct {
 }
 
 var DashboardJsonModel = DashboardIndexableJsonModel{
-	ModelName: WIDGET_MODEL_NAME,
+	ModelName: DASHBOARD_CHART_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
 		"id":          JsonNumber,
 		"title":       JsonString,
@@ -84,12 +113,12 @@ var DashboardJsonModel = DashboardIndexableJsonModel{
 	},
 }
 
-func (Kpi) TableName() string {
-	return KPI_MODEL_NAME
+func (DashboardKpi) TableName() string {
+	return DASHBOARD_KPI_MODEL_NAME
 }
 
-func (Widget) TableName() string {
-	return WIDGET_MODEL_NAME
+func (DashboardChart) TableName() string {
+	return DASHBOARD_CHART_MODEL_NAME
 }
 
 func (Dashboard) TableName() string {

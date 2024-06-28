@@ -1,9 +1,9 @@
 import apiClient from '../../api/client'
-import { Widget } from '../../types'
+import { DashboardChart } from '../../types'
 import { useQuery } from '@tanstack/react-query'
 import { Bar } from 'react-chartjs-2'
 
-type BarChartProps = Widget & {}
+type BarChartProps = DashboardChart & {}
 
 function BarChart(props: BarChartProps) {
 	const { data } = useQuery({

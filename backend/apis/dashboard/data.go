@@ -21,12 +21,12 @@ func getDataForWidget(ctx *fiber.Ctx) error {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
-	widget := models.Widget{}
+	chart := models.DashboardChart{}
 	if err := db.Where("\"widgetId\" = ? AND \"dashboardId\" = ?", widgetId, dashboardId).Error; err != nil {
 		return ctx.SendStatus(fiber.StatusNotFound)
 	}
 
-	fmt.Printf("Widget: %+v\n", widget)
+	fmt.Printf("Chart: %+v\n", chart)
 
 	return nil
 }

@@ -1,21 +1,34 @@
-import { Widget } from '../types'
 import { usePopups } from './popups'
 import { atom, useRecoilState } from 'recoil'
 
 type WidgetType = 'kpi' | 'chart' | null
-type ModalState = 'selectType' | 'fillDetails' | 'confirm' | null
 type AddDashboardWidget = {
 	modalOpen: boolean
-	data: Partial<Widget> | null
-	widgetType: WidgetType
-	modalState: ModalState
+} & ({ widgetType: 'kpi'; data: KpiFields } | { widgetType: 'chart'; data: ChartFields }) &
+	({ modalState: 'selectType'; modalTitle: 'Select widget type' } | { modalState: 'fillDetails'; modalTitle: 'Fill widget Details' })
+
+type ChartFields = {}
+
+type KpiFields = {
+	model: string
+	modelField: string
+	aggregationType: string
 }
 
+const defaultKpiFields: KpiFields = {
+	model: '',
+	modelField: '',
+	aggregationType: '',
+}
+
+const defaultChartFields: ChartFields = {}
+
 const defaultAddDashboardWidget: AddDashboardWidget = {
-	data: null,
 	modalOpen: false,
-	widgetType: null,
+	widgetType: 'kpi',
+	data: defaultKpiFields,
 	modalState: 'selectType',
+	modalTitle: 'Select widget type',
 }
 
 const addDashboardAtom = atom<AddDashboardWidget>({
@@ -33,17 +46,28 @@ function useAddDashboardWidget() {
 			addMessagePopup({ id: 'noWidgetTypeSelected', type: 'error', message: 'Widget type not selected' })
 			return
 		}
-		setAddDashboardWidget((prev) => ({ ...prev, widgetType, modalState: 'fillDetails' }))
+		setAddDashboardWidget((prev) => ({
+			...prev,
+			modalState: 'fillDetails',
+			modalTitle: 'Fill widget Details',
+			...(widgetType === 'chart' ? { widgetType, data: defaultChartFields } : widgetType === 'kpi' ? { widgetType, data: defaultKpiFields } : {}),
+		}))
 	}
 
 	function closeModal() {
 		setAddDashboardWidget(defaultAddDashboardWidget)
 	}
 
+	function openModal() {
+		setAddDashboardWidget((prev) => ({ ...prev, modalOpen: true }))
+	}
+
 	function goBack() {
 		setAddDashboardWidget((prev) => ({
 			...prev,
-			modalState: prev.modalState === 'fillDetails' ? 'selectType' : prev.modalState === 'confirm' ? 'fillDetails' : 'selectType',
+			...(prev.modalState === 'fillDetails'
+				? { modalState: 'selectType', modalTitle: 'Select widget type' }
+				: { modalState: 'selectType', modalTitle: 'Select widget type' }),
 		}))
 	}
 
@@ -51,6 +75,7 @@ function useAddDashboardWidget() {
 		...addDashboardWidget,
 		setWidgetType,
 		closeModal,
+		openModal,
 		goBack,
 	}
 }

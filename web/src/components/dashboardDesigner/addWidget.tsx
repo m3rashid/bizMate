@@ -1,40 +1,38 @@
-import apiClient from '../../api/client'
-import { Widget } from '../../types'
+import useAddDashboardWidget from '../../hooks/addDashboardWidget'
 import Button from '../lib/button'
 import Modal from '../lib/modal'
-import { useQuery } from '@tanstack/react-query'
-import { Dispatch, FormEvent, SetStateAction } from 'react'
+import SingleSelectInput from '../lib/singleSelectInput'
+import AddKpiModel from './addKpi'
+import { FormEvent } from 'react'
 
-type AddWidgetProps = {
-	open: boolean
-	setOpen: Dispatch<SetStateAction<boolean>>
-	editData?: Widget
-}
-
-function AddWidget(props: AddWidgetProps) {
-	const { data } = useQuery({
-		queryKey: ['dashboardModels'],
-		queryFn: () => apiClient('/dashboards/models'),
-	})
-
-	function handleAddEditWidget(e: FormEvent<HTMLFormElement>) {
+function AddWidget(props: { dashboardId: string | number }) {
+	const { modalTitle, closeModal, modalOpen, setWidgetType, modalState, widgetType } = useAddDashboardWidget()
+	function handleSetWidgetType(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault()
 		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any
+		console.log(formData)
+		if (formData.type) setWidgetType(formData.type)
 	}
 
 	return (
 		<>
-			<Modal open={props.open} setOpen={props.setOpen} title={!!props.editData ? 'Update Widget' : 'Add Widget'}>
-				<form className="h-full" onSubmit={handleAddEditWidget}>
-					<div className="flex flex-col gap-4 p-4"></div>
+			<Modal open={modalOpen} setOpen={closeModal} title={modalTitle}>
+				{modalState === 'selectType' ? (
+					<form className="h-full" onSubmit={handleSetWidgetType}>
+						<div className="flex flex-col gap-4 p-4">
+							<SingleSelectInput name="type" options={['kpi', 'chart']} label="Select Widget Type" />
+						</div>
 
-					<div className="flex flex-grow-0 items-center justify-between border-t border-borderColor px-3 py-2">
-						<Button variant="simple" type="reset">
-							Reset
-						</Button>
-						<Button type="submit">{!!props.editData ? 'Update' : 'Create'}</Button>
-					</div>
-				</form>
+						<div className="flex flex-grow-0 items-center justify-between border-t border-borderColor px-3 py-2">
+							<Button variant="simple" type="reset">
+								Reset
+							</Button>
+							<Button type="submit">Confirm</Button>
+						</div>
+					</form>
+				) : widgetType === 'kpi' ? (
+					<AddKpiModel dashboardId={props.dashboardId} />
+				) : null}
 			</Modal>
 		</>
 	)

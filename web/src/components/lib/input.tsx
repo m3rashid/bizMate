@@ -10,6 +10,7 @@ export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
 	errorText?: string
 	labelClassName?: string
 	descriptionText?: string
+	rootClassName?: string
 	onChange?: (e: ChangeEvent<HTMLInputElement>) => void
 }
 
@@ -17,7 +18,7 @@ function Input(props: InputProps) {
 	const [inputType, setInputType] = useState(props.type)
 
 	return (
-		<div className="w-full">
+		<div className={twMerge('w-full', props.rootClassName)}>
 			{props.label ? (
 				<label htmlFor={props.name} className={twMerge('block text-sm font-medium leading-6 text-gray-900', props.labelClassName)}>
 					{props.label}&nbsp;

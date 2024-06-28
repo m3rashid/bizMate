@@ -5,8 +5,8 @@ var AllModels = []interface{}{
 
 	&Contact{},
 
-	&Kpi{},
-	&Widget{},
+	&DashboardKpi{},
+	&DashboardChart{},
 	&Dashboard{},
 
 	&EmailTemplate{},
@@ -76,4 +76,13 @@ func getModels(modelsJson []DashboardIndexableJsonModel) jsonModels {
 	return dashboardModels
 }
 
+func getModelNames(modelsJson []DashboardIndexableJsonModel) []string {
+	var modelNames []string
+	for _, jsonModel := range modelsJson {
+		modelNames = append(modelNames, jsonModel.ModelName)
+	}
+	return modelNames
+}
+
 var DashboardIndexableJsonModels = getModels(dashboardIndexableJsonModels)
+var DashboardIndexableModelNames = getModelNames(dashboardIndexableJsonModels)

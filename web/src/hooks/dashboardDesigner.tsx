@@ -1,11 +1,11 @@
 import { Props } from '../components/forms/exposedProps'
-import { Widget } from '../types'
+import { DashboardChart } from '../types'
 import { handleViewTransition } from '../utils/helpers'
 import { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import { atom, useRecoilState } from 'recoil'
 
-export type DashboardWidget = Widget & {
+export type DashboardWidget = DashboardChart & {
 	id: string
 }
 

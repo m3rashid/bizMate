@@ -1,33 +1,33 @@
-import { useDashboardDesigner } from '../../hooks/dashboardDesigner'
+import apiClient from '../../api/client'
+import useAddDashboardWidget from '../../hooks/addDashboardWidget'
+import { DashboardChart, DashboardKpi, PaginationResponse } from '../../types'
 import Button from '../lib/button'
 import AddWidget from './addWidget'
-import { useSensor, DndContext, useSensors, PointerSensor, KeyboardSensor, closestCorners } from '@dnd-kit/core'
-import { sortableKeyboardCoordinates } from '@dnd-kit/sortable'
-import { useState } from 'react'
+import RenderKpi from './renderKpi'
+import { useQuery } from '@tanstack/react-query'
 
-function DashboardDesigner() {
-	const [open, setOpen] = useState(false)
-	const { handleDragEnd } = useDashboardDesigner()
+function DashboardDesigner(props: { dashboardId: string | number }) {
+	const { openModal } = useAddDashboardWidget()
 
-	const sensors = useSensors(
-		useSensor(PointerSensor),
-		useSensor(KeyboardSensor, {
-			coordinateGetter: sortableKeyboardCoordinates,
-		}),
-	)
+	const { data: paginatedWidgets } = useQuery<PaginationResponse<DashboardChart>>({
+		queryKey: ['dashboards/widgets', props.dashboardId, 'all'],
+		queryFn: () => apiClient(`/dashboards/widgets/${props.dashboardId}/all`),
+	})
+
+	const { data: allKpis } = useQuery<Array<{ kpi: DashboardKpi; data: number }>>({
+		queryKey: ['dashboards/kpis', props.dashboardId, 'all'],
+		queryFn: () => apiClient(`/dashboards/kpis/${props.dashboardId}/all`),
+	})
 
 	return (
 		<>
-			<Button size="small" onClick={() => setOpen(true)}>
+			<Button size="small" onClick={openModal}>
 				Add Widget
 			</Button>
-			<AddWidget open={open} setOpen={setOpen} />
-
-			<DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
-				<div className="flex w-full flex-col items-center overflow-auto p-4">
-					<div>Dashboard Designer Here</div>
-				</div>
-			</DndContext>
+			<AddWidget dashboardId={props.dashboardId} />
+			{(allKpis || []).map((singleKpi) => (
+				<RenderKpi key={singleKpi.kpi.id} data={singleKpi.data} kpi={singleKpi.kpi} />
+			))}
 		</>
 	)
 }
