@@ -8,11 +8,14 @@ function DashboardDesigner(props: { dashboardId: string | number }) {
 
 	return (
 		<>
-			<Button size="small" onClick={openModal}>
-				Add Widget
-			</Button>
+			<div className="flex items-center justify-end gap-4">
+				<Button size="small" onClick={openModal}>
+					Add Widget
+				</Button>
+			</div>
+
 			<AddWidget dashboardId={props.dashboardId} />
-			<ShowDashboard dashboardId={props.dashboardId} />
+			<ShowDashboard dashboardId={props.dashboardId} viewType="edit" />
 		</>
 	)
 }

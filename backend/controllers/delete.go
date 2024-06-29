@@ -44,11 +44,10 @@ func Delete[Model DbModel](_options ...DeleteOptions[Model]) func(*fiber.Ctx) er
 			}
 		}
 
-		db = db.Table(tableName).Where(fmt.Sprintf("%s = ?", options.ParamKey), paramValue)
 		if options.HardDelete {
-			err = db.Error
+			err = db.Exec(fmt.Sprintf("delete from %s where %s = ?;", tableName, options.ParamKey), paramValue).Error
 		} else {
-			err = db.Update("deleted", true).Error
+			err = db.Table(tableName).Where(fmt.Sprintf("%s = ?", options.ParamKey), paramValue).Update("deleted", true).Error
 		}
 		if err != nil {
 			return ctx.SendStatus(fiber.StatusInternalServerError)

@@ -40,8 +40,8 @@ var dashboardIndexableJsonModels = []DashboardIndexableJsonModel{
 
 	ContactJsonModel,
 
-	KpiJsonModel,
-	WidgetJsonModel,
+	DashboardKpiJsonModel,
+	DashboardChartJsonModel,
 	DashboardJsonModel,
 
 	EmailTemplateJsonModel,

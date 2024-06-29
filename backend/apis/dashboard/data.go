@@ -8,11 +8,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func getDataForWidget(ctx *fiber.Ctx) error {
+func getDataForChart(ctx *fiber.Ctx) error {
 	dashboardId := ctx.Params("dashboardId")
-	widgetId := ctx.Params("widgetId")
+	chartId := ctx.Params("chartId")
 
-	if dashboardId == "" || widgetId == "" {
+	if dashboardId == "" || chartId == "" {
 		return ctx.SendStatus(fiber.StatusBadRequest)
 	}
 
@@ -22,7 +22,7 @@ func getDataForWidget(ctx *fiber.Ctx) error {
 	}
 
 	chart := models.DashboardChart{}
-	if err := db.Where("\"widgetId\" = ? AND \"dashboardId\" = ?", widgetId, dashboardId).Error; err != nil {
+	if err := db.Where("\"chartId\" = ? AND \"dashboardId\" = ?", chartId, dashboardId).Error; err != nil {
 		return ctx.SendStatus(fiber.StatusNotFound)
 	}
 

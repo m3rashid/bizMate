@@ -19,7 +19,7 @@ function HomePageDashboards() {
 				.map((dashboard) => ({
 					id: dashboard.id.toString(),
 					label: dashboard.title,
-					Component: () => <ShowDashboard dashboardId={dashboard.id} />,
+					Component: () => <ShowDashboard dashboardId={dashboard.id} viewType="preview" />,
 				}))}
 		/>
 	)

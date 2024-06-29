@@ -10,6 +10,7 @@ import (
 )
 
 type KpiDataResponse struct {
+	ID          uint    `json:"id"`
 	Title       string  `json:"title"`
 	Description string  `json:"description"`
 	Data        float64 `json:"data"`
@@ -39,7 +40,7 @@ func getAllKpiData(ctx *fiber.Ctx) error {
 		if err != nil {
 			res = 0 // skip invalid kpi
 		}
-		kpiData = append(kpiData, KpiDataResponse{Title: kpi.Title, Description: kpi.Description, Data: res})
+		kpiData = append(kpiData, KpiDataResponse{ID: kpi.ID, Title: kpi.Title, Description: kpi.Description, Data: res})
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(kpiData)

@@ -64,7 +64,7 @@ func Setup(app *fiber.App) {
 		},
 	}))
 
-	app.Post("/dashboards/kpis/:kpiId/update", utils.CheckAuthMiddleware, controllers.Update(controllers.UpdateOptions[CreateKPIBody, models.DashboardKpi]{
+	app.Post("/dashboards/kpis/update/:kpiId", utils.CheckAuthMiddleware, controllers.Update(controllers.UpdateOptions[CreateKPIBody, models.DashboardKpi]{
 		ParamKey:   "id",
 		ParamValue: "kpiId",
 	}))
@@ -72,24 +72,25 @@ func Setup(app *fiber.App) {
 	app.Post("/dashboards/kpis/delete/:kpiId", utils.CheckAuthMiddleware, controllers.Delete(controllers.DeleteOptions[models.DashboardKpi]{
 		ParamKey:   "id",
 		ParamValue: "kpiId",
+		HardDelete: true,
 	}))
 
-	// app.Get("/dashboards/kpis/:route", utils.CheckAuthMiddleware, controllers.Paginate[models.Kpi](controllers.PaginateOptions{
-	// 	ParamKeys: []string{"route"},
-	// }))
-
-	app.Get("/dashboards/widgets/:dashboardId/all", utils.CheckAuthMiddleware, controllers.Paginate[models.DashboardChart](controllers.PaginateOptions{
+	app.Get("/dashboards/charts/:dashboardId/all", utils.CheckAuthMiddleware, controllers.Paginate[models.DashboardChart](controllers.PaginateOptions{
 		ParamKeys: []string{"dashboardId"},
 	}))
 
 	app.Get("/dashboards/kpis/:dashboardId/all", utils.CheckAuthMiddleware, getAllKpiData)
 
-	app.Post("/dashboards/widgets/:dashboardId/create", utils.CheckAuthMiddleware, createWidgetForDashboard)
+	app.Post("/dashboards/charts/create/:dashboardId", utils.CheckAuthMiddleware, createChartForDashboard)
 
-	app.Post("/dashboards/widgets/:dashboardId/update", utils.CheckAuthMiddleware, updateWidgetForDashboard)
+	app.Post("/dashboards/charts/update/:chartId", utils.CheckAuthMiddleware, updateChartForDashboard)
 
-	app.Post("/dashboards/widgets/:dashboardId/delete/:widgetId", utils.CheckAuthMiddleware, deleteWidgetForDashboard)
+	app.Post("/dashboards/charts/delete/:chartId", utils.CheckAuthMiddleware, controllers.Delete(controllers.DeleteOptions[models.DashboardChart]{
+		ParamKey:   "id",
+		ParamValue: "chartId",
+		HardDelete: true,
+	}))
 
 	// data routes
-	app.Get("/dashboards/data/:dashboardId/:widgetId/", utils.CheckAuthMiddleware, getDataForWidget)
+	app.Get("/dashboards/data/:dashboardId/:chartId", utils.CheckAuthMiddleware, getDataForChart)
 }

@@ -5,15 +5,16 @@ import { useQuery } from '@tanstack/react-query'
 
 type ShowDashboardProps = {
 	dashboardId: string | number
+	viewType: 'preview' | 'edit'
 }
 
 function ShowDashboard(props: ShowDashboardProps) {
 	const { data: paginatedWidgets } = useQuery<PaginationResponse<DashboardChart>>({
 		queryKey: ['dashboards/widgets', props.dashboardId, 'all'],
-		queryFn: () => apiClient(`/dashboards/widgets/${props.dashboardId}/all`),
+		queryFn: () => apiClient(`/dashboards/charts/${props.dashboardId}/all`),
 	})
 
-	const { data: allKpis } = useQuery<Array<{ title: string; description: string; data: number }>>({
+	const { data: allKpis } = useQuery<Array<{ id: number; title: string; description: string; data: number }>>({
 		queryKey: ['dashboards/kpis', props.dashboardId, 'all'],
 		queryFn: () => apiClient(`/dashboards/kpis/${props.dashboardId}/all`),
 	})
@@ -21,7 +22,7 @@ function ShowDashboard(props: ShowDashboardProps) {
 	return (
 		<div className="mt-8 flex flex-wrap gap-4">
 			{(allKpis || []).map((kpi, index) => (
-				<RenderKpi key={kpi.title + index} data={kpi.data} title={kpi.title} description={kpi.description} />
+				<RenderKpi key={kpi.title + index} data={kpi.data} kpiId={kpi.id} title={kpi.title} description={kpi.description} viewType={props.viewType} />
 			))}
 		</div>
 	)

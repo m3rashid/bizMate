@@ -45,7 +45,7 @@ type DashboardKpi struct {
 	TimePeriod      int                `json:"timePeriod" gorm:"column:timePeriod;not null" validate:"required"` // in days
 }
 
-var KpiJsonModel = DashboardIndexableJsonModel{
+var DashboardKpiJsonModel = DashboardIndexableJsonModel{
 	ModelName: DASHBOARD_KPI_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
 		"id":              JsonNumber,
@@ -58,28 +58,28 @@ var KpiJsonModel = DashboardIndexableJsonModel{
 	},
 }
 
-type WidgetChartType string
+type ChartType string
 
 type DashboardChart struct {
 	BaseModel
 	CreatedBy
 	UpdatedBy
-	DashboardID     uint            `json:"dashboardId" gorm:"column:dashboardId;not null" validate:"required"`
-	Dashboard       *Dashboard      `json:"dashboard" gorm:"foreignKey:dashboardId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Title           string          `json:"title" gorm:"column:title;not null" validate:"required"`
-	Description     string          `json:"description" gorm:"column:description;not null"`
-	RefreshInterval int             `json:"refreshInterval" gorm:"column:refreshInterval;not null" validate:"required"`
-	Position        int             `json:"position" gorm:"column:position;not null" validate:"required"` // index of the chart in the dashboard
-	Model           string          `json:"model" gorm:"column:model;not null" validate:"required"`       // model name of the chart
-	XLabel          string          `json:"xLabel" gorm:"column:xLabel"`
-	YLabel          string          `json:"yLabel" gorm:"column:yLabel"`
-	XDataKey        string          `json:"xDataKey" gorm:"column:xDataKey"` // field name of the x-axis data
-	YDataKey        string          `json:"yDataKey" gorm:"column:yDataKey"` // field name of the y-axis data
-	ChartType       WidgetChartType `json:"chartType" gorm:"column:chartType"`
-	ChartOptions    string          `json:"chartOptions" gorm:"column:chartOptions"`
+	DashboardID     uint       `json:"dashboardId" gorm:"column:dashboardId;not null" validate:"required"`
+	Dashboard       *Dashboard `json:"dashboard" gorm:"foreignKey:dashboardId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Title           string     `json:"title" gorm:"column:title;not null" validate:"required"`
+	Description     string     `json:"description" gorm:"column:description;not null"`
+	RefreshInterval int        `json:"refreshInterval" gorm:"column:refreshInterval;not null" validate:"required"`
+	Position        int        `json:"position" gorm:"column:position;not null" validate:"required"` // index of the chart in the dashboard
+	Model           string     `json:"model" gorm:"column:model;not null" validate:"required"`       // model name of the chart
+	XLabel          string     `json:"xLabel" gorm:"column:xLabel"`
+	YLabel          string     `json:"yLabel" gorm:"column:yLabel"`
+	XDataKey        string     `json:"xDataKey" gorm:"column:xDataKey"` // field name of the x-axis data
+	YDataKey        string     `json:"yDataKey" gorm:"column:yDataKey"` // field name of the y-axis data
+	ChartType       ChartType  `json:"chartType" gorm:"column:chartType"`
+	ChartOptions    string     `json:"chartOptions" gorm:"column:chartOptions"`
 }
 
-var WidgetJsonModel = DashboardIndexableJsonModel{
+var DashboardChartJsonModel = DashboardIndexableJsonModel{
 	ModelName: DASHBOARD_CHART_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
 		"id":          JsonNumber,
@@ -101,7 +101,7 @@ type Dashboard struct {
 }
 
 var DashboardJsonModel = DashboardIndexableJsonModel{
-	ModelName: DASHBOARD_CHART_MODEL_NAME,
+	ModelName: DASHBOARD_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
 		"id":          JsonNumber,
 		"title":       JsonString,
