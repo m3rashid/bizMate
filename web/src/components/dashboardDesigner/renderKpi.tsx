@@ -10,10 +10,10 @@ type RenderKpiProps = {
 function RenderKpi({ data, description, title }: RenderKpiProps) {
 	return (
 		<div className="h-min w-64 select-none rounded-lg border-2 border-white bg-white p-2.5 shadow-lg hover:border-primary">
-			<div className="flex items-center gap-2 text-disabled">
-				<h3 className="mb-1 font-semibold">{title}</h3>
+			<div className="mb-1 flex items-center gap-2 text-disabled ">
+				<h3 className="font-semibold">{title}</h3>
 				{description ? (
-					<Tooltip label={description} show="right">
+					<Tooltip label={description} show="left">
 						<InformationCircleIcon className="h-4 w-4" />
 					</Tooltip>
 				) : null}

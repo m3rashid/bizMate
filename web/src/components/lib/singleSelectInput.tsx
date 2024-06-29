@@ -45,7 +45,7 @@ function SingleSelectInput(props: SingleSelectInputProps) {
 			}}
 		>
 			{({ open }) => (
-				<div>
+				<div className={props.className}>
 					{props.label ? (
 						<label htmlFor={props.name} className={twMerge('block text-sm font-medium leading-6 text-gray-900', props.labelClassName)}>
 							{props.label}&nbsp;
