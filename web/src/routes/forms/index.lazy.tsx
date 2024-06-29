@@ -28,6 +28,7 @@ export const Route = createFileRoute('/forms/')({
 })
 
 function FormCard(props: Form & { onEdit: () => void }) {
+	const [showActions, setShowActions] = useState(false)
 	const { addMessagePopup, addActionPopup, removeActionPopup } = usePopups()
 	const arr = JSON.parse(props.previousVersionIDs)
 
@@ -65,54 +66,54 @@ function FormCard(props: Form & { onEdit: () => void }) {
 	}
 
 	return (
-		<div className="h-min select-none rounded-lg border-2 border-white p-2.5 shadow-lg hover:border-primary">
-			<div className="flex justify-between gap-2">
-				<div>
-					<div className="flex flex-grow gap-2">
-						<Link
-							to="/forms/$formId/preview"
-							params={{ formId: props.id.toString() }}
-							className={twMerge('font-semibold underline', props.active ? 'text-success' : 'text-danger')}
-						>
-							{props.title}
-						</Link>
-						<Tooltip
-							position="right"
-							label={
-								<div className="flex flex-col">
-									<div className="flex items-center gap-2">
-										<span>{props.active ? 'This form is active' : 'This form is inactive'}</span>
-									</div>
-									<div className="flex items-center gap-2">
-										{props.allowAnonymousResponse ? <LockOpenIcon className="h-4 w-4" /> : <LockClosedIcon className="h-4 w-4" />}
-										<span>{props.allowAnonymousResponse ? 'Accepting anonymous responses' : 'Not accepting anonymous responses'}</span>
-									</div>
-									<div className="flex items-center gap-2">
-										<ArrowPathIcon className="h-4 w-4" />
-										<span>{`${arr.length === 0 ? 'No' : arr.length} previous versions`}</span>
-									</div>
-								</div>
-							}
-						>
-							<InformationCircleIcon className="h-5 w-5 text-disabled" />
-						</Tooltip>
-					</div>
+		<div
+			onMouseEnter={() => setShowActions(true)}
+			onMouseLeave={() => setShowActions(false)}
+			className="relative h-min select-none rounded-lg border-2 border-white p-2.5 shadow-lg hover:border-primary"
+		>
+			<div className="flex flex-grow gap-2">
+				<Link
+					to="/forms/$formId/preview"
+					params={{ formId: props.id.toString() }}
+					className={twMerge('font-semibold underline', props.active ? 'text-success' : 'text-danger')}
+				>
+					{props.title}
+				</Link>
+				<Tooltip
+					position="right"
+					label={
+						<div className="flex flex-col">
+							<div className="flex items-center gap-2">
+								<span>{props.active ? 'This form is active' : 'This form is inactive'}</span>
+							</div>
+							<div className="flex items-center gap-2">
+								{props.allowAnonymousResponse ? <LockOpenIcon className="h-4 w-4" /> : <LockClosedIcon className="h-4 w-4" />}
+								<span>{props.allowAnonymousResponse ? 'Accepting anonymous responses' : 'Not accepting anonymous responses'}</span>
+							</div>
+							<div className="flex items-center gap-2">
+								<ArrowPathIcon className="h-4 w-4" />
+								<span>{`${arr.length === 0 ? 'No' : arr.length} previous versions`}</span>
+							</div>
+						</div>
+					}
+				>
+					<InformationCircleIcon className="h-5 w-5 text-disabled" />
+				</Tooltip>
+			</div>
 
-					<div>
-						<div className="text-xs text-disabled">Created: {dayjs(props.createdAt).format('DD MMM, YYYY - HH:mm A')}</div>
-						<div className="text-sm">{props.description}</div>
-					</div>
-				</div>
+			<div className="mb-2 text-xs text-disabled">Created: {dayjs(props.createdAt).format('DD MMM, YYYY - HH:mm A')}</div>
+			{props.description ? <div className="text-sm">{props.description}</div> : null}
 
-				<div className="">
-					<Tooltip label="Edit Form" position="right">
+			{showActions ? (
+				<div className="absolute right-1 top-1">
+					<Tooltip label="Edit Form" position="left">
 						<PencilSquareIcon onClick={props.onEdit} className="h-8 w-8 rounded-md p-1.5 text-disabled hover:bg-primaryLight" />
 					</Tooltip>
-					<Tooltip label="Delete Form" position="right">
+					<Tooltip label="Delete Form" position="left">
 						<TrashIcon className="h-8 w-8 rounded-md p-1.5 text-disabled hover:bg-dangerLight" onClick={handleDeleteForm} />
 					</Tooltip>
 				</div>
-			</div>
+			) : null}
 
 			<div className="mt-4 flex w-full flex-wrap gap-2">
 				<Tooltip label="Copy Form URL" position="right">

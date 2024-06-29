@@ -27,7 +27,13 @@ function AddEditDashboard(props: AddEditDashboardProps) {
 					/>
 
 					{!!props.dashboard ? (
-						<TogglerInput name="active" label="Active" required descriptionText="Active dashboards would be visible on the homepage" />
+						<TogglerInput
+							required
+							name="active"
+							label="Active"
+							defaultChecked={props.dashboard.active}
+							descriptionText="Active dashboards would be visible on the homepage"
+						/>
 					) : null}
 				</div>
 
