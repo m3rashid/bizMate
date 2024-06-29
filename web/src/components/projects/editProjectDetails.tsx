@@ -1,18 +1,17 @@
-import { useEffect, useState } from 'react'
-import '@blocknote/mantine/style.css'
-import { twMerge } from 'tailwind-merge'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import apiClient from '../../api/client'
+import { usePopups } from '../../hooks/popups'
+import { Project } from '../../types'
+import { toSentenceCase, safeJsonParse } from '../../utils/helpers'
+import Button from '../lib/button'
+import Chip from '../lib/chip'
+import { PageLoader } from '../lib/loader'
 import { BlockNoteView } from '@blocknote/mantine'
+import '@blocknote/mantine/style.css'
 import { useCreateBlockNote } from '@blocknote/react'
 import PencilSquareIcon from '@heroicons/react/24/outline/PencilSquareIcon'
-
-import Chip from '../lib/chip'
-import Button from '../lib/button'
-import { Project } from '../../types'
-import apiClient from '../../api/client'
-import { PageLoader } from '../lib/loader'
-import { usePopups } from '../../hooks/popups'
-import { toSentenceCase, safeJsonParse } from '../../utils/helpers'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
+import { twMerge } from 'tailwind-merge'
 
 type ProjectDetailType = 'readme' | 'guidelines' | 'docs'
 export type EditProjectDetailsProps = {
@@ -38,7 +37,7 @@ function Editor(props: EditProjectDetailsProps & { project: Project; editable: b
 	})
 
 	useEffect(() => {
-		if (!props.editable) {
+		if (props.editable) {
 			const content = props.project[props.type]
 			const edContent = JSON.stringify(editor.document)
 			if (content !== edContent) {

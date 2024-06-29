@@ -58,14 +58,14 @@ function AddKpiModel({ dashboardId }: { dashboardId: string | number }) {
 						value={selectedModel}
 						onChange={(val) => setSelectedModel(val)}
 						options={Object.keys(dashboardModels || {})}
-						descriptionText="This is the type of data you want to create Kpi for"
+						descriptionText="Type of the data model you want to aggregate"
 					/>
 					<SingleSelectInput
 						required
 						name="modelField"
 						label="Data model field"
 						options={selectedModelFields}
-						descriptionText="This is the field of the data model you want aggregate"
+						descriptionText="Field of the data model you want aggregate"
 					/>
 				</div>
 
@@ -75,7 +75,7 @@ function AddKpiModel({ dashboardId }: { dashboardId: string | number }) {
 						name="aggregationType"
 						label="Aggregation type"
 						options={kpiAggregationType as any}
-						descriptionText="This is the operation you want to perform on the data model field"
+						descriptionText="Operation to be performed on the data model field"
 					/>
 					<Input
 						rootClassName="sm:w-64"

@@ -25,7 +25,7 @@ type User struct {
 var UserJsonModel = DashboardIndexableJsonModel{
 	ModelName: USER_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
-		"id":          JsonString,
+		"id":          JsonNumber,
 		"name":        JsonString,
 		"email":       JsonString,
 		"phone":       JsonString,

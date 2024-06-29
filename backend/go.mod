@@ -13,6 +13,7 @@ require (
 	github.com/gofiber/storage/memory v1.3.4
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/google/uuid v1.6.0
+	github.com/jaswdr/faker/v2 v2.3.0
 	github.com/joho/godotenv v1.5.1
 	github.com/markbates/goth v1.77.0
 	github.com/shareed2k/goth_fiber v0.3.0

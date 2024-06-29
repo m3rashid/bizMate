@@ -5,18 +5,18 @@ import (
 	"bizMate/utils"
 	"errors"
 	"fmt"
-	"math"
-	"reflect"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 type KpiDataResponse struct {
-	Kpi  models.DashboardKpi `json:"kpi"`
-	Data interface{}         `json:"data"`
+	Title       string  `json:"title"`
+	Description string  `json:"description"`
+	Data        float64 `json:"data"`
 }
 
 func getAllKpiData(ctx *fiber.Ctx) error {
+	_, tenantId := utils.GetUserAndTenantIdsOrZero(ctx)
 	dashboardId := ctx.Params("dashboardId")
 	if dashboardId == "" {
 		return ctx.SendStatus(fiber.StatusBadRequest)
@@ -28,110 +28,71 @@ func getAllKpiData(ctx *fiber.Ctx) error {
 	}
 
 	var kpis []models.DashboardKpi
-	if err := db.Where("\"dashboardId\" = ?", dashboardId).Find(&kpis).Error; err != nil {
+	if err := db.Where("\"tenantId\" = ? and \"dashboardId\" = ? and deleted = false", tenantId, dashboardId).Find(&kpis).Error; err != nil {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	kpiData := []KpiDataResponse{}
+	// TODO make it run in independent go routines for faster response
 	for _, kpi := range kpis {
-		res, err := getSingleKpiData(kpi)
+		res, err := getSingleKpiData(kpi, tenantId)
 		if err != nil {
-			continue // skip invalid kpi
+			res = 0 // skip invalid kpi
 		}
-		kpiData = append(kpiData, KpiDataResponse{Kpi: kpi, Data: res})
+		kpiData = append(kpiData, KpiDataResponse{Title: kpi.Title, Description: kpi.Description, Data: res})
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(kpiData)
 }
 
-type KpiData interface{}
-
-func getSingleKpiData(kpi models.DashboardKpi) (KpiData, error) {
+func getSingleKpiData(kpi models.DashboardKpi, tenantId uint) (float64, error) {
 	if !utils.Includes(models.DashboardIndexableModelNames, kpi.Model) {
-		return nil, errors.New("invalid model name")
+		return 0, errors.New("invalid model name")
 	}
 
 	modelFields := models.DashboardIndexableJsonModels[kpi.Model]
 	if _, ok := modelFields[kpi.ModelField]; !ok {
-		return nil, errors.New("invalid model field")
+		return 0, errors.New("invalid model field")
 	}
 
 	db, err := utils.GetDB()
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 
-	var results []interface{}
-
-	query := fmt.Sprintf("select %s from %s where \"createdAt\" >= current_date - interval '%d days';", kpi.ModelField, kpi.Model, kpi.TimePeriod)
-
+	var results []float64
+	query := fmt.Sprintf("select \"%s\" from %s where \"tenantId\" = %d and \"createdAt\" >= current_date - interval '%d days';", kpi.ModelField, kpi.Model, tenantId, kpi.TimePeriod)
 	if err := db.Raw(query).Scan(&results).Error; err != nil {
-		return nil, err
+		return 0, err
 	}
-	fmt.Printf("results: %+v\n", results)
-	fmt.Println("types: ", reflect.TypeOf(results), reflect.TypeOf(results[0]))
 
 	if len(results) == 0 {
 		return 0, nil
 	}
+	// fmt.Println(query)
+	// fmt.Printf("results: %+v\n", results)
 
 	switch kpi.AggregationType {
 	case models.KpiAggregationTypeSum:
-		sum := 0
-		for _, result := range results {
-			val, ok := result.(int)
-			if !ok {
-				return nil, errors.New("invalid value type")
-			}
-			sum += val
-		}
-		return sum, nil
+		return sum(&results), nil
 
 	case models.KpiAggregationTypeCount:
-		return len(results), nil
+		return count(&results), nil
 
 	case models.KpiAggregationTypeMax:
-		max := math.MinInt
-		for _, result := range results {
-			val, ok := result.(int)
-			if !ok {
-				return nil, errors.New("invalid value type")
-			}
-			if val > max {
-				max = val
-			}
-		}
-		return max, nil
+		return max(&results), nil
 
 	case models.KpiAggregationTypeMin:
-		min := math.MaxInt
-		for _, result := range results {
-			val, ok := result.(int)
-			if !ok {
-				return nil, errors.New("invalid value type")
-			}
-			if val < min {
-				min = val
-			}
-		}
-		return min, nil
+		return min(&results), nil
 
 	case models.KpiAggregationTypeAverage:
-		sum := 0
-		for _, result := range results {
-			val, ok := result.(int)
-			if !ok {
-				return nil, errors.New("invalid value type")
-			}
-			sum += val
-		}
-		return sum / len(results), nil
+		return average(&results), nil
 
 	case models.KpiAggregationTypeMedian:
-		return 0, nil
+		return median(&results), nil
 
 	case models.KpiAggregationTypeMode:
-		return 0, nil
+		return mode(&results), nil
 
 	default:
 		return 0, nil

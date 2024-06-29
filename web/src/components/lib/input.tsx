@@ -36,7 +36,7 @@ function Input(props: InputProps) {
 				) : null}
 
 				<input
-					{...filterBykeys(props, ['label', 'icon', 'errorText', 'labelClassName', 'descriptionText'])}
+					{...filterBykeys(props, ['label', 'icon', 'errorText', 'labelClassName', 'descriptionText', 'rootClassName'])}
 					id={props.name}
 					type={props.type === 'password' ? inputType : props.type}
 					className={twMerge(

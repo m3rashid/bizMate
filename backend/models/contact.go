@@ -9,7 +9,7 @@ type Contact struct {
 	CreatedBy
 	UpdatedBy
 	Name         string    `json:"name" gorm:"column:name;not null" validate:"required"`
-	Email        string    `json:"email" gorm:"column:email;unique;not null" validate:"required,email"`
+	Email        string    `json:"email" gorm:"column:email;not null" validate:"required,email"`
 	Phone        string    `json:"phone" gorm:"column:phone"`
 	Birthday     time.Time `json:"birthday" gorm:"column:birthday"`
 	OtherPhones  string    `json:"otherPhones" gorm:"column:otherPhones"`   // array of string

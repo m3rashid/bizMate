@@ -10,7 +10,7 @@ function DashboardDesigner() {
 	const { dashboardId } = useParams({ from: '/dashboards/$dashboardId/designer' })
 
 	return (
-		<PageContainer bodyClassName="p-0 sm:p-0 h-full">
+		<PageContainer>
 			<DashboardDesignerComponent dashboardId={dashboardId} />
 		</PageContainer>
 	)

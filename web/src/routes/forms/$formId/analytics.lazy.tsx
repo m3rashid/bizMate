@@ -1,11 +1,10 @@
 import apiClient from '../../../api/client'
-import AnalyticsCard, { Analysis, ChartType } from '../../../components/apps/forms/analyticsCard'
-import Button from '../../../components/lib/button'
+import AnalyticsCard, { Analysis } from '../../../components/apps/forms/analyticsCard'
 import DataListHeader from '../../../components/lib/dataListHeader'
 import { PageLoader } from '../../../components/lib/loader'
+import Modal from '../../../components/lib/modal'
 import { NotFound } from '../../../components/lib/notFound'
 import PageContainer from '../../../components/pageContainer'
-import { handleViewTransition } from '../../../utils/helpers'
 import { useQuery } from '@tanstack/react-query'
 import { createLazyFileRoute, useParams } from '@tanstack/react-router'
 import { useState } from 'react'
@@ -20,7 +19,7 @@ type AnalysisResponse = {
 	analysis: Analysis[]
 }
 function FormAnalytics() {
-	const [chartType, setChartType] = useState<ChartType>('pie')
+	const [analyticDetail, setAnalyticDetail] = useState<Analysis | null>(null)
 	const { formId } = useParams({ from: '/forms/$formId/analytics' })
 
 	const { data, isPending } = useQuery<AnalysisResponse>({
@@ -33,24 +32,22 @@ function FormAnalytics() {
 
 	return (
 		<PageContainer>
-			<DataListHeader
-				hideRefresh
-				isFetching={false}
-				refetch={() => {}}
-				title={`Form Analytics (${data.title})`}
-				description={data.description}
-				otherActions={
-					<div>
-						<Button onClick={() => handleViewTransition(() => setChartType((p) => (p === 'pie' ? 'bar' : 'pie')))} size="small">
-							{chartType === 'pie' ? 'Show as Bar Charts' : 'Show as Pie Charts'}
-						</Button>
-					</div>
-				}
-			/>
+			<DataListHeader hideRefresh isFetching={false} refetch={() => {}} title={`Form Analytics (${data.title})`} description={data.description} />
+
+			<Modal title={analyticDetail?.label} open={!!analyticDetail} setOpen={() => setAnalyticDetail(null)}>
+				<div className="p-4">{analyticDetail ? <AnalyticsCard analytics={analyticDetail} position="modal" /> : null}</div>
+			</Modal>
 
 			<div className="flex flex-wrap items-stretch gap-4">
 				{data.analysis.map((dataPoint) => {
-					return <AnalyticsCard key={dataPoint.name} analytics={dataPoint} chartType={chartType} />
+					return (
+						<div
+							key={dataPoint.name}
+							className="min-h-64 w-full select-none rounded-md border-2 border-white p-2 shadow-lg hover:border-primary sm:max-w-xs md:max-w-md"
+						>
+							<AnalyticsCard position="card" analytics={dataPoint} maximize={() => setAnalyticDetail(dataPoint)} />
+						</div>
+					)
 				})}
 			</div>
 		</PageContainer>

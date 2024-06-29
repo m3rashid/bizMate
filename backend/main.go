@@ -12,6 +12,7 @@ import (
 	"bizMate/apis/notifications"
 	"bizMate/apis/payments"
 	"bizMate/apis/project"
+	"bizMate/apis/seed"
 	"bizMate/models"
 	"bizMate/utils"
 	"log"
@@ -100,6 +101,10 @@ func main() {
 	notifications.Setup(app)
 	payments.Setup(app)
 	project.Setup(app)
+
+	if os.Getenv("SERVER_MODE") == "development" {
+		seed.Setup(app)
+	}
 
 	log.Println("Server is running in " + os.Getenv("SERVER_MODE") + " mode.")
 	app.Listen(":4000")

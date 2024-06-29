@@ -1,18 +1,17 @@
-import { CSS } from '@dnd-kit/utilities'
-import { twMerge } from 'tailwind-merge'
-import PlusIcon from '@heroicons/react/24/outline/PlusIcon'
-import XMarkIcon from '@heroicons/react/24/outline/XMarkIcon'
-import PencilIcon from '@heroicons/react/24/outline/PencilIcon'
-import { Dispatch, FormEvent, SetStateAction, useCallback, useState } from 'react'
-import { SortableContext, sortableKeyboardCoordinates, useSortable } from '@dnd-kit/sortable'
-import { DndContext, DragEndEvent, KeyboardSensor, PointerSensor, closestCorners, useSensor, useSensors } from '@dnd-kit/core'
-
-import Input from './input'
-import Modal from './modal'
-import Button from './button'
-import Tooltip from './tooltip'
 import { usePopups } from '../../hooks/popups'
 import { handleViewTransition } from '../../utils/helpers'
+import Button from './button'
+import Input from './input'
+import Modal from './modal'
+import Tooltip from './tooltip'
+import { DndContext, DragEndEvent, KeyboardSensor, PointerSensor, closestCorners, useSensor, useSensors } from '@dnd-kit/core'
+import { SortableContext, sortableKeyboardCoordinates, useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+import PencilIcon from '@heroicons/react/24/outline/PencilIcon'
+import PlusIcon from '@heroicons/react/24/outline/PlusIcon'
+import XMarkIcon from '@heroicons/react/24/outline/XMarkIcon'
+import { Dispatch, FormEvent, SetStateAction, useCallback, useState } from 'react'
+import { twMerge } from 'tailwind-merge'
 
 function AddEditModal(props: {
 	open: boolean
@@ -143,6 +142,7 @@ function SelectListInput(props: SelectListInputProps) {
 			}
 			return prev
 		})
+		setEditData(undefined)
 	}
 
 	function handleDragEnd(e: DragEndEvent) {

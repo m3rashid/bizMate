@@ -10,7 +10,6 @@ function AddWidget(props: { dashboardId: string | number }) {
 	function handleSetWidgetType(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault()
 		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any
-		console.log(formData)
 		if (formData.type) setWidgetType(formData.type)
 	}
 
