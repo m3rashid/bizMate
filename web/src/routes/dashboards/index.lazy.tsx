@@ -20,6 +20,7 @@ export const Route = createLazyFileRoute('/dashboards/')({
 })
 
 function DashboardCard(props: Dashboard & { onEdit: () => void }) {
+	const [showActions, setShowActions] = useState(false)
 	const { addActionPopup, removeActionPopup, addMessagePopup } = usePopups()
 
 	const { mutate: deleteDashboard } = useMutation({
@@ -56,30 +57,34 @@ function DashboardCard(props: Dashboard & { onEdit: () => void }) {
 	}
 
 	return (
-		<div className="h-min select-none rounded-lg border-2 border-white p-2.5 shadow-lg hover:border-primary">
-			<div className="flex justify-between gap-2">
-				<div>
-					<Link
-						to="/dashboards/$dashboardId"
-						params={{ dashboardId: props.id.toString() }}
-						className={twMerge('font-semibold underline', props.active ? 'text-success' : 'text-danger')}
-					>
-						{props.title}
-					</Link>
+		<div
+			onMouseEnter={() => setShowActions(true)}
+			onMouseLeave={() => setShowActions(false)}
+			className="relative h-min select-none rounded-lg border-2 border-white p-2.5 shadow-lg hover:border-primary "
+		>
+			<div>
+				<Link
+					to="/dashboards/$dashboardId"
+					params={{ dashboardId: props.id.toString() }}
+					className={twMerge('font-semibold underline', props.active ? 'text-success' : 'text-danger')}
+				>
+					{props.title}
+				</Link>
 
-					<div className="text-xs text-disabled">Created: {dayjs(props.createdAt).format('DD MMM, YYYY - HH:mm A')}</div>
-					<div className="mt-2 text-sm">{props.description}</div>
-				</div>
+				<div className="mb-8 text-xs text-disabled">Created: {dayjs(props.createdAt).format('DD MMM, YYYY - HH:mm A')}</div>
+				{props.description ? <div className="-mt-4 text-sm">{props.description}</div> : null}
+			</div>
 
-				<div className="">
-					<Tooltip label="Edit Overall Dashboard" show="right">
+			{showActions ? (
+				<div className="absolute right-1 top-1">
+					<Tooltip label="Edit Overall Dashboard" position="left">
 						<PencilSquareIcon onClick={props.onEdit} className="h-8 w-8 rounded-md p-1.5 text-disabled hover:bg-primaryLight" />
 					</Tooltip>
-					<Tooltip label="Delete Dashboard" show="right">
+					<Tooltip label="Delete Dashboard" position="left">
 						<TrashIcon className="h-8 w-8 rounded-md p-1.5 text-disabled hover:bg-dangerLight" onClick={handleDeleteDashboard} />
 					</Tooltip>
 				</div>
-			</div>
+			) : null}
 
 			<div className="mt-4 w-full">
 				<Link to="/dashboards/$dashboardId/designer" params={{ dashboardId: props.id.toString() }}>

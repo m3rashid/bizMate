@@ -77,7 +77,7 @@ function FormCard(props: Form & { onEdit: () => void }) {
 							{props.title}
 						</Link>
 						<Tooltip
-							show="right"
+							position="right"
 							label={
 								<div className="flex flex-col">
 									<div className="flex items-center gap-2">
@@ -105,17 +105,17 @@ function FormCard(props: Form & { onEdit: () => void }) {
 				</div>
 
 				<div className="">
-					<Tooltip label="Edit Form" show="right">
+					<Tooltip label="Edit Form" position="right">
 						<PencilSquareIcon onClick={props.onEdit} className="h-8 w-8 rounded-md p-1.5 text-disabled hover:bg-primaryLight" />
 					</Tooltip>
-					<Tooltip label="Delete Form" show="right">
+					<Tooltip label="Delete Form" position="right">
 						<TrashIcon className="h-8 w-8 rounded-md p-1.5 text-disabled hover:bg-dangerLight" onClick={handleDeleteForm} />
 					</Tooltip>
 				</div>
 			</div>
 
 			<div className="mt-4 flex w-full flex-wrap gap-2">
-				<Tooltip label="Copy Form URL" show="right">
+				<Tooltip label="Copy Form URL" position="right">
 					<ClipboardIcon
 						className="h-7 w-7 cursor-pointer rounded-lg bg-secondary p-1.5 text-white"
 						onClick={() => {
@@ -125,7 +125,7 @@ function FormCard(props: Form & { onEdit: () => void }) {
 					/>
 				</Tooltip>
 
-				<Tooltip label="Show Form preview" show="right">
+				<Tooltip label="Show Form preview" position="right">
 					<Link to="/forms/$formId/preview" params={{ formId: props.id.toString() }}>
 						<Chip>
 							<EyeIcon className="h-4 w-4" />
@@ -133,13 +133,13 @@ function FormCard(props: Form & { onEdit: () => void }) {
 					</Link>
 				</Tooltip>
 
-				<Tooltip label="Show form Responses" show="right">
+				<Tooltip label="Show form Responses" position="right">
 					<Link to="/forms/$formId/responses" params={{ formId: props.id.toString() }}>
 						<Chip>Responses</Chip>
 					</Link>
 				</Tooltip>
 
-				<Tooltip label="Show form Analytics" show="right">
+				<Tooltip label="Show form Analytics" position="right">
 					<Link to="/forms/$formId/analytics" params={{ formId: props.id.toString() }}>
 						<Chip>Analytics</Chip>
 					</Link>

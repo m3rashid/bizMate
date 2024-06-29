@@ -74,7 +74,7 @@ function SingleOption(props: { option: string; onRemove: () => void; onEdit: () 
 						/>
 					</Tooltip>
 
-					<Tooltip label="Remove this option" show="left">
+					<Tooltip label="Remove this option" position="left">
 						<XMarkIcon
 							onClick={props.onRemove}
 							className=" h-8 w-8 cursor-pointer rounded-full bg-disabledLight p-2 shadow-md hover:bg-danger hover:text-white"

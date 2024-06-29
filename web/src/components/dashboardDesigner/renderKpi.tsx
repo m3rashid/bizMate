@@ -13,7 +13,7 @@ function RenderKpi({ data, description, title }: RenderKpiProps) {
 			<div className="mb-1 flex items-center gap-2 text-disabled ">
 				<h3 className="font-semibold">{title}</h3>
 				{description ? (
-					<Tooltip label={description} show="left">
+					<Tooltip label={description} position="left">
 						<InformationCircleIcon className="h-4 w-4" />
 					</Tooltip>
 				) : null}

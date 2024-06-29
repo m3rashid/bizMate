@@ -8,7 +8,7 @@ export function RenderApp(app: App) {
 		<div className="h-min select-none">
 			<div className="flex items-center gap-2">
 				<h3 className="text-sm font-semibold text-disabled">{app.name}</h3>
-				<Tooltip label={app.description} show="right">
+				<Tooltip label={app.description} position="right">
 					<InformationCircleIcon className="h-4 w-4 text-disabled" />
 				</Tooltip>
 			</div>

@@ -1,9 +1,9 @@
-import { createPortal } from 'react-dom'
 import { CSSProperties, PropsWithChildren, ReactNode, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 export type TooltipProps = PropsWithChildren & {
 	label: ReactNode
-	show?: 'left' | 'right'
+	position?: 'left' | 'right'
 }
 
 function Tooltip(props: TooltipProps) {
@@ -16,8 +16,8 @@ function Tooltip(props: TooltipProps) {
 		const bounds = domRef.current.getBoundingClientRect()
 		return {
 			...defaultStyles,
-			top: bounds.top + bounds.height + 5,
-			...(props.show === 'right' ? { left: bounds.left } : { left: bounds.right - defaultStyles.maxWidth }),
+			top: bounds.bottom + 5,
+			...(props.position === 'right' ? { left: bounds.left } : { left: bounds.right, transform: 'translateX(-100%)' }),
 		}
 	}
 
@@ -28,7 +28,7 @@ function Tooltip(props: TooltipProps) {
 			</div>
 			{createPortal(
 				show ? (
-					<div style={getTooltipStyles()} className="absolute z-50 rounded-md border border-gray-200 bg-white px-2 py-1 text-sm shadow-md">
+					<div style={getTooltipStyles()} className="absolute z-30 rounded-md border border-gray-200 bg-white px-2 py-1 text-sm shadow-md">
 						{props.label}
 					</div>
 				) : null,

@@ -42,29 +42,29 @@ function ProjectCard(props: Project & { onEdit: () => void }) {
 				</div>
 
 				<div className="">
-					<Tooltip label="Edit Form" show="right">
+					<Tooltip label="Edit Form" position="right">
 						<PencilSquareIcon onClick={props.onEdit} className="h-8 w-8 rounded-md p-1.5 text-disabled hover:bg-primaryLight" />
 					</Tooltip>
-					<Tooltip label="Delete Form" show="right">
+					<Tooltip label="Delete Form" position="right">
 						<TrashIcon className="h-8 w-8 rounded-md p-1.5 text-disabled hover:bg-dangerLight" onClick={handleDeleteProject} />
 					</Tooltip>
 				</div>
 			</div>
 
 			<div className="mt-4 flex w-full flex-wrap gap-2">
-				<Tooltip label="Project Guidelines" show="right">
+				<Tooltip label="Project Guidelines" position="right">
 					<Link to="/projects/$projectId/readme" params={{ projectId: props.id.toString() }}>
 						<Chip variant="simple">Readme</Chip>
 					</Link>
 				</Tooltip>
 
-				<Tooltip label="Project Guidelines" show="right">
+				<Tooltip label="Project Guidelines" position="right">
 					<Link to="/projects/$projectId/guidelines" params={{ projectId: props.id.toString() }}>
 						<Chip variant="simple">Guidelines</Chip>
 					</Link>
 				</Tooltip>
 
-				<Tooltip label="Project Guidelines" show="right">
+				<Tooltip label="Project Guidelines" position="right">
 					<Link to="/projects/$projectId/docs" params={{ projectId: props.id.toString() }}>
 						<Chip variant="simple">Docs</Chip>
 					</Link>

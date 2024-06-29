@@ -30,7 +30,7 @@ function Contacts() {
 			title: 'Actions',
 			render: ({ row }) => (
 				<div className="flex w-fit items-center gap-2">
-					<Tooltip label="Edit Form" show="right">
+					<Tooltip label="Edit Form" position="right">
 						<Button
 							label="Edit"
 							size="small"
