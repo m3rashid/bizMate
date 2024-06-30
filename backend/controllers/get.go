@@ -8,11 +8,12 @@ import (
 )
 
 type GetOptions struct {
-	ParamValue         string // coming from ctx.Params(ParamKey)
-	ParamKey           string // what entry in db to match paramValue with
-	Populate           []string
-	IncludeSoftDeleted bool // default false: dont include soft deleted
-	GetWorkspaceID     func(*fiber.Ctx) (uint, error)
+	ParamValue             string // coming from ctx.Params(ParamKey)
+	ParamKey               string // what entry in db to match paramValue with
+	Populate               []string
+	IncludeSoftDeleted     bool // default false: dont include soft deleted
+	GetWorkspaceID         func(*fiber.Ctx) (uint, error)
+	DontIncludeWorkspaceID bool
 }
 
 func Get[Model DbModel](_options ...GetOptions) func(*fiber.Ctx) error {
@@ -53,7 +54,13 @@ func Get[Model DbModel](_options ...GetOptions) func(*fiber.Ctx) error {
 			db = db.Where("deleted = false")
 		}
 
-		if err := db.Where(fmt.Sprintf("%s = ? and \"workspaceId\" = ?", options.ParamKey), paramValue, workspaceId).First(&column).Error; err != nil {
+		var query string
+		if options.DontIncludeWorkspaceID {
+			query = fmt.Sprintf("%s = ?", options.ParamKey)
+		} else {
+			query = fmt.Sprintf("%s = ? and \"workspaceId\" = %d", options.ParamKey, workspaceId)
+		}
+		if err := db.Where(query, paramValue).First(&column).Error; err != nil {
 			return ctx.SendStatus(fiber.StatusInternalServerError)
 		}
 

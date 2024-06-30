@@ -10,14 +10,15 @@ export type Analysis = { name: string; label: string; counts: Record<string, num
 
 type AnalyticsCardProps = {
 	analytics: Analysis
-} & ({ position: 'modal' } | { position: 'card'; maximize: () => void })
+	defaultChartType?: ChartType
+} & ({ position: 'modal' } | { position: 'card'; maximize: (chartType: ChartType) => void })
 
 const borderColor = ['#FB7185', '#4ADE80', '#22D3EE', '#9CA3AF', '#A78BFA', '#9333EA', '#2563EB', '#DB2777']
 const backgroundColor = borderColor.map((t) => t + '80')
 
 function AnalyticsCard(props: AnalyticsCardProps) {
 	const [showOptions, setShowOptions] = useState(false)
-	const [chartType, setChartType] = useState<ChartType>('pie')
+	const [chartType, setChartType] = useState<ChartType>(props.defaultChartType || 'pie')
 	const scoreArr = Object.entries(props.analytics.counts).reduce<Array<[string, number]>>((acc, [key, value]) => [...acc, [key, value]], [])
 
 	return (
@@ -39,7 +40,12 @@ function AnalyticsCard(props: AnalyticsCardProps) {
 						{chartType === 'pie' ? 'Show Bar Chart' : 'Show Pie Chart'}
 					</Button>
 					{props.position === 'card' ? (
-						<Button variant="simple" size="small" onClick={props.maximize} LeftIcon={<ArrowsPointingOutIcon className="h-6 w-6" />} />
+						<Button
+							variant="simple"
+							size="small"
+							onClick={() => props.maximize(chartType)}
+							LeftIcon={<ArrowsPointingOutIcon className="h-6 w-6" />}
+						/>
 					) : null}
 				</div>
 			) : null}

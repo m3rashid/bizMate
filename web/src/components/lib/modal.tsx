@@ -1,6 +1,6 @@
+import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react'
 import XMarkIcon from '@heroicons/react/20/solid/XMarkIcon'
 import { Fragment, PropsWithChildren, ReactNode } from 'react'
-import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react'
 
 export type ModalProps = PropsWithChildren & {
 	open: boolean
@@ -15,8 +15,8 @@ function Modal(props: ModalProps) {
 				<TransitionChild
 					as={Fragment}
 					enter="ease-out duration-300"
-					enterFrom="opacity-0"
-					enterTo="opacity-100"
+					enterFrom="opacity-0 scale-50"
+					enterTo="opacity-100 scale-100"
 					leave="ease-in duration-200"
 					leaveFrom="opacity-100"
 					leaveTo="opacity-0"
@@ -29,11 +29,11 @@ function Modal(props: ModalProps) {
 						<TransitionChild
 							as={Fragment}
 							enter="ease-out duration-300"
-							enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-							enterTo="opacity-100 translate-y-0 sm:scale-100"
+							enterFrom="opacity-0 translate-y-4 sm:translate-y-0 scale-50"
+							enterTo="opacity-100 translate-y-0 scale-100"
 							leave="ease-in duration-200"
-							leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-							leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+							leaveFrom="opacity-100 translate-y-0 scale-100"
+							leaveTo="opacity-0 translate-y-4 sm:translate-y-0 scale-0"
 						>
 							<DialogPanel className="relative w-full transform rounded-lg bg-white text-left shadow-md transition-all sm:my-8 sm:max-w-xl md:max-w-3xl">
 								<div className="flex w-full items-center justify-between gap-4 border-b border-borderColor p-3">

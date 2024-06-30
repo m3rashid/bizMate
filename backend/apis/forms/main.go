@@ -10,8 +10,9 @@ import (
 
 func Setup(app *fiber.App) {
 	app.Get("/forms/one/:formId", utils.CheckAuthMiddlewareButAllowUnauthorized, controllers.Get[models.Form](controllers.GetOptions{
-		ParamKey:   "id",
-		ParamValue: "formId",
+		ParamKey:               "id",
+		ParamValue:             "formId",
+		DontIncludeWorkspaceID: true,
 	}))
 
 	app.Post("/forms/create", utils.CheckAuthMiddleware, createNewForm)
