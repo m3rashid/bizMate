@@ -22,12 +22,12 @@ func Setup(app *fiber.App) {
 
 	app.Post("/dashboards/create", utils.CheckAuthMiddleware, controllers.Create(models.DASHBOARD_MODEL_NAME, controllers.CreateOptions[CreateDashboardBody, models.Dashboard]{
 		GetDefaultValues: func(values *CreateDashboardBody, ctx *fiber.Ctx) (*models.Dashboard, error) {
-			userId, tenantId := utils.GetUserAndTenantIdsOrZero(ctx)
+			userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 			return &models.Dashboard{
-				Title:       values.Title,
-				Description: values.Description,
-				CreatedBy:   models.CreatedBy{CreatedByID: userId},
-				BaseModel:   models.BaseModel{TenantID: tenantId},
+				Title:                  values.Title,
+				Description:            values.Description,
+				CreatedBy:              models.CreatedBy{CreatedByID: userId},
+				BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId},
 			}, nil
 		},
 	}))
@@ -49,17 +49,17 @@ func Setup(app *fiber.App) {
 			if err != nil {
 				return nil, err
 			}
-			userId, tenantId := utils.GetUserAndTenantIdsOrZero(ctx)
+			userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 			return &models.DashboardKpi{
-				Title:           values.Title,
-				Description:     values.Description,
-				DashboardID:     uint(dIdU64),
-				Model:           values.Model,
-				ModelField:      values.ModelField,
-				AggregationType: values.AggregationType,
-				TimePeriod:      values.TimePeriod,
-				CreatedBy:       models.CreatedBy{CreatedByID: userId},
-				BaseModel:       models.BaseModel{TenantID: tenantId},
+				Title:                  values.Title,
+				Description:            values.Description,
+				DashboardID:            uint(dIdU64),
+				Model:                  values.Model,
+				ModelField:             values.ModelField,
+				AggregationType:        values.AggregationType,
+				TimePeriod:             values.TimePeriod,
+				CreatedBy:              models.CreatedBy{CreatedByID: userId},
+				BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId},
 			}, nil
 		},
 	}))

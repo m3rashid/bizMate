@@ -6,7 +6,7 @@ const FORM_MODEL_NAME string = "forms"
 const FORM_RESPONSE_MODEL_NAME string = "form_responses"
 
 type Form struct {
-	BaseModel
+	BaseModelWithWorkspace
 	CreatedBy
 	UpdatedBy
 	Title                  string `json:"title" gorm:"column:title;not null" validate:"required"`

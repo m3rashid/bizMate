@@ -5,7 +5,7 @@ import "time"
 const CONTACT_MODEL_NAME string = "contacts"
 
 type Contact struct {
-	BaseModel
+	BaseModelWithWorkspace
 	CreatedBy
 	UpdatedBy
 	Name         string    `json:"name" gorm:"column:name;not null" validate:"required"`

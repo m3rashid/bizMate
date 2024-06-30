@@ -8,7 +8,13 @@ type BaseModel struct {
 	ID        uint      `json:"id" gorm:"primary_key;column:id"`
 	Deleted   bool      `json:"" gorm:"column:deleted;default:false"`
 	CreatedAt time.Time `json:"createdAt" gorm:"column:createdAt; default:current_timestamp"`
-	TenantID  uint      `json:"tenantId" gorm:"column:tenantId;default:0" validate:"required"`
+}
+
+type BaseModelWithWorkspace struct {
+	ID          uint      `json:"id" gorm:"primary_key;column:id"`
+	Deleted     bool      `json:"" gorm:"column:deleted;default:false"`
+	CreatedAt   time.Time `json:"createdAt" gorm:"column:createdAt; default:current_timestamp"`
+	WorkspaceID uint      `json:"workspaceId" gorm:"column:workspaceId;default:0" validate:"required"`
 }
 
 type CreatedBy struct {

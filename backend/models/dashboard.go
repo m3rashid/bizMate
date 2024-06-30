@@ -32,7 +32,7 @@ func GetKpiAggregationTypes() []KpiAggregationType {
 
 // KPIs can be used to display key performance indicators on any page
 type DashboardKpi struct {
-	BaseModel
+	BaseModelWithWorkspace
 	CreatedBy
 	UpdatedBy
 	DashboardID     uint               `json:"dashboardId" gorm:"column:dashboardId;not null" validate:"required"`
@@ -61,7 +61,7 @@ var DashboardKpiJsonModel = DashboardIndexableJsonModel{
 type ChartType string
 
 type DashboardChart struct {
-	BaseModel
+	BaseModelWithWorkspace
 	CreatedBy
 	UpdatedBy
 	DashboardID     uint       `json:"dashboardId" gorm:"column:dashboardId;not null" validate:"required"`
@@ -92,7 +92,7 @@ var DashboardChartJsonModel = DashboardIndexableJsonModel{
 }
 
 type Dashboard struct {
-	BaseModel
+	BaseModelWithWorkspace
 	CreatedBy
 	UpdatedBy
 	Title       string `json:"title" gorm:"column:title;not null" validate:"required"`

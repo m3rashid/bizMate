@@ -13,6 +13,7 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as AuthLoginImport } from './routes/auth/login'
 import { Route as FormsFormIdPreviewImport } from './routes/forms/$formId/preview'
 
 // Create Virtual Routes
@@ -27,7 +28,6 @@ const DashboardsIndexLazyImport = createFileRoute('/dashboards/')()
 const AutomationsIndexLazyImport = createFileRoute('/automations/')()
 const FormsDesignerLazyImport = createFileRoute('/forms/designer')()
 const AutomationsDesignerLazyImport = createFileRoute('/automations/designer')()
-const AuthLoginLazyImport = createFileRoute('/auth/login')()
 const ProjectsProjectIdIndexLazyImport = createFileRoute(
   '/projects/$projectId/',
 )()
@@ -134,10 +134,10 @@ const AutomationsDesignerLazyRoute = AutomationsDesignerLazyImport.update({
   import('./routes/automations/designer.lazy').then((d) => d.Route),
 )
 
-const AuthLoginLazyRoute = AuthLoginLazyImport.update({
+const AuthLoginRoute = AuthLoginImport.update({
   path: '/auth/login',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/auth/login.lazy').then((d) => d.Route))
+} as any)
 
 const ProjectsProjectIdIndexLazyRoute = ProjectsProjectIdIndexLazyImport.update(
   {
@@ -288,7 +288,7 @@ declare module '@tanstack/react-router' {
       parentRoute: typeof rootRoute
     }
     '/auth/login': {
-      preLoaderRoute: typeof AuthLoginLazyImport
+      preLoaderRoute: typeof AuthLoginImport
       parentRoute: typeof rootRoute
     }
     '/automations/designer': {
@@ -389,7 +389,7 @@ export const routeTree = rootRoute.addChildren([
   AboutLazyRoute,
   ChangelogsLazyRoute,
   PaymentLazyRoute,
-  AuthLoginLazyRoute,
+  AuthLoginRoute,
   AutomationsDesignerLazyRoute,
   FormsDesignerLazyRoute,
   AutomationsIndexLazyRoute,

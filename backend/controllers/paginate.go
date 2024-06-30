@@ -14,7 +14,7 @@ type PaginateOptions struct {
 	Populate           []string
 	IncludeSoftDeleted bool // default false: dont include soft deleted
 	ReturnOnlyDeleted  bool // to show deleted items
-	GetTenantID        func(*fiber.Ctx) (uint, error)
+	GetWorkspaceID     func(*fiber.Ctx) (uint, error)
 }
 
 func Paginate[Model DbModel](_options ...PaginateOptions) func(*fiber.Ctx) error {
@@ -36,15 +36,15 @@ func Paginate[Model DbModel](_options ...PaginateOptions) func(*fiber.Ctx) error
 			return ctx.Status(fiber.StatusBadRequest).JSON("Bad Request")
 		}
 
-		var tenantId uint
-		if paginationOptions.GetTenantID != nil {
-			tId, err := paginationOptions.GetTenantID(ctx)
+		var workspaceId uint
+		if paginationOptions.GetWorkspaceID != nil {
+			tId, err := paginationOptions.GetWorkspaceID(ctx)
 			if err != nil {
 				return ctx.SendStatus(fiber.StatusBadRequest)
 			}
-			tenantId = tId
+			workspaceId = tId
 		} else {
-			_, tenantId = utils.GetUserAndTenantIdsOrZero(ctx)
+			_, workspaceId = utils.GetUserAndWorkspaceIdsOrZero(ctx)
 		}
 
 		requestQueriesAndParams := []string{}
@@ -85,7 +85,7 @@ func Paginate[Model DbModel](_options ...PaginateOptions) func(*fiber.Ctx) error
 		}
 
 		var docsCount int64 = 0
-		db = db.Where("\"tenantId\" = ?", tenantId)
+		db = db.Where("\"workspaceId\" = ?", workspaceId)
 		if err := db.Table(tableName).Where(requestQueryParams).Count(&docsCount).Error; err != nil {
 			return ctx.SendStatus(fiber.StatusInternalServerError)
 		}

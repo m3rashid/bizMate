@@ -1,21 +1,30 @@
 package models
 
-const NOTIFICATION_MODEL_NAME string = "notifications"
+// TODO: move notifications to mongodb
 
-const (
-	SCOPE_USER   = "user"
-	SCOPE_TENANT = "tenant"
-)
+const USER_WEB_UI_NOTIFICATION_MODEL_NAME string = "user_webui_notifications"
+const WORKSPACE_WEB_UI_NOTIFICATION_MODEL_NAME string = "workspace_webui_notifications"
 
-type WebUiNotification struct {
-	BaseModel
+type UserWebUiNotification struct {
+	BaseModelWithWorkspace
 	Title       string `json:"title" gorm:"column:title;not null" validate:"required"`
 	Description string `json:"description" gorm:"column:description"`
 	Link        string `json:"link" gorm:"column:link"`
-	Scope       string `json:"scope" gorm:"column:scope;not null" validate:"required"`
 	Read        bool   `json:"read" gorm:"column:read" validate:"required"`
 }
 
-func (WebUiNotification) TableName() string {
-	return NOTIFICATION_MODEL_NAME
+type WorkspaceWebUiNotification struct {
+	BaseModelWithWorkspace
+	Title       string `json:"title" gorm:"column:title;not null" validate:"required"`
+	Description string `json:"description" gorm:"column:description"`
+	Link        string `json:"link" gorm:"column:link"`
+	ReadBy      string `json:"read" gorm:"column:read" validate:"required"` // array of user ids
+}
+
+func (WorkspaceWebUiNotification) TableName() string {
+	return WORKSPACE_WEB_UI_NOTIFICATION_MODEL_NAME
+}
+
+func (UserWebUiNotification) TableName() string {
+	return USER_WEB_UI_NOTIFICATION_MODEL_NAME
 }

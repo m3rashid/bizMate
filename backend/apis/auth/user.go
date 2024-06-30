@@ -3,22 +3,29 @@ package auth
 import (
 	"bizMate/models"
 	"bizMate/utils"
-	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
 
+func checkAuth(ctx *fiber.Ctx) error {
+	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	jwtToken, err := utils.GenerateJWT(userId, workspaceId, ctx.Locals("email").(string))
+	if err != nil {
+		return ctx.SendStatus(fiber.StatusInternalServerError)
+	}
+
+	return ctx.JSON(fiber.Map{"token": jwtToken})
+}
+
 func getUser(ctx *fiber.Ctx) error {
-	userId, _ := utils.GetUserAndTenantIdsOrZero(ctx)
+	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	db, err := utils.GetDB()
 	if err != nil {
-		fmt.Println("here 1", err)
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	user := models.User{}
 	if err = db.Where("id = ?", userId).First(&user).Error; err != nil {
-		fmt.Println("here 1", err)
 		return ctx.SendStatus(fiber.StatusNotFound)
 	}
 
@@ -26,11 +33,6 @@ func getUser(ctx *fiber.Ctx) error {
 }
 
 func credentialsLogin(ctx *fiber.Ctx) error {
-	type loginBodyReq struct {
-		Email    string `json:"email" validate:"required,email"`
-		Password string `json:"password" validate:"required"`
-	}
-
 	reqBody := loginBodyReq{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
@@ -54,7 +56,7 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 		return ctx.SendStatus(fiber.StatusUnauthorized)
 	}
 
-	token, err := utils.GenerateJWT(user.ID, user.TenantID, user.Email)
+	token, err := utils.GenerateJWT(user.ID, user.WorkspaceID, user.Email)
 	if err != nil {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
@@ -63,41 +65,20 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 }
 
 func credentialsRegister(ctx *fiber.Ctx) error {
-	type redisterBodyReq struct {
-		Name     string `json:"name" validate:"required"`
-		Email    string `json:"email" validate:"required,email"`
-		Phone    string `json:"phone,omitempty"`
-		Password string `json:"password" validate:"required"`
-	}
+	// When the user registers on their own,
+	// they are automatically assigned a new workspace
 
 	reqBody := redisterBodyReq{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 
-	password, err := utils.HashPassword(reqBody.Password)
+	newUser, err := createNewUser(reqBody.Name, reqBody.Email, reqBody.Password, reqBody.Phone, 0, models.PROVIDER_CREDENTIALS, "")
 	if err != nil {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
-	db, err := utils.GetDB()
-	if err != nil {
-		return ctx.SendStatus(fiber.StatusInternalServerError)
-	}
-
-	newUser := models.User{
-		Name:     reqBody.Name,
-		Email:    reqBody.Email,
-		Phone:    reqBody.Phone,
-		Password: password,
-		Provider: models.PROVIDER_CREDENTIALS,
-	}
-
-	if err = db.Create(&newUser).Error; err != nil {
-		return ctx.SendStatus(fiber.StatusInternalServerError)
-	}
-
-	token, err := utils.GenerateJWT(newUser.ID, newUser.TenantID, newUser.Email)
+	token, err := utils.GenerateJWT(newUser.ID, newUser.WorkspaceID, newUser.Email)
 	if err != nil {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}

@@ -3,7 +3,7 @@ import FormView, { ShowMetaType } from '../../../components/apps/forms/formView'
 import { FormElementInstance } from '../../../components/forms/constants'
 import { PageLoader } from '../../../components/lib/loader'
 import { PageNotFound } from '../../../components/lib/notFound'
-import { useAuth } from '../../../hooks/auth'
+import { useAuthState } from '../../../hooks/auth'
 import { usePopups } from '../../../hooks/popups'
 import { Form } from '../../../types'
 import FaceFrownIcon from '@heroicons/react/24/outline/FaceFrownIcon'
@@ -16,7 +16,7 @@ export const Route = createFileRoute('/forms/$formId/fill')({
 })
 
 function FormFill() {
-	const { auth } = useAuth()
+	const { auth } = useAuthState()
 	const { addMessagePopup } = usePopups()
 	const formRef = useRef<HTMLFormElement>(null)
 

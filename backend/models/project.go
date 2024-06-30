@@ -19,7 +19,7 @@ const (
 )
 
 type ProjectCycle struct {
-	BaseModel
+	BaseModelWithWorkspace
 	CreatedBy
 	UpdatedBy
 	CycleGoals     string    `json:"cycleGoals" gorm:"column:cycleGoals"`
@@ -43,7 +43,7 @@ var ProjectCycleJsonModel = DashboardIndexableJsonModel{
 }
 
 type Project struct {
-	BaseModel
+	BaseModelWithWorkspace
 	CreatedBy
 	UpdatedBy
 	Name        string  `json:"name" gorm:"column:name;not null" validate:"required"`
@@ -70,7 +70,7 @@ var ProjectJsonModel = DashboardIndexableJsonModel{
 }
 
 type ProjectTag struct {
-	BaseModel
+	BaseModelWithWorkspace
 	Name string `json:"name" gorm:"column:name;not null" validate:"required"`
 }
 
@@ -84,7 +84,7 @@ var ProjectTagJsonModel = DashboardIndexableJsonModel{
 }
 
 type ProjectTask struct {
-	BaseModel
+	BaseModelWithWorkspace
 	CreatedBy
 	UpdatedBy
 	Title        string        `json:"title" gorm:"column:title;not null" validate:"required"`
@@ -128,7 +128,7 @@ const (
 )
 
 type ProjectTaskEvent struct {
-	BaseModel
+	BaseModelWithWorkspace
 	CreatedBy
 	UpdatedBy
 	TaskID uint                 `json:"taskId" gorm:"column:taskId;not null" validate:"required"`

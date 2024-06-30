@@ -18,7 +18,7 @@ const (
 )
 
 func exportTable(ctx *fiber.Ctx) error {
-	userId, _ := utils.GetUserAndTenantIdsOrZero(ctx)
+	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	if userId == 0 {
 		return ctx.Status(fiber.StatusUnauthorized).JSON("Unauthorized")
 	}
@@ -99,8 +99,6 @@ type exportTableFieldsReqBody = struct {
 }
 
 func getExportTableFields(ctx *fiber.Ctx) error {
-	// userId, _ := utils.GetUserAndTenantIdsOrZero(ctx)
-
 	reqBody := exportTableFieldsReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())

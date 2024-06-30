@@ -12,6 +12,7 @@ function HomePageDashboards() {
 	})
 
 	if (isPending || !dashboardPaginationResponse) return <PageLoader />
+	if (dashboardPaginationResponse.docs.length === 0) return <div>No Dashboards Found</div>
 	return (
 		<Tabs
 			tabs={dashboardPaginationResponse.docs

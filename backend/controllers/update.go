@@ -15,7 +15,7 @@ type UpdateOptions[UpdateBodyType interface{}, Model DbModel] struct {
 	PostUpdate func(values *UpdateBodyType, model *Model, db *gorm.DB, ctx *fiber.Ctx) (interface{}, error)
 }
 
-// TODO: make sure the tenantID is not updatable
+// TODO: make sure the workspaceId is not updatable
 
 func Update[UpdateBodyType interface{}, Model DbModel](_options ...UpdateOptions[UpdateBodyType, Model]) func(*fiber.Ctx) error {
 	var _mod Model

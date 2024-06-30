@@ -19,15 +19,15 @@ func Setup(app *fiber.App) {
 
 	app.Post("/projects/create", utils.CheckAuthMiddleware, controllers.Create(models.PROJECT_MODEL_NAME, controllers.CreateOptions[projectReqBody, models.Project]{
 		GetDefaultValues: func(values *projectReqBody, ctx *fiber.Ctx) (*models.Project, error) {
-			userId, tenantId := utils.GetUserAndTenantIdsOrZero(ctx)
+			userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 			return &models.Project{
-				Name:        values.Name,
-				Description: values.Description,
-				Abandoned:   false,
-				Completed:   false,
-				People:      utils.Ternary(len(values.People) > 0, values.People, []*models.User{}),
-				CreatedBy:   models.CreatedBy{CreatedByID: userId},
-				BaseModel:   models.BaseModel{TenantID: tenantId},
+				Name:                   values.Name,
+				Description:            values.Description,
+				Abandoned:              false,
+				Completed:              false,
+				People:                 utils.Ternary(len(values.People) > 0, values.People, []*models.User{}),
+				CreatedBy:              models.CreatedBy{CreatedByID: userId},
+				BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId},
 			}, nil
 		},
 	}))
@@ -60,18 +60,18 @@ func Setup(app *fiber.App) {
 
 	app.Post("/tasks/create", utils.CheckAuthMiddleware, controllers.Create(models.TASK_MODEL_NAME, controllers.CreateOptions[ProjectTaskReqBody, models.ProjectTask]{
 		GetDefaultValues: func(values *ProjectTaskReqBody, ctx *fiber.Ctx) (*models.ProjectTask, error) {
-			userId, tenantId := utils.GetUserAndTenantIdsOrZero(ctx)
+			userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 			return &models.ProjectTask{
-				Title:        values.Title,
-				Description:  values.Description,
-				Status:       values.Status,
-				Deadline:     values.Deadline,
-				ProjectID:    values.ProjectID,
-				Assinees:     utils.Ternary(len(values.Assinees) > 0, values.Assinees, []*models.User{}),
-				Tags:         utils.Ternary(len(values.Tags) > 0, values.Tags, []*models.ProjectTag{}),
-				ParentTaskID: values.ParentTaskID,
-				CreatedBy:    models.CreatedBy{CreatedByID: userId},
-				BaseModel:    models.BaseModel{TenantID: tenantId},
+				Title:                  values.Title,
+				Description:            values.Description,
+				Status:                 values.Status,
+				Deadline:               values.Deadline,
+				ProjectID:              values.ProjectID,
+				Assinees:               utils.Ternary(len(values.Assinees) > 0, values.Assinees, []*models.User{}),
+				Tags:                   utils.Ternary(len(values.Tags) > 0, values.Tags, []*models.ProjectTag{}),
+				ParentTaskID:           values.ParentTaskID,
+				CreatedBy:              models.CreatedBy{CreatedByID: userId},
+				BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId},
 			}, nil
 		},
 	}))
@@ -92,12 +92,12 @@ func Setup(app *fiber.App) {
 
 	app.Post("/tasks/comments/create", utils.CheckAuthMiddleware, controllers.Create(models.PROJECT_TASK_EVENT_MODEL_NAME, controllers.CreateOptions[models.ProjectTaskEvent, models.ProjectTaskEvent]{
 		GetDefaultValues: func(values *models.ProjectTaskEvent, ctx *fiber.Ctx) (*models.ProjectTaskEvent, error) {
-			userId, tenantId := utils.GetUserAndTenantIdsOrZero(ctx)
+			userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 			return &models.ProjectTaskEvent{
-				Data:      values.Data,
-				TaskID:    values.TaskID,
-				CreatedBy: models.CreatedBy{CreatedByID: userId},
-				BaseModel: models.BaseModel{TenantID: tenantId},
+				Data:                   values.Data,
+				TaskID:                 values.TaskID,
+				CreatedBy:              models.CreatedBy{CreatedByID: userId},
+				BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId},
 			}, nil
 		},
 	}))
@@ -111,10 +111,10 @@ func Setup(app *fiber.App) {
 
 	app.Post("/tags/create", utils.CheckAuthMiddleware, controllers.Create(models.TAG_MODEL_NAME, controllers.CreateOptions[models.ProjectTag, models.ProjectTag]{
 		GetDefaultValues: func(values *models.ProjectTag, ctx *fiber.Ctx) (*models.ProjectTag, error) {
-			_, tenantId := utils.GetUserAndTenantIdsOrZero(ctx)
+			_, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 			return &models.ProjectTag{
-				Name:      values.Name,
-				BaseModel: models.BaseModel{TenantID: tenantId},
+				Name:                   values.Name,
+				BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId},
 			}, nil
 		},
 	}))

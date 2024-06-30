@@ -14,7 +14,7 @@ type seedProjectReqBody struct {
 
 func seedProjects(ctx *fiber.Ctx) error {
 	const batchSize = 100
-	userId, tenantId := utils.GetUserAndTenantIdsOrZero(ctx)
+	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	if userId == 0 {
 		return ctx.SendStatus(fiber.StatusUnauthorized)
 	}
@@ -31,10 +31,10 @@ func seedProjects(ctx *fiber.Ctx) error {
 	fake := faker.New()
 	for i := 0; i < reqBody.Count; i++ {
 		projects = append(projects, models.Project{
-			Name:        fake.Company().Name(),
-			Description: fake.Company().CatchPhrase(),
-			CreatedBy:   models.CreatedBy{CreatedByID: userId},
-			BaseModel:   models.BaseModel{TenantID: tenantId},
+			Name:                   fake.Company().Name(),
+			Description:            fake.Company().CatchPhrase(),
+			CreatedBy:              models.CreatedBy{CreatedByID: userId},
+			BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId},
 		})
 	}
 

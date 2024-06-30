@@ -12,7 +12,7 @@ type GetOptions struct {
 	ParamKey           string // what entry in db to match paramValue with
 	Populate           []string
 	IncludeSoftDeleted bool // default false: dont include soft deleted
-	GetTenantID        func(*fiber.Ctx) (uint, error)
+	GetWorkspaceID     func(*fiber.Ctx) (uint, error)
 }
 
 func Get[Model DbModel](_options ...GetOptions) func(*fiber.Ctx) error {
@@ -28,13 +28,13 @@ func Get[Model DbModel](_options ...GetOptions) func(*fiber.Ctx) error {
 	return func(ctx *fiber.Ctx) error {
 		paramValue := ctx.Params(options.ParamValue)
 
-		tenantId := uint(0)
-		if options.GetTenantID != nil {
-			tId, err := options.GetTenantID(ctx)
+		workspaceId := uint(0)
+		if options.GetWorkspaceID != nil {
+			wId, err := options.GetWorkspaceID(ctx)
 			if err != nil {
 				return ctx.SendStatus(fiber.StatusBadRequest)
 			}
-			tenantId = tId
+			workspaceId = wId
 		}
 
 		db, err := utils.GetDB()
@@ -53,7 +53,7 @@ func Get[Model DbModel](_options ...GetOptions) func(*fiber.Ctx) error {
 			db = db.Where("deleted = false")
 		}
 
-		if err := db.Where(fmt.Sprintf("%s = ? and \"tenantId\" = ?", options.ParamKey), paramValue, tenantId).First(&column).Error; err != nil {
+		if err := db.Where(fmt.Sprintf("%s = ? and \"workspaceId\" = ?", options.ParamKey), paramValue, workspaceId).First(&column).Error; err != nil {
 			return ctx.SendStatus(fiber.StatusInternalServerError)
 		}
 

@@ -1,14 +1,13 @@
-import { FormEvent } from 'react'
-import { useMutation } from '@tanstack/react-query'
-import LockClosedIcon from '@heroicons/react/20/solid/LockClosedIcon'
-
+import apiClient from '../../api/client'
+import { useAuthState } from '../../hooks/auth'
+import { usePopups } from '../../hooks/popups'
 import Button from '../lib/button'
 import Input from '../lib/input'
 import { Loader } from '../lib/loader'
-import apiClient from '../../api/client'
-import { useAuth } from '../../hooks/auth'
-import { usePopups } from '../../hooks/popups'
 import PhoneNumberInput from '../lib/phoneNumberInput'
+import LockClosedIcon from '@heroicons/react/20/solid/LockClosedIcon'
+import { useMutation } from '@tanstack/react-query'
+import { FormEvent } from 'react'
 
 type LoginBody = { email: string; password: string }
 type RegisterBody = LoginBody & { name: string; phone?: string }
@@ -20,7 +19,7 @@ export type LoginWithCredentialsProps = {
 }
 
 function LoginWithCredentials(props: LoginWithCredentialsProps) {
-	const { setAuth } = useAuth()
+	const { setAuth } = useAuthState()
 	const { addMessagePopup } = usePopups()
 	const { isPending: isLoginPending, mutate: handleLogin } = useMutation({
 		mutationKey: ['login'],

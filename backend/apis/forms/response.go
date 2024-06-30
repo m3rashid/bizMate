@@ -34,17 +34,17 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusTooEarly).JSON("form_inactive")
 	}
 
-	userId, _ := utils.GetUserAndTenantIdsOrZero(ctx)
+	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	if !form.AllowAnonymousResponse && userId == 0 {
 		return ctx.Status(fiber.StatusUnauthorized).JSON("unauthorized")
 	}
 
 	formResponse := models.FormResponse{
-		FormID:            form.ID,
-		Response:          reqBody.Response,
-		DeviceIP:          utils.GetDeviceIP(ctx),
-		BaseModel:         models.BaseModel{TenantID: form.TenantID},
-		OptionalCreatedBy: utils.Ternary(userId != 0, models.OptionalCreatedBy{CreatedByID: &userId}, models.OptionalCreatedBy{}),
+		FormID:                 form.ID,
+		Response:               reqBody.Response,
+		DeviceIP:               utils.GetDeviceIP(ctx),
+		BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: form.WorkspaceID},
+		OptionalCreatedBy:      utils.Ternary(userId != 0, models.OptionalCreatedBy{CreatedByID: &userId}, models.OptionalCreatedBy{}),
 	}
 
 	if err := db.Create(&formResponse).Error; err != nil {

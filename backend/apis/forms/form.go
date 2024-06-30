@@ -26,7 +26,7 @@ type formReqBody struct {
 
 var createNewForm = controllers.Create(models.FORM_MODEL_NAME, controllers.CreateOptions[formReqBody, models.Form]{
 	GetDefaultValues: func(values *formReqBody, ctx *fiber.Ctx) (*models.Form, error) {
-		userId, tenantId := utils.GetUserAndTenantIdsOrZero(ctx)
+		userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 		return &models.Form{
 			Title:                  values.Title,
 			Body:                   values.Body,
@@ -36,8 +36,8 @@ var createNewForm = controllers.Create(models.FORM_MODEL_NAME, controllers.Creat
 			SuccessPage:            "[]",
 			FailurePage:            "[]",
 			PreviousVersionIDs:     "[]",
-			BaseModel:              models.BaseModel{TenantID: tenantId},
 			CreatedBy:              models.CreatedBy{CreatedByID: userId},
+			BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId},
 			Active:                 utils.Ternary(values.Active != nil, *values.Active, false),
 			SendResponseEmail:      utils.Ternary(values.SendResponseEmail != nil, *values.SendResponseEmail, false),
 			AllowResponseUpdate:    utils.Ternary(values.AllowResponseUpdate != nil, *values.AllowResponseUpdate, false),

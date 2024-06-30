@@ -13,17 +13,17 @@ func Setup(app *fiber.App) {
 
 	app.Post("/contacts/create", utils.CheckAuthMiddleware, controllers.Create(models.CONTACT_MODEL_NAME, controllers.CreateOptions[CreateContactReqBody, models.Contact]{
 		GetDefaultValues: func(values *CreateContactReqBody, ctx *fiber.Ctx) (*models.Contact, error) {
-			userId, tenantId := utils.GetUserAndTenantIdsOrZero(ctx)
+			userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 			return &models.Contact{
-				Name:         values.Name,
-				Email:        values.Email,
-				Birthday:     values.Birthday,
-				Phone:        values.Phone,
-				CreatedBy:    models.CreatedBy{CreatedByID: userId},
-				OtherPhones:  utils.SafeStringify(values.OtherPhones),
-				OtherEmails:  utils.SafeStringify(values.OtherEmails),
-				OtherDetails: utils.SafeStringify(values.OtherDetails),
-				BaseModel:    models.BaseModel{TenantID: tenantId},
+				Name:                   values.Name,
+				Email:                  values.Email,
+				Birthday:               values.Birthday,
+				Phone:                  values.Phone,
+				CreatedBy:              models.CreatedBy{CreatedByID: userId},
+				OtherPhones:            utils.SafeStringify(values.OtherPhones),
+				OtherEmails:            utils.SafeStringify(values.OtherEmails),
+				OtherDetails:           utils.SafeStringify(values.OtherDetails),
+				BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId},
 			}, nil
 		},
 	}))

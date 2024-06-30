@@ -11,7 +11,7 @@ type WorkflowEdge struct {
 }
 
 type Workflow struct {
-	BaseModel
+	BaseModelWithWorkspace
 	CreatedBy
 	UpdatedBy
 	Name        string `json:"name" gorm:"column:name;not null" validate:"required"`
@@ -33,7 +33,7 @@ var WorkflowJsonModel = DashboardIndexableJsonModel{
 
 type FunctionNameType string
 type WorkflowStep struct {
-	BaseModel
+	BaseModelWithWorkspace
 	CreatedBy
 	UpdatedBy
 	FunctionName FunctionNameType `json:"functionName" gorm:"functionName:name;not null" validate:"required"`
@@ -54,7 +54,7 @@ var WorkflowStepJsonModel = DashboardIndexableJsonModel{
 }
 
 type WorkflowExectionLog struct {
-	BaseModel
+	BaseModelWithWorkspace
 	WorkflowStepID uint          `json:"workflowStepId" gorm:"column:workflowStepId;not null" validate:"required"`
 	WorkflowStep   *WorkflowStep `json:"workflowStep" gorm:"foreignKey:workflowStepId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Output         string        `json:"output" gorm:"input:name;not null" validate:"required"`

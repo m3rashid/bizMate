@@ -11,7 +11,7 @@ import (
 )
 
 func Setup(app *fiber.App) {
-	app.Get("/notifications", utils.CheckAuthMiddleware, controllers.Paginate[models.WebUiNotification]())
+	app.Get("/notifications", utils.CheckAuthMiddleware, controllers.Paginate[models.WorkspaceWebUiNotification]())
 
 	app.Get("/email-templates/all", utils.CheckAuthMiddleware, controllers.Paginate[models.EmailTemplate]())
 
@@ -28,7 +28,7 @@ func Setup(app *fiber.App) {
 		models.EMAIL_TEMPLATE_MODEL_NAME,
 		controllers.CreateOptions[emailTemplateReqBody, models.EmailTemplate]{
 			GetDefaultValues: func(values *emailTemplateReqBody, ctx *fiber.Ctx) (*models.EmailTemplate, error) {
-				userId, tenantId := utils.GetUserAndTenantIdsOrZero(ctx)
+				userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 				emailHtmlTemplate := HTML{HtmlString: values.BodyTemplateHtml, SubjectString: values.SubjectTemplate}
 				emailHtmlTemplate.removeCommentsAndCompress()
 				variables := emailHtmlTemplate.getVariables()
@@ -39,7 +39,7 @@ func Setup(app *fiber.App) {
 					SubjectTemplate:        values.SubjectTemplate,
 					BodyTemplateHtml:       values.BodyTemplateHtml,
 					BodyTemplateDesignJson: values.BodyTemplateDesignJson,
-					BaseModel:              models.BaseModel{TenantID: tenantId},
+					BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId},
 					CreatedBy:              models.CreatedBy{CreatedByID: userId},
 					Variables:              fmt.Sprintf("[%s]", strings.Join(variables, ",")),
 				}, nil

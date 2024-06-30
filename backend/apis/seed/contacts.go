@@ -14,7 +14,7 @@ type seedContactReqBody struct {
 
 func seedContacts(ctx *fiber.Ctx) error {
 	const batchSize = 100
-	userId, tenantId := utils.GetUserAndTenantIdsOrZero(ctx)
+	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	if userId == 0 {
 		return ctx.SendStatus(fiber.StatusUnauthorized)
 	}
@@ -31,10 +31,10 @@ func seedContacts(ctx *fiber.Ctx) error {
 	fake := faker.New()
 	for i := 0; i < reqBody.Count; i++ {
 		contacts = append(contacts, models.Contact{
-			Name:      fake.Person().Name(),
-			Email:     fake.Internet().Email(),
-			CreatedBy: models.CreatedBy{CreatedByID: userId},
-			BaseModel: models.BaseModel{TenantID: tenantId},
+			Name:                   fake.Person().Name(),
+			Email:                  fake.Internet().Email(),
+			CreatedBy:              models.CreatedBy{CreatedByID: userId},
+			BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId},
 		})
 	}
 

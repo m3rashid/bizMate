@@ -17,7 +17,7 @@ const (
 )
 
 type Employee struct {
-	BaseModel
+	BaseModelWithWorkspace
 	CreatedBy
 	UpdatedBy
 	UserID          uint            `json:"userId" gorm:"column:userId;not null" validate:"required"`
@@ -42,7 +42,7 @@ var EmployeeJsonModel = DashboardIndexableJsonModel{
 }
 
 type Attendance struct {
-	BaseModel
+	BaseModelWithWorkspace
 	CreatedBy
 	EmployeeID uint      `json:"employeeId" gorm:"column:employeeId;not null" validate:"required"`
 	Employee   *Employee `json:"employee" gorm:"foreignKey:employeeId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`

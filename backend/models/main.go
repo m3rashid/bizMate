@@ -2,6 +2,7 @@ package models
 
 var AllModels = []interface{}{
 	&User{},
+	&UserInvite{},
 
 	&Contact{},
 
@@ -17,12 +18,13 @@ var AllModels = []interface{}{
 	&Form{},
 	&FormResponse{},
 
-	&Tenant{},
+	&Workspace{},
 
 	&Employee{},
 	&Attendance{},
 
-	&WebUiNotification{},
+	&UserWebUiNotification{},
+	&WorkspaceWebUiNotification{},
 
 	&ProjectTag{},
 	&ProjectTask{},
@@ -37,6 +39,7 @@ var AllModels = []interface{}{
 
 var dashboardIndexableJsonModels = []DashboardIndexableJsonModel{
 	UserJsonModel,
+	UserInviteJsonModel,
 
 	ContactJsonModel,
 

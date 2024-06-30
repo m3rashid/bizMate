@@ -4,7 +4,7 @@ const EMAIL_TEMPLATE_MODEL_NAME string = "email_templates"
 const BULK_EMAIL_REQUEST_MODEL_NAME string = "bulk_email_requests"
 
 type EmailTemplate struct {
-	BaseModel
+	BaseModelWithWorkspace
 	CreatedBy
 	UpdatedBy
 	Title                  string `json:"title" gorm:"column:title;not null" validate:"required"`
@@ -26,7 +26,7 @@ var EmailTemplateJsonModel = DashboardIndexableJsonModel{
 }
 
 type BulkEmailRequest struct {
-	BaseModel
+	BaseModelWithWorkspace
 	CreatedBy
 	EmailTemplateID        uint           `json:"emailTemplateId" gorm:"column:emailTemplateId;not null" validate:"required"`
 	EmailTemplate          *EmailTemplate `json:"emailTemplate" gorm:"foreignKey:emailTemplateId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`

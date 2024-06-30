@@ -17,7 +17,7 @@ type KpiDataResponse struct {
 }
 
 func getAllKpiData(ctx *fiber.Ctx) error {
-	_, tenantId := utils.GetUserAndTenantIdsOrZero(ctx)
+	_, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	dashboardId := ctx.Params("dashboardId")
 	if dashboardId == "" {
 		return ctx.SendStatus(fiber.StatusBadRequest)
@@ -29,14 +29,14 @@ func getAllKpiData(ctx *fiber.Ctx) error {
 	}
 
 	var kpis []models.DashboardKpi
-	if err := db.Where("\"tenantId\" = ? and \"dashboardId\" = ? and deleted = false", tenantId, dashboardId).Find(&kpis).Error; err != nil {
+	if err := db.Where("\"workspaceId\" = ? and \"dashboardId\" = ? and deleted = false", workspaceId, dashboardId).Find(&kpis).Error; err != nil {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	kpiData := []KpiDataResponse{}
 	// TODO make it run in independent go routines for faster response
 	for _, kpi := range kpis {
-		res, err := getSingleKpiData(kpi, tenantId)
+		res, err := getSingleKpiData(kpi, workspaceId)
 		if err != nil {
 			res = 0 // skip invalid kpi
 		}
@@ -46,7 +46,7 @@ func getAllKpiData(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(kpiData)
 }
 
-func getSingleKpiData(kpi models.DashboardKpi, tenantId uint) (float64, error) {
+func getSingleKpiData(kpi models.DashboardKpi, workspaceId uint) (float64, error) {
 	if !utils.Includes(models.DashboardIndexableModelNames, kpi.Model) {
 		return 0, errors.New("invalid model name")
 	}
@@ -62,7 +62,7 @@ func getSingleKpiData(kpi models.DashboardKpi, tenantId uint) (float64, error) {
 	}
 
 	var results []float64
-	query := fmt.Sprintf("select \"%s\" from %s where \"tenantId\" = %d and \"createdAt\" >= current_date - interval '%d days';", kpi.ModelField, kpi.Model, tenantId, kpi.TimePeriod)
+	query := fmt.Sprintf("select \"%s\" from %s where \"workspaceId\" = %d and \"createdAt\" >= current_date - interval '%d days';", kpi.ModelField, kpi.Model, workspaceId, kpi.TimePeriod)
 	if err := db.Raw(query).Scan(&results).Error; err != nil {
 		return 0, err
 	}

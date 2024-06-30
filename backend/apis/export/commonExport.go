@@ -15,6 +15,6 @@ type exportTableReqBodyType = struct {
 }
 
 func getFileName(tableName string, ctx *fiber.Ctx) string {
-	userId, tenantId := utils.GetUserAndTenantIdsOrZero(ctx)
-	return fmt.Sprintf("%s-%d_%d-records", tableName, userId, tenantId)
+	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	return fmt.Sprintf("%s-%d_%d-records", tableName, userId, workspaceId)
 }

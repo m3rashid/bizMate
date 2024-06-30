@@ -3,7 +3,7 @@ package models
 import "encoding/json"
 
 type FormResponse struct {
-	BaseModel
+	BaseModelWithWorkspace
 	UpdatedBy
 	OptionalCreatedBy
 	FormID   uint   `json:"formId" gorm:"column:formId;not null" validate:"required"`

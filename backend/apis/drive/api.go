@@ -13,13 +13,13 @@ type uploadFileReqBody = struct {
 }
 
 func uploadFile(ctx *fiber.Ctx) error {
-	userId, tenantId := utils.GetUserAndTenantIdsOrZero(ctx)
+	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	reqBody := uploadFileReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 
-	key := fmt.Sprintf("%d/%d/%s-%s", tenantId, userId, utils.RandomString32(), reqBody.Name)
+	key := fmt.Sprintf("%d/%d/%s-%s", workspaceId, userId, utils.RandomString32(), reqBody.Name)
 	presignedUrl, err := utils.PutPresignURL(key)
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())

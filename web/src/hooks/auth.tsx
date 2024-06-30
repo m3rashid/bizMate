@@ -23,17 +23,22 @@ export async function checkAuth() {
 	return data
 }
 
+export function useAuthState() {
+	const [auth, setAuth] = useRecoilState(authAtom)
+	return { auth, setAuth }
+}
+
 export function useAuth() {
 	const [auth, setAuth] = useRecoilState(authAtom)
 
 	function logout() {
 		localStorage.removeItem('token')
 		setAuth({ isAuthenticated: false, user: null })
+		window.location.href = '/auth/login'
 	}
 
 	return {
 		auth,
 		logout,
-		setAuth,
 	}
 }

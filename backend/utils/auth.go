@@ -12,9 +12,9 @@ import (
 )
 
 type Claims struct {
-	Email    string `json:"email"`
-	UserID   string `json:"userId"`
-	TenantID string `json:"tenantId"`
+	Email       string `json:"email"`
+	UserID      string `json:"userId"`
+	WorkspaceID string `json:"workspaceId"`
 	jwt.RegisteredClaims
 }
 
@@ -67,16 +67,16 @@ func getId(ctx *fiber.Ctx, key string) uint {
 	return id
 }
 
-func GetUserAndTenantIdsOrZero(ctx *fiber.Ctx) (userId uint, tenantId uint) {
-	return getId(ctx, "userId"), getId(ctx, "tenantId")
+func GetUserAndWorkspaceIdsOrZero(ctx *fiber.Ctx) (userId uint, workspaceId uint) {
+	return getId(ctx, "userId"), getId(ctx, "workspaceId")
 }
 
-func GenerateJWT(userId uint, tenantId uint, email string) (string, error) {
+func GenerateJWT(userId uint, workspaceId uint, email string) (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour)
 	claims := &Claims{
 		Email:            email,
 		UserID:           strconv.FormatUint(uint64(userId), 10),
-		TenantID:         strconv.FormatUint(uint64(tenantId), 10),
+		WorkspaceID:      strconv.FormatUint(uint64(workspaceId), 10),
 		RegisteredClaims: jwt.RegisteredClaims{ExpiresAt: jwt.NewNumericDate(expirationTime)},
 	}
 
@@ -129,17 +129,17 @@ func parseTokenToClaims(tokenString string) (*Claims, error) {
 func parseAndSetAuthLocals(claims *Claims, ctx *fiber.Ctx, throwErrorOnAuthFail bool) error {
 	userIdU64, err := strconv.ParseUint(claims.UserID, 10, 32)
 	if err != nil {
-		return fmt.Errorf("error parsing user id: %v", err)
+		return fmt.Errorf("error parsing user id: %+v", err)
 	}
 
-	tenantIdU64, err := strconv.ParseUint(claims.TenantID, 10, 32)
+	workspaceIdU64, err := strconv.ParseUint(claims.WorkspaceID, 10, 32)
 	if err != nil {
-		return fmt.Errorf("error parsing tenant id: %v", err)
+		return fmt.Errorf("error parsing workspace id: %+v", err)
 	}
 
 	ctx.Locals("email", claims.Email)
 	ctx.Locals("userId", uint(userIdU64))
-	ctx.Locals("tenantId", uint(tenantIdU64))
+	ctx.Locals("workspaceId", uint(workspaceIdU64))
 	ctx.Locals("authorized", userIdU64 != 0)
 
 	if throwErrorOnAuthFail && userIdU64 == 0 {

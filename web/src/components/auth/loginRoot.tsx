@@ -1,28 +1,10 @@
-import LoginWithCredentials, { LoginWithCredentialsProps } from '../../components/auth/credentials'
-import LoginWithGoogle from '../../components/auth/loginWithGoogle'
-import BrandLogo from '../../components/lib/brandLogo'
-import { useAuth } from '../../hooks/auth'
-import { createFileRoute, useNavigate, useRouterState } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
+import BrandLogo from '../lib/brandLogo'
+import LoginWithCredentials, { LoginWithCredentialsProps } from './credentials'
+import LoginWithGoogle from './loginWithGoogle'
+import { useState } from 'react'
 
-export const Route = createFileRoute('/auth/login')({ component: Login })
-
-function Login() {
-	const navigate = useNavigate()
-	const { auth } = useAuth()
+function LoginRoot() {
 	const [type, setType] = useState<LoginWithCredentialsProps['type']>('register')
-	const nextLocation = useRouterState({
-		select: (s) => {
-			const state = s.location.state
-			if (!state || !(state as any).prevLocation) return '/'
-			const loc: Location = JSON.parse((state as any).prevLocation)
-			return loc.pathname + loc.search + loc.hash
-		},
-	})
-
-	useEffect(() => {
-		if (auth.isAuthenticated) navigate({ to: nextLocation })
-	}, [auth.isAuthenticated])
 
 	return (
 		<div className="flex h-screen items-center justify-center bg-pageBg">
@@ -46,3 +28,5 @@ function Login() {
 		</div>
 	)
 }
+
+export default LoginRoot
