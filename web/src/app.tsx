@@ -8,6 +8,11 @@ import { RecoilRoot } from 'recoil'
 
 function AppChildren() {
 	const { auth } = useAuthState()
+
+	useEffect(() => {
+		if (!auth.isAuthenticated && window.location.pathname !== '/auth/login') window.location.href = '/auth/login'
+	}, [auth.isAuthenticated])
+
 	return (
 		<>
 			<RouterProvider router={router} context={{ auth }} />

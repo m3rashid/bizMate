@@ -34,7 +34,6 @@ export function useAuth() {
 	function logout() {
 		localStorage.removeItem('token')
 		setAuth({ isAuthenticated: false, user: null })
-		window.location.href = '/auth/login'
 	}
 
 	return {
