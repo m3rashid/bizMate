@@ -13,7 +13,7 @@ import { FormEvent, useState } from 'react'
 
 export type TableExportProps = {
 	tableName: ExportableTable
-	formId?: number
+	formId?: string
 	mutationKeys?: string[]
 	buttonProps?: ButtonProps
 }

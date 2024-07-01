@@ -1,10 +1,9 @@
-import { twMerge } from 'tailwind-merge'
-import { Fragment } from 'react'
+import FeedSequence from './lib/feedSequence'
+import ChatBubbleLeftEllipsisIcon from '@heroicons/react/20/solid/ChatBubbleLeftEllipsisIcon'
 import TagIcon from '@heroicons/react/20/solid/TagIcon'
 import UserCircleIcon from '@heroicons/react/20/solid/UserCircleIcon'
-import ChatBubbleLeftEllipsisIcon from '@heroicons/react/20/solid/ChatBubbleLeftEllipsisIcon'
-
-import FeedSequence from './lib/feedSequence'
+import { Fragment } from 'react'
+import { twMerge } from 'tailwind-merge'
 
 type Activity = {
 	id: number

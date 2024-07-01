@@ -9,7 +9,7 @@ import TextAreaInput from '../lib/textAreaInput'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { FormEvent, useMemo, useState } from 'react'
 
-function AddKpiModel({ dashboardId }: { dashboardId: string | number }) {
+function AddKpiModel({ dashboardId }: { dashboardId: string }) {
 	const { addMessagePopup } = usePopups()
 	const [selectedModel, setSelectedModel] = useState<string>('')
 	const { widgetType, closeModal } = useAddDashboardWidget()

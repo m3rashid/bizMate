@@ -3,7 +3,7 @@ import Button from '../lib/button'
 import AddWidget from './addWidget'
 import ShowDashboard from './showDashboards'
 
-function DashboardDesigner(props: { dashboardId: string | number }) {
+function DashboardDesigner(props: { dashboardId: string }) {
 	const { openModal } = useAddDashboardWidget()
 
 	return (
