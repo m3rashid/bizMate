@@ -1,6 +1,6 @@
-import apiClient from '../../api/client'
-import { DashboardChart, PaginationResponse } from '../../types'
-import RenderKpi from './renderKpi'
+import apiClient from '@api/client'
+import RenderKpi from '@components/dashboardDesigner/renderKpi'
+import { DashboardChart, PaginationResponse } from '@mytypes'
 import { useQuery } from '@tanstack/react-query'
 
 type ShowDashboardProps = {

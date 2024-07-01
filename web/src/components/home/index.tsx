@@ -1,8 +1,8 @@
-import apiClient from '../../api/client'
-import { Dashboard, PaginationResponse } from '../../types'
-import ShowDashboard from '../dashboardDesigner/showDashboards'
-import { PageLoader } from '../lib/loader'
-import Tabs from '../lib/tabs'
+import apiClient from '@api/client'
+import ShowDashboard from '@components/dashboardDesigner/showDashboards'
+import { PageLoader } from '@components/lib/loader'
+import Tabs from '@components/lib/tabs'
+import { Dashboard, PaginationResponse } from '@mytypes'
 import { useQuery } from '@tanstack/react-query'
 
 function HomePageDashboards() {

@@ -1,5 +1,5 @@
-import { App } from './appsList'
-import Tooltip from './lib/tooltip'
+import { App } from '@components/appsList'
+import Tooltip from '@components/lib/tooltip'
 import InformationCircleIcon from '@heroicons/react/24/outline/InformationCircleIcon'
 import { Link } from '@tanstack/react-router'
 

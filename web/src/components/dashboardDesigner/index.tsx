@@ -1,7 +1,7 @@
-import useAddDashboardWidget from '../../hooks/addDashboardWidget'
-import Button from '../lib/button'
-import AddWidget from './addWidget'
-import ShowDashboard from './showDashboards'
+import AddWidget from '@components/dashboardDesigner/addWidget'
+import ShowDashboard from '@components/dashboardDesigner/showDashboards'
+import Button from '@components/lib/button'
+import useAddDashboardWidget from '@hooks/addDashboardWidget'
 
 function DashboardDesigner(props: { dashboardId: string }) {
 	const { openModal } = useAddDashboardWidget()

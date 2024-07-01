@@ -1,9 +1,10 @@
-import apiClient from '../../api/client'
-import { usePopups } from '../../hooks/popups'
-import Button from '../lib/button'
-import Input from '../lib/input'
-import Modal from '../lib/modal'
-import TextAreaInput from '../lib/textAreaInput'
+import apiClient from '@api/client'
+import Button from '@components/lib/button'
+import Input from '@components/lib/input'
+import Modal from '@components/lib/modal'
+import TextAreaInput from '@components/lib/textAreaInput'
+import { useAuthValue } from '@hooks/auth'
+import { usePopups } from '@hooks/popups'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { FormEvent, RefObject, useState } from 'react'
@@ -13,7 +14,8 @@ type EmailEditorTopBarProps = { emailEditorRef: RefObject<EditorRef> }
 type EmailBody = { title: string; description: string; subjectTemplate: string }
 
 function EmailEditorTopBar(props: EmailEditorTopBarProps) {
-	const navigate = useNavigate({ from: '/communications/emails/designer' })
+	const { workspaceId } = useAuthValue()
+	const navigate = useNavigate({ from: '/$workspaceId/communications/emails/designer' })
 	const { addMessagePopup, addActionPopup, removeActionPopup } = usePopups()
 	const [open, setOpen] = useState(false)
 	const [emailBody, setEmailBody] = useState<EmailBody>({ title: '', description: '', subjectTemplate: '' })
@@ -21,7 +23,7 @@ function EmailEditorTopBar(props: EmailEditorTopBarProps) {
 	const { mutate: createEmailTemplate } = useMutation({
 		onSuccess: () => {
 			addMessagePopup({ id: 'createEmailTemplateSuccess', message: 'Successfully Created Email Template', type: 'success' })
-			navigate({ to: '/communications/emails/templates' })
+			navigate({ to: '/$workspaceId/communications/emails/templates', params: { workspaceId } })
 		},
 		onError: () => addMessagePopup({ id: 'createEmailTemplateSuccess', message: 'Email Template creation failed', type: 'error' }),
 		mutationKey: ['createEmailTemplate'],

@@ -65,16 +65,30 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 }
 
 func credentialsRegister(ctx *fiber.Ctx) error {
-	// When the user registers on their own,
-	// they are automatically assigned a new workspace
-
 	reqBody := redisterBodyReq{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 
-	newUser, err := createNewUser(reqBody.Name, reqBody.Email, reqBody.Password, reqBody.Phone, "", models.PROVIDER_CREDENTIALS, "")
+	password, err := utils.HashPassword(reqBody.Password)
 	if err != nil {
+		return ctx.SendStatus(fiber.StatusInternalServerError)
+	}
+
+	newUser := models.User{
+		Name:     reqBody.Name,
+		Email:    reqBody.Email,
+		Phone:    reqBody.Phone,
+		Password: password,
+		Provider: models.PROVIDER_CREDENTIALS,
+	}
+
+	db, err := utils.GetDB()
+	if err != nil {
+		return ctx.SendStatus(fiber.StatusInternalServerError)
+	}
+
+	if err = db.Create(&newUser).Error; err != nil {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 

@@ -1,5 +1,5 @@
-import Button, { ButtonProps } from './button'
-import TableExport, { TableExportProps } from './tableExport'
+import Button, { ButtonProps } from '@components/lib/button'
+import TableExport, { TableExportProps } from '@components/lib/tableExport'
 import ArrowPathIcon from '@heroicons/react/24/outline/ArrowPathIcon'
 import PlusIcon from '@heroicons/react/24/outline/PlusIcon'
 import { useNavigate } from '@tanstack/react-router'

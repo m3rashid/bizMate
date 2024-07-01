@@ -1,5 +1,5 @@
-import { filterBykeys } from '../../utils/helpers'
 import { Label, Switch, SwitchGroup, SwitchProps } from '@headlessui/react'
+import { filterBykeys } from '@utils/helpers'
 import { ForwardedRef, ReactNode, forwardRef, useImperativeHandle, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
 

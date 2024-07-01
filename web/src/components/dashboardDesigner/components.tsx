@@ -1,5 +1,5 @@
-import useAddDashboardWidget from '../../hooks/addDashboardWidget'
-import Button from '../lib/button'
+import Button from '@components/lib/button'
+import useAddDashboardWidget from '@hooks/addDashboardWidget'
 import { FormEvent } from 'react'
 
 type SelectTypeProps = {}

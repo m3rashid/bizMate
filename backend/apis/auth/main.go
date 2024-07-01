@@ -16,7 +16,7 @@ import (
 	"github.com/shareed2k/goth_fiber"
 )
 
-func Setup(app *fiber.App) {
+func Setup(initialRoute string, app *fiber.App) {
 	sessions := session.New(session.Config{
 		Expiration:     30 * time.Minute,
 		Storage:        memory.New(),
@@ -36,14 +36,14 @@ func Setup(app *fiber.App) {
 		),
 	)
 
-	app.Get("/auth/user", utils.CheckAuthMiddleware, getUser)
-	app.Get("/auth/check", utils.CheckAuthMiddleware, checkAuth)
-	app.Post("/auth/login", credentialsLogin)
-	app.Post("/auth/register", credentialsRegister)
+	app.Get(initialRoute+"/user", utils.CheckAuthMiddleware, getUser)
+	app.Get(initialRoute+"/check", utils.CheckAuthMiddleware, checkAuth)
+	app.Post(initialRoute+"/login", credentialsLogin)
+	app.Post(initialRoute+"/register", credentialsRegister)
+	app.Get(initialRoute+"/logout", logout)
+	app.Get(initialRoute+"/workspaces", utils.CheckAuthMiddleware, getWorkspaces)
+	app.Get(initialRoute+"/:provider", beginAuth)
+	app.Get(initialRoute+"/:provider/callback", authCallback)
 
-	app.Get("/users/all", utils.CheckAuthMiddleware, controllers.Paginate[models.User]())
-
-	app.Get("/auth/:provider", beginAuth)
-	app.Get("/auth/:provider/callback", authCallback)
-	app.Get("/auth/logout", logout)
+	app.Get(initialRoute+"/users/all", utils.CheckAuthMiddleware, controllers.Paginate[models.User]())
 }

@@ -1,8 +1,8 @@
-import apiClient from '../../api/client'
-import { usePopups } from '../../hooks/popups'
-import Button from '../lib/button'
-import Tooltip from '../lib/tooltip'
+import apiClient from '@api/client'
+import Button from '@components/lib/button'
+import Tooltip from '@components/lib/tooltip'
 import { InformationCircleIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { usePopups } from '@hooks/popups'
 import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 

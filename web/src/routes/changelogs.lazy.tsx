@@ -1,11 +1,10 @@
-import { useState } from 'react'
+import apiClient from '@api/client'
+import Button from '@components/lib/button'
+import PageContainer from '@components/pageContainer'
+import { Changelog, PaginationResponse } from '@mytypes'
 import { useQuery } from '@tanstack/react-query'
 import { createLazyFileRoute } from '@tanstack/react-router'
-
-import apiClient from '../api/client'
-import Button from '../components/lib/button'
-import PageContainer from '../components/pageContainer'
-import { Changelog, PaginationResponse } from '../types'
+import { useState } from 'react'
 
 export const Route = createLazyFileRoute('/changelogs')({
 	component: Changelogs,

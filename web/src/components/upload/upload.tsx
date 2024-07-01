@@ -1,7 +1,6 @@
-import { useDropzone } from 'react-dropzone'
+import { getUniqueObjectsByKey, mimeTypes } from '@utils/helpers'
 import { useCallback, useState } from 'react'
-
-import { getUniqueObjectsByKey, mimeTypes } from '../../utils/helpers'
+import { useDropzone } from 'react-dropzone'
 
 type UploaderProps = {
 	onFinalize: (urls: string[]) => void

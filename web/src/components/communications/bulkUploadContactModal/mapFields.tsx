@@ -1,7 +1,7 @@
-import Button from '../../lib/button'
-import SingleSelectInput from '../../lib/singleSelectInput'
-import { camelCaseToSentenceCase } from '../../../utils/helpers'
-import { contactFields, useBulkUploadContact } from '../../../hooks/bulkUploadContact'
+import Button from '@components/lib/button'
+import SingleSelectInput from '@components/lib/singleSelectInput'
+import { contactFields, useBulkUploadContact } from '@hooks/bulkUploadContact'
+import { camelCaseToSentenceCase } from '@utils/helpers'
 
 function MapFields() {
 	const { goBack, mappingKeys, mappings, handleSubmitMappings } = useBulkUploadContact()

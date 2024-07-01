@@ -1,8 +1,8 @@
-import useAddDashboardWidget from '../../hooks/addDashboardWidget'
-import Button from '../lib/button'
-import Modal from '../lib/modal'
-import SingleSelectInput from '../lib/singleSelectInput'
-import AddKpiModel from './addKpi'
+import AddKpiModel from '@components/dashboardDesigner/addKpi'
+import Button from '@components/lib/button'
+import Modal from '@components/lib/modal'
+import SingleSelectInput from '@components/lib/singleSelectInput'
+import useAddDashboardWidget from '@hooks/addDashboardWidget'
 import { FormEvent } from 'react'
 
 function AddWidget(props: { dashboardId: string }) {

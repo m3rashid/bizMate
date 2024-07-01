@@ -1,8 +1,8 @@
-import { Option } from '../../types'
-import { shuffleArray } from '../../utils/helpers'
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react'
 import CheckIcon from '@heroicons/react/20/solid/CheckIcon'
 import ChevronUpDownIcon from '@heroicons/react/20/solid/ChevronUpDownIcon'
+import { Option } from '@mytypes'
+import { shuffleArray } from '@utils/helpers'
 import { useState, Fragment, FC, useMemo } from 'react'
 import { twMerge } from 'tailwind-merge'
 

@@ -1,5 +1,5 @@
-import { useFormDesigner } from '../../hooks/formDesigner'
-import { SupportedWidgetsArray } from '../forms/constants'
+import { SupportedWidgetsArray } from '@components/forms/constants'
+import { useFormDesigner } from '@hooks/formDesigner'
 
 type FormWidgetItemProps = SupportedWidgetsArray[number] & {}
 

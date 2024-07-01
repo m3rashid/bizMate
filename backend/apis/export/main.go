@@ -6,8 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func Setup(app *fiber.App) {
-	app.Post("/table/export", utils.CheckAuthMiddleware, exportTable)
-
-	app.Post("/table/export/table-fields", utils.CheckAuthMiddleware, getExportTableFields)
+func Setup(initialRoute string, app *fiber.App) {
+	app.Post(initialRoute+"/table", utils.CheckAuthMiddleware, exportTable)
+	app.Post(initialRoute+"/table-fields", utils.CheckAuthMiddleware, getExportTableFields)
 }

@@ -1,6 +1,5 @@
+import { DbRow } from '@mytypes'
 import { ReactNode } from 'react'
-
-import { DbRow } from '../../types'
 
 export type FeedSequenceProps<T> = {
 	items: T[]

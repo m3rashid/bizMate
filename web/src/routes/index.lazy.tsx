@@ -1,5 +1,5 @@
-import HomePageDashboards from '../components/home'
-import PageContainer from '../components/pageContainer'
+import HomePageDashboards from '@components/home'
+import PageContainer from '@components/pageContainer'
 import { createLazyFileRoute } from '@tanstack/react-router'
 
 export const Route = createLazyFileRoute('/')({

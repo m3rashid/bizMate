@@ -1,9 +1,9 @@
-import { useFormDesigner } from '../../hooks/formDesigner'
-import FormBuilder from '../forms'
-import { FormElementInstance } from '../forms/constants'
-import Button from '../lib/button'
-import ElementWrapper from './elementWrapper'
+import ElementWrapper from '@components/formDesigner/elementWrapper'
+import FormBuilder from '@components/forms'
+import { FormElementInstance } from '@components/forms/constants'
+import Button from '@components/lib/button'
 import { SortableContext } from '@dnd-kit/sortable'
+import { useFormDesigner } from '@hooks/formDesigner'
 import { twMerge } from 'tailwind-merge'
 
 function SingleFormDesigner() {

@@ -1,7 +1,7 @@
-import { PageLoader } from './components/lib/loader'
-import { ActionPopupContainer, MessagePopupContainer } from './components/lib/popups'
-import { AuthState, authAtom, checkAuth, useAuthState } from './hooks/auth'
 import { router } from './router'
+import { PageLoader } from '@components/lib/loader'
+import { ActionPopupContainer, MessagePopupContainer } from '@components/lib/popups'
+import { AuthState, authAtom, checkAuth, useAuthState } from '@hooks/auth'
 import { RouterProvider } from '@tanstack/react-router'
 import { useCallback, useEffect, useState } from 'react'
 import { RecoilRoot } from 'recoil'
@@ -32,12 +32,12 @@ function App() {
 		while (retries < maxRetries) {
 			try {
 				const user = await checkAuth()
-				setInitRes({ isAuthenticated: true, user })
+				setInitRes({ isAuthenticated: true, user, workspaceId: '' })
 				break
 			} catch (err: any) {
 				retries++
 				if (retries >= maxRetries) {
-					setInitRes({ isAuthenticated: false, user: null })
+					setInitRes({ isAuthenticated: false, user: null, workspaceId: '' })
 					break
 				} else {
 					const delay = Math.pow(2, retries) * 1000

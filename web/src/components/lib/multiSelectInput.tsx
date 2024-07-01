@@ -1,10 +1,9 @@
-import { twMerge } from 'tailwind-merge'
-import { FC, Fragment, useMemo, useState } from 'react'
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react'
 import CheckIcon from '@heroicons/react/24/outline/CheckIcon'
 import ChevronUpDownIcon from '@heroicons/react/24/outline/ChevronUpDownIcon'
-import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react'
-
-import { Option } from '../../types'
+import { Option } from '@mytypes'
+import { FC, Fragment, useMemo, useState } from 'react'
+import { twMerge } from 'tailwind-merge'
 
 export type MultiSelectInputProps = {
 	default: string[]

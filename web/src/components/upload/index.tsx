@@ -1,9 +1,8 @@
+import Button, { ButtonProps } from '@components/lib/button'
+import Modal from '@components/lib/modal'
+import Uploader from '@components/upload/upload'
 import { useReducer } from 'react'
 import { twMerge } from 'tailwind-merge'
-
-import Uploader from './upload'
-import Modal from '../lib/modal'
-import Button, { ButtonProps } from '../lib/button'
 
 type UploadProps = {
 	buttonProps?: ButtonProps

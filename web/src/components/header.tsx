@@ -1,7 +1,7 @@
-import { useAuth } from '../hooks/auth'
-import AppDrawer from './appDrawer'
-import BrandLogo from './lib/brandLogo'
-import Search from './search'
+import AppDrawer from '@components/appDrawer'
+import BrandLogo from '@components/lib/brandLogo'
+import Search from '@components/search'
+import { useAuth } from '@hooks/auth'
 import { useNavigate } from '@tanstack/react-router'
 
 function Header() {

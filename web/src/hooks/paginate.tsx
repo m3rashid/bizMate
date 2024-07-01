@@ -1,9 +1,8 @@
-import { useMemo } from 'react'
+import apiClient from '@api/client'
+import { PaginationResponse } from '@mytypes'
 import { useInfiniteQuery } from '@tanstack/react-query'
-
-import apiClient from '../api/client'
-import { PaginationResponse } from '../types'
-import { getUniqueObjectsByKey } from '../utils/helpers'
+import { getUniqueObjectsByKey } from '@utils/helpers'
+import { useMemo } from 'react'
 
 export type UsePaginateProps = {
 	url: string

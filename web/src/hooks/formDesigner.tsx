@@ -1,10 +1,10 @@
-import { FormElementInstance, supportedWidgets } from '../components/forms/constants'
-import { Props } from '../components/forms/exposedProps'
-import { StringBoolean } from '../types'
-import { generateRandomString, handleViewTransition } from '../utils/helpers'
-import { usePopups } from './popups'
+import { FormElementInstance, supportedWidgets } from '@components/forms/constants'
+import { Props } from '@components/forms/exposedProps'
 import { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
+import { usePopups } from '@hooks/popups'
+import { StringBoolean } from '@mytypes'
+import { generateRandomString, handleViewTransition } from '@utils/helpers'
 import { atom, useRecoilState } from 'recoil'
 
 const propsNodeNotSelected: Props = {

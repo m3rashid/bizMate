@@ -1,4 +1,4 @@
-import { usePopups } from './popups'
+import { usePopups } from '@hooks/popups'
 import { atom, useRecoilState } from 'recoil'
 
 type WidgetType = 'kpi' | 'chart' | null

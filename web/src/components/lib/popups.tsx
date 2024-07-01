@@ -1,12 +1,11 @@
+import CheckCircleIcon from '@heroicons/react/20/solid/CheckCircleIcon'
+import ExclamationTriangleIcon from '@heroicons/react/20/solid/ExclamationTriangleIcon'
+import InformationCircleIcon from '@heroicons/react/20/solid/InformationCircleIcon'
+import XCircleIcon from '@heroicons/react/20/solid/XCircleIcon'
+import XMarkIcon from '@heroicons/react/20/solid/XMarkIcon'
+import { ActionPopupType, MessagePopupType, PopupType, usePopups } from '@hooks/popups'
 import { createPortal } from 'react-dom'
 import { twMerge } from 'tailwind-merge'
-import XMarkIcon from '@heroicons/react/20/solid/XMarkIcon'
-import XCircleIcon from '@heroicons/react/20/solid/XCircleIcon'
-import CheckCircleIcon from '@heroicons/react/20/solid/CheckCircleIcon'
-import InformationCircleIcon from '@heroicons/react/20/solid/InformationCircleIcon'
-import ExclamationTriangleIcon from '@heroicons/react/20/solid/ExclamationTriangleIcon'
-
-import { ActionPopupType, MessagePopupType, PopupType, usePopups } from '../../hooks/popups'
 
 export const popupVariants: Record<PopupType, string> = {
 	error: 'bg-red-50 border-red-300',

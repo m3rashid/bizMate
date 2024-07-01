@@ -14,7 +14,8 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as AuthLoginImport } from './routes/auth/login'
-import { Route as FormsFormIdPreviewImport } from './routes/forms/$formId/preview'
+import { Route as AuthChooseWorkspaceImport } from './routes/auth/choose-workspace'
+import { Route as WorkspaceIdFormsFormIdPreviewImport } from './routes/$workspaceId/forms/$formId/preview'
 
 // Create Virtual Routes
 
@@ -22,54 +23,68 @@ const PaymentLazyImport = createFileRoute('/payment')()
 const ChangelogsLazyImport = createFileRoute('/changelogs')()
 const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
-const ProjectsIndexLazyImport = createFileRoute('/projects/')()
-const FormsIndexLazyImport = createFileRoute('/forms/')()
-const DashboardsIndexLazyImport = createFileRoute('/dashboards/')()
-const AutomationsIndexLazyImport = createFileRoute('/automations/')()
-const FormsDesignerLazyImport = createFileRoute('/forms/designer')()
-const AutomationsDesignerLazyImport = createFileRoute('/automations/designer')()
-const ProjectsProjectIdIndexLazyImport = createFileRoute(
-  '/projects/$projectId/',
+const WorkspaceIdProjectsIndexLazyImport = createFileRoute(
+  '/$workspaceId/projects/',
 )()
-const DashboardsDashboardIdIndexLazyImport = createFileRoute(
-  '/dashboards/$dashboardId/',
+const WorkspaceIdFormsIndexLazyImport = createFileRoute(
+  '/$workspaceId/forms/',
 )()
-const CommunicationsEmailsIndexLazyImport = createFileRoute(
-  '/communications/emails/',
+const WorkspaceIdDashboardsIndexLazyImport = createFileRoute(
+  '/$workspaceId/dashboards/',
 )()
-const CommunicationsContactsIndexLazyImport = createFileRoute(
-  '/communications/contacts/',
+const WorkspaceIdAutomationsIndexLazyImport = createFileRoute(
+  '/$workspaceId/automations/',
 )()
-const ProjectsProjectIdReadmeLazyImport = createFileRoute(
-  '/projects/$projectId/readme',
+const WorkspaceIdFormsDesignerLazyImport = createFileRoute(
+  '/$workspaceId/forms/designer',
 )()
-const ProjectsProjectIdGuidelinesLazyImport = createFileRoute(
-  '/projects/$projectId/guidelines',
+const WorkspaceIdAutomationsDesignerLazyImport = createFileRoute(
+  '/$workspaceId/automations/designer',
 )()
-const ProjectsProjectIdDocsLazyImport = createFileRoute(
-  '/projects/$projectId/docs',
+const WorkspaceIdProjectsProjectIdIndexLazyImport = createFileRoute(
+  '/$workspaceId/projects/$projectId/',
 )()
-const ProjectsProjectIdAnalyticsLazyImport = createFileRoute(
-  '/projects/$projectId/analytics',
+const WorkspaceIdDashboardsDashboardIdIndexLazyImport = createFileRoute(
+  '/$workspaceId/dashboards/$dashboardId/',
 )()
-const FormsFormIdResponsesLazyImport = createFileRoute(
-  '/forms/$formId/responses',
+const WorkspaceIdCommunicationsEmailsIndexLazyImport = createFileRoute(
+  '/$workspaceId/communications/emails/',
 )()
-const FormsFormIdFillLazyImport = createFileRoute('/forms/$formId/fill')()
-const FormsFormIdAnalyticsLazyImport = createFileRoute(
-  '/forms/$formId/analytics',
+const WorkspaceIdCommunicationsContactsIndexLazyImport = createFileRoute(
+  '/$workspaceId/communications/contacts/',
 )()
-const DashboardsDashboardIdDesignerLazyImport = createFileRoute(
-  '/dashboards/$dashboardId/designer',
+const WorkspaceIdProjectsProjectIdReadmeLazyImport = createFileRoute(
+  '/$workspaceId/projects/$projectId/readme',
 )()
-const CommunicationsEmailsTemplatesLazyImport = createFileRoute(
-  '/communications/emails/templates',
+const WorkspaceIdProjectsProjectIdGuidelinesLazyImport = createFileRoute(
+  '/$workspaceId/projects/$projectId/guidelines',
 )()
-const CommunicationsEmailsDesignerLazyImport = createFileRoute(
-  '/communications/emails/designer',
+const WorkspaceIdProjectsProjectIdDocsLazyImport = createFileRoute(
+  '/$workspaceId/projects/$projectId/docs',
 )()
-const ProjectsProjectIdTasksTaskIdIndexLazyImport = createFileRoute(
-  '/projects/$projectId/tasks/$taskId/',
+const WorkspaceIdProjectsProjectIdAnalyticsLazyImport = createFileRoute(
+  '/$workspaceId/projects/$projectId/analytics',
+)()
+const WorkspaceIdFormsFormIdResponsesLazyImport = createFileRoute(
+  '/$workspaceId/forms/$formId/responses',
+)()
+const WorkspaceIdFormsFormIdFillLazyImport = createFileRoute(
+  '/$workspaceId/forms/$formId/fill',
+)()
+const WorkspaceIdFormsFormIdAnalyticsLazyImport = createFileRoute(
+  '/$workspaceId/forms/$formId/analytics',
+)()
+const WorkspaceIdDashboardsDashboardIdDesignerLazyImport = createFileRoute(
+  '/$workspaceId/dashboards/$dashboardId/designer',
+)()
+const WorkspaceIdCommunicationsEmailsTemplatesLazyImport = createFileRoute(
+  '/$workspaceId/communications/emails/templates',
+)()
+const WorkspaceIdCommunicationsEmailsDesignerLazyImport = createFileRoute(
+  '/$workspaceId/communications/emails/designer',
+)()
+const WorkspaceIdProjectsProjectIdTasksTaskIdIndexLazyImport = createFileRoute(
+  '/$workspaceId/projects/$projectId/tasks/$taskId/',
 )()
 
 // Create/Update Routes
@@ -94,177 +109,219 @@ const IndexLazyRoute = IndexLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
 
-const ProjectsIndexLazyRoute = ProjectsIndexLazyImport.update({
-  path: '/projects/',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/projects/index.lazy').then((d) => d.Route),
-)
-
-const FormsIndexLazyRoute = FormsIndexLazyImport.update({
-  path: '/forms/',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/forms/index.lazy').then((d) => d.Route))
-
-const DashboardsIndexLazyRoute = DashboardsIndexLazyImport.update({
-  path: '/dashboards/',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/dashboards/index.lazy').then((d) => d.Route),
-)
-
-const AutomationsIndexLazyRoute = AutomationsIndexLazyImport.update({
-  path: '/automations/',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/automations/index.lazy').then((d) => d.Route),
-)
-
-const FormsDesignerLazyRoute = FormsDesignerLazyImport.update({
-  path: '/forms/designer',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/forms/designer.lazy').then((d) => d.Route),
-)
-
-const AutomationsDesignerLazyRoute = AutomationsDesignerLazyImport.update({
-  path: '/automations/designer',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/automations/designer.lazy').then((d) => d.Route),
-)
-
 const AuthLoginRoute = AuthLoginImport.update({
   path: '/auth/login',
   getParentRoute: () => rootRoute,
 } as any)
 
-const ProjectsProjectIdIndexLazyRoute = ProjectsProjectIdIndexLazyImport.update(
-  {
-    path: '/projects/$projectId/',
-    getParentRoute: () => rootRoute,
-  } as any,
-).lazy(() =>
-  import('./routes/projects/$projectId/index.lazy').then((d) => d.Route),
-)
-
-const DashboardsDashboardIdIndexLazyRoute =
-  DashboardsDashboardIdIndexLazyImport.update({
-    path: '/dashboards/$dashboardId/',
-    getParentRoute: () => rootRoute,
-  } as any).lazy(() =>
-    import('./routes/dashboards/$dashboardId/index.lazy').then((d) => d.Route),
-  )
-
-const CommunicationsEmailsIndexLazyRoute =
-  CommunicationsEmailsIndexLazyImport.update({
-    path: '/communications/emails/',
-    getParentRoute: () => rootRoute,
-  } as any).lazy(() =>
-    import('./routes/communications/emails/index.lazy').then((d) => d.Route),
-  )
-
-const CommunicationsContactsIndexLazyRoute =
-  CommunicationsContactsIndexLazyImport.update({
-    path: '/communications/contacts/',
-    getParentRoute: () => rootRoute,
-  } as any).lazy(() =>
-    import('./routes/communications/contacts/index.lazy').then((d) => d.Route),
-  )
-
-const ProjectsProjectIdReadmeLazyRoute =
-  ProjectsProjectIdReadmeLazyImport.update({
-    path: '/projects/$projectId/readme',
-    getParentRoute: () => rootRoute,
-  } as any).lazy(() =>
-    import('./routes/projects/$projectId/readme.lazy').then((d) => d.Route),
-  )
-
-const ProjectsProjectIdGuidelinesLazyRoute =
-  ProjectsProjectIdGuidelinesLazyImport.update({
-    path: '/projects/$projectId/guidelines',
-    getParentRoute: () => rootRoute,
-  } as any).lazy(() =>
-    import('./routes/projects/$projectId/guidelines.lazy').then((d) => d.Route),
-  )
-
-const ProjectsProjectIdDocsLazyRoute = ProjectsProjectIdDocsLazyImport.update({
-  path: '/projects/$projectId/docs',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/projects/$projectId/docs.lazy').then((d) => d.Route),
-)
-
-const ProjectsProjectIdAnalyticsLazyRoute =
-  ProjectsProjectIdAnalyticsLazyImport.update({
-    path: '/projects/$projectId/analytics',
-    getParentRoute: () => rootRoute,
-  } as any).lazy(() =>
-    import('./routes/projects/$projectId/analytics.lazy').then((d) => d.Route),
-  )
-
-const FormsFormIdResponsesLazyRoute = FormsFormIdResponsesLazyImport.update({
-  path: '/forms/$formId/responses',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/forms/$formId/responses.lazy').then((d) => d.Route),
-)
-
-const FormsFormIdFillLazyRoute = FormsFormIdFillLazyImport.update({
-  path: '/forms/$formId/fill',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/forms/$formId/fill.lazy').then((d) => d.Route),
-)
-
-const FormsFormIdAnalyticsLazyRoute = FormsFormIdAnalyticsLazyImport.update({
-  path: '/forms/$formId/analytics',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/forms/$formId/analytics.lazy').then((d) => d.Route),
-)
-
-const DashboardsDashboardIdDesignerLazyRoute =
-  DashboardsDashboardIdDesignerLazyImport.update({
-    path: '/dashboards/$dashboardId/designer',
-    getParentRoute: () => rootRoute,
-  } as any).lazy(() =>
-    import('./routes/dashboards/$dashboardId/designer.lazy').then(
-      (d) => d.Route,
-    ),
-  )
-
-const CommunicationsEmailsTemplatesLazyRoute =
-  CommunicationsEmailsTemplatesLazyImport.update({
-    path: '/communications/emails/templates',
-    getParentRoute: () => rootRoute,
-  } as any).lazy(() =>
-    import('./routes/communications/emails/templates.lazy').then(
-      (d) => d.Route,
-    ),
-  )
-
-const CommunicationsEmailsDesignerLazyRoute =
-  CommunicationsEmailsDesignerLazyImport.update({
-    path: '/communications/emails/designer',
-    getParentRoute: () => rootRoute,
-  } as any).lazy(() =>
-    import('./routes/communications/emails/designer.lazy').then((d) => d.Route),
-  )
-
-const FormsFormIdPreviewRoute = FormsFormIdPreviewImport.update({
-  path: '/forms/$formId/preview',
+const AuthChooseWorkspaceRoute = AuthChooseWorkspaceImport.update({
+  path: '/auth/choose-workspace',
   getParentRoute: () => rootRoute,
 } as any)
 
-const ProjectsProjectIdTasksTaskIdIndexLazyRoute =
-  ProjectsProjectIdTasksTaskIdIndexLazyImport.update({
-    path: '/projects/$projectId/tasks/$taskId/',
+const WorkspaceIdProjectsIndexLazyRoute =
+  WorkspaceIdProjectsIndexLazyImport.update({
+    path: '/$workspaceId/projects/',
     getParentRoute: () => rootRoute,
   } as any).lazy(() =>
-    import('./routes/projects/$projectId/tasks/$taskId/index.lazy').then(
+    import('./routes/$workspaceId/projects/index.lazy').then((d) => d.Route),
+  )
+
+const WorkspaceIdFormsIndexLazyRoute = WorkspaceIdFormsIndexLazyImport.update({
+  path: '/$workspaceId/forms/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/$workspaceId/forms/index.lazy').then((d) => d.Route),
+)
+
+const WorkspaceIdDashboardsIndexLazyRoute =
+  WorkspaceIdDashboardsIndexLazyImport.update({
+    path: '/$workspaceId/dashboards/',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/$workspaceId/dashboards/index.lazy').then((d) => d.Route),
+  )
+
+const WorkspaceIdAutomationsIndexLazyRoute =
+  WorkspaceIdAutomationsIndexLazyImport.update({
+    path: '/$workspaceId/automations/',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/$workspaceId/automations/index.lazy').then((d) => d.Route),
+  )
+
+const WorkspaceIdFormsDesignerLazyRoute =
+  WorkspaceIdFormsDesignerLazyImport.update({
+    path: '/$workspaceId/forms/designer',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/$workspaceId/forms/designer.lazy').then((d) => d.Route),
+  )
+
+const WorkspaceIdAutomationsDesignerLazyRoute =
+  WorkspaceIdAutomationsDesignerLazyImport.update({
+    path: '/$workspaceId/automations/designer',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/$workspaceId/automations/designer.lazy').then(
       (d) => d.Route,
     ),
+  )
+
+const WorkspaceIdProjectsProjectIdIndexLazyRoute =
+  WorkspaceIdProjectsProjectIdIndexLazyImport.update({
+    path: '/$workspaceId/projects/$projectId/',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/$workspaceId/projects/$projectId/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const WorkspaceIdDashboardsDashboardIdIndexLazyRoute =
+  WorkspaceIdDashboardsDashboardIdIndexLazyImport.update({
+    path: '/$workspaceId/dashboards/$dashboardId/',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/$workspaceId/dashboards/$dashboardId/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const WorkspaceIdCommunicationsEmailsIndexLazyRoute =
+  WorkspaceIdCommunicationsEmailsIndexLazyImport.update({
+    path: '/$workspaceId/communications/emails/',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/$workspaceId/communications/emails/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const WorkspaceIdCommunicationsContactsIndexLazyRoute =
+  WorkspaceIdCommunicationsContactsIndexLazyImport.update({
+    path: '/$workspaceId/communications/contacts/',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/$workspaceId/communications/contacts/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const WorkspaceIdProjectsProjectIdReadmeLazyRoute =
+  WorkspaceIdProjectsProjectIdReadmeLazyImport.update({
+    path: '/$workspaceId/projects/$projectId/readme',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/$workspaceId/projects/$projectId/readme.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const WorkspaceIdProjectsProjectIdGuidelinesLazyRoute =
+  WorkspaceIdProjectsProjectIdGuidelinesLazyImport.update({
+    path: '/$workspaceId/projects/$projectId/guidelines',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/$workspaceId/projects/$projectId/guidelines.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const WorkspaceIdProjectsProjectIdDocsLazyRoute =
+  WorkspaceIdProjectsProjectIdDocsLazyImport.update({
+    path: '/$workspaceId/projects/$projectId/docs',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/$workspaceId/projects/$projectId/docs.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const WorkspaceIdProjectsProjectIdAnalyticsLazyRoute =
+  WorkspaceIdProjectsProjectIdAnalyticsLazyImport.update({
+    path: '/$workspaceId/projects/$projectId/analytics',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/$workspaceId/projects/$projectId/analytics.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const WorkspaceIdFormsFormIdResponsesLazyRoute =
+  WorkspaceIdFormsFormIdResponsesLazyImport.update({
+    path: '/$workspaceId/forms/$formId/responses',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/$workspaceId/forms/$formId/responses.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const WorkspaceIdFormsFormIdFillLazyRoute =
+  WorkspaceIdFormsFormIdFillLazyImport.update({
+    path: '/$workspaceId/forms/$formId/fill',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/$workspaceId/forms/$formId/fill.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const WorkspaceIdFormsFormIdAnalyticsLazyRoute =
+  WorkspaceIdFormsFormIdAnalyticsLazyImport.update({
+    path: '/$workspaceId/forms/$formId/analytics',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/$workspaceId/forms/$formId/analytics.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const WorkspaceIdDashboardsDashboardIdDesignerLazyRoute =
+  WorkspaceIdDashboardsDashboardIdDesignerLazyImport.update({
+    path: '/$workspaceId/dashboards/$dashboardId/designer',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/$workspaceId/dashboards/$dashboardId/designer.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const WorkspaceIdCommunicationsEmailsTemplatesLazyRoute =
+  WorkspaceIdCommunicationsEmailsTemplatesLazyImport.update({
+    path: '/$workspaceId/communications/emails/templates',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/$workspaceId/communications/emails/templates.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const WorkspaceIdCommunicationsEmailsDesignerLazyRoute =
+  WorkspaceIdCommunicationsEmailsDesignerLazyImport.update({
+    path: '/$workspaceId/communications/emails/designer',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/$workspaceId/communications/emails/designer.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const WorkspaceIdFormsFormIdPreviewRoute =
+  WorkspaceIdFormsFormIdPreviewImport.update({
+    path: '/$workspaceId/forms/$formId/preview',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const WorkspaceIdProjectsProjectIdTasksTaskIdIndexLazyRoute =
+  WorkspaceIdProjectsProjectIdTasksTaskIdIndexLazyImport.update({
+    path: '/$workspaceId/projects/$projectId/tasks/$taskId/',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import(
+      './routes/$workspaceId/projects/$projectId/tasks/$taskId/index.lazy'
+    ).then((d) => d.Route),
   )
 
 // Populate the FileRoutesByPath interface
@@ -287,96 +344,100 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PaymentLazyImport
       parentRoute: typeof rootRoute
     }
+    '/auth/choose-workspace': {
+      preLoaderRoute: typeof AuthChooseWorkspaceImport
+      parentRoute: typeof rootRoute
+    }
     '/auth/login': {
       preLoaderRoute: typeof AuthLoginImport
       parentRoute: typeof rootRoute
     }
-    '/automations/designer': {
-      preLoaderRoute: typeof AutomationsDesignerLazyImport
+    '/$workspaceId/automations/designer': {
+      preLoaderRoute: typeof WorkspaceIdAutomationsDesignerLazyImport
       parentRoute: typeof rootRoute
     }
-    '/forms/designer': {
-      preLoaderRoute: typeof FormsDesignerLazyImport
+    '/$workspaceId/forms/designer': {
+      preLoaderRoute: typeof WorkspaceIdFormsDesignerLazyImport
       parentRoute: typeof rootRoute
     }
-    '/automations/': {
-      preLoaderRoute: typeof AutomationsIndexLazyImport
+    '/$workspaceId/automations/': {
+      preLoaderRoute: typeof WorkspaceIdAutomationsIndexLazyImport
       parentRoute: typeof rootRoute
     }
-    '/dashboards/': {
-      preLoaderRoute: typeof DashboardsIndexLazyImport
+    '/$workspaceId/dashboards/': {
+      preLoaderRoute: typeof WorkspaceIdDashboardsIndexLazyImport
       parentRoute: typeof rootRoute
     }
-    '/forms/': {
-      preLoaderRoute: typeof FormsIndexLazyImport
+    '/$workspaceId/forms/': {
+      preLoaderRoute: typeof WorkspaceIdFormsIndexLazyImport
       parentRoute: typeof rootRoute
     }
-    '/projects/': {
-      preLoaderRoute: typeof ProjectsIndexLazyImport
+    '/$workspaceId/projects/': {
+      preLoaderRoute: typeof WorkspaceIdProjectsIndexLazyImport
       parentRoute: typeof rootRoute
     }
-    '/forms/$formId/preview': {
-      preLoaderRoute: typeof FormsFormIdPreviewImport
+    '/$workspaceId/forms/$formId/preview': {
+      preLoaderRoute: typeof WorkspaceIdFormsFormIdPreviewImport
       parentRoute: typeof rootRoute
     }
-    '/communications/emails/designer': {
-      preLoaderRoute: typeof CommunicationsEmailsDesignerLazyImport
+    '/$workspaceId/communications/emails/designer': {
+      preLoaderRoute: typeof WorkspaceIdCommunicationsEmailsDesignerLazyImport
       parentRoute: typeof rootRoute
     }
-    '/communications/emails/templates': {
-      preLoaderRoute: typeof CommunicationsEmailsTemplatesLazyImport
+    '/$workspaceId/communications/emails/templates': {
+      preLoaderRoute: typeof WorkspaceIdCommunicationsEmailsTemplatesLazyImport
       parentRoute: typeof rootRoute
     }
-    '/dashboards/$dashboardId/designer': {
-      preLoaderRoute: typeof DashboardsDashboardIdDesignerLazyImport
+    '/$workspaceId/dashboards/$dashboardId/designer': {
+      preLoaderRoute: typeof WorkspaceIdDashboardsDashboardIdDesignerLazyImport
       parentRoute: typeof rootRoute
     }
-    '/forms/$formId/analytics': {
-      preLoaderRoute: typeof FormsFormIdAnalyticsLazyImport
+    '/$workspaceId/forms/$formId/analytics': {
+      preLoaderRoute: typeof WorkspaceIdFormsFormIdAnalyticsLazyImport
       parentRoute: typeof rootRoute
     }
-    '/forms/$formId/fill': {
-      preLoaderRoute: typeof FormsFormIdFillLazyImport
+    '/$workspaceId/forms/$formId/fill': {
+      preLoaderRoute: typeof WorkspaceIdFormsFormIdFillLazyImport
       parentRoute: typeof rootRoute
     }
-    '/forms/$formId/responses': {
-      preLoaderRoute: typeof FormsFormIdResponsesLazyImport
+    '/$workspaceId/forms/$formId/responses': {
+      preLoaderRoute: typeof WorkspaceIdFormsFormIdResponsesLazyImport
       parentRoute: typeof rootRoute
     }
-    '/projects/$projectId/analytics': {
-      preLoaderRoute: typeof ProjectsProjectIdAnalyticsLazyImport
+    '/$workspaceId/projects/$projectId/analytics': {
+      preLoaderRoute: typeof WorkspaceIdProjectsProjectIdAnalyticsLazyImport
       parentRoute: typeof rootRoute
     }
-    '/projects/$projectId/docs': {
-      preLoaderRoute: typeof ProjectsProjectIdDocsLazyImport
+    '/$workspaceId/projects/$projectId/docs': {
+      preLoaderRoute: typeof WorkspaceIdProjectsProjectIdDocsLazyImport
       parentRoute: typeof rootRoute
     }
-    '/projects/$projectId/guidelines': {
-      preLoaderRoute: typeof ProjectsProjectIdGuidelinesLazyImport
+    '/$workspaceId/projects/$projectId/guidelines': {
+      preLoaderRoute: typeof WorkspaceIdProjectsProjectIdGuidelinesLazyImport
       parentRoute: typeof rootRoute
     }
-    '/projects/$projectId/readme': {
-      preLoaderRoute: typeof ProjectsProjectIdReadmeLazyImport
+    '/$workspaceId/projects/$projectId/readme': {
+      preLoaderRoute: typeof WorkspaceIdProjectsProjectIdReadmeLazyImport
       parentRoute: typeof rootRoute
     }
-    '/communications/contacts/': {
-      preLoaderRoute: typeof CommunicationsContactsIndexLazyImport
+    '/$workspaceId/communications/contacts/': {
+      preLoaderRoute: typeof WorkspaceIdCommunicationsContactsIndexLazyImport
       parentRoute: typeof rootRoute
     }
-    '/communications/emails/': {
-      preLoaderRoute: typeof CommunicationsEmailsIndexLazyImport
+    '/$workspaceId/communications/emails/': {
+      preLoaderRoute: typeof WorkspaceIdCommunicationsEmailsIndexLazyImport
       parentRoute: typeof rootRoute
     }
-    '/dashboards/$dashboardId/': {
-      preLoaderRoute: typeof DashboardsDashboardIdIndexLazyImport
+    '/$workspaceId/dashboards/$dashboardId/': {
+      preLoaderRoute: typeof WorkspaceIdDashboardsDashboardIdIndexLazyImport
       parentRoute: typeof rootRoute
     }
-    '/projects/$projectId/': {
-      preLoaderRoute: typeof ProjectsProjectIdIndexLazyImport
+    '/$workspaceId/projects/$projectId/': {
+      preLoaderRoute: typeof WorkspaceIdProjectsProjectIdIndexLazyImport
       parentRoute: typeof rootRoute
     }
-    '/projects/$projectId/tasks/$taskId/': {
-      preLoaderRoute: typeof ProjectsProjectIdTasksTaskIdIndexLazyImport
+    '/$workspaceId/projects/$projectId/tasks/$taskId/': {
+      preLoaderRoute: typeof WorkspaceIdProjectsProjectIdTasksTaskIdIndexLazyImport
       parentRoute: typeof rootRoute
     }
   }
@@ -389,29 +450,30 @@ export const routeTree = rootRoute.addChildren([
   AboutLazyRoute,
   ChangelogsLazyRoute,
   PaymentLazyRoute,
+  AuthChooseWorkspaceRoute,
   AuthLoginRoute,
-  AutomationsDesignerLazyRoute,
-  FormsDesignerLazyRoute,
-  AutomationsIndexLazyRoute,
-  DashboardsIndexLazyRoute,
-  FormsIndexLazyRoute,
-  ProjectsIndexLazyRoute,
-  FormsFormIdPreviewRoute,
-  CommunicationsEmailsDesignerLazyRoute,
-  CommunicationsEmailsTemplatesLazyRoute,
-  DashboardsDashboardIdDesignerLazyRoute,
-  FormsFormIdAnalyticsLazyRoute,
-  FormsFormIdFillLazyRoute,
-  FormsFormIdResponsesLazyRoute,
-  ProjectsProjectIdAnalyticsLazyRoute,
-  ProjectsProjectIdDocsLazyRoute,
-  ProjectsProjectIdGuidelinesLazyRoute,
-  ProjectsProjectIdReadmeLazyRoute,
-  CommunicationsContactsIndexLazyRoute,
-  CommunicationsEmailsIndexLazyRoute,
-  DashboardsDashboardIdIndexLazyRoute,
-  ProjectsProjectIdIndexLazyRoute,
-  ProjectsProjectIdTasksTaskIdIndexLazyRoute,
+  WorkspaceIdAutomationsDesignerLazyRoute,
+  WorkspaceIdFormsDesignerLazyRoute,
+  WorkspaceIdAutomationsIndexLazyRoute,
+  WorkspaceIdDashboardsIndexLazyRoute,
+  WorkspaceIdFormsIndexLazyRoute,
+  WorkspaceIdProjectsIndexLazyRoute,
+  WorkspaceIdFormsFormIdPreviewRoute,
+  WorkspaceIdCommunicationsEmailsDesignerLazyRoute,
+  WorkspaceIdCommunicationsEmailsTemplatesLazyRoute,
+  WorkspaceIdDashboardsDashboardIdDesignerLazyRoute,
+  WorkspaceIdFormsFormIdAnalyticsLazyRoute,
+  WorkspaceIdFormsFormIdFillLazyRoute,
+  WorkspaceIdFormsFormIdResponsesLazyRoute,
+  WorkspaceIdProjectsProjectIdAnalyticsLazyRoute,
+  WorkspaceIdProjectsProjectIdDocsLazyRoute,
+  WorkspaceIdProjectsProjectIdGuidelinesLazyRoute,
+  WorkspaceIdProjectsProjectIdReadmeLazyRoute,
+  WorkspaceIdCommunicationsContactsIndexLazyRoute,
+  WorkspaceIdCommunicationsEmailsIndexLazyRoute,
+  WorkspaceIdDashboardsDashboardIdIndexLazyRoute,
+  WorkspaceIdProjectsProjectIdIndexLazyRoute,
+  WorkspaceIdProjectsProjectIdTasksTaskIdIndexLazyRoute,
 ])
 
 /* prettier-ignore-end */

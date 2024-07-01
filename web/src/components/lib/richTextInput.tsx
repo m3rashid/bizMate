@@ -1,10 +1,9 @@
-import '@blocknote/mantine/style.css'
-import { twMerge } from 'tailwind-merge'
 import { BlockNoteView } from '@blocknote/mantine'
+import '@blocknote/mantine/style.css'
 import { useCreateBlockNote } from '@blocknote/react'
+import { filterBykeys, safeJsonParse } from '@utils/helpers'
 import { ChangeEvent, FC, TextareaHTMLAttributes, useState } from 'react'
-
-import { filterBykeys, safeJsonParse } from '../../utils/helpers'
+import { twMerge } from 'tailwind-merge'
 
 export type RichTextInputProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
 	label?: string

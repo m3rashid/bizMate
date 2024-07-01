@@ -10,21 +10,21 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func Setup(app *fiber.App) {
-	app.Get("/notifications", utils.CheckAuthMiddleware, controllers.Paginate[models.WorkspaceWebUiNotification]())
+func Setup(initialRoute string, app *fiber.App) {
+	app.Get(initialRoute+"/webui/all", utils.CheckAuthMiddleware, controllers.Paginate[models.WorkspaceWebUiNotification]())
 
-	app.Get("/email-templates/all", utils.CheckAuthMiddleware, controllers.Paginate[models.EmailTemplate]())
+	app.Get(initialRoute+"/email-templates/all", utils.CheckAuthMiddleware, controllers.Paginate[models.EmailTemplate]())
 
-	app.Get("/email-templates/one/:templateId", utils.CheckAuthMiddleware, controllers.Get[models.EmailTemplate](controllers.GetOptions{
+	app.Get(initialRoute+"/email-templates/one/:templateId", utils.CheckAuthMiddleware, controllers.Get[models.EmailTemplate](controllers.GetOptions{
 		ParamValue: "templateId", ParamKey: "id",
 	}))
 
-	app.Post("/email-templates/delete/:templateId", utils.CheckAuthMiddleware, controllers.Delete(controllers.DeleteOptions[models.EmailTemplate]{
+	app.Post(initialRoute+"/email-templates/delete/:templateId", utils.CheckAuthMiddleware, controllers.Delete(controllers.DeleteOptions[models.EmailTemplate]{
 		ParamKey:   "id",
 		ParamValue: "templateId",
 	}))
 
-	app.Post("/email-templates/create", utils.CheckAuthMiddleware, controllers.Create(
+	app.Post(initialRoute+"/email-templates/create", utils.CheckAuthMiddleware, controllers.Create(
 		models.EMAIL_TEMPLATE_MODEL_NAME,
 		controllers.CreateOptions[emailTemplateReqBody, models.EmailTemplate]{
 			GetDefaultValues: func(values *emailTemplateReqBody, ctx *fiber.Ctx) (*models.EmailTemplate, error) {

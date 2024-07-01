@@ -1,15 +1,18 @@
-import { baseUrl } from '../api/client'
-import { User } from '../types'
-import { atom, useRecoilState } from 'recoil'
+import { baseUrl } from '@api/client'
+import { User } from '@mytypes'
+import { atom, useRecoilState, useRecoilValue } from 'recoil'
 
 export type AuthState = {
 	isAuthenticated: boolean
 	user: User | null
+	workspaceId: string
 }
+
+const defaultAuthState: AuthState = { isAuthenticated: false, user: null, workspaceId: '' }
 
 export const authAtom = atom<AuthState>({
 	key: 'authAtom',
-	default: { isAuthenticated: false, user: null },
+	default: defaultAuthState,
 })
 
 export async function checkAuth() {
@@ -28,12 +31,14 @@ export function useAuthState() {
 	return { auth, setAuth }
 }
 
+export const useAuthValue = () => useRecoilValue(authAtom)
+
 export function useAuth() {
 	const [auth, setAuth] = useRecoilState(authAtom)
 
 	function logout() {
 		localStorage.removeItem('token')
-		setAuth({ isAuthenticated: false, user: null })
+		setAuth(defaultAuthState)
 	}
 
 	return {

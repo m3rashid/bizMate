@@ -1,10 +1,9 @@
-import { twMerge } from 'tailwind-merge'
+import apiClient from '@api/client'
+import Button from '@components/lib/button'
+import { BulkUploadContactModalProps, useBulkUploadContact } from '@hooks/bulkUploadContact'
+import { usePopups } from '@hooks/popups'
 import { useMutation } from '@tanstack/react-query'
-
-import Button from '../../lib/button'
-import apiClient from '../../../api/client'
-import { usePopups } from '../../../hooks/popups'
-import { BulkUploadContactModalProps, useBulkUploadContact } from '../../../hooks/bulkUploadContact'
+import { twMerge } from 'tailwind-merge'
 
 function Confirm(props: BulkUploadContactModalProps) {
 	const { addMessagePopup } = usePopups()

@@ -1,4 +1,4 @@
-import Button from '../../lib/button'
+import Button from '@components/lib/button'
 import { ArrowsPointingOutIcon } from '@heroicons/react/24/outline'
 import 'chart.js/auto'
 import { useState } from 'react'

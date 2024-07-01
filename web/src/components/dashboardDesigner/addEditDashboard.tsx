@@ -1,10 +1,10 @@
-import useAddEditDashboard, { AddEditDashboardProps } from '../../hooks/addEditDashboard'
-import { handleViewTransition } from '../../utils/helpers'
-import Button from '../lib/button'
-import Input from '../lib/input'
-import Modal from '../lib/modal'
-import TextAreaInput from '../lib/textAreaInput'
-import TogglerInput from '../lib/toggle'
+import Button from '@components/lib/button'
+import Input from '@components/lib/input'
+import Modal from '@components/lib/modal'
+import TextAreaInput from '@components/lib/textAreaInput'
+import TogglerInput from '@components/lib/toggle'
+import useAddEditDashboard, { AddEditDashboardProps } from '@hooks/addEditDashboard'
+import { handleViewTransition } from '@utils/helpers'
 
 function AddEditDashboard(props: AddEditDashboardProps) {
 	const { handleAddEditDashboard } = useAddEditDashboard(props)

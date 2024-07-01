@@ -1,11 +1,11 @@
-import { useFormDesigner } from '../../hooks/formDesigner'
-import { supportedWidgets } from '../forms/constants'
-import FormDesignerCore from './form'
-import FormWidgetItem from './formWidgetItem'
-import RightSidebar from './rightSidebar'
-import FormDesignerTopBar from './topBar'
+import FormDesignerCore from '@components/formDesigner/form'
+import FormWidgetItem from '@components/formDesigner/formWidgetItem'
+import RightSidebar from '@components/formDesigner/rightSidebar'
+import FormDesignerTopBar from '@components/formDesigner/topBar'
+import { supportedWidgets } from '@components/forms/constants'
 import { useSensor, useSensors, DndContext, PointerSensor, closestCorners, KeyboardSensor } from '@dnd-kit/core'
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable'
+import { useFormDesigner } from '@hooks/formDesigner'
 
 function FormDesigner() {
 	const { handleDragEnd } = useFormDesigner()

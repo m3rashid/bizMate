@@ -1,5 +1,5 @@
-import LoginRoot from '../../components/auth/loginRoot'
-import { useAuthState } from '../../hooks/auth'
+import LoginRoot from '@components/auth/loginRoot'
+import { useAuthState } from '@hooks/auth'
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import { useEffect } from 'react'
 
