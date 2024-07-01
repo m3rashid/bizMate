@@ -6,10 +6,11 @@ import (
 	"bizMate/utils"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 type formReqBody struct {
-	ID                     uint   `json:"id,omitempty" required:""`
+	ID                     string `json:"id,omitempty" required:""`
 	Title                  string `json:"title" validate:"required"`
 	Description            string `json:"description" validate:"required"`
 	Body                   string `json:"body" validate:"required"`
@@ -36,8 +37,8 @@ var createNewForm = controllers.Create(models.FORM_MODEL_NAME, controllers.Creat
 			SuccessPage:            "[]",
 			FailurePage:            "[]",
 			PreviousVersionIDs:     "[]",
-			CreatedBy:              models.CreatedBy{CreatedByID: userId},
-			BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId},
+			CreatedBy:              models.CreatedBy{CreatedByID: userId.String()},
+			BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId.String()},
 			Active:                 utils.Ternary(values.Active != nil, *values.Active, false),
 			SendResponseEmail:      utils.Ternary(values.SendResponseEmail != nil, *values.SendResponseEmail, false),
 			AllowResponseUpdate:    utils.Ternary(values.AllowResponseUpdate != nil, *values.AllowResponseUpdate, false),
@@ -49,8 +50,8 @@ var createNewForm = controllers.Create(models.FORM_MODEL_NAME, controllers.Creat
 
 func updateFormById(ctx *fiber.Ctx) error {
 	updateBody := formReqBody{}
-	userId := ctx.Locals("userId").(uint)
-	if userId == 0 {
+	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	if userId == uuid.Nil {
 		return ctx.Status(fiber.StatusUnauthorized).JSON("Unauthorized")
 	}
 
@@ -58,7 +59,7 @@ func updateFormById(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 
-	if updateBody.ID == 0 {
+	if updateBody.ID == "" {
 		return ctx.Status(fiber.StatusBadRequest).JSON("Bad Request")
 	}
 
@@ -84,7 +85,8 @@ func updateFormById(ctx *fiber.Ctx) error {
 	form.AllowAnonymousResponse = utils.Ternary(updateBody.AllowAnonymousResponse != nil, *updateBody.AllowAnonymousResponse, false)
 	form.AllowResponseUpdate = utils.Ternary(updateBody.AllowResponseUpdate != nil, *updateBody.AllowResponseUpdate, false)
 	form.AllowMultipleResponse = utils.Ternary(updateBody.AllowMultipleResponse != nil, *updateBody.AllowMultipleResponse, false)
-	form.UpdatedBy.UpdatedByID = &userId
+	userIdStr := userId.String()
+	form.UpdatedBy.UpdatedByID = &userIdStr
 
 	if err := db.Save(&form).Error; err != nil {
 		return ctx.SendStatus(fiber.StatusInternalServerError)

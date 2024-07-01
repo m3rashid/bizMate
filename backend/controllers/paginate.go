@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 type PaginateOptions struct {
@@ -14,7 +15,7 @@ type PaginateOptions struct {
 	Populate           []string
 	IncludeSoftDeleted bool // default false: dont include soft deleted
 	ReturnOnlyDeleted  bool // to show deleted items
-	GetWorkspaceID     func(*fiber.Ctx) (uint, error)
+	GetWorkspaceID     func(*fiber.Ctx) (uuid.UUID, error)
 }
 
 func Paginate[Model DbModel](_options ...PaginateOptions) func(*fiber.Ctx) error {
@@ -36,7 +37,7 @@ func Paginate[Model DbModel](_options ...PaginateOptions) func(*fiber.Ctx) error
 			return ctx.Status(fiber.StatusBadRequest).JSON("Bad Request")
 		}
 
-		var workspaceId uint
+		var workspaceId uuid.UUID
 		if paginationOptions.GetWorkspaceID != nil {
 			tId, err := paginationOptions.GetWorkspaceID(ctx)
 			if err != nil {

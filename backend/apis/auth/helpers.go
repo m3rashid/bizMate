@@ -5,6 +5,7 @@ import (
 	"bizMate/utils"
 	"errors"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -25,7 +26,7 @@ func createNewUser(
 	email string,
 	plainTextPassword string,
 	phone string,
-	workspaceId uint, // if 0, then a new workspace is created
+	workspaceId string, // if 0, then a new workspace is created
 	provider string, // if "", credential provider is used
 	refreshToken string,
 	postTransactionActions ...func(*gorm.DB) error,
@@ -66,25 +67,24 @@ func createNewUser(
 
 	err = db.Transaction(func(tx *gorm.DB) error {
 		workspace := models.Workspace{
-			Name:     name + "'s workspace",
-			UniqueID: utils.GenerateUuid(),
+			Name: name + "'s workspace",
 		}
 
-		if workspaceId == 0 {
-			if err := db.Create(&workspace).Error; err != nil {
-				return err
-			}
+		// if workspaceId == "" {
+		// 	if err := db.Create(&workspace).Error; err != nil {
+		// 		return err
+		// 	}
 
-			user.WorkspaceID = workspace.ID
-		} else {
-			user.WorkspaceID = workspaceId
-		}
+		// 	user.WorkspaceID = workspace.ID
+		// } else {
+		// 	user.WorkspaceID = workspaceId
+		// }
 
 		if err := db.Create(&user).Error; err != nil {
 			return err
 		}
 
-		if workspaceId == 0 {
+		if workspaceId == "" {
 			workspace.OptionalCreatedBy = models.OptionalCreatedBy{CreatedByID: &user.ID}
 			if err := db.Save(&workspace).Error; err != nil {
 				return err
@@ -107,14 +107,14 @@ func createNewUser(
 	return &user, nil
 }
 
-func handleInvite(inviteId uint, nextStatus models.UserInviteStatus, authProvider string, refreshToken string) (*models.User, error) {
+func handleInvite(inviteId uuid.UUID, nextStatus models.UserInviteStatus, authProvider string, refreshToken string) (*models.User, error) {
 	db, err := utils.GetDB()
 	if err != nil {
 		return nil, err
 	}
 
 	invite := models.UserInvite{}
-	if err := db.Where("id = ?", inviteId).First(&invite).Error; err != nil {
+	if err := db.Where("id = ?", inviteId.String()).First(&invite).Error; err != nil {
 		return nil, err
 	}
 

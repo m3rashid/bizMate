@@ -10,8 +10,8 @@ import (
 
 // TODO: create a form response template
 
-func sendResponseEmail(form models.Form, formResponse models.FormResponse, userId uint, db *gorm.DB) {
-	if userId == 0 || db == nil {
+func sendResponseEmail(form models.Form, formResponse models.FormResponse, userId string, db *gorm.DB) {
+	if userId == "" || db == nil {
 		return
 	}
 

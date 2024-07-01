@@ -19,11 +19,11 @@ func Setup(app *fiber.App) {
 				Email:                  values.Email,
 				Birthday:               values.Birthday,
 				Phone:                  values.Phone,
-				CreatedBy:              models.CreatedBy{CreatedByID: userId},
+				CreatedBy:              models.CreatedBy{CreatedByID: userId.String()},
 				OtherPhones:            utils.SafeStringify(values.OtherPhones),
 				OtherEmails:            utils.SafeStringify(values.OtherEmails),
 				OtherDetails:           utils.SafeStringify(values.OtherDetails),
-				BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId},
+				BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId.String()},
 			}, nil
 		},
 	}))

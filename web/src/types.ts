@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 export type UnionOfObject<T> = T[keyof T]
 
-export type ID = number
+export type ID = string
 export type StringBoolean = 'on' | 'off'
 export type ExplicitAndAll<Universe, Partical> = Partical & Exclude<Universe, Partical>
 export type ExplicitAndAllObject<Partical> = Record<ExplicitAndAll<string, Partical>, any>

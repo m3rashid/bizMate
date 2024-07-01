@@ -1,19 +1,18 @@
-import { useMutation } from '@tanstack/react-query'
-import { Dispatch, FormEvent, SetStateAction } from 'react'
-
-import Modal from '../lib/modal'
+import apiClient from '../../api/client'
+import { ProjectTask, taskStatuses } from '../../types'
+import { toSentenceCase } from '../../utils/helpers'
 import Button from '../lib/button'
 import Input from '../lib/input'
-import apiClient from '../../api/client'
-import { toSentenceCase } from '../../utils/helpers'
-import { ProjectTask, taskStatuses } from '../../types'
+import Modal from '../lib/modal'
 import SingleSelectInput from '../lib/singleSelectInput'
+import { useMutation } from '@tanstack/react-query'
+import { Dispatch, FormEvent, SetStateAction } from 'react'
 
 type AddProjectTaskProps = {
 	modalOpen: boolean
 	projectId: string
 	setModalOpen: Dispatch<SetStateAction<boolean>>
-	parentTaskId?: number
+	parentTaskId?: string
 	refetch: () => void
 }
 function AddProjectTask(props: AddProjectTaskProps) {

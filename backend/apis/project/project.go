@@ -29,8 +29,8 @@ type ProjectTaskReqBody struct {
 	Description  string               `json:"description"`
 	Status       models.TaskStatus    `json:"status" validate:"required"`
 	Deadline     time.Time            `json:"deadline" validate:""`
-	ProjectID    uint                 `json:"projectId" validate:"required"`
+	ProjectID    string               `json:"projectId" validate:"required"`
 	Assinees     []*models.User       `json:"users" gorm:"many2many:users_task_relation"`
 	Tags         []*models.ProjectTag `json:"tags" gorm:"many2many:tags_task_relation"`
-	ParentTaskID *uint                `json:"parentTaskId"`
+	ParentTaskID *string              `json:"parentTaskId"`
 }

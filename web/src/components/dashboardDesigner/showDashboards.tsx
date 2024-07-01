@@ -4,7 +4,7 @@ import RenderKpi from './renderKpi'
 import { useQuery } from '@tanstack/react-query'
 
 type ShowDashboardProps = {
-	dashboardId: string | number
+	dashboardId: string
 	viewType: 'preview' | 'edit'
 }
 
@@ -14,7 +14,7 @@ function ShowDashboard(props: ShowDashboardProps) {
 		queryFn: () => apiClient(`/dashboards/charts/${props.dashboardId}/all`),
 	})
 
-	const { data: allKpis } = useQuery<Array<{ id: number; title: string; description: string; data: number }>>({
+	const { data: allKpis } = useQuery<Array<{ id: string; title: string; description: string; data: number }>>({
 		queryKey: ['dashboards/kpis', props.dashboardId, 'all'],
 		queryFn: () => apiClient(`/dashboards/kpis/${props.dashboardId}/all`),
 	})

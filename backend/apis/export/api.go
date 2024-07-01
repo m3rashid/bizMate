@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 type ExportFormat string
@@ -19,7 +20,7 @@ const (
 
 func exportTable(ctx *fiber.Ctx) error {
 	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
-	if userId == 0 {
+	if userId == uuid.Nil {
 		return ctx.Status(fiber.StatusUnauthorized).JSON("Unauthorized")
 	}
 
@@ -33,7 +34,7 @@ func exportTable(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON("table data not exportable")
 	}
 
-	if table.name == models.FORM_RESPONSE_MODEL_NAME && reqBody.FormId == 0 {
+	if table.name == models.FORM_RESPONSE_MODEL_NAME && reqBody.FormId == "" {
 		return ctx.Status(fiber.StatusBadRequest).JSON("formId is required for this export")
 	}
 
@@ -95,7 +96,7 @@ func exportTable(ctx *fiber.Ctx) error {
 
 type exportTableFieldsReqBody = struct {
 	TableName string `json:"tableName" validate:"required"`
-	FormId    uint   `json:"formId"`
+	FormId    string `json:"formId"`
 }
 
 func getExportTableFields(ctx *fiber.Ctx) error {
@@ -109,7 +110,7 @@ func getExportTableFields(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON("table data not exportable")
 	}
 
-	if table.name == models.FORM_RESPONSE_MODEL_NAME && reqBody.FormId == 0 {
+	if table.name == models.FORM_RESPONSE_MODEL_NAME && reqBody.FormId == "" {
 		return ctx.Status(fiber.StatusBadRequest).JSON("formId is required for this export")
 	}
 

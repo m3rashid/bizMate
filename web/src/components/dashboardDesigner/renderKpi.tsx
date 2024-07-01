@@ -7,7 +7,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 
 type RenderKpiProps = {
-	kpiId: number
+	kpiId: string
 	title: string
 	description: string
 	data: number

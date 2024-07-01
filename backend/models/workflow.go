@@ -6,8 +6,8 @@ const WORKFLOW_EXECUTION_LOGS_MODEL_NAME string = "workflow_execution_logs"
 
 // not a model, just for parsing and validation
 type WorkflowEdge struct {
-	From uint `json:"from" validate:"required"`
-	To   uint `json:"to" validate:"required"`
+	From string `json:"from" validate:"required"`
+	To   string `json:"to" validate:"required"`
 }
 
 type Workflow struct {
@@ -38,7 +38,7 @@ type WorkflowStep struct {
 	UpdatedBy
 	FunctionName FunctionNameType `json:"functionName" gorm:"functionName:name;not null" validate:"required"`
 	Input        string           `json:"input" gorm:"input:name;not null" validate:"required"`
-	WorkflowID   uint             `json:"workflowId" gorm:"column:workflowId;not null" validate:"required"`
+	WorkflowID   string           `json:"workflowId" gorm:"type:uuid;column:workflowId;not null" validate:"required"`
 	Workflow     *Workflow        `json:"workflow" gorm:"foreignKey:workflowId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
@@ -55,7 +55,7 @@ var WorkflowStepJsonModel = DashboardIndexableJsonModel{
 
 type WorkflowExectionLog struct {
 	BaseModelWithWorkspace
-	WorkflowStepID uint          `json:"workflowStepId" gorm:"column:workflowStepId;not null" validate:"required"`
+	WorkflowStepID string        `json:"workflowStepId" gorm:"type:uuid;column:workflowStepId;not null" validate:"required"`
 	WorkflowStep   *WorkflowStep `json:"workflowStep" gorm:"foreignKey:workflowStepId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Output         string        `json:"output" gorm:"input:name;not null" validate:"required"`
 }

@@ -10,7 +10,7 @@ import (
 )
 
 type KpiDataResponse struct {
-	ID          uint    `json:"id"`
+	ID          string  `json:"id"`
 	Title       string  `json:"title"`
 	Description string  `json:"description"`
 	Data        float64 `json:"data"`
@@ -36,7 +36,7 @@ func getAllKpiData(ctx *fiber.Ctx) error {
 	kpiData := []KpiDataResponse{}
 	// TODO make it run in independent go routines for faster response
 	for _, kpi := range kpis {
-		res, err := getSingleKpiData(kpi, workspaceId)
+		res, err := getSingleKpiData(kpi, workspaceId.String())
 		if err != nil {
 			res = 0 // skip invalid kpi
 		}
@@ -46,7 +46,7 @@ func getAllKpiData(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(kpiData)
 }
 
-func getSingleKpiData(kpi models.DashboardKpi, workspaceId uint) (float64, error) {
+func getSingleKpiData(kpi models.DashboardKpi, workspaceId string) (float64, error) {
 	if !utils.Includes(models.DashboardIndexableModelNames, kpi.Model) {
 		return 0, errors.New("invalid model name")
 	}
