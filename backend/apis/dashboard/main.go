@@ -4,9 +4,9 @@ import (
 	"bizMate/controllers"
 	"bizMate/models"
 	"bizMate/utils"
-	"strconv"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 func Setup(app *fiber.App) {
@@ -26,8 +26,8 @@ func Setup(app *fiber.App) {
 			return &models.Dashboard{
 				Title:                  values.Title,
 				Description:            values.Description,
-				CreatedBy:              models.CreatedBy{CreatedByID: userId},
-				BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId},
+				CreatedBy:              models.CreatedBy{CreatedByID: userId.String()},
+				BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId.String()},
 			}, nil
 		},
 	}))
@@ -44,22 +44,27 @@ func Setup(app *fiber.App) {
 
 	app.Post("/dashboards/kpis/:dashboardId/create", utils.CheckAuthMiddleware, controllers.Create(models.DASHBOARD_KPI_MODEL_NAME, controllers.CreateOptions[CreateKPIBody, models.DashboardKpi]{
 		GetDefaultValues: func(values *CreateKPIBody, ctx *fiber.Ctx) (*models.DashboardKpi, error) {
-			dashboardId := ctx.Params("dashboardId")
-			dIdU64, err := strconv.ParseUint(dashboardId, 10, 32)
+			dId := ctx.Params("dashboardId")
+			if dId == "" {
+				return nil, fiber.NewError(fiber.StatusBadRequest, "Invalid dashboard ID")
+			}
+
+			dashboardId, err := uuid.Parse(dId)
 			if err != nil {
 				return nil, err
 			}
+
 			userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 			return &models.DashboardKpi{
 				Title:                  values.Title,
 				Description:            values.Description,
-				DashboardID:            uint(dIdU64),
+				DashboardID:            dashboardId.String(),
 				Model:                  values.Model,
 				ModelField:             values.ModelField,
 				AggregationType:        values.AggregationType,
 				TimePeriod:             values.TimePeriod,
-				CreatedBy:              models.CreatedBy{CreatedByID: userId},
-				BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId},
+				CreatedBy:              models.CreatedBy{CreatedByID: userId.String()},
+				BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId.String()},
 			}, nil
 		},
 	}))

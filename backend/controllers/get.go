@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 type GetOptions struct {
@@ -12,7 +13,7 @@ type GetOptions struct {
 	ParamKey               string // what entry in db to match paramValue with
 	Populate               []string
 	IncludeSoftDeleted     bool // default false: dont include soft deleted
-	GetWorkspaceID         func(*fiber.Ctx) (uint, error)
+	GetWorkspaceID         func(*fiber.Ctx) (uuid.UUID, error)
 	DontIncludeWorkspaceID bool
 }
 
@@ -29,7 +30,7 @@ func Get[Model DbModel](_options ...GetOptions) func(*fiber.Ctx) error {
 	return func(ctx *fiber.Ctx) error {
 		paramValue := ctx.Params(options.ParamValue)
 
-		workspaceId := uint(0)
+		workspaceId := uuid.Nil
 		if options.GetWorkspaceID != nil {
 			wId, err := options.GetWorkspaceID(ctx)
 			if err != nil {
@@ -58,7 +59,7 @@ func Get[Model DbModel](_options ...GetOptions) func(*fiber.Ctx) error {
 		if options.DontIncludeWorkspaceID {
 			query = fmt.Sprintf("%s = ?", options.ParamKey)
 		} else {
-			query = fmt.Sprintf("%s = ? and \"workspaceId\" = %d", options.ParamKey, workspaceId)
+			query = fmt.Sprintf("%s = ? and \"workspaceId\" = %s", options.ParamKey, workspaceId.String())
 		}
 		if err := db.Where(query, paramValue).First(&column).Error; err != nil {
 			return ctx.SendStatus(fiber.StatusInternalServerError)

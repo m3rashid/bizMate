@@ -39,8 +39,8 @@ func Setup(app *fiber.App) {
 					SubjectTemplate:        values.SubjectTemplate,
 					BodyTemplateHtml:       values.BodyTemplateHtml,
 					BodyTemplateDesignJson: values.BodyTemplateDesignJson,
-					BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId},
-					CreatedBy:              models.CreatedBy{CreatedByID: userId},
+					BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId.String()},
+					CreatedBy:              models.CreatedBy{CreatedByID: userId.String()},
 					Variables:              fmt.Sprintf("[%s]", strings.Join(variables, ",")),
 				}, nil
 			},

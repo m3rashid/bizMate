@@ -11,7 +11,7 @@ type exportTableReqBodyType = struct {
 	TableName string       `json:"tableName" validate:"required"`
 	Fields    []string     `json:"fields" validate:"required"`
 	Format    ExportFormat `json:"format" validate:"required"`
-	FormId    uint         `json:"formId"`
+	FormId    string       `json:"formId"`
 }
 
 func getFileName(tableName string, ctx *fiber.Ctx) string {

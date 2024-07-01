@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 	"github.com/shareed2k/goth_fiber"
 	"gorm.io/gorm"
 )
@@ -41,20 +41,18 @@ func authCallback(ctx *fiber.Ctx) error {
 		return ctx.Redirect(getRedirectUrl(false, "error=auth_failed"))
 	}
 
-	inviteId := uint(0)
+	inviteId := uuid.Nil
 	if strings.Contains(state, "inviteId-") {
 		str := strings.SplitAfter(state, "inviteId-")
-		fmt.Printf("\nstr: %s\n", str)
-		inviteIdU64, err := strconv.ParseUint(str[1], 10, 32)
-		if err != nil || inviteIdU64 == 0 {
+		inviteIdUuid, err := uuid.Parse(str[1])
+		if err != nil {
 			return ctx.Redirect(getRedirectUrl(false, "error=bad_request"))
 		}
-
-		inviteId = uint(inviteIdU64)
+		inviteId = inviteIdUuid
 	}
 
 	existingUser := models.User{}
-	if inviteId != 0 {
+	if inviteId != uuid.Nil {
 		// if it has inviteId => create a new user in the invite-id's workspace
 		newUser, err := handleInvite(inviteId, models.InviteAccepted, models.PROVIDER_GOOGLE, user.RefreshToken)
 		if err != nil {
@@ -74,7 +72,7 @@ func authCallback(ctx *fiber.Ctx) error {
 		if err = db.Where("email = ?", user.Email).First(&existingUser).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				fmt.Println("Creating a new user")
-				newUser, err := createNewUser(user.Name, user.Email, "", "", 0, models.PROVIDER_GOOGLE, user.RefreshToken)
+				newUser, err := createNewUser(user.Name, user.Email, "", "", "", models.PROVIDER_GOOGLE, user.RefreshToken)
 				if err != nil {
 					return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
 				}
@@ -84,9 +82,9 @@ func authCallback(ctx *fiber.Ctx) error {
 			}
 		}
 
-		if existingUser.ID == 0 {
+		if existingUser.ID == "" {
 			fmt.Println("Creating a new user")
-			newUser, err := createNewUser(user.Name, user.Email, "", "", 0, models.PROVIDER_GOOGLE, user.RefreshToken)
+			newUser, err := createNewUser(user.Name, user.Email, "", "", "", models.PROVIDER_GOOGLE, user.RefreshToken)
 			if err != nil {
 				return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
 			}
@@ -94,7 +92,7 @@ func authCallback(ctx *fiber.Ctx) error {
 		}
 	}
 
-	jwtToken, err := utils.GenerateJWT(existingUser.ID, existingUser.WorkspaceID, existingUser.Email)
+	jwtToken, err := utils.GenerateJWT(existingUser.ID, existingUser.Email)
 	if err != nil {
 		ctx.Redirect(getRedirectUrl(false, "error=no_token"))
 	}

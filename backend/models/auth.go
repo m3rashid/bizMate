@@ -14,8 +14,7 @@ const PROVIDER_CREDENTIALS = "credentials"
 type Workspace struct {
 	BaseModel
 	OptionalCreatedBy
-	Name     string `gorm:"column:name" json:"name" validate:"required"`
-	UniqueID string `gorm:"column:uniqueId" json:"uniqueId" validate:"required"`
+	Name string `gorm:"column:name" json:"name" validate:"required"`
 }
 
 func (Workspace) TableName() string {
@@ -23,7 +22,7 @@ func (Workspace) TableName() string {
 }
 
 type User struct {
-	BaseModelWithWorkspace
+	BaseModel
 	Name         string `json:"name" gorm:"column:name;not null" validate:"required"`
 	Email        string `json:"email" gorm:"column:email;unique;not null" validate:"required,email"`
 	Phone        string `json:"phone" gorm:"column:phone"`
@@ -47,7 +46,7 @@ var UserJsonModel = DashboardIndexableJsonModel{
 }
 
 type PartialUser struct {
-	ID        uint      `json:"id"`
+	ID        string    `json:"id"`
 	Name      string    `json:"name"`
 	Email     string    `json:"email"`
 	Avatar    string    `json:"avatar"`

@@ -1,35 +1,58 @@
 package models
 
 import (
+	"bizMate/utils"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type BaseModel struct {
-	ID        uint      `json:"id" gorm:"primary_key;column:id"`
+	ID        string    `json:"id" gorm:"type:uuid;primary_key;column:id"`
 	Deleted   bool      `json:"" gorm:"column:deleted;default:false"`
 	CreatedAt time.Time `json:"createdAt" gorm:"column:createdAt; default:current_timestamp"`
 }
 
+func (b *BaseModel) BeforeCreate(tx *gorm.DB) error {
+	id, err := utils.GenerateUuidV7()
+	if err != nil {
+		return err
+	}
+
+	b.ID = id
+	return nil
+}
+
 type BaseModelWithWorkspace struct {
-	ID          uint      `json:"id" gorm:"primary_key;column:id"`
+	ID          string    `json:"id" gorm:"type:uuid;primary_key;column:id"`
 	Deleted     bool      `json:"" gorm:"column:deleted;default:false"`
 	CreatedAt   time.Time `json:"createdAt" gorm:"column:createdAt; default:current_timestamp"`
-	WorkspaceID uint      `json:"workspaceId" gorm:"column:workspaceId;default:0" validate:"required"`
+	WorkspaceID string    `json:"workspaceId" gorm:"type:uuid;column:workspaceId" validate:"required"`
+}
+
+func (b *BaseModelWithWorkspace) BeforeCreate(tx *gorm.DB) error {
+	id, err := utils.GenerateUuidV7()
+	if err != nil {
+		return err
+	}
+
+	b.ID = id
+	return nil
 }
 
 type CreatedBy struct {
-	CreatedByID   uint  `json:"createdById" gorm:"column:createdById;not null" validate:"required"`
-	CreatedByUser *User `json:"createdByUser" gorm:"foreignKey:createdById;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	CreatedByID   string `json:"createdById" gorm:"column:createdById;not null" validate:"required"`
+	CreatedByUser *User  `json:"createdByUser" gorm:"foreignKey:createdById;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 type OptionalCreatedBy struct {
-	CreatedByID   *uint `json:"createdById" gorm:"column:createdById"`
-	CreatedByUser *User `json:"createdByUser" gorm:"foreignKey:createdById;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	CreatedByID   *string `json:"createdById" gorm:"column:createdById"`
+	CreatedByUser *User   `json:"createdByUser" gorm:"foreignKey:createdById;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 type UpdatedBy struct {
-	UpdatedByID   *uint `json:"updatedById" gorm:"column:updatedById"`
-	UpdatedByUser *User `json:"updatedByUser" gorm:"foreignKey:updatedById;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	UpdatedByID   *string `json:"updatedById" gorm:"column:updatedById"`
+	UpdatedByUser *User   `json:"updatedByUser" gorm:"foreignKey:updatedById;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 type JsonFieldType string

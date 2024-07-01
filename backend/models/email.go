@@ -28,7 +28,7 @@ var EmailTemplateJsonModel = DashboardIndexableJsonModel{
 type BulkEmailRequest struct {
 	BaseModelWithWorkspace
 	CreatedBy
-	EmailTemplateID        uint           `json:"emailTemplateId" gorm:"column:emailTemplateId;not null" validate:"required"`
+	EmailTemplateID        string         `json:"emailTemplateId" gorm:"type:uuid;column:emailTemplateId;not null" validate:"required"`
 	EmailTemplate          *EmailTemplate `json:"emailTemplate" gorm:"foreignKey:emailTemplateId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	BodyVariableMapping    string         `json:"bodyVariableMapping" gorm:"column:bodyVariableMapping"`
 	SubjectVariableMapping string         `json:"subjectVariableMapping" gorm:"column:subjectVariableMapping"`

@@ -26,8 +26,8 @@ func Setup(app *fiber.App) {
 				Abandoned:              false,
 				Completed:              false,
 				People:                 utils.Ternary(len(values.People) > 0, values.People, []*models.User{}),
-				CreatedBy:              models.CreatedBy{CreatedByID: userId},
-				BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId},
+				CreatedBy:              models.CreatedBy{CreatedByID: userId.String()},
+				BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId.String()},
 			}, nil
 		},
 	}))
@@ -70,8 +70,8 @@ func Setup(app *fiber.App) {
 				Assinees:               utils.Ternary(len(values.Assinees) > 0, values.Assinees, []*models.User{}),
 				Tags:                   utils.Ternary(len(values.Tags) > 0, values.Tags, []*models.ProjectTag{}),
 				ParentTaskID:           values.ParentTaskID,
-				CreatedBy:              models.CreatedBy{CreatedByID: userId},
-				BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId},
+				CreatedBy:              models.CreatedBy{CreatedByID: userId.String()},
+				BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId.String()},
 			}, nil
 		},
 	}))
@@ -96,8 +96,8 @@ func Setup(app *fiber.App) {
 			return &models.ProjectTaskEvent{
 				Data:                   values.Data,
 				TaskID:                 values.TaskID,
-				CreatedBy:              models.CreatedBy{CreatedByID: userId},
-				BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId},
+				CreatedBy:              models.CreatedBy{CreatedByID: userId.String()},
+				BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId.String()},
 			}, nil
 		},
 	}))
@@ -114,7 +114,7 @@ func Setup(app *fiber.App) {
 			_, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 			return &models.ProjectTag{
 				Name:                   values.Name,
-				BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId},
+				BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId.String()},
 			}, nil
 		},
 	}))

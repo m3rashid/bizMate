@@ -23,7 +23,7 @@ type ProjectCycle struct {
 	CreatedBy
 	UpdatedBy
 	CycleGoals     string    `json:"cycleGoals" gorm:"column:cycleGoals"`
-	ProjectID      uint      `json:"projectId" gorm:"column:projectId;not null" validate:"required"`
+	ProjectID      string    `json:"projectId" gorm:"type:uuid;column:projectId;not null" validate:"required"`
 	CycleDaysCount int       `json:"cycleDaysCount" gorm:"column:cycleDaysCount;not null" validate:"required"`
 	Project        *Project  `json:"project" gorm:"foreignKey:projectId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	StartDay       time.Time `json:"startDay" gorm:"column:startDay;not null" validate:"required"`
@@ -91,11 +91,11 @@ type ProjectTask struct {
 	Description  string        `json:"description" gorm:"column:description;not null" validate:"required"`
 	Status       TaskStatus    `json:"status" gorm:"column:status;not null" validate:"required"`
 	Deadline     time.Time     `json:"deadline" gorm:"column:deadline" validate:""`
-	ProjectID    uint          `json:"projectId" gorm:"column:projectId;not null" validate:"required"`
+	ProjectID    string        `json:"projectId" gorm:"type:uuid;column:projectId;not null" validate:"required"`
 	Project      *Project      `json:"project" gorm:"foreignKey:projectId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Assinees     []*User       `json:"users" gorm:"many2many:users_task_relation"`
 	Tags         []*ProjectTag `json:"tags" gorm:"many2many:tags_task_relation"`
-	ParentTaskID *uint         `json:"parentTaskId" gorm:"column:parentTaskId"`
+	ParentTaskID *string       `json:"parentTaskId" gorm:"type:uuid;column:parentTaskId"`
 	ParentTask   *ProjectTask  `json:"parentTask" gorm:"foreignKey:parentTaskId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
@@ -131,7 +131,7 @@ type ProjectTaskEvent struct {
 	BaseModelWithWorkspace
 	CreatedBy
 	UpdatedBy
-	TaskID uint                 `json:"taskId" gorm:"column:taskId;not null" validate:"required"`
+	TaskID string               `json:"taskId" gorm:"type:uuid;column:taskId;not null" validate:"required"`
 	Task   *ProjectTask         `json:"task" gorm:"foreignKey:taskId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Type   ProjectTaskEventType `json:"type" gorm:"column:type;not null" validate:"required"`
 	Data   string               `json:"data" gorm:"column:data;not null" validate:"required"` // the actual change that happened

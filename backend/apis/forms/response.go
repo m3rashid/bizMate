@@ -5,10 +5,11 @@ import (
 	"bizMate/utils"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 type formResponseReqBody struct {
-	ID       uint   `json:"id"`
+	ID       string `json:"id"`
 	Response string `json:"response" validate:"required"`
 }
 
@@ -35,16 +36,17 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 	}
 
 	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
-	if !form.AllowAnonymousResponse && userId == 0 {
+	if !form.AllowAnonymousResponse && userId == uuid.Nil {
 		return ctx.Status(fiber.StatusUnauthorized).JSON("unauthorized")
 	}
 
+	userIdStr := userId.String()
 	formResponse := models.FormResponse{
 		FormID:                 form.ID,
 		Response:               reqBody.Response,
 		DeviceIP:               utils.GetDeviceIP(ctx),
 		BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: form.WorkspaceID},
-		OptionalCreatedBy:      utils.Ternary(userId != 0, models.OptionalCreatedBy{CreatedByID: &userId}, models.OptionalCreatedBy{}),
+		OptionalCreatedBy:      utils.Ternary(userIdStr != "", models.OptionalCreatedBy{CreatedByID: &userIdStr}, models.OptionalCreatedBy{}),
 	}
 
 	if err := db.Create(&formResponse).Error; err != nil {
@@ -52,7 +54,7 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 	}
 
 	if form.SendResponseEmail {
-		sendResponseEmail(form, formResponse, userId, db)
+		sendResponseEmail(form, formResponse, userId.String(), db)
 	}
 
 	return ctx.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "response_submitted"})
@@ -61,13 +63,13 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 func editFormResponse(ctx *fiber.Ctx) error {
 	reqBody := formResponseReqBody{}
 	formId := ctx.Params("formId")
-	userId := ctx.Locals("userId").(uint)
+	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil || formId == "" {
 		return ctx.Status(fiber.StatusBadRequest).JSON("Bad Request")
 	}
 
-	if reqBody.ID == 0 {
+	if reqBody.ID == "" {
 		return ctx.Status(fiber.StatusBadRequest).JSON("Bad Request")
 	}
 
@@ -94,13 +96,14 @@ func editFormResponse(ctx *fiber.Ctx) error {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
-	if *formResponse.CreatedByID == 0 || formResponse.CreatedByID != &userId {
+	userIdStr := userId.String()
+	if *formResponse.CreatedByID == "" || formResponse.CreatedByID != &userIdStr {
 		return ctx.Status(fiber.StatusUnauthorized).JSON("invalid form response")
 	}
 
 	formResponse.DeviceIP = utils.GetDeviceIP(ctx)
 	formResponse.Response = reqBody.Response
-	formResponse.UpdatedBy = models.UpdatedBy{UpdatedByID: &userId}
+	formResponse.UpdatedBy = models.UpdatedBy{UpdatedByID: &userIdStr}
 
 	return ctx.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "response_submitted"})
 }

@@ -6,7 +6,7 @@ type FormResponse struct {
 	BaseModelWithWorkspace
 	UpdatedBy
 	OptionalCreatedBy
-	FormID   uint   `json:"formId" gorm:"column:formId;not null" validate:"required"`
+	FormID   string `json:"formId" gorm:"type:uuid;column:formId;not null" validate:"required"`
 	Form     *Form  `json:"form" gorm:"foreignKey:formId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Response string `json:"response" gorm:"column:response;not null" validate:"required"`
 	DeviceIP string `json:"deviceIp" gorm:"column:deviceIp"`

@@ -3,18 +3,17 @@ package utils
 import (
 	"fmt"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type Claims struct {
-	Email       string `json:"email"`
-	UserID      string `json:"userId"`
-	WorkspaceID string `json:"workspaceId"`
+	Email  string `json:"email"`
+	UserID string `json:"userId"`
 	jwt.RegisteredClaims
 }
 
@@ -54,29 +53,28 @@ func CheckAuthMiddlewareButAllowUnauthorized(ctx *fiber.Ctx) error {
 	return ctx.Next()
 }
 
-func getId(ctx *fiber.Ctx, key string) uint {
+func getId(key string, ctx *fiber.Ctx) uuid.UUID {
 	_id := ctx.Locals(key)
 	if _id == nil {
-		return 0
+		return uuid.Nil
 	}
 
-	id, ok := _id.(uint)
+	id, ok := _id.(uuid.UUID)
 	if !ok {
-		return 0
+		return uuid.Nil
 	}
 	return id
 }
 
-func GetUserAndWorkspaceIdsOrZero(ctx *fiber.Ctx) (userId uint, workspaceId uint) {
-	return getId(ctx, "userId"), getId(ctx, "workspaceId")
+func GetUserAndWorkspaceIdsOrZero(ctx *fiber.Ctx) (userId uuid.UUID, workspaceId uuid.UUID) {
+	return getId("userId", ctx), getId("workspaceId", ctx)
 }
 
-func GenerateJWT(userId uint, workspaceId uint, email string) (string, error) {
+func GenerateJWT(userId string, email string) (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour)
 	claims := &Claims{
 		Email:            email,
-		UserID:           strconv.FormatUint(uint64(userId), 10),
-		WorkspaceID:      strconv.FormatUint(uint64(workspaceId), 10),
+		UserID:           userId,
 		RegisteredClaims: jwt.RegisteredClaims{ExpiresAt: jwt.NewNumericDate(expirationTime)},
 	}
 
@@ -127,22 +125,27 @@ func parseTokenToClaims(tokenString string) (*Claims, error) {
 }
 
 func parseAndSetAuthLocals(claims *Claims, ctx *fiber.Ctx, throwErrorOnAuthFail bool) error {
-	userIdU64, err := strconv.ParseUint(claims.UserID, 10, 32)
+	wId := ctx.Params("workspaceId")
+	if wId == "" || claims.UserID == "" {
+		return fmt.Errorf("workspace id not found")
+	}
+
+	userId, err := uuid.Parse(claims.UserID)
 	if err != nil {
 		return fmt.Errorf("error parsing user id: %+v", err)
 	}
 
-	workspaceIdU64, err := strconv.ParseUint(claims.WorkspaceID, 10, 32)
+	workspaceId, err := uuid.Parse(wId)
 	if err != nil {
 		return fmt.Errorf("error parsing workspace id: %+v", err)
 	}
 
 	ctx.Locals("email", claims.Email)
-	ctx.Locals("userId", uint(userIdU64))
-	ctx.Locals("workspaceId", uint(workspaceIdU64))
-	ctx.Locals("authorized", userIdU64 != 0)
+	ctx.Locals("userId", userId)
+	ctx.Locals("workspaceId", workspaceId)
+	ctx.Locals("authorized", userId != uuid.Nil && workspaceId != uuid.Nil)
 
-	if throwErrorOnAuthFail && userIdU64 == 0 {
+	if throwErrorOnAuthFail && userId == uuid.Nil && workspaceId == uuid.Nil {
 		return fmt.Errorf("unauthorized")
 	}
 

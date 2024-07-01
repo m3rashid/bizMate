@@ -5,7 +5,7 @@ import "time"
 const EMPLOYEE_MODEL_NAME string = "employees"
 const ATTENDANCE_MODEL_NAME string = "attendance"
 
-type EmployementType uint
+type EmployementType int
 
 const (
 	FullTime   EmployementType = 32
@@ -20,7 +20,7 @@ type Employee struct {
 	BaseModelWithWorkspace
 	CreatedBy
 	UpdatedBy
-	UserID          uint            `json:"userId" gorm:"column:userId;not null" validate:"required"`
+	UserID          string          `json:"userId" gorm:"type:uuid;column:userId;not null" validate:"required"`
 	User            *User           `json:"user" gorm:"column:userId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	EmployementType EmployementType `json:"employementType" gorm:"column:employementType;not null" validate:"required"`
 	MonthlySalary   float64         `json:"monthlySalary" gorm:"column:monthlySalary;not null" validate:"required"`
@@ -44,7 +44,7 @@ var EmployeeJsonModel = DashboardIndexableJsonModel{
 type Attendance struct {
 	BaseModelWithWorkspace
 	CreatedBy
-	EmployeeID uint      `json:"employeeId" gorm:"column:employeeId;not null" validate:"required"`
+	EmployeeID string    `json:"employeeId" gorm:"type:uuid;column:employeeId;not null" validate:"required"`
 	Employee   *Employee `json:"employee" gorm:"foreignKey:employeeId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	StartTime  time.Time `json:"startTime" gorm:"column:startTime;not null" validate:"required"`
 	EndTime    time.Time `json:"endTime" gorm:"column:endTime" validate:""`

@@ -35,7 +35,7 @@ type DashboardKpi struct {
 	BaseModelWithWorkspace
 	CreatedBy
 	UpdatedBy
-	DashboardID     uint               `json:"dashboardId" gorm:"column:dashboardId;not null" validate:"required"`
+	DashboardID     string             `json:"dashboardId" gorm:"type:uuid;column:dashboardId;not null" validate:"required"`
 	Dashboard       *Dashboard         `json:"dashboard" gorm:"foreignKey:dashboardId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Title           string             `json:"title" gorm:"column:title;not null" validate:"required"`
 	Description     string             `json:"description" gorm:"column:description;not null"`
@@ -64,7 +64,7 @@ type DashboardChart struct {
 	BaseModelWithWorkspace
 	CreatedBy
 	UpdatedBy
-	DashboardID     uint       `json:"dashboardId" gorm:"column:dashboardId;not null" validate:"required"`
+	DashboardID     string     `json:"dashboardId" gorm:"type:uuid;column:dashboardId;not null" validate:"required"`
 	Dashboard       *Dashboard `json:"dashboard" gorm:"foreignKey:dashboardId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Title           string     `json:"title" gorm:"column:title;not null" validate:"required"`
 	Description     string     `json:"description" gorm:"column:description;not null"`

@@ -5,6 +5,7 @@ import (
 	"bizMate/utils"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 	"github.com/jaswdr/faker/v2"
 )
 
@@ -15,7 +16,7 @@ type seedProjectReqBody struct {
 func seedProjects(ctx *fiber.Ctx) error {
 	const batchSize = 100
 	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
-	if userId == 0 {
+	if userId == uuid.Nil {
 		return ctx.SendStatus(fiber.StatusUnauthorized)
 	}
 
@@ -33,8 +34,8 @@ func seedProjects(ctx *fiber.Ctx) error {
 		projects = append(projects, models.Project{
 			Name:                   fake.Company().Name(),
 			Description:            fake.Company().CatchPhrase(),
-			CreatedBy:              models.CreatedBy{CreatedByID: userId},
-			BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId},
+			CreatedBy:              models.CreatedBy{CreatedByID: userId.String()},
+			BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId.String()},
 		})
 	}
 

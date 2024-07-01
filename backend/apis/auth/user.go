@@ -8,8 +8,8 @@ import (
 )
 
 func checkAuth(ctx *fiber.Ctx) error {
-	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
-	jwtToken, err := utils.GenerateJWT(userId, workspaceId, ctx.Locals("email").(string))
+	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	jwtToken, err := utils.GenerateJWT(userId.String(), ctx.Locals("email").(string))
 	if err != nil {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
@@ -44,7 +44,7 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 	}
 
 	user := models.User{}
-	if err = db.Where("email = ?", reqBody.Email).First(&user).Error; err != nil || user.ID == 0 {
+	if err = db.Where("email = ?", reqBody.Email).First(&user).Error; err != nil || user.ID == "" {
 		return ctx.SendStatus(fiber.StatusUnauthorized)
 	}
 
@@ -56,7 +56,7 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 		return ctx.SendStatus(fiber.StatusUnauthorized)
 	}
 
-	token, err := utils.GenerateJWT(user.ID, user.WorkspaceID, user.Email)
+	token, err := utils.GenerateJWT(user.ID, user.Email)
 	if err != nil {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
@@ -73,12 +73,12 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 
-	newUser, err := createNewUser(reqBody.Name, reqBody.Email, reqBody.Password, reqBody.Phone, 0, models.PROVIDER_CREDENTIALS, "")
+	newUser, err := createNewUser(reqBody.Name, reqBody.Email, reqBody.Password, reqBody.Phone, "", models.PROVIDER_CREDENTIALS, "")
 	if err != nil {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
-	token, err := utils.GenerateJWT(newUser.ID, newUser.WorkspaceID, newUser.Email)
+	token, err := utils.GenerateJWT(newUser.ID, newUser.Email)
 	if err != nil {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
