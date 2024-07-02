@@ -21,7 +21,6 @@ function HomePageDashboards(props: HomePageDashboardsProps) {
 	const activeDashboards = dashboardPaginationResponse.docs.filter((t) => t.active)
 	if (activeDashboards.length === 0) return <div>No Active Dashboards Found</div>
 
-	console.log(dashboardPaginationResponse)
 	return (
 		<Tabs
 			tabs={activeDashboards.map((dashboard) => ({

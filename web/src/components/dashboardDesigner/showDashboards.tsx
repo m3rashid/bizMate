@@ -10,7 +10,7 @@ type ShowDashboardProps = {
 }
 
 function ShowDashboard(props: ShowDashboardProps) {
-	const { data: paginatedWidgets } = useQuery<PaginationResponse<DashboardChart>>({
+	const { data: paginatedCharts } = useQuery<PaginationResponse<DashboardChart>>({
 		queryKey: ['dashboards/widgets', props.dashboardId, 'all', props.workspaceId],
 		queryFn: () => apiClient(`/${props.workspaceId}/dashboards/charts/${props.dashboardId}/all`),
 	})

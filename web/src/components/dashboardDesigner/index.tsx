@@ -15,6 +15,7 @@ function DashboardDesigner(props: { dashboardId: string; workspaceId: string }) 
 			</div>
 
 			<AddWidget dashboardId={props.dashboardId} workspaceId={props.workspaceId} />
+
 			<ShowDashboard dashboardId={props.dashboardId} workspaceId={props.workspaceId} viewType="edit" />
 		</>
 	)

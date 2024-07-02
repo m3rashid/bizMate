@@ -7,6 +7,7 @@ import { FormEvent } from 'react'
 
 function AddWidget(props: { dashboardId: string; workspaceId: string }) {
 	const { modalTitle, closeModal, modalOpen, setWidgetType, modalState, widgetType } = useAddDashboardWidget()
+
 	function handleSetWidgetType(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault()
 		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any
