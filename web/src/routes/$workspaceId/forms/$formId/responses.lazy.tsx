@@ -17,7 +17,7 @@ function FormResponses() {
 
 	const { data: form, isPending: isFormFetchPending } = useQuery<Form>({
 		queryKey: ['getForm', formId, workspaceId],
-		queryFn: () => apiClient(`/forms/one/${formId}`),
+		queryFn: () => apiClient(`/${workspaceId}/forms/one/${formId}`),
 	})
 
 	if (isFormFetchPending) return <PageLoader />

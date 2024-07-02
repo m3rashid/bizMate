@@ -24,7 +24,7 @@ function FormAnalytics() {
 
 	const { data, isPending } = useQuery<AnalysisResponse>({
 		queryKey: ['getFormAnalysis', formId, workspaceId],
-		queryFn: () => apiClient(`/forms/analysis/${formId}`),
+		queryFn: () => apiClient(`/${workspaceId}/forms/analysis/${formId}`),
 	})
 
 	if (isPending) return <PageLoader />

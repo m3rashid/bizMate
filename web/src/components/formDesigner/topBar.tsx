@@ -20,7 +20,7 @@ function FormDesignerTopBar(props: FormDesignerTopBarProps) {
 	const { isPending, mutate: saveForm } = useMutation({
 		mutationKey: ['saveForm', props.workspaceId],
 		onError: () => addMessagePopup({ id: 'errorCreateForm', message: 'Error in creating form', type: 'error' }),
-		mutationFn: async (body: any) => apiClient('/forms/create', { method: 'POST', body: JSON.stringify(body) }),
+		mutationFn: async (body: any) => apiClient(`/${props.workspaceId}/forms/create`, { method: 'POST', body: JSON.stringify(body) }),
 		onSuccess: () => {
 			navigate({ to: '/$workspaceId/forms', params: { workspaceId: props.workspaceId }, search: { page: 1 } })
 			addMessagePopup({ id: 'saveForm', message: 'Successfully created form', type: 'success' })

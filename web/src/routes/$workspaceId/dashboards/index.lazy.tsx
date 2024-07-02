@@ -112,7 +112,9 @@ function Dashboards() {
 
 	return (
 		<PageContainer workspaceId={workspaceId}>
-			<AddEditDashboard {...{ open, setOpen: onClose, ...(!!editRow ? { dashboard: editRow, refetch: () => {} } : { dashboard: undefined }) }} />
+			<AddEditDashboard
+				{...{ open, setOpen: onClose, workspaceId, ...(!!editRow ? { dashboard: editRow, refetch: () => {} } : { dashboard: undefined }) }}
+			/>
 
 			<CardList<Dashboard>
 				title="Dashboards"

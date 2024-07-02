@@ -22,19 +22,17 @@ function FormFill() {
 
 	const { formId, workspaceId } = useParams({ from: '/$workspaceId/forms/$formId/fill' })
 	const [formStatus, setFormStatus] = useState<ShowMetaType>('body')
-	const { data: form, isPending } = useQuery<Form>({ queryKey: ['getForm', formId, workspaceId], queryFn: () => apiClient(`/forms/one/${formId}`) })
+	const { data: form, isPending } = useQuery<Form>({
+		queryKey: ['getForm', formId, workspaceId],
+		queryFn: () => apiClient(`/${workspaceId}/forms/one/${formId}`),
+	})
 
 	function handleFormStatusChange(type: 'success' | 'failure', formMeta?: string) {
 		try {
 			if (!formMeta) throw new Error('no form meta')
 			const safeMeta = JSON.parse(formMeta)
 			if (!Array.isArray(safeMeta)) throw new Error('Invalid form meta')
-
-			if (type === 'success') {
-				setFormStatus('success')
-			} else {
-				setFormStatus('failure')
-			}
+			setFormStatus(type === 'success' ? 'success' : 'failure')
 		} catch (err) {
 			console.error(err)
 		}
@@ -43,7 +41,7 @@ function FormFill() {
 	const { mutate } = useMutation({
 		mutationKey: ['sumitFormResponse'],
 		mutationFn: (data: { response: any }) =>
-			apiClient(`/forms/response/${formId}/submit`, {
+			apiClient(`/${workspaceId}/forms/response/${formId}/submit`, {
 				method: 'POST',
 				body: JSON.stringify(data),
 			}),

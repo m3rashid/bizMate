@@ -26,7 +26,7 @@ function EmailEditorTopBar(props: EmailEditorTopBarProps) {
 		onError: () => addMessagePopup({ id: 'createEmailTemplateSuccess', message: 'Email Template creation failed', type: 'error' }),
 		mutationKey: ['createEmailTemplate'],
 		mutationFn: (data: EmailBody & { bodyTemplateHtml: string; bodyTemplateDesignJson: string }) =>
-			apiClient('/email-templates/create', { method: 'POST', body: JSON.stringify(data) }),
+			apiClient(`/${props.workspaceId}/email-templates/create`, { method: 'POST', body: JSON.stringify(data) }),
 	})
 
 	function handleAddTemplateDetails(e: FormEvent<HTMLFormElement>) {

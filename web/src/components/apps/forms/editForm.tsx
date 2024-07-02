@@ -9,7 +9,10 @@ import { useMutation } from '@tanstack/react-query'
 import { camelCaseToSentenceCase, handleViewTransition } from '@utils/helpers'
 import { Dispatch, FormEvent, SetStateAction, useMemo } from 'react'
 
-export type EditFormProps = { setOpen: Dispatch<SetStateAction<boolean>> } & ({ form: undefined } | { form: Form; refetch: () => void })
+export type EditFormProps = { setOpen: Dispatch<SetStateAction<boolean>>; workspaceId: string } & (
+	| { form: undefined }
+	| { form: Form; refetch: () => void }
+)
 
 function editFormMeta(form: Array<[keyof Form, string | boolean, string, SupportedWidgetName, boolean?, Record<string, any>?]>) {
 	// Array<[name, value, descriptionText, type, required]>
@@ -36,7 +39,7 @@ function EditForm(props: EditFormProps) {
 	const { addMessagePopup } = usePopups()
 	const { mutate } = useMutation({
 		mutationKey: ['editForm'],
-		mutationFn: (form: Partial<Form>) => apiClient('/forms/update', { method: 'POST', body: JSON.stringify(form) }),
+		mutationFn: (form: Partial<Form>) => apiClient(`/${props.workspaceId}/forms/update`, { method: 'POST', body: JSON.stringify(form) }),
 		onSuccess: () => {
 			props.setOpen(false)
 			addMessagePopup({ id: 'successUpdatingForm', message: 'Form updated successfully', type: 'success' })

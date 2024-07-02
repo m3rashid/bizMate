@@ -23,7 +23,15 @@ function ShowDashboard(props: ShowDashboardProps) {
 	return (
 		<div className="mt-8 flex flex-wrap gap-4">
 			{(allKpis || []).map((kpi, index) => (
-				<RenderKpi key={kpi.title + index} data={kpi.data} kpiId={kpi.id} title={kpi.title} description={kpi.description} viewType={props.viewType} />
+				<RenderKpi
+					key={kpi.title + index}
+					data={kpi.data}
+					kpiId={kpi.id}
+					title={kpi.title}
+					description={kpi.description}
+					viewType={props.viewType}
+					workspaceId={props.workspaceId}
+				/>
 			))}
 		</div>
 	)

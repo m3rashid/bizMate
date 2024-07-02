@@ -13,6 +13,7 @@ type AddEditContactModalProps = {
 	contact?: Contact
 	refetch: () => void
 	setOpen: Dispatch<SetStateAction<boolean>>
+	workspaceId: string
 }
 
 function AddEditContactModal(props: AddEditContactModalProps) {
@@ -24,13 +25,14 @@ function AddEditContactModal(props: AddEditContactModalProps) {
 	const { mutate: createNewContact } = useMutation({
 		onSuccess,
 		mutationKey: ['createNewContact'],
-		mutationFn: (data: any) => apiClient('/contacts/create', { method: 'POST', body: JSON.stringify(data) }),
+		mutationFn: (data: any) => apiClient(`/${props.workspaceId}/contacts/create`, { method: 'POST', body: JSON.stringify(data) }),
 	})
 
 	const { mutate: editContact } = useMutation({
 		onSuccess,
 		mutationKey: ['editContact'],
-		mutationFn: (data: any) => apiClient(`/contacts/${props.contact?.id}/update`, { method: 'POST', body: JSON.stringify(data) }),
+		mutationFn: (data: any) =>
+			apiClient(`/${props.workspaceId}/contacts/${props.contact?.id}/update`, { method: 'POST', body: JSON.stringify(data) }),
 	})
 
 	function handleAddEditContact(e: FormEvent<HTMLFormElement>) {

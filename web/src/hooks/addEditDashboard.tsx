@@ -4,7 +4,7 @@ import { Dashboard } from '@mytypes'
 import { useMutation } from '@tanstack/react-query'
 import { Dispatch, FormEvent, SetStateAction } from 'react'
 
-export type AddEditDashboardProps = { open: boolean; setOpen: Dispatch<SetStateAction<boolean>> } & (
+export type AddEditDashboardProps = { open: boolean; setOpen: Dispatch<SetStateAction<boolean>>; workspaceId: string } & (
 	| { dashboard: undefined }
 	| { dashboard: Dashboard; refetch: () => void }
 )
@@ -28,7 +28,7 @@ function useAddEditDashboard(props: AddEditDashboardProps) {
 	const { mutate: updateDashboard } = useMutation({
 		mutationKey: ['updateDashboard'],
 		mutationFn: (dashboard: Partial<Dashboard>) =>
-			apiClient(`/dashboards/update/${props.dashboard?.id}`, { method: 'POST', body: JSON.stringify(dashboard) }),
+			apiClient(`/${props.workspaceId}/dashboards/update/${props.dashboard?.id}`, { method: 'POST', body: JSON.stringify(dashboard) }),
 		onSuccess: () => {
 			props.setOpen(false)
 			addMessagePopup({ id: 'updateDashboardSuccess', type: 'success', message: 'Dashboard updated Successfully' })

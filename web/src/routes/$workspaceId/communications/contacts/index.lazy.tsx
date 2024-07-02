@@ -50,7 +50,7 @@ function Contacts() {
 
 	return (
 		<PageContainer workspaceId={workspaceId}>
-			<AddEditContactModal open={open === 'addEdit'} setOpen={() => setOpen(null)} contact={editRow} refetch={() => {}} />
+			<AddEditContactModal workspaceId={workspaceId} open={open === 'addEdit'} setOpen={() => setOpen(null)} contact={editRow} refetch={() => {}} />
 			<BulkUploadContactModal workspaceId={workspaceId} open={open === 'bulkUpload'} setOpen={() => setOpen(null)} refetch={() => {}} />
 
 			<Table<Contact>

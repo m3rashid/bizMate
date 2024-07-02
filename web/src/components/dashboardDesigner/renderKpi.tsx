@@ -11,6 +11,7 @@ type RenderKpiProps = {
 	title: string
 	description: string
 	data: number
+	workspaceId: string
 } & ({ viewType: 'preview' } | { viewType: 'edit' })
 
 function RenderStaticKpi(props: RenderKpiProps) {
@@ -35,7 +36,7 @@ function RenderEditableKpi(props: RenderKpiProps) {
 
 	const { mutate: deleteKpi } = useMutation({
 		mutationKey: ['deleteKpi', props.kpiId],
-		mutationFn: () => apiClient(`/dashboards/kpis/delete/${props.kpiId}`, { method: 'POST' }),
+		mutationFn: () => apiClient(`/${props.workspaceId}/dashboards/kpis/delete/${props.kpiId}`, { method: 'POST' }),
 	})
 
 	function onClickDelete() {

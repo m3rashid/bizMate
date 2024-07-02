@@ -120,7 +120,7 @@ function FormCard(props: Form & { onEdit: () => void; workspaceId: string }) {
 					<ClipboardIcon
 						className="h-7 w-7 cursor-pointer rounded-lg bg-secondary p-1.5 text-white"
 						onClick={() => {
-							navigator.clipboard.writeText(`${window.location.host}/forms/${props.id}/fill`)
+							navigator.clipboard.writeText(`${window.location.host}/${props.workspaceId}/forms/${props.id}/fill`)
 							addMessagePopup({ id: props.id, message: 'Copied Form URL to clipboard', type: 'success' })
 						}}
 					/>
@@ -157,6 +157,7 @@ function Forms() {
 	return (
 		<PageContainer workspaceId={workspaceId}>
 			<EditForm
+				workspaceId={workspaceId}
 				setOpen={() => handleViewTransition(() => setEditRow(undefined))}
 				{...(!!editRow ? { form: editRow, refetch: () => {} } : { form: undefined })}
 			/>

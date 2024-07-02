@@ -9,7 +9,7 @@ export const Route = createLazyFileRoute('/$workspaceId/')({
 function Index() {
 	const { workspaceId } = useParams({ from: '/$workspaceId/' })
 	return (
-		<PageContainer workspaceId="">
+		<PageContainer workspaceId={workspaceId}>
 			<HomePageDashboards workspaceId={workspaceId} />
 		</PageContainer>
 	)
