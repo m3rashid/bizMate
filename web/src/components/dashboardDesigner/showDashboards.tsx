@@ -6,17 +6,18 @@ import { useQuery } from '@tanstack/react-query'
 type ShowDashboardProps = {
 	dashboardId: string
 	viewType: 'preview' | 'edit'
+	workspaceId: string
 }
 
 function ShowDashboard(props: ShowDashboardProps) {
 	const { data: paginatedWidgets } = useQuery<PaginationResponse<DashboardChart>>({
-		queryKey: ['dashboards/widgets', props.dashboardId, 'all'],
-		queryFn: () => apiClient(`/dashboards/charts/${props.dashboardId}/all`),
+		queryKey: ['dashboards/widgets', props.dashboardId, 'all', props.workspaceId],
+		queryFn: () => apiClient(`/${props.workspaceId}/dashboards/charts/${props.dashboardId}/all`),
 	})
 
 	const { data: allKpis } = useQuery<Array<{ id: string; title: string; description: string; data: number }>>({
-		queryKey: ['dashboards/kpis', props.dashboardId, 'all'],
-		queryFn: () => apiClient(`/dashboards/kpis/${props.dashboardId}/all`),
+		queryKey: ['dashboards/kpis', props.dashboardId, 'all', props.workspaceId],
+		queryFn: () => apiClient(`/${props.workspaceId}/dashboards/kpis/${props.dashboardId}/all`),
 	})
 
 	return (

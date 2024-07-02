@@ -10,6 +10,7 @@ function SelectType(props: SelectTypeProps) {
 	function handleAddWidget(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault()
 		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any
+		console.log(formData)
 	}
 
 	return (

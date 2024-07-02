@@ -17,38 +17,91 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func CheckAuthMiddleware(ctx *fiber.Ctx) error {
+func parseAndGetAuthLocals(claims *Claims, ctx *fiber.Ctx) (uuid.UUID, uuid.UUID) {
+	var userId uuid.UUID
+	var workspaceId uuid.UUID
+
+	wId := ctx.Params("workspaceId")
+	if wId != "" {
+		_workspaceId, err := uuid.Parse(wId)
+		if err != nil {
+			_workspaceId = uuid.Nil
+		}
+		workspaceId = _workspaceId
+	}
+
+	_userId, err := uuid.Parse(claims.UserID)
+	if err != nil {
+		_userId = uuid.Nil
+	}
+	userId = _userId
+
+	return userId, workspaceId
+}
+
+func setAuthLocals(ctx *fiber.Ctx, email string, userId uuid.UUID, workspaceId uuid.UUID, authorized bool) {
+	ctx.Locals("email", email)
+	ctx.Locals("userId", userId)
+	ctx.Locals("workspaceId", workspaceId)
+	ctx.Locals("authorized", authorized)
+}
+
+func getClaims(ctx *fiber.Ctx) *Claims {
 	clientToken := ctx.Get("Authorization")
 	if clientToken == "" {
-		return ctx.SendStatus(fiber.StatusUnauthorized)
+		return nil
 	}
 
 	claims, err := parseTokenToClaims(clientToken)
 	if err != nil {
+		return nil
+	}
+	return claims
+}
+
+func CheckAuthMiddlewareWithoutWorkspace(ctx *fiber.Ctx) error {
+	claims := getClaims(ctx)
+	if claims == nil {
 		return ctx.SendStatus(fiber.StatusUnauthorized)
 	}
 
-	if err := parseAndSetAuthLocals(claims, ctx, true); err != nil {
+	userId, _ := parseAndGetAuthLocals(claims, ctx)
+	if userId == uuid.Nil {
 		return ctx.SendStatus(fiber.StatusUnauthorized)
 	}
 
+	setAuthLocals(ctx, claims.Email, userId, uuid.Nil, true)
+	return ctx.Next()
+}
+
+func CheckAuthMiddlewareWithWorkspace(ctx *fiber.Ctx) error {
+	claims := getClaims(ctx)
+	if claims == nil {
+		return ctx.SendStatus(fiber.StatusUnauthorized)
+	}
+
+	userId, workspaceId := parseAndGetAuthLocals(claims, ctx)
+	if userId == uuid.Nil || workspaceId == uuid.Nil {
+		return ctx.SendStatus(fiber.StatusUnauthorized)
+	}
+
+	setAuthLocals(ctx, claims.Email, userId, workspaceId, true)
 	return ctx.Next()
 }
 
 func CheckAuthMiddlewareButAllowUnauthorized(ctx *fiber.Ctx) error {
-	clientToken := ctx.Get("Authorization")
-	if clientToken == "" {
+	claims := getClaims(ctx)
+	if claims == nil {
 		return ctx.Next()
 	}
 
-	claims, err := parseTokenToClaims(clientToken)
-	if err != nil {
-		return ctx.Next()
-	}
-
-	if err := parseAndSetAuthLocals(claims, ctx, false); err != nil {
+	userId, workspaceId := parseAndGetAuthLocals(claims, ctx)
+	if userId == uuid.Nil {
 		return ctx.SendStatus(fiber.StatusUnauthorized)
 	}
+
+	authorized := userId != uuid.Nil && workspaceId != uuid.Nil
+	setAuthLocals(ctx, claims.Email, userId, workspaceId, authorized)
 
 	return ctx.Next()
 }
@@ -122,32 +175,4 @@ func parseTokenToClaims(tokenString string) (*Claims, error) {
 		return &Claims{}, err
 	}
 	return claims, nil
-}
-
-func parseAndSetAuthLocals(claims *Claims, ctx *fiber.Ctx, throwErrorOnAuthFail bool) error {
-	wId := ctx.Params("workspaceId")
-	if wId == "" || claims.UserID == "" {
-		return fmt.Errorf("workspace id not found")
-	}
-
-	userId, err := uuid.Parse(claims.UserID)
-	if err != nil {
-		return fmt.Errorf("error parsing user id: %+v", err)
-	}
-
-	workspaceId, err := uuid.Parse(wId)
-	if err != nil {
-		return fmt.Errorf("error parsing workspace id: %+v", err)
-	}
-
-	ctx.Locals("email", claims.Email)
-	ctx.Locals("userId", userId)
-	ctx.Locals("workspaceId", workspaceId)
-	ctx.Locals("authorized", userId != uuid.Nil && workspaceId != uuid.Nil)
-
-	if throwErrorOnAuthFail && userId == uuid.Nil && workspaceId == uuid.Nil {
-		return fmt.Errorf("unauthorized")
-	}
-
-	return nil
 }

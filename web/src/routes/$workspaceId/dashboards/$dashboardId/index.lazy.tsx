@@ -6,10 +6,10 @@ export const Route = createLazyFileRoute('/$workspaceId/dashboards/$dashboardId/
 })
 
 function PreviewDashboard() {
-	const { dashboardId } = useParams({ from: '/$workspaceId/dashboards/$dashboardId/' })
+	const { dashboardId, workspaceId } = useParams({ from: '/$workspaceId/dashboards/$dashboardId/' })
 
 	return (
-		<PageContainer>
+		<PageContainer workspaceId={workspaceId}>
 			<div>Hello /dashboards/$dashboardId/!</div>
 		</PageContainer>
 	)

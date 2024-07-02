@@ -5,8 +5,7 @@ import Pagination from './pagination'
 import { TableExportProps } from './tableExport'
 import apiClient from '@api/client'
 import PlusIcon from '@heroicons/react/24/outline/PlusIcon'
-import { useAuthValue } from '@hooks/auth'
-import { DbRow, PageSearchParams, PaginationResponse } from '@mytypes'
+import { DbRow, PageRoute, PageSearchParams, PaginationResponse } from '@mytypes'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import qs from 'query-string'
@@ -27,9 +26,10 @@ export type TableProps<T> = {
 	paginateUrl: string
 	queryKeys: string[]
 	columns: Array<TableColumn<T>>
+	workspaceId: string
 	title?: string
 	description?: string
-	addButtonLink?: string
+	addButtonLink?: PageRoute
 	addButtonProps?: ButtonProps
 	rootClassName?: string
 	tableRowClassName?: (data: T, rowIndex: number) => string
@@ -44,11 +44,10 @@ export type TableProps<T> = {
 
 function Table<T extends DbRow>(props: TableProps<T>) {
 	const navigate = useNavigate()
-	const { workspaceId } = useAuthValue()
 	const locationSearch = qs.parse(location.search)
 
 	const { isPending, data, refetch, isFetching } = useQuery<PaginationResponse<T>>({
-		queryKey: [...props.queryKeys, props.pageSize || 15, locationSearch.page],
+		queryKey: [...props.queryKeys, props.pageSize || 15, locationSearch.page, props.workspaceId],
 		queryFn: () =>
 			apiClient(`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${locationSearch.page}&limit=${props.pageSize || 15}`),
 	})
@@ -61,6 +60,7 @@ function Table<T extends DbRow>(props: TableProps<T>) {
 					refetch,
 					isFetching,
 					title: props.title,
+					workspaceId: props.workspaceId,
 					description: props.description,
 					otherActions: props.otherActions,
 					addButtonLink: props.addButtonLink,
@@ -81,7 +81,7 @@ function Table<T extends DbRow>(props: TableProps<T>) {
 							{props.addButtonLink ? (
 								<Button
 									LeftIcon={<PlusIcon className="h-5 w-5" />}
-									onClick={() => navigate({ to: props.addButtonLink, params: { workspaceId } })}
+									onClick={() => navigate({ to: props.addButtonLink, params: { workspaceId: props.workspaceId } })}
 									label={`Create ${props.title || props.defaultEmptyStateName}`}
 									{...props.addButtonProps}
 								/>

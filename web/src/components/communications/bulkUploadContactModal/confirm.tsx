@@ -15,7 +15,7 @@ function Confirm(props: BulkUploadContactModalProps) {
 		},
 		mutationKey: ['createBulkUploadContacts'],
 		// backend not implemented [POST /contacts/bulk-upload]
-		mutationFn: (data: FormData) => apiClient('/contacts/bulk-upload', { method: 'POST', body: data }),
+		mutationFn: (data: FormData) => apiClient(`/${props.workspaceId}/contacts/bulk-upload`, { method: 'POST', body: data }),
 	})
 
 	function handleConfirmUpload() {
@@ -37,12 +37,12 @@ function Confirm(props: BulkUploadContactModalProps) {
 
 	return (
 		<div className="flex h-full w-full flex-col items-center gap-4">
-			<div className="w-full text-center">
+			<div className="w-full p-4 text-center">
 				<h3 className="text-lg font-bold">Are you sure?</h3>
 				<p className="">Are you sure to create contact with the mappings below?</p>
 			</div>
 
-			<table className="w-full border-2 border-borderColor">
+			<table className="w-full border-2 border-borderColor p-4">
 				<tr className="bg-borderColor">
 					<td className="p-2 font-semibold ">Contact Column</td>
 					<td className="p-2 font-semibold">Mapped Column</td>
@@ -57,7 +57,7 @@ function Confirm(props: BulkUploadContactModalProps) {
 				})}
 			</table>
 
-			<div className="flex w-full flex-grow-0 items-center justify-between pt-3">
+			<div className="flex w-full flex-grow-0 items-center justify-between border-t border-borderColor p-3">
 				<Button variant="simple" onClick={goBack}>
 					Back
 				</Button>

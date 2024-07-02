@@ -20,9 +20,9 @@ function FormFill() {
 	const { addMessagePopup } = usePopups()
 	const formRef = useRef<HTMLFormElement>(null)
 
-	const { formId } = useParams({ from: '/$workspaceId/forms/$formId/fill' })
+	const { formId, workspaceId } = useParams({ from: '/$workspaceId/forms/$formId/fill' })
 	const [formStatus, setFormStatus] = useState<ShowMetaType>('body')
-	const { data: form, isPending } = useQuery<Form>({ queryKey: ['getForm', formId], queryFn: () => apiClient(`/forms/one/${formId}`) })
+	const { data: form, isPending } = useQuery<Form>({ queryKey: ['getForm', formId, workspaceId], queryFn: () => apiClient(`/forms/one/${formId}`) })
 
 	function handleFormStatusChange(type: 'success' | 'failure', formMeta?: string) {
 		try {

@@ -64,3 +64,8 @@ export const mimeTypes = {
 	pdf: 'application/pdf',
 	image: 'image/*',
 }
+
+export function isUuid(id: string) {
+	const regex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/
+	return regex.test(id)
+}

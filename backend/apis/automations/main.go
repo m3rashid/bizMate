@@ -9,5 +9,5 @@ import (
 )
 
 func Setup(initialRoute string, app *fiber.App) {
-	app.Get(initialRoute+"/all", utils.CheckAuthMiddleware, controllers.Paginate[models.Workflow]())
+	app.Get(initialRoute+"/all", utils.CheckAuthMiddlewareWithWorkspace, controllers.Paginate[models.Workflow]())
 }

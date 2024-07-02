@@ -15,6 +15,7 @@ export type AsyncSingleSelectProps<T> = {
 	queryKeys: string[]
 	paginateUrl: string
 	pageSize?: number
+	workspaceId: string
 
 	default?: string
 	name?: string
@@ -47,7 +48,7 @@ function AsyncSingleSelect<T extends DbRow>(props: AsyncSingleSelectProps<T>) {
 			hasNextPageRef.current = data.hasNextPage
 			return data
 		},
-		queryKey: [...props.queryKeys, page, props.pageSize || 15],
+		queryKey: [...props.queryKeys, page, props.pageSize || 15, props.workspaceId],
 		queryFn: () => apiClient(`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${page}&limit=${props.pageSize || 15}`),
 	})
 

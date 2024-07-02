@@ -11,20 +11,20 @@ import (
 )
 
 func Setup(initialRoute string, app *fiber.App) {
-	app.Get(initialRoute+"/webui/all", utils.CheckAuthMiddleware, controllers.Paginate[models.WorkspaceWebUiNotification]())
+	app.Get(initialRoute+"/webui/all", utils.CheckAuthMiddlewareWithWorkspace, controllers.Paginate[models.WorkspaceWebUiNotification]())
 
-	app.Get(initialRoute+"/email-templates/all", utils.CheckAuthMiddleware, controllers.Paginate[models.EmailTemplate]())
+	app.Get(initialRoute+"/email-templates/all", utils.CheckAuthMiddlewareWithWorkspace, controllers.Paginate[models.EmailTemplate]())
 
-	app.Get(initialRoute+"/email-templates/one/:templateId", utils.CheckAuthMiddleware, controllers.Get[models.EmailTemplate](controllers.GetOptions{
+	app.Get(initialRoute+"/email-templates/one/:templateId", utils.CheckAuthMiddlewareWithWorkspace, controllers.Get[models.EmailTemplate](controllers.GetOptions{
 		ParamValue: "templateId", ParamKey: "id",
 	}))
 
-	app.Post(initialRoute+"/email-templates/delete/:templateId", utils.CheckAuthMiddleware, controllers.Delete(controllers.DeleteOptions[models.EmailTemplate]{
+	app.Post(initialRoute+"/email-templates/delete/:templateId", utils.CheckAuthMiddlewareWithWorkspace, controllers.Delete(controllers.DeleteOptions[models.EmailTemplate]{
 		ParamKey:   "id",
 		ParamValue: "templateId",
 	}))
 
-	app.Post(initialRoute+"/email-templates/create", utils.CheckAuthMiddleware, controllers.Create(
+	app.Post(initialRoute+"/email-templates/create", utils.CheckAuthMiddlewareWithWorkspace, controllers.Create(
 		models.EMAIL_TEMPLATE_MODEL_NAME,
 		controllers.CreateOptions[emailTemplateReqBody, models.EmailTemplate]{
 			GetDefaultValues: func(values *emailTemplateReqBody, ctx *fiber.Ctx) (*models.EmailTemplate, error) {

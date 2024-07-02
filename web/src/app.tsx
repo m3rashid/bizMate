@@ -13,13 +13,7 @@ function AppChildren() {
 		if (!auth.isAuthenticated && window.location.pathname !== '/auth/login') window.location.href = '/auth/login'
 	}, [auth.isAuthenticated])
 
-	return (
-		<>
-			<RouterProvider router={router} context={{ auth }} />
-			<MessagePopupContainer />
-			<ActionPopupContainer />
-		</>
-	)
+	return <RouterProvider router={router} context={{ auth }} />
 }
 
 function App() {
@@ -32,12 +26,12 @@ function App() {
 		while (retries < maxRetries) {
 			try {
 				const user = await checkAuth()
-				setInitRes({ isAuthenticated: true, user, workspaceId: '' })
+				setInitRes({ isAuthenticated: true, user })
 				break
 			} catch (err: any) {
 				retries++
 				if (retries >= maxRetries) {
-					setInitRes({ isAuthenticated: false, user: null, workspaceId: '' })
+					setInitRes({ isAuthenticated: false, user: null })
 					break
 				} else {
 					const delay = Math.pow(2, retries) * 1000
@@ -54,8 +48,10 @@ function App() {
 
 	if (!initRes) return <PageLoader />
 	return (
-		<RecoilRoot initializeState={({ set }) => set(authAtom, initRes)}>
+		<RecoilRoot initializeState={({ set }) => set(authAtom, { ...initRes })}>
 			<AppChildren />
+			<MessagePopupContainer />
+			<ActionPopupContainer />
 		</RecoilRoot>
 	)
 }

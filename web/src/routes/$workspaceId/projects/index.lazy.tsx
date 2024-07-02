@@ -5,9 +5,8 @@ import PageContainer from '@components/pageContainer'
 import AddEditProjectModal from '@components/projects/addEditProject'
 import PencilSquareIcon from '@heroicons/react/24/outline/PencilSquareIcon'
 import TrashIcon from '@heroicons/react/24/outline/TrashIcon'
-import { useAuthValue } from '@hooks/auth'
 import { Project } from '@mytypes'
-import { Link, createLazyFileRoute } from '@tanstack/react-router'
+import { Link, createLazyFileRoute, useParams } from '@tanstack/react-router'
 import dayjs from 'dayjs'
 import { useState } from 'react'
 import { twMerge } from 'tailwind-merge'
@@ -16,9 +15,7 @@ export const Route = createLazyFileRoute('/$workspaceId/projects/')({
 	component: Projects,
 })
 
-function ProjectCard(props: Project & { onEdit: () => void }) {
-	const { workspaceId } = useAuthValue()
-
+function ProjectCard(props: Project & { onEdit: () => void; workspaceId: string }) {
 	function handleDeleteProject() {}
 
 	return (
@@ -28,7 +25,7 @@ function ProjectCard(props: Project & { onEdit: () => void }) {
 					<div className="flex flex-grow gap-2">
 						<Link
 							to="/$workspaceId/projects/$projectId"
-							params={{ projectId: props.id, workspaceId }}
+							params={{ projectId: props.id, workspaceId: props.workspaceId }}
 							className={twMerge('font-semibold underline', props.abandoned ? 'text-danger' : 'text-success')}
 						>
 							{props.name}
@@ -53,19 +50,19 @@ function ProjectCard(props: Project & { onEdit: () => void }) {
 
 			<div className="mt-4 flex w-full flex-wrap gap-2">
 				<Tooltip label="Project Guidelines" position="right">
-					<Link to="/$workspaceId/projects/$projectId/readme" params={{ projectId: props.id, workspaceId }}>
+					<Link to="/$workspaceId/projects/$projectId/readme" params={{ projectId: props.id, workspaceId: props.workspaceId }}>
 						<Chip variant="simple">Readme</Chip>
 					</Link>
 				</Tooltip>
 
 				<Tooltip label="Project Guidelines" position="right">
-					<Link to="/$workspaceId/projects/$projectId/guidelines" params={{ projectId: props.id, workspaceId }}>
+					<Link to="/$workspaceId/projects/$projectId/guidelines" params={{ projectId: props.id, workspaceId: props.workspaceId }}>
 						<Chip variant="simple">Guidelines</Chip>
 					</Link>
 				</Tooltip>
 
 				<Tooltip label="Project Guidelines" position="right">
-					<Link to="/$workspaceId/projects/$projectId/docs" params={{ projectId: props.id, workspaceId }}>
+					<Link to="/$workspaceId/projects/$projectId/docs" params={{ projectId: props.id, workspaceId: props.workspaceId }}>
 						<Chip variant="simple">Docs</Chip>
 					</Link>
 				</Tooltip>
@@ -75,25 +72,27 @@ function ProjectCard(props: Project & { onEdit: () => void }) {
 }
 
 function Projects() {
+	const { workspaceId } = useParams({ from: '/$workspaceId/projects/' })
 	const [open, setOpen] = useState(false)
 	const [editRow, setEditRow] = useState<Project | undefined>(undefined)
 
 	return (
-		<PageContainer>
-			<AddEditProjectModal {...{ open, setOpen, refetch: () => {}, project: editRow }} />
+		<PageContainer workspaceId={workspaceId}>
+			<AddEditProjectModal {...{ open, setOpen, refetch: () => {}, project: editRow, workspaceId }} />
 
 			<CardList<Project>
 				title="Projects"
+				workspaceId={workspaceId}
 				queryKeys={['getProjects']}
-				paginateUrl="/projects/all"
+				paginateUrl={`/${workspaceId}/projects/all`}
 				defaultEmptyStateName="projects"
-				addButtonLink="/projects/create"
 				description="Create and manage all projects"
 				addButtonProps={{ label: 'New Project', onClick: () => setOpen(true) }}
 				cardRenderer={(project) => (
 					<ProjectCard
 						{...{
 							...project,
+							workspaceId,
 							onEdit: () => {
 								setEditRow(project)
 								setOpen(true)

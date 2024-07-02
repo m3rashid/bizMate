@@ -1,6 +1,6 @@
-import BrandLogo from '../lib/brandLogo'
-import LoginWithCredentials, { LoginWithCredentialsProps } from './credentials'
-import LoginWithGoogle from './loginWithGoogle'
+import LoginWithCredentials, { LoginWithCredentialsProps } from '@components/auth/credentials'
+import LoginWithGoogle from '@components/auth/loginWithGoogle'
+import BrandLogo from '@components/lib/brandLogo'
 import { useState } from 'react'
 
 function LoginRoot() {

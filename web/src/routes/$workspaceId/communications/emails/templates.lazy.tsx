@@ -1,7 +1,7 @@
 import Table, { TableProps } from '@components/lib/table'
 import PageContainer from '@components/pageContainer'
 import { EmailTemplate, PageSearchParams } from '@mytypes'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useParams } from '@tanstack/react-router'
 import dayjs from 'dayjs'
 
 export const Route = createFileRoute('/$workspaceId/communications/emails/templates')({
@@ -10,6 +10,7 @@ export const Route = createFileRoute('/$workspaceId/communications/emails/templa
 })
 
 function EmailTemplates() {
+	const { workspaceId } = useParams({ from: '/$workspaceId/communications/emails/templates' })
 	const tableColumns: TableProps<EmailTemplate>['columns'] = [
 		{ title: 'Title', dataKey: 'title' },
 		{ title: 'Description', dataKey: 'description' },
@@ -17,16 +18,17 @@ function EmailTemplates() {
 	]
 
 	return (
-		<PageContainer>
+		<PageContainer workspaceId={workspaceId}>
 			<Table<EmailTemplate>
 				columns={tableColumns}
 				title="Email Templates"
+				workspaceId={workspaceId}
 				queryKeys={['getEmailTemplates']}
-				paginateUrl="/email-templates/all"
+				paginateUrl={`/${workspaceId}/notifications/email-templates/all`}
 				defaultEmptyStateName="email Templates"
 				addButtonProps={{ label: 'New Email Template' }}
 				description="Create and manage all email template"
-				addButtonLink="/communications/emails/designer"
+				addButtonLink="/$workspaceId/communications/emails/designer"
 			/>
 		</PageContainer>
 	)

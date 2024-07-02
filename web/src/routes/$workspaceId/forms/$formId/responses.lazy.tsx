@@ -12,10 +12,11 @@ export const Route = createFileRoute('/$workspaceId/forms/$formId/responses')({
 })
 
 function FormResponses() {
+	const { workspaceId } = useParams({ from: '/$workspaceId/forms/$formId/responses' })
 	const { formId } = useParams({ from: '/$workspaceId/forms/$formId/responses' })
 
 	const { data: form, isPending: isFormFetchPending } = useQuery<Form>({
-		queryKey: ['getForm', formId],
+		queryKey: ['getForm', formId, workspaceId],
 		queryFn: () => apiClient(`/forms/one/${formId}`),
 	})
 
@@ -23,8 +24,8 @@ function FormResponses() {
 	if (!form) return <NotFound />
 
 	return (
-		<PageContainer>
-			<FormResponsesTable {...form} />
+		<PageContainer workspaceId={workspaceId}>
+			<FormResponsesTable {...form} workspaceId={workspaceId} />
 		</PageContainer>
 	)
 }

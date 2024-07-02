@@ -30,12 +30,15 @@ func Get[Model DbModel](_options ...GetOptions) func(*fiber.Ctx) error {
 	return func(ctx *fiber.Ctx) error {
 		paramValue := ctx.Params(options.ParamValue)
 
-		workspaceId := uuid.Nil
+		var workspaceId uuid.UUID
 		if options.GetWorkspaceID != nil {
 			wId, err := options.GetWorkspaceID(ctx)
 			if err != nil {
 				return ctx.SendStatus(fiber.StatusBadRequest)
 			}
+			workspaceId = wId
+		} else {
+			_, wId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 			workspaceId = wId
 		}
 
@@ -55,13 +58,13 @@ func Get[Model DbModel](_options ...GetOptions) func(*fiber.Ctx) error {
 			db = db.Where("deleted = false")
 		}
 
-		var query string
 		if options.DontIncludeWorkspaceID {
-			query = fmt.Sprintf("%s = ?", options.ParamKey)
+			err = db.Where(fmt.Sprintf("%s = ?", options.ParamKey), paramValue).First(&column).Error
 		} else {
-			query = fmt.Sprintf("%s = ? and \"workspaceId\" = %s", options.ParamKey, workspaceId.String())
+			err = db.Where(fmt.Sprintf("%s = ? and \"workspaceId\" = ?", options.ParamKey), paramValue, workspaceId).First(&column).Error
 		}
-		if err := db.Where(query, paramValue).First(&column).Error; err != nil {
+
+		if err != nil {
 			return ctx.SendStatus(fiber.StatusInternalServerError)
 		}
 

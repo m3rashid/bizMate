@@ -6,11 +6,11 @@ export const Route = createLazyFileRoute('/$workspaceId/projects/$projectId/anal
 })
 
 function ProjectAnalytics() {
-	const { projectId } = useParams({ from: '/$workspaceId/projects/$projectId/analytics' })
+	const { projectId, workspaceId } = useParams({ from: '/$workspaceId/projects/$projectId/analytics' })
 	console.log(projectId)
 
 	return (
-		<PageContainer>
+		<PageContainer workspaceId={workspaceId}>
 			<div>Hello /projects/$projectId/analytics!</div>
 		</PageContainer>
 	)

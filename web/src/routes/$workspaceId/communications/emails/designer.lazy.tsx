@@ -1,6 +1,6 @@
 import EmailEditorTopBar from '@components/communications/emailEditorTopBar'
 import PageContainer from '@components/pageContainer'
-import { createLazyFileRoute } from '@tanstack/react-router'
+import { createLazyFileRoute, useParams } from '@tanstack/react-router'
 import { useRef, useState } from 'react'
 import EmailEditor, { EditorRef, EmailEditorProps } from 'react-email-editor'
 
@@ -9,6 +9,7 @@ export const Route = createLazyFileRoute('/$workspaceId/communications/emails/de
 })
 
 function EmailDesigner() {
+	const { workspaceId } = useParams({ from: '/$workspaceId/communications/emails/designer' })
 	const emailEditorRef = useRef<EditorRef>(null)
 	const [editorReady, setEditorReady] = useState(false)
 
@@ -23,8 +24,8 @@ function EmailDesigner() {
 	}
 
 	return (
-		<PageContainer>
-			{editorReady ? <EmailEditorTopBar emailEditorRef={emailEditorRef} /> : null}
+		<PageContainer workspaceId={workspaceId}>
+			{editorReady ? <EmailEditorTopBar workspaceId={workspaceId} emailEditorRef={emailEditorRef} /> : null}
 
 			<EmailEditor
 				ref={emailEditorRef}

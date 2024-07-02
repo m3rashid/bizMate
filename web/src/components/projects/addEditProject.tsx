@@ -12,6 +12,7 @@ type AddEditProjectModalProps = {
 	open: boolean
 	project?: Project
 	refetch: () => void
+	workspaceId: string
 	setOpen: Dispatch<SetStateAction<boolean>>
 }
 function AddEditProjectModal(props: AddEditProjectModalProps) {
@@ -23,7 +24,7 @@ function AddEditProjectModal(props: AddEditProjectModalProps) {
 	const { mutate: createNewProject } = useMutation({
 		onSuccess,
 		mutationKey: ['createNewProject'],
-		mutationFn: (project: Partial<Project>) => apiClient('/projects/create', { method: 'POST', body: JSON.stringify(project) }),
+		mutationFn: (project: Partial<Project>) => apiClient(`/${props.workspaceId}/projects/create`, { method: 'POST', body: JSON.stringify(project) }),
 	})
 
 	const { mutate: editProject } = useMutation({

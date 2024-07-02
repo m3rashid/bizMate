@@ -9,9 +9,9 @@ import (
 )
 
 func Setup(initialRoute string, app *fiber.App) {
-	app.Get(initialRoute+"/all", utils.CheckAuthMiddleware, controllers.Paginate[models.Contact]())
+	app.Get(initialRoute+"/all", utils.CheckAuthMiddlewareWithWorkspace, controllers.Paginate[models.Contact]())
 
-	app.Post(initialRoute+"/create", utils.CheckAuthMiddleware, controllers.Create(models.CONTACT_MODEL_NAME, controllers.CreateOptions[CreateContactReqBody, models.Contact]{
+	app.Post(initialRoute+"/create", utils.CheckAuthMiddlewareWithWorkspace, controllers.Create(models.CONTACT_MODEL_NAME, controllers.CreateOptions[CreateContactReqBody, models.Contact]{
 		GetDefaultValues: func(values *CreateContactReqBody, ctx *fiber.Ctx) (*models.Contact, error) {
 			userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 			return &models.Contact{
@@ -28,5 +28,5 @@ func Setup(initialRoute string, app *fiber.App) {
 		},
 	}))
 
-	app.Post(initialRoute+"/bulk-upload", utils.CheckAuthMiddleware, bulkContactsUpload)
+	app.Post(initialRoute+"/bulk-upload", utils.CheckAuthMiddlewareWithWorkspace, bulkContactsUpload)
 }

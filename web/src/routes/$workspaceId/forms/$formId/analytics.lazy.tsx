@@ -20,10 +20,10 @@ type AnalysisResponse = {
 }
 function FormAnalytics() {
 	const [detailAnalytic, setDetailAnalytic] = useState<{ analysis: Analysis; chartType: ChartType } | null>(null)
-	const { formId } = useParams({ from: '/$workspaceId/forms/$formId/analytics' })
+	const { formId, workspaceId } = useParams({ from: '/$workspaceId/forms/$formId/analytics' })
 
 	const { data, isPending } = useQuery<AnalysisResponse>({
-		queryKey: ['getFormAnalysis', formId],
+		queryKey: ['getFormAnalysis', formId, workspaceId],
 		queryFn: () => apiClient(`/forms/analysis/${formId}`),
 	})
 
@@ -31,8 +31,15 @@ function FormAnalytics() {
 	if (!data) return <NotFound />
 
 	return (
-		<PageContainer>
-			<DataListHeader hideRefresh isFetching={false} refetch={() => {}} title={`Form Analytics (${data.title})`} description={data.description} />
+		<PageContainer workspaceId={workspaceId}>
+			<DataListHeader
+				hideRefresh
+				isFetching={false}
+				refetch={() => {}}
+				workspaceId={workspaceId}
+				description={data.description}
+				title={`Form Analytics (${data.title})`}
+			/>
 
 			<Modal title={detailAnalytic?.analysis.label} open={!!detailAnalytic} setOpen={() => setDetailAnalytic(null)}>
 				<div className="p-4">

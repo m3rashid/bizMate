@@ -3,7 +3,6 @@ import ChartBarIcon from '@heroicons/react/24/outline/ChartBarIcon'
 import DocumentCheckIcon from '@heroicons/react/24/outline/DocumentCheckIcon'
 import DocumentIcon from '@heroicons/react/24/outline/DocumentIcon'
 import DocumentTextIcon from '@heroicons/react/24/outline/DocumentTextIcon'
-import { useAuthValue } from '@hooks/auth'
 import { Project } from '@mytypes'
 import { useNavigate } from '@tanstack/react-router'
 import { FC } from 'react'
@@ -15,14 +14,18 @@ const buttons: Array<{ label: string; name: string; icon: FC<any>; btnVariant: B
 	{ name: 'docs', label: 'Docs', icon: DocumentTextIcon, btnVariant: 'secondary' },
 ]
 
-function ProjectHeader(project: Project) {
-	const { workspaceId } = useAuthValue()
+type ProjectHeaderProps = {
+	workspaceId: string
+	project: Project
+}
+
+function ProjectHeader(props: ProjectHeaderProps) {
 	const navigate = useNavigate({ from: '/$workspaceId/projects/$projectId' })
 
-	if (!project.id) return null
+	if (!props.project.id) return null
 	return (
 		<div className="flex flex-col items-center justify-between gap-4 rounded-lg p-2 px-4 shadow-md md:flex-row">
-			<h3 className="text-xl font-bold">{project.name}</h3>
+			<h3 className="text-xl font-bold">{props.project.name}</h3>
 			<div className="flex flex-wrap items-center justify-center gap-4">
 				{buttons.map((btn) => (
 					<Button
@@ -30,7 +33,12 @@ function ProjectHeader(project: Project) {
 						key={btn.name}
 						variant={btn.btnVariant}
 						LeftIcon={<btn.icon className="h-4 w-4" />}
-						onClick={() => navigate({ to: `/$workspaceId/projects/$projectId/${btn.name}`, params: { workspaceId, projectId: project.id } })}
+						onClick={() =>
+							navigate({
+								to: `/$workspaceId/projects/$projectId/${btn.name}`,
+								params: { workspaceId: props.workspaceId, projectId: props.project.id },
+							})
+						}
 					>
 						{btn.label}
 					</Button>

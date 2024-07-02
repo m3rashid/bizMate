@@ -5,7 +5,7 @@ import SingleSelectInput from '@components/lib/singleSelectInput'
 import useAddDashboardWidget from '@hooks/addDashboardWidget'
 import { FormEvent } from 'react'
 
-function AddWidget(props: { dashboardId: string }) {
+function AddWidget(props: { dashboardId: string; workspaceId: string }) {
 	const { modalTitle, closeModal, modalOpen, setWidgetType, modalState, widgetType } = useAddDashboardWidget()
 	function handleSetWidgetType(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault()
@@ -30,7 +30,7 @@ function AddWidget(props: { dashboardId: string }) {
 						</div>
 					</form>
 				) : widgetType === 'kpi' ? (
-					<AddKpiModel dashboardId={props.dashboardId} />
+					<AddKpiModel dashboardId={props.dashboardId} workspaceId={props.workspaceId} />
 				) : null}
 			</Modal>
 		</>

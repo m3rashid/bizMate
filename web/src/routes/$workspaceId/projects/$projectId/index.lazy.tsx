@@ -11,18 +11,18 @@ export const Route = createLazyFileRoute('/$workspaceId/projects/$projectId/')({
 })
 
 function ProjectDetails() {
-	const { projectId } = useParams({ from: '/$workspaceId/projects/$projectId/' })
+	const { projectId, workspaceId } = useParams({ from: '/$workspaceId/projects/$projectId/' })
 
 	const { data: project, isPending } = useQuery<Project>({
-		queryKey: ['getProject', projectId],
-		queryFn: () => apiClient(`/projects/one/${projectId}`),
+		queryKey: ['getProject', projectId, workspaceId],
+		queryFn: () => apiClient(`/${workspaceId}/projects/one/${projectId}`),
 	})
 
 	if (isPending || !project) return <PageLoader />
 
 	return (
-		<PageContainer>
-			<ProjectHeader {...project} />
+		<PageContainer workspaceId={workspaceId}>
+			<ProjectHeader project={project} workspaceId={workspaceId} />
 		</PageContainer>
 	)
 }

@@ -1,8 +1,8 @@
-import { baseUrl } from '../../api/client'
-import { useAuthState } from '../../hooks/auth'
-import { usePopups } from '../../hooks/popups'
-import Button from '../lib/button'
-import { PageLoader } from '../lib/loader'
+import { baseUrl } from '@api/client'
+import Button from '@components/lib/button'
+import { PageLoader } from '@components/lib/loader'
+import { useAuthState } from '@hooks/auth'
+import { usePopups } from '@hooks/popups'
 import { useRouterState } from '@tanstack/react-router'
 import { Suspense, useEffect, useRef } from 'react'
 
@@ -51,7 +51,7 @@ function LoginWithGoogle(props: LoginWithGoogleProps) {
 			if (!event.data || !event.data.token || !event.data.success || !event.data.user || !event.data.user.id) throw new Error('Invalid data')
 
 			localStorage.setItem('token', event.data.token)
-			setAuth({ isAuthenticated: true, user: event.data.user })
+			setAuth((prev) => ({ ...prev, isAuthenticated: true, user: event.data.user }))
 			if (props.onSuccess) props.onSuccess()
 			windowRef.current?.close()
 		} catch (err: unknown) {

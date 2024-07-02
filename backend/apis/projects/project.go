@@ -7,7 +7,7 @@ import (
 
 type projectReqBody struct {
 	Name        string         `json:"name" validate:"required"`
-	Description string         `json:"description" validate:"required"`
+	Description string         `json:"description"`
 	Abandoned   *bool          `json:"abandoned"`
 	Completed   *bool          `json:"completed"`
 	People      []*models.User `json:"users" gorm:"many2many:users_project_relation"`

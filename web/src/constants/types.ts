@@ -206,6 +206,12 @@ export type Contact = BaseModel &
 		otherDetails: string
 	}
 
+export type Workspace = BaseModel &
+	CreatedBy & {
+		name: string
+		users: User[]
+	}
+
 export type Changelog = BaseModel & {}
 
 export type ExportableTable = (typeof exportableTables)[number]

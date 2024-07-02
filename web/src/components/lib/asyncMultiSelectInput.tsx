@@ -14,8 +14,8 @@ export type AsyncMultiSelectProps<T> = {
 	labelKey: keyof T
 	queryKeys: string[]
 	paginateUrl: string
+	workspaceId: string
 	pageSize?: number
-
 	default?: string[]
 	name?: string
 	label?: string
@@ -68,7 +68,7 @@ function AsyncMultiSelect<T extends DbRow>(props: AsyncMultiSelectProps<T>) {
 			hasNextPageRef.current = data.hasNextPage
 			return data
 		},
-		queryKey: [...props.queryKeys, page, props.pageSize || 15],
+		queryKey: [...props.queryKeys, page, props.pageSize || 15, props.workspaceId],
 		queryFn: () => apiClient(`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${page}&limit=${props.pageSize || 15}`),
 	})
 

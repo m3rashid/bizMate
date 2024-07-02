@@ -7,11 +7,11 @@ export const Route = createLazyFileRoute('/$workspaceId/projects/$projectId/read
 })
 
 function ProjectReadme() {
-	const { projectId } = useParams({ from: '/$workspaceId/projects/$projectId/readme' })
+	const { projectId, workspaceId } = useParams({ from: '/$workspaceId/projects/$projectId/readme' })
 
 	return (
-		<PageContainer>
-			<EditProjectDetails {...{ projectId, type: 'readme' }} />
+		<PageContainer workspaceId={workspaceId}>
+			<EditProjectDetails {...{ projectId, type: 'readme', workspaceId }} />
 		</PageContainer>
 	)
 }

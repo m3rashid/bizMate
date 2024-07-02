@@ -3,18 +3,16 @@ import Button from '@components/lib/button'
 import Input from '@components/lib/input'
 import Modal from '@components/lib/modal'
 import TextAreaInput from '@components/lib/textAreaInput'
-import { useAuthValue } from '@hooks/auth'
 import { usePopups } from '@hooks/popups'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { FormEvent, RefObject, useState } from 'react'
 import { EditorRef } from 'react-email-editor'
 
-type EmailEditorTopBarProps = { emailEditorRef: RefObject<EditorRef> }
+type EmailEditorTopBarProps = { emailEditorRef: RefObject<EditorRef>; workspaceId: string }
 type EmailBody = { title: string; description: string; subjectTemplate: string }
 
 function EmailEditorTopBar(props: EmailEditorTopBarProps) {
-	const { workspaceId } = useAuthValue()
 	const navigate = useNavigate({ from: '/$workspaceId/communications/emails/designer' })
 	const { addMessagePopup, addActionPopup, removeActionPopup } = usePopups()
 	const [open, setOpen] = useState(false)
@@ -23,7 +21,7 @@ function EmailEditorTopBar(props: EmailEditorTopBarProps) {
 	const { mutate: createEmailTemplate } = useMutation({
 		onSuccess: () => {
 			addMessagePopup({ id: 'createEmailTemplateSuccess', message: 'Successfully Created Email Template', type: 'success' })
-			navigate({ to: '/$workspaceId/communications/emails/templates', params: { workspaceId } })
+			navigate({ to: '/$workspaceId/communications/emails/templates', params: { workspaceId: props.workspaceId } })
 		},
 		onError: () => addMessagePopup({ id: 'createEmailTemplateSuccess', message: 'Email Template creation failed', type: 'error' }),
 		mutationKey: ['createEmailTemplate'],

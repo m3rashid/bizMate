@@ -9,19 +9,25 @@ import { usePopups } from '@hooks/popups'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { FormEvent, useMemo, useState } from 'react'
 
-function AddKpiModel({ dashboardId }: { dashboardId: string }) {
+type AddKpiModelProps = {
+	workspaceId: string
+	dashboardId: string
+}
+
+function AddKpiModel(props: AddKpiModelProps) {
 	const { addMessagePopup } = usePopups()
 	const [selectedModel, setSelectedModel] = useState<string>('')
 	const { widgetType, closeModal } = useAddDashboardWidget()
 
 	const { data: dashboardModels } = useQuery({
-		queryKey: ['dashboardModels'],
-		queryFn: () => apiClient('/dashboards/models'),
+		queryKey: ['dashboardModels', props.workspaceId],
+		queryFn: () => apiClient(`/${props.workspaceId}/dashboards/models`),
 	})
 
 	const { mutate: createKpi } = useMutation({
-		mutationKey: ['addDashboardKpi'],
-		mutationFn: (kpiData: any) => apiClient(`/dashboards/kpis/${dashboardId}/create`, { method: 'POST', body: JSON.stringify(kpiData) }),
+		mutationKey: ['addDashboardKpi', props.workspaceId],
+		mutationFn: (kpiData: any) =>
+			apiClient(`/${props.workspaceId}/dashboards/kpis/${props.dashboardId}/create`, { method: 'POST', body: JSON.stringify(kpiData) }),
 		onSuccess: () => {
 			closeModal()
 			addMessagePopup({ message: 'Kpi created successfully', type: 'success', id: 'add-kpi-success' })

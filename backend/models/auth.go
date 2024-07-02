@@ -13,7 +13,7 @@ const PROVIDER_CREDENTIALS = "credentials"
 
 type Workspace struct {
 	BaseModel
-	OptionalCreatedBy
+	CreatedBy
 	Name  string  `gorm:"column:name" json:"name" validate:"required"`
 	Users []*User `json:"users" gorm:"many2many:users_workspace_relation"`
 }

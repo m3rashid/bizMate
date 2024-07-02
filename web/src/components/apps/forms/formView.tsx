@@ -1,6 +1,6 @@
-import { FormElementInstance } from '../../forms/constants'
-import Button from '../../lib/button'
 import FormBuilder from '@components/forms'
+import { FormElementInstance } from '@components/forms/constants'
+import Button from '@components/lib/button'
 import { Form } from '@mytypes'
 import { FormEvent, MouseEvent, RefObject } from 'react'
 

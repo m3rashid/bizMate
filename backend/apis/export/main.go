@@ -7,6 +7,6 @@ import (
 )
 
 func Setup(initialRoute string, app *fiber.App) {
-	app.Post(initialRoute+"/table", utils.CheckAuthMiddleware, exportTable)
-	app.Post(initialRoute+"/table-fields", utils.CheckAuthMiddleware, getExportTableFields)
+	app.Post(initialRoute+"/table", utils.CheckAuthMiddlewareWithWorkspace, exportTable)
+	app.Post(initialRoute+"/table-fields", utils.CheckAuthMiddlewareWithWorkspace, getExportTableFields)
 }

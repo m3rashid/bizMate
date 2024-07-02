@@ -26,6 +26,7 @@ export const contactFields = ['name', 'email', 'phone', 'birthday'] as const
 export type BulkUploadContactModalProps = {
 	open: boolean
 	refetch: () => void
+	workspaceId: string
 	setOpen: Dispatch<SetStateAction<boolean>>
 }
 

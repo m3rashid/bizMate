@@ -2,25 +2,27 @@ import apiClient from '@api/client'
 import Button from '@components/lib/button'
 import Tooltip from '@components/lib/tooltip'
 import InformationCircleIcon from '@heroicons/react/24/outline/InformationCircleIcon'
-import { useAuthValue } from '@hooks/auth'
 import { useFormDesigner } from '@hooks/formDesigner'
 import { usePopups } from '@hooks/popups'
 import { Form, StringBoolean } from '@mytypes'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 
-function FormDesignerTopBar() {
+type FormDesignerTopBarProps = {
+	workspaceId: string
+}
+
+function FormDesignerTopBar(props: FormDesignerTopBarProps) {
 	const navigate = useNavigate()
-	const { workspaceId } = useAuthValue()
 	const { addMessagePopup } = usePopups()
 	const { viewType, changeViewType, meta, rootProps } = useFormDesigner()
 
 	const { isPending, mutate: saveForm } = useMutation({
-		mutationKey: ['saveForm'],
+		mutationKey: ['saveForm', props.workspaceId],
 		onError: () => addMessagePopup({ id: 'errorCreateForm', message: 'Error in creating form', type: 'error' }),
 		mutationFn: async (body: any) => apiClient('/forms/create', { method: 'POST', body: JSON.stringify(body) }),
 		onSuccess: () => {
-			navigate({ to: '/$workspaceId/forms', params: { workspaceId }, search: { page: 1 } })
+			navigate({ to: '/$workspaceId/forms', params: { workspaceId: props.workspaceId }, search: { page: 1 } })
 			addMessagePopup({ id: 'saveForm', message: 'Successfully created form', type: 'success' })
 		},
 	})

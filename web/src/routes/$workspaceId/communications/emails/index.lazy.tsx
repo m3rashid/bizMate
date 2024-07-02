@@ -1,6 +1,6 @@
 import PageContainer from '@components/pageContainer'
 import { PageSearchParams } from '@mytypes'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useParams } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/$workspaceId/communications/emails/')({
 	component: Emails,
@@ -8,5 +8,6 @@ export const Route = createFileRoute('/$workspaceId/communications/emails/')({
 })
 
 function Emails() {
-	return <PageContainer></PageContainer>
+	const { workspaceId } = useParams({ from: '/$workspaceId/communications/emails/' })
+	return <PageContainer workspaceId={workspaceId}></PageContainer>
 }

@@ -8,7 +8,7 @@ export const Route = createLazyFileRoute('/about')({
 
 function About() {
 	return (
-		<PageContainer>
+		<PageContainer workspaceId="">
 			<Upload onFinalize={console.log} />
 			<div className="">Hello from About!</div>
 		</PageContainer>

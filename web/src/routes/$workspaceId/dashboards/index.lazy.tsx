@@ -7,11 +7,10 @@ import Tooltip from '@components/lib/tooltip'
 import PageContainer from '@components/pageContainer'
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 import PlusIcon from '@heroicons/react/24/outline/PlusIcon'
-import { useAuthValue } from '@hooks/auth'
 import { usePopups } from '@hooks/popups'
 import { Dashboard } from '@mytypes'
 import { useMutation } from '@tanstack/react-query'
-import { Link, createLazyFileRoute } from '@tanstack/react-router'
+import { Link, createLazyFileRoute, useParams } from '@tanstack/react-router'
 import dayjs from 'dayjs'
 import { useState } from 'react'
 import { twMerge } from 'tailwind-merge'
@@ -20,14 +19,13 @@ export const Route = createLazyFileRoute('/$workspaceId/dashboards/')({
 	component: Dashboards,
 })
 
-function DashboardCard(props: Dashboard & { onEdit: () => void }) {
-	const { workspaceId } = useAuthValue()
+function DashboardCard(props: Dashboard & { onEdit: () => void; workspaceId: string }) {
 	const [showActions, setShowActions] = useState(false)
 	const { addActionPopup, removeActionPopup, addMessagePopup } = usePopups()
 
 	const { mutate: deleteDashboard } = useMutation({
 		mutationKey: ['deleteDashboard', props.id],
-		mutationFn: () => apiClient(`/dashboards/delete/${props.id}`, { method: 'POST' }),
+		mutationFn: () => apiClient(`/${props.workspaceId}/dashboards/delete/${props.id}`, { method: 'POST' }),
 		onError: () => addMessagePopup({ id: 'errorDeleteDashboard', message: 'Error in deleting dashboard', type: 'error' }),
 		onSuccess: () => addMessagePopup({ id: 'dashboardDeleteSuccess', message: 'Dashboard deleted Successfully', type: 'success' }),
 	})
@@ -67,7 +65,7 @@ function DashboardCard(props: Dashboard & { onEdit: () => void }) {
 			<div>
 				<Link
 					to="/$workspaceId/dashboards/$dashboardId"
-					params={{ dashboardId: props.id, workspaceId }}
+					params={{ dashboardId: props.id, workspaceId: props.workspaceId }}
 					className={twMerge('font-semibold underline', props.active ? 'text-success' : 'text-danger')}
 				>
 					{props.title}
@@ -89,7 +87,7 @@ function DashboardCard(props: Dashboard & { onEdit: () => void }) {
 			) : null}
 
 			<div className="mt-4 w-full">
-				<Link to="/$workspaceId/dashboards/$dashboardId/designer" params={{ dashboardId: props.id, workspaceId }}>
+				<Link to="/$workspaceId/dashboards/$dashboardId/designer" params={{ dashboardId: props.id, workspaceId: props.workspaceId }}>
 					<Chip className="w-full">Go to Dashboard Designer</Chip>
 				</Link>
 			</div>
@@ -98,6 +96,7 @@ function DashboardCard(props: Dashboard & { onEdit: () => void }) {
 }
 
 function Dashboards() {
+	const { workspaceId } = useParams({ from: '/$workspaceId/dashboards/' })
 	const [open, setOpen] = useState(false)
 	const [editRow, setEditRow] = useState<Dashboard | undefined>(undefined)
 
@@ -112,13 +111,14 @@ function Dashboards() {
 	}
 
 	return (
-		<PageContainer>
+		<PageContainer workspaceId={workspaceId}>
 			<AddEditDashboard {...{ open, setOpen: onClose, ...(!!editRow ? { dashboard: editRow, refetch: () => {} } : { dashboard: undefined }) }} />
 
 			<CardList<Dashboard>
 				title="Dashboards"
-				paginateUrl="/dashboards/all"
+				paginateUrl={`/${workspaceId}/dashboards/all`}
 				queryKeys={['getDashboards']}
+				workspaceId={workspaceId}
 				defaultEmptyStateName="dashboards"
 				otherActions={
 					<Button onClick={() => setOpen(true)} size="small" LeftIcon={<PlusIcon className="h-4 w-4" />}>
@@ -126,8 +126,8 @@ function Dashboards() {
 					</Button>
 				}
 				description="Create and manage all custom dashboards"
-				tableExportprops={{ tableName: 'dashboard_table', mutationKeys: [] }}
-				cardRenderer={(dashboard) => <DashboardCard {...dashboard} onEdit={() => onEdit(dashboard)} />}
+				tableExportprops={{ tableName: 'dashboard_table', mutationKeys: [], workspaceId }}
+				cardRenderer={(dashboard) => <DashboardCard workspaceId={workspaceId} {...dashboard} onEdit={() => onEdit(dashboard)} />}
 			/>
 		</PageContainer>
 	)

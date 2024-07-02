@@ -2,6 +2,7 @@ import Button, { ButtonProps } from '@components/lib/button'
 import TableExport, { TableExportProps } from '@components/lib/tableExport'
 import ArrowPathIcon from '@heroicons/react/24/outline/ArrowPathIcon'
 import PlusIcon from '@heroicons/react/24/outline/PlusIcon'
+import { PageRoute } from '@mytypes'
 import { useNavigate } from '@tanstack/react-router'
 import { ReactNode } from 'react'
 import { twMerge } from 'tailwind-merge'
@@ -10,9 +11,10 @@ type DataListHeaderProps = {
 	title?: string
 	isFetching: boolean
 	refetch: () => void
+	workspaceId: string
 	description?: string
 	hideRefresh?: boolean
-	addButtonLink?: string
+	addButtonLink?: PageRoute
 	otherActions?: ReactNode
 	addButtonProps?: ButtonProps
 	defaultEmptyStateName?: string
@@ -45,7 +47,7 @@ function DataListHeader(props: DataListHeaderProps) {
 					<Button
 						size="small"
 						LeftIcon={<PlusIcon className="h-5 w-5" />}
-						onClick={() => navigate({ to: props.addButtonLink })}
+						onClick={() => navigate({ to: props.addButtonLink, params: { workspaceId: props.workspaceId } })}
 						label={`Create ${props.title || props.defaultEmptyStateName}`}
 						{...props.addButtonProps}
 					/>

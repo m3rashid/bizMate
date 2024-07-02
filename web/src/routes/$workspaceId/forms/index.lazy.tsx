@@ -13,11 +13,10 @@ import LockClosedIcon from '@heroicons/react/24/outline/LockClosedIcon'
 import LockOpenIcon from '@heroicons/react/24/outline/LockOpenIcon'
 import PencilSquareIcon from '@heroicons/react/24/outline/PencilSquareIcon'
 import TrashIcon from '@heroicons/react/24/outline/TrashIcon'
-import { useAuthValue } from '@hooks/auth'
 import { usePopups } from '@hooks/popups'
 import { Form, PageSearchParams } from '@mytypes'
 import { useMutation } from '@tanstack/react-query'
-import { Link, createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute, useParams } from '@tanstack/react-router'
 import { handleViewTransition } from '@utils/helpers'
 import dayjs from 'dayjs'
 import { useState } from 'react'
@@ -28,15 +27,14 @@ export const Route = createFileRoute('/$workspaceId/forms/')({
 	validateSearch: (search: Record<string, unknown>): PageSearchParams => ({ page: Number(search?.page ?? 1) }),
 })
 
-function FormCard(props: Form & { onEdit: () => void }) {
-	const { workspaceId } = useAuthValue()
+function FormCard(props: Form & { onEdit: () => void; workspaceId: string }) {
 	const [showActions, setShowActions] = useState(false)
 	const { addMessagePopup, addActionPopup, removeActionPopup } = usePopups()
 	const arr = JSON.parse(props.previousVersionIDs)
 
 	const { mutate: deleteForm } = useMutation({
 		mutationKey: ['deleteForm', props.id],
-		mutationFn: () => apiClient(`/forms/delete/${props.id}`, { method: 'POST' }),
+		mutationFn: () => apiClient(`/${props.workspaceId}/forms/delete/${props.id}`, { method: 'POST' }),
 		onError: () => addMessagePopup({ id: props.id, message: 'Failed to delete form', type: 'error' }),
 		onSuccess: () => addMessagePopup({ id: props.id, message: 'Form deleted successfully', type: 'success' }),
 	})
@@ -76,7 +74,7 @@ function FormCard(props: Form & { onEdit: () => void }) {
 			<div className="flex flex-grow gap-2">
 				<Link
 					to="/$workspaceId/forms/$formId/preview"
-					params={{ formId: props.id, workspaceId }}
+					params={{ formId: props.id, workspaceId: props.workspaceId }}
 					className={twMerge('font-semibold underline', props.active ? 'text-success' : 'text-danger')}
 				>
 					{props.title}
@@ -129,7 +127,7 @@ function FormCard(props: Form & { onEdit: () => void }) {
 				</Tooltip>
 
 				<Tooltip label="Show Form preview" position="right">
-					<Link to="/$workspaceId/forms/$formId/preview" params={{ formId: props.id, workspaceId }}>
+					<Link to="/$workspaceId/forms/$formId/preview" params={{ formId: props.id, workspaceId: props.workspaceId }}>
 						<Chip>
 							<EyeIcon className="h-4 w-4" />
 						</Chip>
@@ -137,13 +135,13 @@ function FormCard(props: Form & { onEdit: () => void }) {
 				</Tooltip>
 
 				<Tooltip label="Show form Responses" position="right">
-					<Link to="/$workspaceId/forms/$formId/responses" params={{ formId: props.id, workspaceId }}>
+					<Link to="/$workspaceId/forms/$formId/responses" params={{ formId: props.id, workspaceId: props.workspaceId }}>
 						<Chip>Responses</Chip>
 					</Link>
 				</Tooltip>
 
 				<Tooltip label="Show form Analytics" position="right">
-					<Link to="/$workspaceId/forms/$formId/analytics" params={{ formId: props.id, workspaceId }}>
+					<Link to="/$workspaceId/forms/$formId/analytics" params={{ formId: props.id, workspaceId: props.workspaceId }}>
 						<Chip>Analytics</Chip>
 					</Link>
 				</Tooltip>
@@ -153,10 +151,11 @@ function FormCard(props: Form & { onEdit: () => void }) {
 }
 
 function Forms() {
+	const { workspaceId } = useParams({ from: '/$workspaceId/forms/' })
 	const [editRow, setEditRow] = useState<Form | undefined>(undefined)
 
 	return (
-		<PageContainer>
+		<PageContainer workspaceId={workspaceId}>
 			<EditForm
 				setOpen={() => handleViewTransition(() => setEditRow(undefined))}
 				{...(!!editRow ? { form: editRow, refetch: () => {} } : { form: undefined })}
@@ -164,14 +163,15 @@ function Forms() {
 
 			<CardList<Form>
 				title="Forms"
-				paginateUrl="/forms/all"
+				paginateUrl={`/${workspaceId}/forms/all`}
 				queryKeys={['getForms']}
+				workspaceId={workspaceId}
 				defaultEmptyStateName="forms"
-				addButtonLink="/forms/designer"
+				addButtonLink="/$workspaceId/forms/designer"
 				addButtonProps={{ label: 'New Form' }}
 				description="Create and manage all forms"
-				tableExportprops={{ tableName: 'forms_table', mutationKeys: [] }}
-				cardRenderer={(form) => <FormCard {...{ ...form, onEdit: () => setEditRow(form) }} />}
+				tableExportprops={{ tableName: 'forms_table', mutationKeys: [], workspaceId }}
+				cardRenderer={(form) => <FormCard workspaceId={workspaceId} {...{ ...form, onEdit: () => setEditRow(form) }} />}
 			/>
 		</PageContainer>
 	)

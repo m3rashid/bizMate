@@ -6,7 +6,7 @@ import Tooltip from '@components/lib/tooltip'
 import PageContainer from '@components/pageContainer'
 import PencilSquareIcon from '@heroicons/react/24/outline/PencilSquareIcon'
 import { Contact, PageSearchParams } from '@mytypes'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useParams } from '@tanstack/react-router'
 import dayjs from 'dayjs'
 import { useState } from 'react'
 
@@ -16,6 +16,7 @@ export const Route = createFileRoute('/$workspaceId/communications/contacts/')({
 })
 
 function Contacts() {
+	const { workspaceId } = useParams({ from: '/$workspaceId/communications/contacts/' })
 	const [open, setOpen] = useState<'addEdit' | 'bulkUpload' | null>(null)
 	const [editRow, setEditRow] = useState<Contact | undefined>(undefined)
 
@@ -48,14 +49,15 @@ function Contacts() {
 	]
 
 	return (
-		<PageContainer>
+		<PageContainer workspaceId={workspaceId}>
 			<AddEditContactModal open={open === 'addEdit'} setOpen={() => setOpen(null)} contact={editRow} refetch={() => {}} />
-			<BulkUploadContactModal open={open === 'bulkUpload'} setOpen={() => setOpen(null)} refetch={() => {}} />
+			<BulkUploadContactModal workspaceId={workspaceId} open={open === 'bulkUpload'} setOpen={() => setOpen(null)} refetch={() => {}} />
 
 			<Table<Contact>
 				title="Contacts"
 				columns={tableColumns}
-				paginateUrl="/contacts/all"
+				workspaceId={workspaceId}
+				paginateUrl={`/${workspaceId}/contacts/all`}
 				queryKeys={['getContacts']}
 				defaultEmptyStateName="contacts"
 				description="Create and manage all contacts"

@@ -18,7 +18,7 @@ function Changelogs() {
 	})
 
 	return (
-		<PageContainer>
+		<PageContainer workspaceId="">
 			<Button disabled={!data?.hasNextPage} onClick={() => setPage((p) => p + 1)}>
 				Earlier
 			</Button>

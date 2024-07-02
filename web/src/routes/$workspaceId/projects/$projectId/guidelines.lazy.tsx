@@ -7,11 +7,11 @@ export const Route = createLazyFileRoute('/$workspaceId/projects/$projectId/guid
 })
 
 function ProjectGuidelines() {
-	const { projectId } = useParams({ from: '/$workspaceId/projects/$projectId/guidelines' })
+	const { projectId, workspaceId } = useParams({ from: '/$workspaceId/projects/$projectId/guidelines' })
 
 	return (
-		<PageContainer>
-			<EditProjectDetails {...{ projectId, type: 'guidelines' }} />
+		<PageContainer workspaceId={workspaceId}>
+			<EditProjectDetails {...{ projectId, type: 'guidelines', workspaceId }} />
 		</PageContainer>
 	)
 }

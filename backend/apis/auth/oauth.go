@@ -33,7 +33,7 @@ func authCallback(ctx *fiber.Ctx) error {
 		return ctx.Redirect(getRedirectUrl(false, "error=request_forged"))
 	}
 
-	user, err := goth_fiber.CompleteUserAuth(ctx)
+	authCallbackUser, err := goth_fiber.CompleteUserAuth(ctx)
 	if err != nil {
 		return ctx.Redirect(getRedirectUrl(false, "error=auth_failed"))
 	}
@@ -54,10 +54,9 @@ func authCallback(ctx *fiber.Ctx) error {
 	}
 
 	toCreateNewUser := false
-	existingUser := models.User{}
-	otherTxs := []func(*gorm.DB, *models.User) error{}
+	user := models.User{}
 
-	if err = db.Where("email = ?", user.Email).First(&existingUser).Error; err != nil {
+	if err = db.Where("email = ?", authCallbackUser.Email).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			toCreateNewUser = true
 		} else {
@@ -65,58 +64,65 @@ func authCallback(ctx *fiber.Ctx) error {
 		}
 	}
 
-	if existingUser.ID == "" {
+	if user.ID == "" {
 		toCreateNewUser = true
 	}
 
-	if inviteId != uuid.Nil {
-		// TODO: [CASE_NOT_HANDLED] invite Id can also come to existing users
+	if toCreateNewUser { // create user
+		newUser := models.User{
+			Name:         authCallbackUser.Name,
+			Email:        authCallbackUser.Email,
+			RefreshToken: authCallbackUser.RefreshToken,
+			Provider:     models.PROVIDER_GOOGLE,
+		}
 
+		if err := db.Create(&newUser).Error; err != nil {
+			return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
+		}
+
+		user = newUser
+	}
+
+	if inviteId != uuid.Nil {
 		invite := models.UserInvite{}
 		if err := db.Where("id = ?", inviteId.String()).First(&invite).Error; err != nil {
-			return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
+			return ctx.Redirect(getRedirectUrl(true, "error=invalid_invite_id"))
 		}
 
-		if invite.Status != models.InvitePending {
-			return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
+		if invite.ID == "" || invite.Status != models.InvitePending {
+			return ctx.Redirect(getRedirectUrl(true, "error=invalid_invite_status"))
 		}
 
-		toCreateNewUser = true
-		otherTxs = append(otherTxs, func(tx *gorm.DB, user *models.User) error { // set the invite status to accepted
+		err := db.Transaction(func(tx *gorm.DB) error {
 			invite.Status = models.InviteAccepted
-			return tx.Save(&invite).Error
-		})
+			if err := tx.Save(&invite).Error; err != nil {
+				return err
+			}
 
-		otherTxs = append(otherTxs, func(tx *gorm.DB, user *models.User) error { // add user to the workspace
 			workspace := models.Workspace{}
 			if err := tx.Where("id = ?", invite.WorkspaceID).First(&workspace).Error; err != nil {
 				return err
 			}
 
-			workspace.Users = append(workspace.Users, user)
-			return tx.Save(&workspace).Error
+			workspace.Users = append(workspace.Users, &user)
+			if err := tx.Save(&workspace).Error; err != nil {
+				return err
+			}
+
+			return nil
 		})
-	}
 
-	newUser := models.User{
-		Name:         user.Name,
-		Email:        user.Email,
-		RefreshToken: user.RefreshToken,
-		Provider:     models.PROVIDER_GOOGLE,
-	}
-
-	if toCreateNewUser {
-		if err := createUserFromOauth(db, &newUser, otherTxs...); err != nil {
-			return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
+		if err != nil {
+			return ctx.Redirect(getRedirectUrl(true, "error=not_added_to_workspace"))
 		}
 	}
 
-	jwtToken, err := utils.GenerateJWT(newUser.ID, newUser.Email)
+	jwtToken, err := utils.GenerateJWT(user.ID, user.Email)
 	if err != nil {
 		ctx.Redirect(getRedirectUrl(false, "error=no_token"))
 	}
 
-	jsonStr, err := json.Marshal(newUser.ToPartialUser())
+	jsonStr, err := json.Marshal(user.ToPartialUser())
 	if err != nil {
 		return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
 	}

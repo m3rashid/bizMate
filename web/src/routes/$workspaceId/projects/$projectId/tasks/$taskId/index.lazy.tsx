@@ -3,7 +3,6 @@ import Button from '@components/lib/button'
 import { PageLoader } from '@components/lib/loader'
 import PageContainer from '@components/pageContainer'
 import AddProjectTask from '@components/projects/addProjectTask'
-import { useAuthValue } from '@hooks/auth'
 import { usePaginate } from '@hooks/paginate'
 import { ProjectTask } from '@mytypes'
 import { useQuery } from '@tanstack/react-query'
@@ -15,25 +14,24 @@ export const Route = createLazyFileRoute('/$workspaceId/projects/$projectId/task
 })
 
 function TaskDetails() {
-	const { workspaceId } = useAuthValue()
 	const navigate = useNavigate({ from: '/projects/$projectId/tasks/$taskId' })
 	const [modalOpen, setModalOpen] = useState(false)
-	const { projectId, taskId } = useParams({ from: '/$workspaceId/projects/$projectId/tasks/$taskId/' })
+	const { projectId, taskId, workspaceId } = useParams({ from: '/$workspaceId/projects/$projectId/tasks/$taskId/' })
 
 	const { data: projectTaskDetails, isPending: isProjectTaskFetchPending } = useQuery<ProjectTask>({
-		queryKey: ['getProjectTaskDetails', taskId],
-		queryFn: () => apiClient(`/tasks/one/${taskId}`),
+		queryKey: ['getProjectTaskDetails', taskId, workspaceId],
+		queryFn: () => apiClient(`/${workspaceId}/projects/tasks/one/${taskId}`),
 	})
 
 	const { docs: childrenProjectTasks, refetch } = usePaginate<ProjectTask>({
-		queryKeys: ['getProjectTaskChildren', taskId],
-		url: `/tasks/children?parentTaskId=${taskId}`,
+		queryKeys: ['getProjectTaskChildren', taskId, workspaceId],
+		url: `/${workspaceId}/projects/tasks/children?parentTaskId=${taskId}`,
 	})
 
 	if (isProjectTaskFetchPending || !projectTaskDetails) return <PageLoader />
 
 	return (
-		<PageContainer>
+		<PageContainer workspaceId={workspaceId}>
 			<AddProjectTask refetch={refetch} modalOpen={modalOpen} setModalOpen={setModalOpen} projectId={projectId} parentTaskId={taskId} />
 
 			<h1 className="text-xl font-bold">{projectTaskDetails.title}</h1>

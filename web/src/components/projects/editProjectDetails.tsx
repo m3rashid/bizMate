@@ -16,6 +16,7 @@ import { twMerge } from 'tailwind-merge'
 type ProjectDetailType = 'readme' | 'guidelines' | 'docs'
 export type EditProjectDetailsProps = {
 	projectId: string
+	workspaceId: string
 	type: ProjectDetailType
 }
 
@@ -64,8 +65,8 @@ function EditProjectDetails(props: EditProjectDetailsProps) {
 	const [editable, setEditable] = useState(false)
 
 	const { data: project, isPending } = useQuery<Project>({
-		queryKey: ['getProject', props.projectId],
-		queryFn: () => apiClient(`/projects/one/${props.projectId}`),
+		queryKey: ['getProject', props.projectId, props.workspaceId],
+		queryFn: () => apiClient(`/${props.workspaceId}/projects/one/${props.projectId}`),
 	})
 
 	function onSuccess() {

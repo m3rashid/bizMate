@@ -13,16 +13,17 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as IndexImport } from './routes/index'
 import { Route as AuthLoginImport } from './routes/auth/login'
 import { Route as AuthChooseWorkspaceImport } from './routes/auth/choose-workspace'
 import { Route as WorkspaceIdFormsFormIdPreviewImport } from './routes/$workspaceId/forms/$formId/preview'
 
 // Create Virtual Routes
 
-const PaymentLazyImport = createFileRoute('/payment')()
 const ChangelogsLazyImport = createFileRoute('/changelogs')()
 const AboutLazyImport = createFileRoute('/about')()
-const IndexLazyImport = createFileRoute('/')()
+const WorkspaceIdIndexLazyImport = createFileRoute('/$workspaceId/')()
+const WorkspaceIdPaymentLazyImport = createFileRoute('/$workspaceId/payment')()
 const WorkspaceIdProjectsIndexLazyImport = createFileRoute(
   '/$workspaceId/projects/',
 )()
@@ -89,11 +90,6 @@ const WorkspaceIdProjectsProjectIdTasksTaskIdIndexLazyImport = createFileRoute(
 
 // Create/Update Routes
 
-const PaymentLazyRoute = PaymentLazyImport.update({
-  path: '/payment',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/payment.lazy').then((d) => d.Route))
-
 const ChangelogsLazyRoute = ChangelogsLazyImport.update({
   path: '/changelogs',
   getParentRoute: () => rootRoute,
@@ -104,10 +100,24 @@ const AboutLazyRoute = AboutLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/about.lazy').then((d) => d.Route))
 
-const IndexLazyRoute = IndexLazyImport.update({
+const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+} as any)
+
+const WorkspaceIdIndexLazyRoute = WorkspaceIdIndexLazyImport.update({
+  path: '/$workspaceId/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/$workspaceId/index.lazy').then((d) => d.Route),
+)
+
+const WorkspaceIdPaymentLazyRoute = WorkspaceIdPaymentLazyImport.update({
+  path: '/$workspaceId/payment',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/$workspaceId/payment.lazy').then((d) => d.Route),
+)
 
 const AuthLoginRoute = AuthLoginImport.update({
   path: '/auth/login',
@@ -329,7 +339,7 @@ const WorkspaceIdProjectsProjectIdTasksTaskIdIndexLazyRoute =
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
-      preLoaderRoute: typeof IndexLazyImport
+      preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
     '/about': {
@@ -340,16 +350,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChangelogsLazyImport
       parentRoute: typeof rootRoute
     }
-    '/payment': {
-      preLoaderRoute: typeof PaymentLazyImport
-      parentRoute: typeof rootRoute
-    }
     '/auth/choose-workspace': {
       preLoaderRoute: typeof AuthChooseWorkspaceImport
       parentRoute: typeof rootRoute
     }
     '/auth/login': {
       preLoaderRoute: typeof AuthLoginImport
+      parentRoute: typeof rootRoute
+    }
+    '/$workspaceId/payment': {
+      preLoaderRoute: typeof WorkspaceIdPaymentLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/$workspaceId/': {
+      preLoaderRoute: typeof WorkspaceIdIndexLazyImport
       parentRoute: typeof rootRoute
     }
     '/$workspaceId/automations/designer': {
@@ -446,12 +460,13 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren([
-  IndexLazyRoute,
+  IndexRoute,
   AboutLazyRoute,
   ChangelogsLazyRoute,
-  PaymentLazyRoute,
   AuthChooseWorkspaceRoute,
   AuthLoginRoute,
+  WorkspaceIdPaymentLazyRoute,
+  WorkspaceIdIndexLazyRoute,
   WorkspaceIdAutomationsDesignerLazyRoute,
   WorkspaceIdFormsDesignerLazyRoute,
   WorkspaceIdAutomationsIndexLazyRoute,

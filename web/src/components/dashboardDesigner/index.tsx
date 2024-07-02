@@ -3,7 +3,7 @@ import ShowDashboard from '@components/dashboardDesigner/showDashboards'
 import Button from '@components/lib/button'
 import useAddDashboardWidget from '@hooks/addDashboardWidget'
 
-function DashboardDesigner(props: { dashboardId: string }) {
+function DashboardDesigner(props: { dashboardId: string; workspaceId: string }) {
 	const { openModal } = useAddDashboardWidget()
 
 	return (
@@ -14,8 +14,8 @@ function DashboardDesigner(props: { dashboardId: string }) {
 				</Button>
 			</div>
 
-			<AddWidget dashboardId={props.dashboardId} />
-			<ShowDashboard dashboardId={props.dashboardId} viewType="edit" />
+			<AddWidget dashboardId={props.dashboardId} workspaceId={props.workspaceId} />
+			<ShowDashboard dashboardId={props.dashboardId} workspaceId={props.workspaceId} viewType="edit" />
 		</>
 	)
 }

@@ -10,13 +10,16 @@ export const Route = createFileRoute('/$workspaceId/forms/$formId/preview')({
 })
 
 function FormPreview() {
-	const { formId } = useParams({ from: '/$workspaceId/forms/$formId/preview' })
+	const { formId, workspaceId } = useParams({ from: '/$workspaceId/forms/$formId/preview' })
 
-	const { data: form, isPending } = useQuery({ queryKey: ['getForm', formId], queryFn: () => apiClient(`/forms/one/${formId}`) })
+	const { data: form, isPending } = useQuery({
+		queryKey: ['getForm', formId, workspaceId],
+		queryFn: () => apiClient(`/${workspaceId}/forms/one/${formId}`),
+	})
 
 	if (isPending) return <PageLoader />
 	return (
-		<PageContainer bodyClassName="flex flex-col items-center">
+		<PageContainer workspaceId={workspaceId} bodyClassName="flex flex-col items-center">
 			<FormView type="preview" form={form} />
 		</PageContainer>
 	)

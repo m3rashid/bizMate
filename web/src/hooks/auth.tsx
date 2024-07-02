@@ -5,10 +5,9 @@ import { atom, useRecoilState, useRecoilValue } from 'recoil'
 export type AuthState = {
 	isAuthenticated: boolean
 	user: User | null
-	workspaceId: string
 }
 
-const defaultAuthState: AuthState = { isAuthenticated: false, user: null, workspaceId: '' }
+const defaultAuthState: AuthState = { isAuthenticated: false, user: null }
 
 export const authAtom = atom<AuthState>({
 	key: 'authAtom',
