@@ -61,6 +61,7 @@ function Contacts() {
 				queryKeys={['getContacts']}
 				defaultEmptyStateName="contacts"
 				description="Create and manage all contacts"
+				tableExportprops={{ workspaceId, tableName: 'contacts_table' }}
 				addButtonProps={{ label: 'New Contact', onClick: () => setOpen('addEdit') }}
 				otherActions={<Button label="Bulk Upload" size="small" variant="secondary" onClick={() => setOpen('bulkUpload')} />}
 			/>

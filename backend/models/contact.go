@@ -20,7 +20,7 @@ type Contact struct {
 var ContactJsonModel = DashboardIndexableJsonModel{
 	ModelName: CONTACT_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
-		"id":        JsonNumber,
+		"id":        JsonString,
 		"name":      JsonString,
 		"email":     JsonString,
 		"phone":     JsonString,

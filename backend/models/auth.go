@@ -33,7 +33,7 @@ type User struct {
 var UserJsonModel = DashboardIndexableJsonModel{
 	ModelName: USER_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
-		"id":          JsonNumber,
+		"id":          JsonString,
 		"name":        JsonString,
 		"email":       JsonString,
 		"phone":       JsonString,
@@ -79,7 +79,7 @@ type UserInvite struct {
 var UserInviteJsonModel = DashboardIndexableJsonModel{
 	ModelName: USER_INVITE_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
-		"id":        JsonNumber,
+		"id":        JsonString,
 		"name":      JsonString,
 		"email":     JsonString,
 		"createdAt": JsonDate,

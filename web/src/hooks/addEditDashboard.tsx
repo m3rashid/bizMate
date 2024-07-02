@@ -14,7 +14,8 @@ function useAddEditDashboard(props: AddEditDashboardProps) {
 
 	const { mutate: createDashboard } = useMutation({
 		mutationKey: ['createDashboard'],
-		mutationFn: (dashboard: Partial<Dashboard>) => apiClient('/dashboards/create', { method: 'POST', body: JSON.stringify(dashboard) }),
+		mutationFn: (dashboard: Partial<Dashboard>) =>
+			apiClient(`/${props.workspaceId}/dashboards/create`, { method: 'POST', body: JSON.stringify(dashboard) }),
 		onSuccess: () => {
 			props.setOpen(false)
 			addMessagePopup({ id: 'createDashboardSuccess', type: 'success', message: 'Dashboard created Successfully' })

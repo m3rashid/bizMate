@@ -30,8 +30,8 @@ type Employee struct {
 var EmployeeJsonModel = DashboardIndexableJsonModel{
 	ModelName: EMPLOYEE_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
-		"id":              JsonNumber,
-		"userId":          JsonNumber,
+		"id":              JsonString,
+		"userId":          JsonString,
 		"createdBy":       JsonCreatedBy,
 		"updatedBy":       JsonCreatedBy,
 		"createdAt":       JsonDate,
@@ -53,12 +53,12 @@ type Attendance struct {
 var AttendanceJsonModel = DashboardIndexableJsonModel{
 	ModelName: ATTENDANCE_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
-		"id":         JsonNumber,
+		"id":         JsonString,
 		"endTime":    JsonDate,
 		"startTime":  JsonDate,
 		"createdAt":  JsonDate,
 		"createdBy":  JsonCreatedBy,
-		"employeeId": JsonNumber,
+		"employeeId": JsonString,
 	},
 }
 

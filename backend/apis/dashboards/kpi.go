@@ -61,41 +61,34 @@ func getSingleKpiData(kpi models.DashboardKpi, workspaceId string) (float64, err
 		return 0, err
 	}
 
-	var results []float64
-	query := fmt.Sprintf("select \"%s\" from %s where \"workspaceId\" = %d and \"createdAt\" >= current_date - interval '%d days';", kpi.ModelField, kpi.Model, workspaceId, kpi.TimePeriod)
-	if err := db.Raw(query).Scan(&results).Error; err != nil {
+	queryBuilder := func(condition string) string {
+		return fmt.Sprintf("select %s from %s where \"workspaceId\" = '%s' and \"createdAt\" >= current_date - interval '%d days';", condition, kpi.Model, workspaceId, kpi.TimePeriod)
+	}
+
+	var query string
+	if kpi.AggregationType == models.KpiAggregationTypeSum {
+		query = queryBuilder("sum(\"" + kpi.ModelField + "\")")
+	} else if kpi.AggregationType == models.KpiAggregationTypeCount {
+		query = queryBuilder("count(\"" + kpi.ModelField + "\")")
+	} else if kpi.AggregationType == models.KpiAggregationTypeMax {
+		query = queryBuilder("max(\"" + kpi.ModelField + "\")")
+	} else if kpi.AggregationType == models.KpiAggregationTypeMin {
+		query = queryBuilder("min(\"" + kpi.ModelField + "\")")
+	} else if kpi.AggregationType == models.KpiAggregationTypeAverage {
+		query = queryBuilder("avg(\"" + kpi.ModelField + "\")")
+	} else if kpi.AggregationType == models.KpiAggregationTypeMedian {
+		query = queryBuilder("percentile_cont(0.5) within group (order by \"" + kpi.ModelField + "\")")
+	} else if kpi.AggregationType == models.KpiAggregationTypeMode {
+		query = queryBuilder("mode() within group (order by \"" + kpi.ModelField + "\")")
+	}
+
+	if query == "" {
+		return 0, nil
+	}
+
+	var result float64
+	if err := db.Raw(query).Scan(&result).Error; err != nil {
 		return 0, err
 	}
-
-	if len(results) == 0 {
-		return 0, nil
-	}
-	// fmt.Println(query)
-	// fmt.Printf("results: %+v\n", results)
-
-	switch kpi.AggregationType {
-	case models.KpiAggregationTypeSum:
-		return sum(&results), nil
-
-	case models.KpiAggregationTypeCount:
-		return count(&results), nil
-
-	case models.KpiAggregationTypeMax:
-		return max(&results), nil
-
-	case models.KpiAggregationTypeMin:
-		return min(&results), nil
-
-	case models.KpiAggregationTypeAverage:
-		return average(&results), nil
-
-	case models.KpiAggregationTypeMedian:
-		return median(&results), nil
-
-	case models.KpiAggregationTypeMode:
-		return mode(&results), nil
-
-	default:
-		return 0, nil
-	}
+	return result, nil
 }

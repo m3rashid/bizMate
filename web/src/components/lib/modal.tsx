@@ -1,11 +1,13 @@
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react'
 import XMarkIcon from '@heroicons/react/20/solid/XMarkIcon'
 import { Fragment, PropsWithChildren, ReactNode } from 'react'
+import { twMerge } from 'tailwind-merge'
 
 export type ModalProps = PropsWithChildren & {
 	open: boolean
 	title?: ReactNode
 	setOpen: (val: boolean) => void
+	className?: string
 }
 
 function Modal(props: ModalProps) {
@@ -35,7 +37,12 @@ function Modal(props: ModalProps) {
 							leaveFrom="opacity-100 translate-y-0 scale-100"
 							leaveTo="opacity-0 translate-y-4 sm:translate-y-0 scale-0"
 						>
-							<DialogPanel className="relative w-full transform rounded-lg bg-white text-left shadow-md transition-all sm:my-8 sm:max-w-xl md:max-w-3xl">
+							<DialogPanel
+								className={twMerge(
+									'relative w-full transform rounded-lg bg-white text-left shadow-md transition-all sm:my-8 sm:max-w-xl md:max-w-3xl',
+									props.className,
+								)}
+							>
 								<div className="flex w-full items-center justify-between gap-4 border-b border-borderColor p-3">
 									{props.title ? (
 										<DialogTitle as="h3" className="text-base font-semibold leading-6 text-gray-900">

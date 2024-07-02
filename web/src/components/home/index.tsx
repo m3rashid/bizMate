@@ -17,15 +17,18 @@ function HomePageDashboards(props: HomePageDashboardsProps) {
 
 	if (isPending) return <PageLoader />
 	if (!dashboardPaginationResponse || dashboardPaginationResponse.docs.length === 0) return <div>No Dashboards Found</div>
+
+	const activeDashboards = dashboardPaginationResponse.docs.filter((t) => t.active)
+	if (activeDashboards.length === 0) return <div>No Active Dashboards Found</div>
+
+	console.log(dashboardPaginationResponse)
 	return (
 		<Tabs
-			tabs={dashboardPaginationResponse.docs
-				.filter((t) => t.active)
-				.map((dashboard) => ({
-					id: dashboard.id.toString(),
-					label: dashboard.title,
-					Component: () => <ShowDashboard dashboardId={dashboard.id} viewType="preview" workspaceId={props.workspaceId} />,
-				}))}
+			tabs={activeDashboards.map((dashboard) => ({
+				id: dashboard.id.toString(),
+				label: dashboard.title,
+				Component: () => <ShowDashboard dashboardId={dashboard.id} viewType="preview" workspaceId={props.workspaceId} />,
+			}))}
 		/>
 	)
 }

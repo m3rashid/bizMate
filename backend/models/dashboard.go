@@ -82,7 +82,7 @@ type DashboardChart struct {
 var DashboardChartJsonModel = DashboardIndexableJsonModel{
 	ModelName: DASHBOARD_CHART_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
-		"id":          JsonNumber,
+		"id":          JsonString,
 		"dashboardId": JsonNumber,
 		"createdBy":   JsonCreatedBy,
 		"updatedBy":   JsonCreatedBy,
@@ -103,7 +103,7 @@ type Dashboard struct {
 var DashboardJsonModel = DashboardIndexableJsonModel{
 	ModelName: DASHBOARD_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
-		"id":          JsonNumber,
+		"id":          JsonString,
 		"title":       JsonString,
 		"description": JsonString,
 		"active":      JsonBool,

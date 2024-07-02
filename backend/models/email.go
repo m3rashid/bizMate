@@ -18,7 +18,7 @@ type EmailTemplate struct {
 var EmailTemplateJsonModel = DashboardIndexableJsonModel{
 	ModelName: EMAIL_TEMPLATE_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
-		"id":          JsonNumber,
+		"id":          JsonString,
 		"title":       JsonString,
 		"description": JsonString,
 		"variables":   JsonString,
@@ -37,7 +37,7 @@ type BulkEmailRequest struct {
 var BulkEmailRequestJsonModel = DashboardIndexableJsonModel{
 	ModelName: BULK_EMAIL_REQUEST_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
-		"id":              JsonNumber,
+		"id":              JsonString,
 		"createdAt":       JsonDate,
 		"createdBy":       JsonCreatedBy,
 		"emailTemplateId": JsonNumber,

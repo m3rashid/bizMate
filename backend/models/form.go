@@ -27,7 +27,7 @@ type Form struct {
 var FormJsonModel = DashboardIndexableJsonModel{
 	ModelName: FORM_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
-		"id":                     JsonNumber,
+		"id":                     JsonString,
 		"title":                  JsonString,
 		"active":                 JsonBool,
 		"createdBy":              JsonCreatedBy,

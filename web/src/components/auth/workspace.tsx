@@ -45,8 +45,9 @@ export function CreateWorkspace(props: CreateWorkspaceProps) {
 					New Workspace
 				</div>
 			</div>
+
 			<Modal title="Create new Workspace" open={open} setOpen={() => setOpen(false)}>
-				<form className="flex w-full flex-col gap-4" onSubmit={handleSubmit}>
+				<form className="flex flex-col gap-4" onSubmit={handleSubmit}>
 					<div className="p-4">
 						<Input name="name" type="name" label="Name" placeholder="BizMate Hero" required />
 					</div>
@@ -69,7 +70,7 @@ function WorkspaceCard(workspace: Workspace & { onClick: () => void }) {
 	return (
 		<div
 			onClick={workspace.onClick}
-			className="flex h-52 w-52 select-none items-center justify-center rounded-lg border-2 border-white p-2.5 shadow-lg hover:border-primary"
+			className="flex h-52 w-52 cursor-pointer select-none items-center justify-center rounded-lg border-2 border-white p-2.5 shadow-lg hover:border-primary"
 		>
 			<h3 className="text-center">{workspace.name}</h3>
 		</div>

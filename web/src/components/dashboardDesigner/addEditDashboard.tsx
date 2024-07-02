@@ -13,7 +13,7 @@ function AddEditDashboard(props: AddEditDashboardProps) {
 		<Modal
 			open={props.open}
 			setOpen={() => handleViewTransition(() => props.setOpen(false))}
-			title={`Edit Dashboard ${props.dashboard ? `(${props.dashboard.title})` : ''}`}
+			title={!!props.dashboard ? `Edit Dashboard (${props.dashboard.title})` : 'Add Dashboard'}
 		>
 			<form className="h-full" onSubmit={handleAddEditDashboard}>
 				<div className="flex flex-col gap-4 p-4">

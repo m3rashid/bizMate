@@ -61,7 +61,7 @@ func Get[Model DbModel](_options ...GetOptions) func(*fiber.Ctx) error {
 		if options.DontIncludeWorkspaceID {
 			err = db.Where(fmt.Sprintf("%s = ?", options.ParamKey), paramValue).First(&column).Error
 		} else {
-			err = db.Where(fmt.Sprintf("%s = ? and \"workspaceId\" = ?", options.ParamKey), paramValue, workspaceId).First(&column).Error
+			err = db.Where(fmt.Sprintf("%s = ? and \"workspaceId\" = '%s'", options.ParamKey, workspaceId), paramValue).First(&column).Error
 		}
 
 		if err != nil {

@@ -23,7 +23,7 @@ function ChooseWorkspace() {
 	const { setAuth } = useAuthState()
 	const navigate = useNavigate({ from: '/auth/choose-workspace' })
 
-	function handleChooseWorkspace(workspaceId: Workspace['id']) {
+	function handleChooseWorkspace(workspaceId: string) {
 		setAuth((prev) => ({ ...prev, workspaceId }))
 		navigate({ to: '/$workspaceId', params: { workspaceId }, replace: true })
 	}

@@ -10,12 +10,13 @@ import (
 )
 
 type seedProjectReqBody struct {
-	Count int `json:"count" validate:"required,gte=1"`
+	Count       int    `json:"count" validate:"required,gte=1"`
+	WorkspaceID string `json:"workspaceId" validate:"required"`
 }
 
 func seedProjects(ctx *fiber.Ctx) error {
 	const batchSize = 100
-	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	if userId == uuid.Nil {
 		return ctx.SendStatus(fiber.StatusUnauthorized)
 	}
@@ -35,7 +36,7 @@ func seedProjects(ctx *fiber.Ctx) error {
 			Name:                   fake.Company().Name(),
 			Description:            fake.Company().CatchPhrase(),
 			CreatedBy:              models.CreatedBy{CreatedByID: userId.String()},
-			BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId.String()},
+			BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: reqBody.WorkspaceID},
 		})
 	}
 

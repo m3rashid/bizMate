@@ -32,11 +32,11 @@ type ProjectCycle struct {
 var ProjectCycleJsonModel = DashboardIndexableJsonModel{
 	ModelName: PROJECT_CYCLE_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
-		"id":             JsonNumber,
+		"id":             JsonString,
 		"startDay":       JsonDate,
 		"createdAt":      JsonDate,
 		"createdBy":      JsonCreatedBy,
-		"projectId":      JsonNumber,
+		"projectId":      JsonString,
 		"cycleGoals":     JsonString,
 		"cycleDaysCount": JsonNumber,
 	},
@@ -59,7 +59,7 @@ type Project struct {
 var ProjectJsonModel = DashboardIndexableJsonModel{
 	ModelName: PROJECT_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
-		"id":          JsonNumber,
+		"id":          JsonString,
 		"name":        JsonString,
 		"abandoned":   JsonBool,
 		"completed":   JsonBool,
@@ -77,7 +77,7 @@ type ProjectTag struct {
 var ProjectTagJsonModel = DashboardIndexableJsonModel{
 	ModelName: TAG_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
-		"id":        JsonNumber,
+		"id":        JsonString,
 		"name":      JsonString,
 		"createdAt": JsonDate,
 	},
@@ -102,15 +102,15 @@ type ProjectTask struct {
 var ProjectTaskJsonModel = DashboardIndexableJsonModel{
 	ModelName: TASK_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
-		"id":           JsonNumber,
+		"id":           JsonString,
 		"title":        JsonString,
 		"status":       JsonString,
 		"deadline":     JsonDate,
 		"createdAt":    JsonDate,
 		"createdBy":    JsonCreatedBy,
-		"projectId":    JsonNumber,
+		"projectId":    JsonString,
 		"description":  JsonString,
-		"parentTaskId": JsonNumber,
+		"parentTaskId": JsonString,
 	},
 }
 
@@ -140,10 +140,10 @@ type ProjectTaskEvent struct {
 var ProjectTaskEventJsonModel = DashboardIndexableJsonModel{
 	ModelName: PROJECT_TASK_EVENT_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
-		"id":        JsonNumber,
+		"id":        JsonString,
 		"type":      JsonString,
 		"data":      JsonString,
-		"taskId":    JsonNumber,
+		"taskId":    JsonString,
 		"createdAt": JsonDate,
 		"createdBy": JsonCreatedBy,
 	},

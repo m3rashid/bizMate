@@ -24,9 +24,12 @@ function Header(props: { workspaceId: string }) {
 				<p onClick={logout} className="m-0 cursor-pointer p-0 [&.active]:font-bold">
 					Logout
 				</p>
-				<p onClick={() => navigate({ to: '/auth/choose-workspace' })} className="m-0 cursor-pointer p-0 [&.active]:font-bold">
-					Change Workspace
-				</p>
+
+				{!!props.workspaceId ? (
+					<p onClick={() => navigate({ to: '/auth/choose-workspace' })} className="m-0 cursor-pointer p-0 [&.active]:font-bold">
+						Change Workspace
+					</p>
+				) : null}
 				{auth.user?.avatar ? <img className="h-7 w-7 rounded-full" src={auth.user.avatar} /> : null}
 			</div>
 		</div>

@@ -51,13 +51,13 @@ func Paginate[Model DbModel](_options ...PaginateOptions) func(*fiber.Ctx) error
 		requestQueriesAndParams := []string{}
 		for _, queryKey := range paginationOptions.QueryKeys {
 			if queryValue := ctx.Query(queryKey); queryValue != "" {
-				requestQueriesAndParams = append(requestQueriesAndParams, fmt.Sprintf("\"%s\" = %s", queryKey, queryValue))
+				requestQueriesAndParams = append(requestQueriesAndParams, fmt.Sprintf("\"%s\" = '%s'", queryKey, queryValue))
 			}
 		}
 
 		for _, paramKey := range paginationOptions.ParamKeys {
 			if paramValue := ctx.Params(paramKey); paramValue != "" {
-				requestQueriesAndParams = append(requestQueriesAndParams, fmt.Sprintf("\"%s\" = %s", paramKey, paramValue))
+				requestQueriesAndParams = append(requestQueriesAndParams, fmt.Sprintf("\"%s\" = '%s'", paramKey, paramValue))
 			}
 		}
 
@@ -86,7 +86,7 @@ func Paginate[Model DbModel](_options ...PaginateOptions) func(*fiber.Ctx) error
 		}
 
 		var docsCount int64 = 0
-		db = db.Where("\"workspaceId\" = ?", workspaceId)
+		db = db.Where(fmt.Sprintf("\"workspaceId\" = '%s'", workspaceId))
 		if err := db.Table(tableName).Where(requestQueryParams).Count(&docsCount).Error; err != nil {
 			return ctx.SendStatus(fiber.StatusInternalServerError)
 		}

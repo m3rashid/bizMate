@@ -10,7 +10,7 @@ type TableExportLog struct {
 var TableExportLogJsonModel = DashboardIndexableJsonModel{
 	ModelName: TABLE_EXPORT_LOGS_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
-		"id":        JsonNumber,
+		"id":        JsonString,
 		"createdAt": JsonDate,
 		"createdBy": JsonCreatedBy,
 	},
