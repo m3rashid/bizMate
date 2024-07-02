@@ -1,10 +1,10 @@
-import { useFormDesigner } from '../../hooks/formDesigner'
-import { usePopups } from '../../hooks/popups'
-import { camelCaseToSentenceCase, generateRandomString } from '../../utils/helpers'
-import { FormElementInstance } from '../forms/constants'
-import { Props } from '../forms/exposedProps'
-import FormRenderer from '../forms/renderer'
-import Button from '../lib/button'
+import { FormElementInstance } from '@components/forms/constants'
+import { Props } from '@components/forms/exposedProps'
+import FormRenderer from '@components/forms/renderer'
+import Button from '@components/lib/button'
+import { useFormDesigner } from '@hooks/formDesigner'
+import { usePopups } from '@hooks/popups'
+import { camelCaseToSentenceCase, generateRandomString } from '@utils/helpers'
 import { FormEvent, MouseEvent, useMemo, useRef } from 'react'
 
 type PropsToMetaProps = { _props: Props; values: Record<string, any> }

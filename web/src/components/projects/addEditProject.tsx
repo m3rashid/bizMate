@@ -1,18 +1,18 @@
+import apiClient from '@api/client'
+import Button from '@components/lib/button'
+import Input from '@components/lib/input'
+import Modal from '@components/lib/modal'
+import TextAreaInput from '@components/lib/textAreaInput'
+import TogglerInput from '@components/lib/toggle'
+import { Project } from '@mytypes'
 import { useMutation } from '@tanstack/react-query'
 import { Dispatch, FormEvent, SetStateAction } from 'react'
-
-import Modal from '../lib/modal'
-import Input from '../lib/input'
-import Button from '../lib/button'
-import { Project } from '../../types'
-import apiClient from '../../api/client'
-import TogglerInput from '../lib/toggle'
-import TextAreaInput from '../lib/textAreaInput'
 
 type AddEditProjectModalProps = {
 	open: boolean
 	project?: Project
 	refetch: () => void
+	workspaceId: string
 	setOpen: Dispatch<SetStateAction<boolean>>
 }
 function AddEditProjectModal(props: AddEditProjectModalProps) {
@@ -24,7 +24,7 @@ function AddEditProjectModal(props: AddEditProjectModalProps) {
 	const { mutate: createNewProject } = useMutation({
 		onSuccess,
 		mutationKey: ['createNewProject'],
-		mutationFn: (project: Partial<Project>) => apiClient('/projects/create', { method: 'POST', body: JSON.stringify(project) }),
+		mutationFn: (project: Partial<Project>) => apiClient(`/${props.workspaceId}/projects/create`, { method: 'POST', body: JSON.stringify(project) }),
 	})
 
 	const { mutate: editProject } = useMutation({

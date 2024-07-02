@@ -1,10 +1,10 @@
-import apiClient from '../../api/client'
-import { DbRow, PageSearchParams, PaginationResponse } from '../../types'
-import SkeletonCardList from '../skeletons/cardList'
-import { ButtonProps } from './button'
-import DataListHeader from './dataListHeader'
-import Pagination from './pagination'
-import { TableExportProps } from './tableExport'
+import apiClient from '@api/client'
+import { ButtonProps } from '@components/lib/button'
+import DataListHeader from '@components/lib/dataListHeader'
+import Pagination from '@components/lib/pagination'
+import { TableExportProps } from '@components/lib/tableExport'
+import SkeletonCardList from '@components/skeletons/cardList'
+import { DbRow, PageRoute, PageSearchParams, PaginationResponse } from '@mytypes'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import qs from 'query-string'
@@ -16,10 +16,11 @@ export type CardListProps<T> = {
 	pageSize?: number
 	tableExportprops?: TableExportProps
 	paginateUrl: string
+	workspaceId: string
 	queryKeys: string[]
 	title?: string
 	description?: string
-	addButtonLink?: string
+	addButtonLink?: PageRoute
 	addButtonProps?: ButtonProps
 	rootClassName?: string
 	onEdit?: (item: T) => void
@@ -35,7 +36,7 @@ function CardList<T extends DbRow>(props: CardListProps<T>) {
 	const locationSearch = qs.parse(location.search)
 
 	const { isPending, data, refetch, isFetching } = useQuery<PaginationResponse<T>>({
-		queryKey: [...props.queryKeys, props.pageSize || 15, locationSearch.page],
+		queryKey: [...props.queryKeys, props.pageSize || 15, locationSearch.page, props.workspaceId],
 		queryFn: () =>
 			apiClient(`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${locationSearch.page}&limit=${props.pageSize || 15}`),
 	})
@@ -49,6 +50,7 @@ function CardList<T extends DbRow>(props: CardListProps<T>) {
 					isFetching,
 					title: props.title,
 					description: props.description,
+					workspaceId: props.workspaceId,
 					otherActions: props.otherActions,
 					addButtonLink: props.addButtonLink,
 					addButtonProps: props.addButtonProps,

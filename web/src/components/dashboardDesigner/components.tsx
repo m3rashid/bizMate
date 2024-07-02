@@ -1,5 +1,5 @@
-import useAddDashboardWidget from '../../hooks/addDashboardWidget'
-import Button from '../lib/button'
+import Button from '@components/lib/button'
+import useAddDashboardWidget from '@hooks/addDashboardWidget'
 import { FormEvent } from 'react'
 
 type SelectTypeProps = {}
@@ -10,6 +10,7 @@ function SelectType(props: SelectTypeProps) {
 	function handleAddWidget(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault()
 		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any
+		console.log(formData)
 	}
 
 	return (

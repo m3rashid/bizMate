@@ -1,11 +1,10 @@
+import Button, { ButtonProps } from '@components/lib/button'
+import TableExport, { TableExportProps } from '@components/lib/tableExport'
+import { PlusIcon } from '@heroicons/react/24/outline'
+import { DbRow } from '@mytypes'
+import { useNavigate } from '@tanstack/react-router'
 import { FC, ReactNode } from 'react'
 import { twMerge } from 'tailwind-merge'
-import { useNavigate } from '@tanstack/react-router'
-import { PlusIcon } from '@heroicons/react/24/outline'
-
-import { DbRow } from '../../types'
-import Button, { ButtonProps } from './button'
-import TableExport, { TableExportProps } from './tableExport'
 
 export type SimpleTableColumn<T> = {
 	title: string

@@ -11,7 +11,7 @@ import {
 	textAreaInputProps,
 	richTextInputProps,
 	phoneNumberInputProps,
-} from './exposedProps'
+} from '@components/forms/exposedProps'
 import AdjustmentsVerticalIcon from '@heroicons/react/24/outline/AdjustmentsVerticalIcon'
 import Bars2Icon from '@heroicons/react/24/outline/Bars2Icon'
 import Bars3CenterLeftIcon from '@heroicons/react/24/outline/Bars3CenterLeftIcon'

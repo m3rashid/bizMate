@@ -1,7 +1,6 @@
+import Modal from '@components/lib/modal'
 import { useState } from 'react'
 import { twMerge } from 'tailwind-merge'
-
-import Modal from './lib/modal'
 
 function Search() {
 	const [open, setOpen] = useState(false)

@@ -1,6 +1,6 @@
-import { Option } from '../types'
-import { camelCaseToSentenceCase } from '../utils/helpers'
-import { usePopups } from './popups'
+import { usePopups } from '@hooks/popups'
+import { Option } from '@mytypes'
+import { camelCaseToSentenceCase } from '@utils/helpers'
 import { parse } from 'papaparse'
 import { ChangeEvent, Dispatch, FormEvent, SetStateAction } from 'react'
 import { atom, useRecoilState } from 'recoil'
@@ -26,6 +26,7 @@ export const contactFields = ['name', 'email', 'phone', 'birthday'] as const
 export type BulkUploadContactModalProps = {
 	open: boolean
 	refetch: () => void
+	workspaceId: string
 	setOpen: Dispatch<SetStateAction<boolean>>
 }
 

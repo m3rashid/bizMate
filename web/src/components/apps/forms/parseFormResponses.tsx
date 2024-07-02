@@ -1,12 +1,11 @@
+import { FormElementInstance } from '@components/forms/constants'
+import Button from '@components/lib/button'
+import Modal from '@components/lib/modal'
+import ShowRichText from '@components/lib/showRichText'
+import { TableColumn } from '@components/lib/table'
+import { CreatedBy, Form, FormResponse, PaginationResponse } from '@mytypes'
 import dayjs from 'dayjs'
 import { useState } from 'react'
-
-import Modal from '../../lib/modal'
-import Button from '../../lib/button'
-import { TableColumn } from '../../lib/table'
-import ShowRichText from '../../lib/showRichText'
-import { FormElementInstance } from '../../forms/constants'
-import { CreatedBy, Form, FormResponse, PaginationResponse } from '../../../types'
 
 export type FormResponsesType = {
 	form: Form

@@ -4,14 +4,14 @@ import (
 	"bizMate/apis/auth"
 	"bizMate/apis/automations"
 	"bizMate/apis/contacts"
-	"bizMate/apis/dashboard"
+	"bizMate/apis/dashboards"
 	"bizMate/apis/drive"
 	"bizMate/apis/export"
 	"bizMate/apis/forms"
 	"bizMate/apis/host"
 	"bizMate/apis/notifications"
 	"bizMate/apis/payments"
-	"bizMate/apis/project"
+	"bizMate/apis/projects"
 	"bizMate/apis/seed"
 	"bizMate/models"
 	"bizMate/utils"
@@ -90,20 +90,20 @@ func main() {
 		app.Use(logger.New())
 	}
 
-	auth.Setup(app)
-	automations.Setup(app)
-	contacts.Setup(app)
-	dashboard.Setup(app)
-	drive.Setup(app)
-	export.Setup(app)
-	forms.Setup(app)
-	host.Setup(app)
-	notifications.Setup(app)
-	payments.Setup(app)
-	project.Setup(app)
+	auth.Setup("/auth", app)
+	automations.Setup("/:workspaceId/automations", app)
+	contacts.Setup("/:workspaceId/contacts", app)
+	dashboards.Setup("/:workspaceId/dashboards", app)
+	drive.Setup("/:workspaceId/drive", app)
+	export.Setup("/:workspaceId/export", app)
+	forms.Setup("/:workspaceId/forms", app)
+	host.Setup("/host", app)
+	notifications.Setup("/:workspaceId/notifications", app)
+	payments.Setup("/:workspaceId/payments", app)
+	projects.Setup("/:workspaceId/projects", app)
 
 	if os.Getenv("SERVER_MODE") == "development" {
-		seed.Setup(app)
+		seed.Setup("/seed", app)
 	}
 
 	log.Println("Server is running in " + os.Getenv("SERVER_MODE") + " mode.")

@@ -1,10 +1,9 @@
-import { twMerge } from 'tailwind-merge'
-import { InputHTMLAttributes, useMemo } from 'react'
 import { Radio, RadioGroup } from '@headlessui/react'
 import CheckCircleIcon from '@heroicons/react/24/solid/CheckCircleIcon'
-
-import { Option } from '../../types'
-import { shuffleArray } from '../../utils/helpers'
+import { Option } from '@mytypes'
+import { shuffleArray } from '@utils/helpers'
+import { InputHTMLAttributes, useMemo } from 'react'
+import { twMerge } from 'tailwind-merge'
 
 export type SimpleRadioProps = InputHTMLAttributes<HTMLInputElement> & {
 	options: Array<string | Option>

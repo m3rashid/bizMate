@@ -1,4 +1,4 @@
-import { AuthState } from '../hooks/auth'
+import { AuthState } from '@hooks/auth'
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router'
 import { lazy } from 'react'
 

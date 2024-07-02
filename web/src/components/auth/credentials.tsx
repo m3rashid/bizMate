@@ -1,11 +1,11 @@
-import apiClient from '../../api/client'
-import { useAuthState } from '../../hooks/auth'
-import { usePopups } from '../../hooks/popups'
-import Button from '../lib/button'
-import Input from '../lib/input'
-import { Loader } from '../lib/loader'
-import PhoneNumberInput from '../lib/phoneNumberInput'
+import apiClient from '@api/client'
+import Button from '@components/lib/button'
+import Input from '@components/lib/input'
+import { Loader } from '@components/lib/loader'
+import PhoneNumberInput from '@components/lib/phoneNumberInput'
 import LockClosedIcon from '@heroicons/react/20/solid/LockClosedIcon'
+import { useAuthState } from '@hooks/auth'
+import { usePopups } from '@hooks/popups'
 import { useMutation } from '@tanstack/react-query'
 import { FormEvent } from 'react'
 
@@ -21,6 +21,7 @@ export type LoginWithCredentialsProps = {
 function LoginWithCredentials(props: LoginWithCredentialsProps) {
 	const { setAuth } = useAuthState()
 	const { addMessagePopup } = usePopups()
+
 	const { isPending: isLoginPending, mutate: handleLogin } = useMutation({
 		mutationKey: ['login'],
 		mutationFn: async (body: LoginBody) => apiClient('/auth/login', { method: 'POST', body: JSON.stringify(body) }),
@@ -34,7 +35,7 @@ function LoginWithCredentials(props: LoginWithCredentialsProps) {
 	function onSuccess(data: any) {
 		localStorage.setItem('token', data.token)
 		addMessagePopup({ id: 'Logged in Successfully', type: 'success', message: 'Logged in successfully' })
-		setAuth({ isAuthenticated: true, user: data.user })
+		setAuth((prev) => ({ ...prev, isAuthenticated: true, user: data.user }))
 		if (props.onSuccess) props.onSuccess()
 	}
 

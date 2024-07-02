@@ -1,13 +1,13 @@
-import { useFormDesigner } from '../../hooks/formDesigner'
-import { supportedWidgets } from '../forms/constants'
-import FormDesignerCore from './form'
-import FormWidgetItem from './formWidgetItem'
-import RightSidebar from './rightSidebar'
-import FormDesignerTopBar from './topBar'
+import FormDesignerCore from '@components/formDesigner/form'
+import FormWidgetItem from '@components/formDesigner/formWidgetItem'
+import RightSidebar from '@components/formDesigner/rightSidebar'
+import FormDesignerTopBar from '@components/formDesigner/topBar'
+import { supportedWidgets } from '@components/forms/constants'
 import { useSensor, useSensors, DndContext, PointerSensor, closestCorners, KeyboardSensor } from '@dnd-kit/core'
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable'
+import { useFormDesigner } from '@hooks/formDesigner'
 
-function FormDesigner() {
+function FormDesigner(props: { workspaceId: string }) {
 	const { handleDragEnd } = useFormDesigner()
 
 	const sensors = useSensors(
@@ -29,7 +29,7 @@ function FormDesigner() {
 				</div>
 
 				<div className="flex w-full flex-col items-center overflow-auto bg-white p-4 pb-10">
-					<FormDesignerTopBar />
+					<FormDesignerTopBar workspaceId={props.workspaceId} />
 					<FormDesignerCore />
 				</div>
 

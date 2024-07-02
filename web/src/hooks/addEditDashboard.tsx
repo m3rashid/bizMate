@@ -1,6 +1,6 @@
-import apiClient from '../api/client'
-import { Dashboard } from '../types'
-import { usePopups } from './popups'
+import apiClient from '@api/client'
+import { usePopups } from '@hooks/popups'
+import { Dashboard } from '@mytypes'
 import { useMutation } from '@tanstack/react-query'
 import { Dispatch, FormEvent, SetStateAction } from 'react'
 

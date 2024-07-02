@@ -1,24 +1,24 @@
-import apiClient from '../../../api/client'
-import { Form } from '../../../types'
-import Button from '../../lib/button'
-import { PageLoader } from '../../lib/loader'
-import { NotFound } from '../../lib/notFound'
-import Pagination from '../../lib/pagination'
-import SimpleTable from '../../lib/simpleTable'
 import { parseFormResponses } from './parseFormResponses'
+import apiClient from '@api/client'
+import Button from '@components/lib/button'
+import { PageLoader } from '@components/lib/loader'
+import { NotFound } from '@components/lib/notFound'
+import Pagination from '@components/lib/pagination'
+import SimpleTable from '@components/lib/simpleTable'
 import { ChartBarIcon } from '@heroicons/react/24/outline'
+import { Form } from '@mytypes'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
 
-type FormResponseTableProps = Form
-function FormResponsesTable(form: FormResponseTableProps) {
+type FormResponseTableProps = Form & { workspaceId: string }
+function FormResponsesTable(props: FormResponseTableProps) {
 	const [page, setPage] = useState(1)
 
 	const { data: formResponses, isPending: isFormResponseFetchPending } = useQuery({
-		queryKey: ['getFormResponses', form.id, page],
-		select: (data) => parseFormResponses(form, data),
-		queryFn: () => apiClient(`/forms/response/${form.id}/all?page=${page}&limit=10`),
+		queryKey: ['getFormResponses', props.id, page, props.workspaceId],
+		select: (data) => parseFormResponses(props, data),
+		queryFn: () => apiClient(`/forms/response/${props.id}/all?page=${page}&limit=10`),
 	})
 
 	if (isFormResponseFetchPending) return <PageLoader />
@@ -27,13 +27,13 @@ function FormResponsesTable(form: FormResponseTableProps) {
 		<>
 			<SimpleTable<any>
 				rootClassName="w-full"
-				description={form.description}
+				description={props.description}
 				data={formResponses.data.docs || []}
 				columns={formResponses.tableData || []}
-				title={`Form Responses (${form.title})`}
-				tableExportprops={{ mutationKeys: [], formId: form.id, tableName: 'form_response_table' }}
+				title={`Form Responses (${props.title})`}
+				tableExportprops={{ mutationKeys: [], formId: props.id, tableName: 'form_response_table', workspaceId: props.workspaceId }}
 				otherActions={
-					<Link to="/forms/$formId/analytics" params={{ formId: form.id.toString() }}>
+					<Link to="/$workspaceId/forms/$formId/analytics" params={{ formId: props.id, workspaceId: props.workspaceId }}>
 						<Button size="small" LeftIcon={<ChartBarIcon className="h-4 w-4" />}>
 							Analytics
 						</Button>

@@ -1,21 +1,22 @@
-import apiClient from '../../api/client'
-import { usePopups } from '../../hooks/popups'
-import { Project } from '../../types'
-import { toSentenceCase, safeJsonParse } from '../../utils/helpers'
-import Button from '../lib/button'
-import Chip from '../lib/chip'
-import { PageLoader } from '../lib/loader'
+import apiClient from '@api/client'
 import { BlockNoteView } from '@blocknote/mantine'
 import '@blocknote/mantine/style.css'
 import { useCreateBlockNote } from '@blocknote/react'
+import Button from '@components/lib/button'
+import Chip from '@components/lib/chip'
+import { PageLoader } from '@components/lib/loader'
 import PencilSquareIcon from '@heroicons/react/24/outline/PencilSquareIcon'
+import { usePopups } from '@hooks/popups'
+import { Project } from '@mytypes'
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { toSentenceCase, safeJsonParse } from '@utils/helpers'
 import { useEffect, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
 
 type ProjectDetailType = 'readme' | 'guidelines' | 'docs'
 export type EditProjectDetailsProps = {
 	projectId: string
+	workspaceId: string
 	type: ProjectDetailType
 }
 
@@ -64,8 +65,8 @@ function EditProjectDetails(props: EditProjectDetailsProps) {
 	const [editable, setEditable] = useState(false)
 
 	const { data: project, isPending } = useQuery<Project>({
-		queryKey: ['getProject', props.projectId],
-		queryFn: () => apiClient(`/projects/one/${props.projectId}`),
+		queryKey: ['getProject', props.projectId, props.workspaceId],
+		queryFn: () => apiClient(`/${props.workspaceId}/projects/one/${props.projectId}`),
 	})
 
 	function onSuccess() {

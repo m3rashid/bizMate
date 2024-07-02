@@ -2,6 +2,6 @@ package drive
 
 import "github.com/gofiber/fiber/v2"
 
-func Setup(app *fiber.App) {
-	app.Post("/drive/get-signed-url", uploadFile)
+func Setup(initialRoute string, app *fiber.App) {
+	app.Post(initialRoute+"/get-signed-url", uploadFile)
 }

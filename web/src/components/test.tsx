@@ -1,4 +1,4 @@
-import FeedSequence from './lib/feedSequence'
+import FeedSequence from '@components/lib/feedSequence'
 import ChatBubbleLeftEllipsisIcon from '@heroicons/react/20/solid/ChatBubbleLeftEllipsisIcon'
 import TagIcon from '@heroicons/react/20/solid/TagIcon'
 import UserCircleIcon from '@heroicons/react/20/solid/UserCircleIcon'

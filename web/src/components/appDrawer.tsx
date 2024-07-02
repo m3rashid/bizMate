@@ -1,6 +1,6 @@
-import { RenderApp } from './apps'
-import { apps, sideApp } from './appsList'
-import Drawer from './lib/drawer'
+import { RenderApp } from '@components/apps'
+import { apps, sideApp } from '@components/appsList'
+import Drawer from '@components/lib/drawer'
 import Squares2X2Icon from '@heroicons/react/24/outline/Squares2X2Icon'
 import { useState } from 'react'
 

@@ -5,7 +5,6 @@ import (
 	"bizMate/utils"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -28,15 +27,13 @@ func getRedirectUrl(success bool, other ...string) string {
 	return url
 }
 
-// If the user signs up with google for the first time (without an invite), it is good
-// but to accept the invite, the user must sign up with the credentials flow
 func authCallback(ctx *fiber.Ctx) error {
 	state := ctx.Query("state")
 	if state == "" {
 		return ctx.Redirect(getRedirectUrl(false, "error=request_forged"))
 	}
 
-	user, err := goth_fiber.CompleteUserAuth(ctx)
+	authCallbackUser, err := goth_fiber.CompleteUserAuth(ctx)
 	if err != nil {
 		return ctx.Redirect(getRedirectUrl(false, "error=auth_failed"))
 	}
@@ -51,53 +48,81 @@ func authCallback(ctx *fiber.Ctx) error {
 		inviteId = inviteIdUuid
 	}
 
-	existingUser := models.User{}
-	if inviteId != uuid.Nil {
-		// if it has inviteId => create a new user in the invite-id's workspace
-		newUser, err := handleInvite(inviteId, models.InviteAccepted, models.PROVIDER_GOOGLE, user.RefreshToken)
-		if err != nil {
+	db, err := utils.GetDB()
+	if err != nil {
+		return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
+	}
+
+	toCreateNewUser := false
+	user := models.User{}
+
+	if err = db.Where("email = ?", authCallbackUser.Email).First(&user).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			toCreateNewUser = true
+		} else {
 			return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
-		}
-		existingUser = *newUser
-	} else {
-		// if the control reaches here, it can mean one of two cases
-		// - the user is signing up for the first time on its own
-		// - the user is signing in to an existing account
-
-		db, err := utils.GetDB()
-		if err != nil {
-			return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
-		}
-
-		if err = db.Where("email = ?", user.Email).First(&existingUser).Error; err != nil {
-			if errors.Is(err, gorm.ErrRecordNotFound) {
-				fmt.Println("Creating a new user")
-				newUser, err := createNewUser(user.Name, user.Email, "", "", "", models.PROVIDER_GOOGLE, user.RefreshToken)
-				if err != nil {
-					return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
-				}
-				existingUser = *newUser
-			} else {
-				return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
-			}
-		}
-
-		if existingUser.ID == "" {
-			fmt.Println("Creating a new user")
-			newUser, err := createNewUser(user.Name, user.Email, "", "", "", models.PROVIDER_GOOGLE, user.RefreshToken)
-			if err != nil {
-				return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
-			}
-			existingUser = *newUser
 		}
 	}
 
-	jwtToken, err := utils.GenerateJWT(existingUser.ID, existingUser.Email)
+	if user.ID == "" {
+		toCreateNewUser = true
+	}
+
+	if toCreateNewUser { // create user
+		newUser := models.User{
+			Name:         authCallbackUser.Name,
+			Email:        authCallbackUser.Email,
+			RefreshToken: authCallbackUser.RefreshToken,
+			Provider:     models.PROVIDER_GOOGLE,
+		}
+
+		if err := db.Create(&newUser).Error; err != nil {
+			return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
+		}
+
+		user = newUser
+	}
+
+	if inviteId != uuid.Nil {
+		invite := models.UserInvite{}
+		if err := db.Where("id = ?", inviteId.String()).First(&invite).Error; err != nil {
+			return ctx.Redirect(getRedirectUrl(true, "error=invalid_invite_id"))
+		}
+
+		if invite.ID == "" || invite.Status != models.InvitePending {
+			return ctx.Redirect(getRedirectUrl(true, "error=invalid_invite_status"))
+		}
+
+		err := db.Transaction(func(tx *gorm.DB) error {
+			invite.Status = models.InviteAccepted
+			if err := tx.Save(&invite).Error; err != nil {
+				return err
+			}
+
+			workspace := models.Workspace{}
+			if err := tx.Where("id = ?", invite.WorkspaceID).First(&workspace).Error; err != nil {
+				return err
+			}
+
+			workspace.Users = append(workspace.Users, &user)
+			if err := tx.Save(&workspace).Error; err != nil {
+				return err
+			}
+
+			return nil
+		})
+
+		if err != nil {
+			return ctx.Redirect(getRedirectUrl(true, "error=not_added_to_workspace"))
+		}
+	}
+
+	jwtToken, err := utils.GenerateJWT(user.ID, user.Email)
 	if err != nil {
 		ctx.Redirect(getRedirectUrl(false, "error=no_token"))
 	}
 
-	jsonStr, err := json.Marshal(existingUser.ToPartialUser())
+	jsonStr, err := json.Marshal(user.ToPartialUser())
 	if err != nil {
 		return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
 	}

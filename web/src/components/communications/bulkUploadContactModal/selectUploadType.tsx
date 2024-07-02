@@ -1,11 +1,10 @@
+import Button from '@components/lib/button'
+import SingleSelectInput from '@components/lib/singleSelectInput'
+import { uploadFileTypeOptions, useBulkUploadContact } from '@hooks/bulkUploadContact'
+import { usePopups } from '@hooks/popups'
+import { Option } from '@mytypes'
+import { toSentenceCase } from '@utils/helpers'
 import { FormEvent, MouseEvent } from 'react'
-
-import Button from '../../lib/button'
-import { Option } from '../../../types'
-import { usePopups } from '../../../hooks/popups'
-import { toSentenceCase } from '../../../utils/helpers'
-import SingleSelectInput from '../../lib/singleSelectInput'
-import { uploadFileTypeOptions, useBulkUploadContact } from '../../../hooks/bulkUploadContact'
 
 const options: Option[] = uploadFileTypeOptions.map((op) => ({ label: toSentenceCase(op), value: op }))
 
@@ -31,9 +30,11 @@ function SelectUploadFileType() {
 
 	return (
 		<form className="flex h-full flex-col gap-4" onSubmit={submitResponse}>
-			<SingleSelectInput name="fileType" options={options} />
+			<div className="p-4">
+				<SingleSelectInput name="fileType" options={options} />
+			</div>
 
-			<div className="flex flex-grow-0 items-center justify-between pt-3">
+			<div className="flex flex-grow-0 items-center justify-between border-t border-borderColor p-3">
 				<Button variant="simple" onClick={handleReset}>
 					Cancel
 				</Button>

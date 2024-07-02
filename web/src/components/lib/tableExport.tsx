@@ -1,18 +1,19 @@
-import apiClient from '../../api/client'
-import { usePopups } from '../../hooks/popups'
-import { ExportableTable, Option } from '../../types'
-import { handleViewTransition } from '../../utils/helpers'
-import Button, { ButtonProps } from './button'
-import { PageLoader } from './loader'
-import Modal from './modal'
-import SingleSelectInput from './singleSelectInput'
-import TogglerInput from './toggle'
+import apiClient from '@api/client'
+import Button, { ButtonProps } from '@components/lib/button'
+import { PageLoader } from '@components/lib/loader'
+import Modal from '@components/lib/modal'
+import SingleSelectInput from '@components/lib/singleSelectInput'
+import TogglerInput from '@components/lib/toggle'
 import TableCellsIcon from '@heroicons/react/24/outline/TableCellsIcon'
+import { usePopups } from '@hooks/popups'
+import { ExportableTable, Option } from '@mytypes'
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { handleViewTransition } from '@utils/helpers'
 import { FormEvent, useState } from 'react'
 
 export type TableExportProps = {
 	tableName: ExportableTable
+	workspaceId: string
 	formId?: string
 	mutationKeys?: string[]
 	buttonProps?: ButtonProps
@@ -28,9 +29,9 @@ function TableExport(props: TableExportProps) {
 	const [open, setOpen] = useState(false)
 
 	const { data: tableFieldsData, isPending } = useQuery<{ fileNameWithoutExt: string; fields: Array<{ name: string; label: string }> }>({
-		queryKey: [props.tableName, ...(props.mutationKeys || []), ...(props.formId ? [props.formId] : [])],
+		queryKey: [props.tableName, props.workspaceId, ...(props.mutationKeys || []), ...(props.formId ? [props.formId] : [])],
 		queryFn: () =>
-			apiClient('/table/export/table-fields', {
+			apiClient(`/${props.workspaceId}/export/table-fields`, {
 				method: 'POST',
 				body: JSON.stringify({ tableName: props.tableName, ...(props.formId ? { formId: props.formId } : {}) }),
 			}),
@@ -49,7 +50,7 @@ function TableExport(props: TableExportProps) {
 		mutationKey: [props.tableName, ...(props.mutationKeys || [])],
 		mutationFn: (data: any) =>
 			apiClient(
-				'/table/export',
+				`/${props.workspaceId}/export/table`,
 				{ method: 'POST', body: JSON.stringify(data) },
 				{ downloadableContent: { fileName: `${tableFieldsData?.fileNameWithoutExt}.${data.format}` || `${props.tableName}.${data.format}` } },
 			),

@@ -1,6 +1,6 @@
-import Button from './button'
-import { PaginationType } from '../../types'
-import Chip from './chip'
+import Button from '@components/lib/button'
+import Chip from '@components/lib/chip'
+import { PaginationType } from '@mytypes'
 
 type PaginationProps = PaginationType & {
 	onPreviousClick: () => void

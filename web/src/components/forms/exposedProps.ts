@@ -1,4 +1,4 @@
-import { Option } from '../../types'
+import { Option } from '@mytypes'
 
 export type SupportedValues = 'string' | 'textarea' | 'number' | 'boolean' | 'richText' | Array<string | Option> | 'selectOptions' | 'children'
 export type Props = Record<string, [boolean, string, SupportedValues]> // [required, description, supportedValues]

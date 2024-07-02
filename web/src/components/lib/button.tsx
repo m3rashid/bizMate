@@ -1,7 +1,6 @@
-import { twMerge } from 'tailwind-merge'
+import { filterBykeys } from '@utils/helpers'
 import { ButtonHTMLAttributes, ReactNode } from 'react'
-
-import { filterBykeys } from '../../utils/helpers'
+import { twMerge } from 'tailwind-merge'
 
 const buttonVariants = {
 	primary: 'bg-primary hover:bg-primary focus-visible:outline-primary',

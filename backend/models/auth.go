@@ -13,12 +13,9 @@ const PROVIDER_CREDENTIALS = "credentials"
 
 type Workspace struct {
 	BaseModel
-	OptionalCreatedBy
-	Name string `gorm:"column:name" json:"name" validate:"required"`
-}
-
-func (Workspace) TableName() string {
-	return WORKSPACE_MODEL_NAME
+	CreatedBy
+	Name  string  `gorm:"column:name" json:"name" validate:"required"`
+	Users []*User `json:"users" gorm:"many2many:users_workspace_relation"`
 }
 
 type User struct {
@@ -88,6 +85,10 @@ var UserInviteJsonModel = DashboardIndexableJsonModel{
 		"createdAt": JsonDate,
 		"status":    JsonNumber,
 	},
+}
+
+func (Workspace) TableName() string {
+	return WORKSPACE_MODEL_NAME
 }
 
 func (User) TableName() string {

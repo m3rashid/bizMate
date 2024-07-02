@@ -1,7 +1,6 @@
+import PageContainer from '@components/pageContainer'
+import Upload from '@components/upload'
 import { createLazyFileRoute } from '@tanstack/react-router'
-
-import PageContainer from '../components/pageContainer'
-import Upload from '../components/upload'
 
 export const Route = createLazyFileRoute('/about')({
 	component: About,
@@ -9,7 +8,7 @@ export const Route = createLazyFileRoute('/about')({
 
 function About() {
 	return (
-		<PageContainer>
+		<PageContainer workspaceId="">
 			<Upload onFinalize={console.log} />
 			<div className="">Hello from About!</div>
 		</PageContainer>

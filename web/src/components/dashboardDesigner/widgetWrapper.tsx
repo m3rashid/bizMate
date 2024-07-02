@@ -1,11 +1,10 @@
-import { CSS } from '@dnd-kit/utilities'
-import { twMerge } from 'tailwind-merge'
-import { PropsWithChildren } from 'react'
+import Tooltip from '@components/lib/tooltip'
 import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import XMarkIcon from '@heroicons/react/24/outline/XMarkIcon'
-
-import Tooltip from '../lib/tooltip'
-import { DashboardWidget, useDashboardDesigner } from '../../hooks/dashboardDesigner'
+import { DashboardWidget, useDashboardDesigner } from '@hooks/dashboardDesigner'
+import { PropsWithChildren } from 'react'
+import { twMerge } from 'tailwind-merge'
 
 export type WidgetWrapperProps = PropsWithChildren & {
 	item: DashboardWidget

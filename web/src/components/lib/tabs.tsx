@@ -1,5 +1,5 @@
-import { NotFound } from './notFound'
-import SingleSelectInput from './singleSelectInput'
+import { NotFound } from '@components/lib/notFound'
+import SingleSelectInput from '@components/lib/singleSelectInput'
 import { FC, ReactNode, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
 

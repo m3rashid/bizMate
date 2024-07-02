@@ -1,11 +1,11 @@
-import apiClient from '../../api/client'
-import { DbRow, PaginationResponse } from '../../types'
-import { getUniqueObjectsByKey } from '../../utils/helpers'
-import { Loader } from './loader'
+import apiClient from '@api/client'
+import { Loader } from '@components/lib/loader'
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react'
 import CheckIcon from '@heroicons/react/24/outline/CheckIcon'
 import ChevronUpDownIcon from '@heroicons/react/24/outline/ChevronUpDownIcon'
+import { DbRow, PaginationResponse } from '@mytypes'
 import { useQuery } from '@tanstack/react-query'
+import { getUniqueObjectsByKey } from '@utils/helpers'
 import { FC, Fragment, useMemo, useRef, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
 
@@ -14,8 +14,8 @@ export type AsyncMultiSelectProps<T> = {
 	labelKey: keyof T
 	queryKeys: string[]
 	paginateUrl: string
+	workspaceId: string
 	pageSize?: number
-
 	default?: string[]
 	name?: string
 	label?: string
@@ -68,7 +68,7 @@ function AsyncMultiSelect<T extends DbRow>(props: AsyncMultiSelectProps<T>) {
 			hasNextPageRef.current = data.hasNextPage
 			return data
 		},
-		queryKey: [...props.queryKeys, page, props.pageSize || 15],
+		queryKey: [...props.queryKeys, page, props.pageSize || 15, props.workspaceId],
 		queryFn: () => apiClient(`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${page}&limit=${props.pageSize || 15}`),
 	})
 

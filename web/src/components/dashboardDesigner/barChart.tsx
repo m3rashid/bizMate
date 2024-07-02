@@ -1,14 +1,16 @@
-import apiClient from '../../api/client'
-import { DashboardChart } from '../../types'
+import apiClient from '@api/client'
+import { DashboardChart } from '@mytypes'
 import { useQuery } from '@tanstack/react-query'
 import { Bar } from 'react-chartjs-2'
 
-type BarChartProps = DashboardChart & {}
+type BarChartProps = DashboardChart & {
+	workspaceId: string
+}
 
 function BarChart(props: BarChartProps) {
 	const { data } = useQuery({
-		queryKey: [props.id, 'getBarChart'],
-		queryFn: () => apiClient(`/dashboards/data/${props.dashboardId}/${props.id}`),
+		queryKey: [props.id, 'getBarChart', props.workspaceId],
+		queryFn: () => apiClient(`/${props.workspaceId}/dashboards/data/${props.dashboardId}/${props.id}`),
 	})
 
 	console.log(data)

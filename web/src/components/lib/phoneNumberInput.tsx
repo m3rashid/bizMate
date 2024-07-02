@@ -1,9 +1,8 @@
+import Input from '@components/lib/input'
+import SingleSelectInput from '@components/lib/singleSelectInput'
+import { Option } from '@mytypes'
 import { FC, useReducer } from 'react'
 import { twMerge } from 'tailwind-merge'
-
-import Input from './input'
-import { Option } from '../../types'
-import SingleSelectInput from './singleSelectInput'
 
 export type PhoneNumberInputProps = {
 	name: string

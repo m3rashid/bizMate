@@ -1,14 +1,13 @@
-import { twMerge } from 'tailwind-merge'
-import { useQuery } from '@tanstack/react-query'
-import { FC, Fragment, useRef, useState } from 'react'
+import { getUniqueObjectsByKey } from '../../utils/helpers'
+import apiClient from '@api/client'
+import { Loader } from '@components/lib/loader'
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react'
 import CheckIcon from '@heroicons/react/20/solid/CheckIcon'
 import ChevronUpDownIcon from '@heroicons/react/20/solid/ChevronUpDownIcon'
-import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react'
-
-import { Loader } from './loader'
-import apiClient from '../../api/client'
-import { DbRow, PaginationResponse } from '../../types'
-import { getUniqueObjectsByKey } from '../../utils/helpers'
+import { DbRow, PaginationResponse } from '@mytypes'
+import { useQuery } from '@tanstack/react-query'
+import { FC, Fragment, useRef, useState } from 'react'
+import { twMerge } from 'tailwind-merge'
 
 export type AsyncSingleSelectProps<T> = {
 	valueKey: keyof T
@@ -16,6 +15,7 @@ export type AsyncSingleSelectProps<T> = {
 	queryKeys: string[]
 	paginateUrl: string
 	pageSize?: number
+	workspaceId: string
 
 	default?: string
 	name?: string
@@ -48,7 +48,7 @@ function AsyncSingleSelect<T extends DbRow>(props: AsyncSingleSelectProps<T>) {
 			hasNextPageRef.current = data.hasNextPage
 			return data
 		},
-		queryKey: [...props.queryKeys, page, props.pageSize || 15],
+		queryKey: [...props.queryKeys, page, props.pageSize || 15, props.workspaceId],
 		queryFn: () => apiClient(`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${page}&limit=${props.pageSize || 15}`),
 	})
 

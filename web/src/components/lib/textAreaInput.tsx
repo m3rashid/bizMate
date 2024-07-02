@@ -1,4 +1,4 @@
-import { filterBykeys } from '../../utils/helpers'
+import { filterBykeys } from '@utils/helpers'
 import { ChangeEvent, FC, TextareaHTMLAttributes } from 'react'
 import { twMerge } from 'tailwind-merge'
 

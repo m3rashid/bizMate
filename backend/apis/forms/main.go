@@ -8,33 +8,33 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func Setup(app *fiber.App) {
-	app.Get("/forms/one/:formId", utils.CheckAuthMiddlewareButAllowUnauthorized, controllers.Get[models.Form](controllers.GetOptions{
+func Setup(initialRoute string, app *fiber.App) {
+	app.Get(initialRoute+"/one/:formId", utils.CheckAuthMiddlewareButAllowUnauthorized, controllers.Get[models.Form](controllers.GetOptions{
 		ParamKey:               "id",
 		ParamValue:             "formId",
 		DontIncludeWorkspaceID: true,
 	}))
 
-	app.Post("/forms/create", utils.CheckAuthMiddleware, createNewForm)
+	app.Post(initialRoute+"/create", utils.CheckAuthMiddlewareWithWorkspace, createNewForm)
 
-	app.Get("/forms/all", utils.CheckAuthMiddleware, controllers.Paginate[models.Form]())
+	app.Get(initialRoute+"/all", utils.CheckAuthMiddlewareWithWorkspace, controllers.Paginate[models.Form]())
 
-	app.Post("/forms/update", utils.CheckAuthMiddleware, updateFormById)
+	app.Post(initialRoute+"/update", utils.CheckAuthMiddlewareWithWorkspace, updateFormById)
 
-	app.Get("/forms/analysis/:formId", utils.CheckAuthMiddleware, getFormResponseAnalysis)
+	app.Get(initialRoute+"/analysis/:formId", utils.CheckAuthMiddlewareWithWorkspace, getFormResponseAnalysis)
 
-	app.Post("/forms/delete/:formId", utils.CheckAuthMiddleware, controllers.Delete(controllers.DeleteOptions[models.Form]{
+	app.Post(initialRoute+"/delete/:formId", utils.CheckAuthMiddlewareWithWorkspace, controllers.Delete(controllers.DeleteOptions[models.Form]{
 		ParamKey:   "id",
 		ParamValue: "formId",
 	}))
 
-	app.Post("/forms/response/:formId/submit", utils.CheckAuthMiddlewareButAllowUnauthorized, submitFormResponse)
+	app.Post(initialRoute+"/response/:formId/submit", utils.CheckAuthMiddlewareButAllowUnauthorized, submitFormResponse)
 
-	app.Post("/forms/response/:formId/edit", utils.CheckAuthMiddleware, editFormResponse)
+	app.Post(initialRoute+"/response/:formId/edit", utils.CheckAuthMiddlewareWithWorkspace, editFormResponse)
 
-	app.Get("/forms/response/:formId/count", utils.CheckAuthMiddleware, getFormResponseCount)
+	app.Get(initialRoute+"/response/:formId/count", utils.CheckAuthMiddlewareWithWorkspace, getFormResponseCount)
 
-	app.Get("/forms/response/:formId/all", utils.CheckAuthMiddleware, controllers.Paginate[models.FormResponse](controllers.PaginateOptions{
+	app.Get(initialRoute+"/response/:formId/all", utils.CheckAuthMiddlewareWithWorkspace, controllers.Paginate[models.FormResponse](controllers.PaginateOptions{
 		ParamKeys: []string{"formId"},
 	}))
 }

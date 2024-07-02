@@ -1,7 +1,7 @@
-import { PageLoader } from './components/lib/loader'
-import { ActionPopupContainer, MessagePopupContainer } from './components/lib/popups'
-import { AuthState, authAtom, checkAuth, useAuthState } from './hooks/auth'
 import { router } from './router'
+import { PageLoader } from '@components/lib/loader'
+import { ActionPopupContainer, MessagePopupContainer } from '@components/lib/popups'
+import { AuthState, authAtom, checkAuth, useAuthState } from '@hooks/auth'
 import { RouterProvider } from '@tanstack/react-router'
 import { useCallback, useEffect, useState } from 'react'
 import { RecoilRoot } from 'recoil'
@@ -13,13 +13,7 @@ function AppChildren() {
 		if (!auth.isAuthenticated && window.location.pathname !== '/auth/login') window.location.href = '/auth/login'
 	}, [auth.isAuthenticated])
 
-	return (
-		<>
-			<RouterProvider router={router} context={{ auth }} />
-			<MessagePopupContainer />
-			<ActionPopupContainer />
-		</>
-	)
+	return <RouterProvider router={router} context={{ auth }} />
 }
 
 function App() {
@@ -54,8 +48,10 @@ function App() {
 
 	if (!initRes) return <PageLoader />
 	return (
-		<RecoilRoot initializeState={({ set }) => set(authAtom, initRes)}>
+		<RecoilRoot initializeState={({ set }) => set(authAtom, { ...initRes })}>
 			<AppChildren />
+			<MessagePopupContainer />
+			<ActionPopupContainer />
 		</RecoilRoot>
 	)
 }

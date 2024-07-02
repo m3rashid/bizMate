@@ -2,6 +2,7 @@ package models
 
 var AllModels = []interface{}{
 	&User{},
+	&Workspace{},
 	&UserInvite{},
 
 	&Contact{},
@@ -17,8 +18,6 @@ var AllModels = []interface{}{
 
 	&Form{},
 	&FormResponse{},
-
-	&Workspace{},
 
 	&Employee{},
 	&Attendance{},

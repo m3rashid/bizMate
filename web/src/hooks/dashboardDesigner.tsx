@@ -1,8 +1,8 @@
-import { Props } from '../components/forms/exposedProps'
-import { DashboardChart } from '../types'
-import { handleViewTransition } from '../utils/helpers'
+import { Props } from '@components/forms/exposedProps'
 import { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
+import { DashboardChart } from '@mytypes'
+import { handleViewTransition } from '@utils/helpers'
 import { atom, useRecoilState } from 'recoil'
 
 export type DashboardWidget = DashboardChart & {

@@ -1,9 +1,9 @@
-import { useFormDesigner } from '../../hooks/formDesigner'
-import { FormElementInstance } from '../forms/constants'
-import Tooltip from '../lib/tooltip'
+import { FormElementInstance } from '@components/forms/constants'
+import Tooltip from '@components/lib/tooltip'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import XMarkIcon from '@heroicons/react/20/solid/XMarkIcon'
+import { useFormDesigner } from '@hooks/formDesigner'
 import { PropsWithChildren } from 'react'
 import { twMerge } from 'tailwind-merge'
 
