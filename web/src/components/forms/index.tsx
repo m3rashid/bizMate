@@ -1,6 +1,6 @@
 import { FormBuilder as FormBuilderType, SupportedWidgetName } from '@components/forms/constants'
 import FormRenderer from '@components/forms/renderer'
-import { Code, H1, H2, H3, H4, H5, H6, Image, Link, Paragraph } from '@components/lib/extras'
+import { Code, Heading, Image, Link, Paragraph } from '@components/lib/extras'
 import Input from '@components/lib/input'
 import PhoneNumberInput from '@components/lib/phoneNumberInput'
 import RadioInput from '@components/lib/radioInput'
@@ -22,12 +22,7 @@ export const widgetMap: Record<ExplicitAndAll<string, SupportedWidgetName>, { wi
 	image: { widget: Image },
 	link: { widget: Link },
 	code: { widget: Code },
-	h1: { widget: H1 },
-	h2: { widget: H2 },
-	h3: { widget: H3 },
-	h4: { widget: H4 },
-	h5: { widget: H5 },
-	h6: { widget: H6 },
+	heading: { widget: Heading },
 	singleSelectInput: { widget: SingleSelectInput },
 	selectListInput: { widget: SelectListInput },
 	radioInput: { widget: RadioInput },

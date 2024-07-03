@@ -5,12 +5,14 @@ import { CSS } from '@dnd-kit/utilities'
 import XMarkIcon from '@heroicons/react/20/solid/XMarkIcon'
 import { useFormDesigner } from '@hooks/formDesigner'
 import { PropsWithChildren } from 'react'
+import { useTranslation } from 'react-i18next'
 import { twMerge } from 'tailwind-merge'
 
 export type ElementWrapperProps = PropsWithChildren & {
 	item: FormElementInstance
 }
 function ElementWrapper(props: ElementWrapperProps) {
+	const { t } = useTranslation()
 	const { removeNode, setFormDesigner, selectedNode } = useFormDesigner()
 	const { attributes, setNodeRef, listeners, transform, transition, isDragging } = useSortable({ id: props.item.id })
 
@@ -36,7 +38,7 @@ function ElementWrapper(props: ElementWrapperProps) {
 					removeNode(props.item.id)
 				}}
 			>
-				<Tooltip position="right" label="Double Click to remove">
+				<Tooltip position="right" label={t('Double Click to remove')}>
 					<XMarkIcon className="-mr-0.5 h-6 w-6" />
 				</Tooltip>
 			</div>

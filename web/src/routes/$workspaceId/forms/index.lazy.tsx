@@ -20,6 +20,7 @@ import { Link, createFileRoute, useParams } from '@tanstack/react-router'
 import { handleViewTransition } from '@utils/helpers'
 import dayjs from 'dayjs'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { twMerge } from 'tailwind-merge'
 
 export const Route = createFileRoute('/$workspaceId/forms/')({
@@ -28,6 +29,7 @@ export const Route = createFileRoute('/$workspaceId/forms/')({
 })
 
 function FormCard(props: Form & { onEdit: () => void; workspaceId: string }) {
+	const { t } = useTranslation()
 	const [showActions, setShowActions] = useState(false)
 	const { addMessagePopup, addActionPopup, removeActionPopup } = usePopups()
 	const arr = JSON.parse(props.previousVersionIDs)
@@ -51,13 +53,13 @@ function FormCard(props: Form & { onEdit: () => void; workspaceId: string }) {
 			title: 'Are you sure ?',
 			children: (
 				<>
-					<h3 className="text-sm text-disabled">This is a potentially destructive action! Once deleted, the form cannot be retrieved again</h3>
+					<h3 className="text-sm text-disabled">{t('delete_warning')}</h3>
 					<div className="mt-2 flex items-center justify-between">
 						<Button size="small" variant="simple" onClick={() => removeActionPopup('sureToDeleteForm')} className="py-1">
-							Cancel
+							{t('Cancel')}
 						</Button>
 						<Button size="small" variant="danger" onClick={onDeleteConfirm} className="py-1">
-							Delete
+							{t('Delete')}
 						</Button>
 					</div>
 				</>
@@ -88,7 +90,7 @@ function FormCard(props: Form & { onEdit: () => void; workspaceId: string }) {
 							</div>
 							<div className="flex items-center gap-2">
 								{props.allowAnonymousResponse ? <LockOpenIcon className="h-4 w-4" /> : <LockClosedIcon className="h-4 w-4" />}
-								<span>{props.allowAnonymousResponse ? 'Accepting anonymous responses' : 'Not accepting anonymous responses'}</span>
+								<span>{props.allowAnonymousResponse ? t('Accepting anonymous responses') : t('Not accepting anonymous responses')}</span>
 							</div>
 							<div className="flex items-center gap-2">
 								<ArrowPathIcon className="h-4 w-4" />
@@ -101,7 +103,9 @@ function FormCard(props: Form & { onEdit: () => void; workspaceId: string }) {
 				</Tooltip>
 			</div>
 
-			<div className="mb-2 text-xs text-disabled">Created: {dayjs(props.createdAt).format('DD MMM, YYYY - HH:mm A')}</div>
+			<div className="mb-2 text-xs text-disabled">
+				{t('Created')}: {dayjs(props.createdAt).format('DD MMM, YYYY - HH:mm A')}
+			</div>
 			{props.description ? <div className="text-sm">{props.description}</div> : null}
 
 			{showActions ? (

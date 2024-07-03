@@ -8,6 +8,7 @@ import useAddDashboardWidget from '@hooks/addDashboardWidget'
 import { usePopups } from '@hooks/popups'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { FormEvent, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 type AddKpiModelProps = {
 	workspaceId: string
@@ -15,6 +16,7 @@ type AddKpiModelProps = {
 }
 
 function AddKpiModel(props: AddKpiModelProps) {
+	const { t } = useTranslation()
 	const { addMessagePopup } = usePopups()
 	const [selectedModel, setSelectedModel] = useState<string>('')
 	const { widgetType, closeModal } = useAddDashboardWidget()
@@ -30,7 +32,7 @@ function AddKpiModel(props: AddKpiModelProps) {
 			apiClient(`/${props.workspaceId}/dashboards/kpis/${props.dashboardId}/create`, { method: 'POST', body: JSON.stringify(kpiData) }),
 		onSuccess: () => {
 			closeModal()
-			addMessagePopup({ message: 'Kpi created successfully', type: 'success', id: 'add-kpi-success' })
+			addMessagePopup({ message: t('Kpi created successfully'), type: 'success', id: 'add-kpi-success' })
 		},
 	})
 
@@ -43,7 +45,7 @@ function AddKpiModel(props: AddKpiModelProps) {
 		e.preventDefault()
 		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any
 		if (!formData.model || !formData.modelField || !formData.aggregationType || !formData.title || !formData.timePeriod) {
-			addMessagePopup({ message: 'Please fill all required fields', type: 'error', id: 'add-kpi-error' })
+			addMessagePopup({ message: t('Please fill all required fields'), type: 'error', id: 'add-kpi-error' })
 			return
 		}
 		createKpi({ ...formData, timePeriod: Number(formData.timePeriod) })
@@ -54,24 +56,24 @@ function AddKpiModel(props: AddKpiModelProps) {
 		<form className="h-full" onSubmit={handleAddKpi}>
 			<div className="flex flex-col gap-4 p-4">
 				<Input name="title" label="KPI Title" required />
-				<TextAreaInput name="description" label="Description" />
+				<TextAreaInput name="description" label={t('Description')} />
 
 				<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
 					<SingleSelectInput
 						required
 						name="model"
-						label="Chose data model"
+						label={t('Chose data model')}
 						value={selectedModel}
 						onChange={(val) => setSelectedModel(val)}
 						options={Object.keys(dashboardModels || {})}
-						descriptionText="Type of the data model you want to aggregate"
+						descriptionText={t('Type of the data model you want to aggregate')}
 					/>
 					<SingleSelectInput
 						required
 						name="modelField"
-						label="Data model field"
+						label={t('Data model field')}
 						options={selectedModelFields}
-						descriptionText="Field of the data model you want aggregate"
+						descriptionText={t('Field of the data model you want aggregate')}
 					/>
 				</div>
 
@@ -79,25 +81,25 @@ function AddKpiModel(props: AddKpiModelProps) {
 					<SingleSelectInput
 						required
 						name="aggregationType"
-						label="Aggregation type"
+						label={t('Aggregation type')}
 						options={kpiAggregationType as any}
-						descriptionText="Operation to be performed on the data model field"
+						descriptionText={t('Operation to be performed on the data model field')}
 					/>
 					<Input
 						rootClassName="sm:w-64"
 						type="number"
 						name="timePeriod"
-						label="Time period"
+						label={t('Time period')}
 						required
-						descriptionText="Data for n number of days before"
+						descriptionText={t('Data for n number of days before')}
 					/>
 				</div>
 			</div>
 			<div className="flex flex-grow-0 items-center justify-between border-t border-borderColor px-3 py-2">
 				<Button variant="simple" type="reset">
-					Reset
+					{t('Reset')}
 				</Button>
-				<Button type="submit">Confirm</Button>
+				<Button type="submit">{t('Confirm')}</Button>
 			</div>
 		</form>
 	)

@@ -38,7 +38,7 @@ function Button(props: ButtonProps) {
 			)}
 		>
 			{props.LeftIcon ? props.LeftIcon : null}
-			{props.label || props.children}
+			{props.label ? props.label : props.children}
 			{props.RightIcon ? props.RightIcon : null}
 		</button>
 	)

@@ -7,12 +7,14 @@ import { usePopups } from '@hooks/popups'
 import { Workspace } from '@mytypes'
 import { useMutation } from '@tanstack/react-query'
 import { FormEvent, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 type CreateWorkspaceProps = {
 	onSuccess?: () => void
 }
 
 export function CreateWorkspace(props: CreateWorkspaceProps) {
+	const { t } = useTranslation()
 	const { addMessagePopup } = usePopups()
 	const [open, setOpen] = useState(false)
 
@@ -42,7 +44,7 @@ export function CreateWorkspace(props: CreateWorkspaceProps) {
 			>
 				<div className="flex flex-col items-center justify-center rounded-lg bg-skeletonLight p-4 group-hover:bg-skeletonDark">
 					<PlusIcon className="h-20 w-20 text-disabled group-hover:text-black" />
-					New Workspace
+					{t('New workspace')}
 				</div>
 			</div>
 
@@ -54,10 +56,10 @@ export function CreateWorkspace(props: CreateWorkspaceProps) {
 
 					<div className="flex items-center justify-between border-t border-borderColor p-2">
 						<Button size="small" variant="simple" type="button" onClick={() => setOpen(false)}>
-							Close
+							{t('Close')}
 						</Button>
 						<Button size="small" type="submit">
-							Create Workspace
+							{t('Create workspace')}
 						</Button>
 					</div>
 				</form>

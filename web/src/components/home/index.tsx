@@ -4,22 +4,24 @@ import { PageLoader } from '@components/lib/loader'
 import Tabs from '@components/lib/tabs'
 import { Dashboard, PaginationResponse } from '@mytypes'
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 
 type HomePageDashboardsProps = {
 	workspaceId: string
 }
 
 function HomePageDashboards(props: HomePageDashboardsProps) {
+	const { t } = useTranslation()
 	const { data: dashboardPaginationResponse, isPending } = useQuery<PaginationResponse<Dashboard>>({
 		queryKey: ['getDashboards', props.workspaceId],
 		queryFn: () => apiClient(`/${props.workspaceId}/dashboards/all`),
 	})
 
 	if (isPending) return <PageLoader />
-	if (!dashboardPaginationResponse || dashboardPaginationResponse.docs.length === 0) return <div>No Dashboards Found</div>
+	if (!dashboardPaginationResponse || dashboardPaginationResponse.docs.length === 0) return <div>{t('No Dashboards Found')}</div>
 
 	const activeDashboards = dashboardPaginationResponse.docs.filter((t) => t.active)
-	if (activeDashboards.length === 0) return <div>No Active Dashboards Found</div>
+	if (activeDashboards.length === 0) return <div>{t('No Active Dashboards Found')}</div>
 
 	return (
 		<Tabs

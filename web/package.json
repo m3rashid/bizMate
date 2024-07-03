@@ -25,6 +25,7 @@
 		"axios": "^1.7.2",
 		"chart.js": "^4.4.3",
 		"dayjs": "^1.11.11",
+		"i18next": "^23.11.5",
 		"papaparse": "^5.4.1",
 		"query-string": "^9.0.0",
 		"react": "^18.3.1",
@@ -32,6 +33,7 @@
 		"react-dom": "^18.3.1",
 		"react-dropzone": "^14.2.3",
 		"react-email-editor": "^1.7.10",
+		"react-i18next": "^14.1.2",
 		"react-responsive-masonry": "^2.2.0",
 		"reactflow": "^11.11.3",
 		"recoil": "^0.7.7",
@@ -60,6 +62,7 @@
 		"prettier-plugin-tailwindcss": "^0.5.14",
 		"tailwindcss": "^3.4.3",
 		"typescript": "^5.4.5",
-		"vite": "^5.2.11"
+		"vite": "^5.2.11",
+		"vite-plugin-pwa": "^0.20.0"
 	}
 }
