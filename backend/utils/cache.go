@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/go-redis/redis/v8"
@@ -10,12 +9,9 @@ import (
 var redisClient *redis.Client
 
 func GetRedisClient() *redis.Client {
+	redisUrl := os.Getenv("REDIS_URL")
 	if redisClient == nil {
-		fmt.Println("Creating new redis client")
-		newRedisClient := redis.NewClient(&redis.Options{
-			Addr: os.Getenv("REDIS_URL"),
-		})
-
+		newRedisClient := redis.NewClient(&redis.Options{Addr: redisUrl})
 		redisClient = newRedisClient
 	}
 

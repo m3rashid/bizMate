@@ -34,7 +34,7 @@ func Paginate[Model DbModel](_options ...PaginateOptions) func(*fiber.Ctx) error
 	return func(ctx *fiber.Ctx) error {
 		reqQuery := utils.PaginationRequestQuery{}
 		if err := ctx.QueryParser(&reqQuery); err != nil {
-			return ctx.Status(fiber.StatusBadRequest).JSON("Bad Request")
+			return ctx.Status(fiber.StatusBadRequest).JSON(utils.TranslateToLocalLanguage(ctx, "Bad Request"))
 		}
 
 		var workspaceId uuid.UUID

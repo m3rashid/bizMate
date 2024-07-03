@@ -60,6 +60,6 @@ func Delete[Model DbModel](_options ...DeleteOptions[Model]) func(*fiber.Ctx) er
 			}
 		}
 
-		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"message": "deleted successfully"})
+		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"message": utils.TranslateToLocalLanguage(ctx, "deleted successfully")})
 	}
 }
