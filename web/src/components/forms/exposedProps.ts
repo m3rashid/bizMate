@@ -4,13 +4,6 @@ import { Option } from '@mytypes'
 export type SupportedValues = 'string' | 'textarea' | 'number' | 'boolean' | 'richText' | Array<string | Option> | 'selectOptions' | 'children'
 export type Props = Record<string, [boolean, string, SupportedValues]> // [required, description, supportedValues]
 
-// export const buttonProps: Props = {
-// 	label: [true, 'Text written on the button', 'string'],
-// 	type: [false, 'HTML type of button', ['button', 'reset']],
-// 	size: [false, 'Size of the button', ['sm', 'md', 'lg']],
-// 	variant: [false, 'Variant(presets) of the button', ['primary', 'danger', 'secondary', 'disabled', 'sucess']],
-// }
-
 export const phoneNumberInputProps: Props = {
 	name: [true, 'Name of the input element', 'string'],
 	label: [true, 'Label of this field', 'string'],

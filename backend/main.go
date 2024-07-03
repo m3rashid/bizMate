@@ -20,12 +20,16 @@ import (
 	"strings"
 	"time"
 
+	// "github.com/nicksnyder/go-i18n/v2/i18n"
+
+	"github.com/gofiber/contrib/fiberi18n/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/favicon"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/joho/godotenv"
+	"golang.org/x/text/language"
 )
 
 func init() {
@@ -81,8 +85,17 @@ func main() {
 		}))
 	}
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World!")
+	app.Use(
+		fiberi18n.New(&fiberi18n.Config{
+			FormatBundleFile: "json",
+			RootPath:         "./i18n",
+			DefaultLanguage:  language.English,
+			AcceptLanguages:  []language.Tag{language.English, language.Hindi},
+		}),
+	)
+
+	app.Get("/", func(ctx *fiber.Ctx) error {
+		return ctx.SendString(utils.TranslateToLocalLanguage(ctx, "Hello, World!"))
 	})
 
 	utils.MigrateModels(models.AllModels)

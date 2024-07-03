@@ -21,7 +21,7 @@ const (
 func exportTable(ctx *fiber.Ctx) error {
 	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	if userId == uuid.Nil {
-		return ctx.Status(fiber.StatusUnauthorized).JSON("Unauthorized")
+		return ctx.SendStatus(fiber.StatusUnauthorized)
 	}
 
 	reqBody := exportTableReqBodyType{}

@@ -15,6 +15,7 @@ exclude_dir = [
 	".vscode",
 	".idea",
 	"public",
+	".data",
 	"data",
 ]
 exclude_file = []

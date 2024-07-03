@@ -13,31 +13,38 @@ import (
 var awsConfig *aws.Config
 
 func newConfig() (aws.Config, error) {
+	awsRegion := os.Getenv("AWS_REGION")
 	if awsConfig == nil {
-		cfg, err := config.LoadDefaultConfig(context.Background(), config.WithRegion(os.Getenv("AWS_REGION")), config.WithSharedConfigProfile(""))
+		cfg, err := config.LoadDefaultConfig(context.Background(), config.WithRegion(awsRegion), config.WithSharedConfigProfile(""))
 		if err != nil {
 			return aws.Config{}, err
 		}
-
 		awsConfig = &cfg
 	}
+
 	return *awsConfig, nil
 }
 
 func GetPresignURL() (string, error) {
+
 	cfg, err := newConfig()
 	if err != nil {
 		return "", err
 	}
+
 	s3client := s3.NewFromConfig(cfg)
 	presignClient := s3.NewPresignClient(s3client)
+
+	awsBucketName := os.Getenv("AWS_BUCKET_NAME")
 	presignedUrl, err := presignClient.PresignGetObject(context.Background(), &s3.GetObjectInput{
-		Bucket: aws.String(os.Getenv("AWS_BUCKET_NAME")),
+		Bucket: aws.String(awsBucketName),
 		Key:    aws.String(RandomString32()),
 	}, s3.WithPresignExpires(time.Minute*15))
+
 	if err != nil {
 		return "", err
 	}
+
 	return presignedUrl.URL, nil
 }
 
@@ -46,14 +53,19 @@ func PutPresignURL(key string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	s3client := s3.NewFromConfig(cfg)
 	presignClient := s3.NewPresignClient(s3client)
+
+	awsBucketName := os.Getenv("AWS_BUCKET_NAME")
 	presignedUrl, err := presignClient.PresignPutObject(context.Background(), &s3.PutObjectInput{
-		Bucket: aws.String(os.Getenv("AWS_BUCKET_NAME")),
+		Bucket: aws.String(awsBucketName),
 		Key:    aws.String(key),
 	}, s3.WithPresignExpires(time.Minute*15))
+
 	if err != nil {
 		return "", err
 	}
+
 	return presignedUrl.URL, nil
 }

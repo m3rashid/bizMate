@@ -6,7 +6,6 @@ import (
 	"bizMate/utils"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
 
 type formReqBody struct {
@@ -51,9 +50,6 @@ var createNewForm = controllers.Create(models.FORM_MODEL_NAME, controllers.Creat
 func updateFormById(ctx *fiber.Ctx) error {
 	updateBody := formReqBody{}
 	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
-	if userId == uuid.Nil {
-		return ctx.Status(fiber.StatusUnauthorized).JSON("Unauthorized")
-	}
 
 	if err := utils.ParseBodyAndValidate(ctx, &updateBody); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
