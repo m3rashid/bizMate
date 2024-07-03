@@ -32,12 +32,7 @@ export type SupportedWidget =
 	| { name: 'paragraph'; props: GetProps<typeof paragraphProps> }
 	| { name: 'image'; props: GetProps<typeof imageProps> }
 	| { name: 'link'; props: GetProps<typeof linkProps> }
-	| { name: 'h1'; props: GetProps<typeof headingProps> }
-	| { name: 'h2'; props: GetProps<typeof headingProps> }
-	| { name: 'h3'; props: GetProps<typeof headingProps> }
-	| { name: 'h4'; props: GetProps<typeof headingProps> }
-	| { name: 'h5'; props: GetProps<typeof headingProps> }
-	| { name: 'h6'; props: GetProps<typeof headingProps> }
+	| { name: 'heading'; props: GetProps<typeof headingProps> }
 	| { name: 'code'; props: GetProps<typeof codeProps> }
 	| { name: 'togglerInput'; props: GetProps<typeof togglerInputProps> }
 	| { name: 'singleSelectInput'; props: GetProps<typeof selectInputProps> }
@@ -66,12 +61,7 @@ export type FormBuilder = FC<FormRenderProps> & {
 
 export type SupportedWidgetsArray = Array<SupportedWidget & { label: string; icon?: FC<SVGProps<SVGSVGElement>> }>
 export const supportedWidgets: SupportedWidgetsArray = [
-	{ name: 'h1', props: headingProps, label: 'Heading 1' },
-	{ name: 'h2', props: headingProps, label: 'Heading 2' },
-	{ name: 'h3', props: headingProps, label: 'Heading 3' },
-	{ name: 'h4', props: headingProps, label: 'Heading 4' },
-	{ name: 'h5', props: headingProps, label: 'Heading 5' },
-	{ name: 'h6', props: headingProps, label: 'Heading 6' },
+	{ name: 'heading', props: headingProps, label: 'Heading' },
 	{ name: 'paragraph', props: paragraphProps, label: 'Paragraph', icon: ListBulletIcon },
 	{ name: 'togglerInput', props: togglerInputProps, label: 'Toggle Input', icon: AdjustmentsVerticalIcon },
 	{ name: 'input', props: inputProps, label: 'Input', icon: Bars2Icon },

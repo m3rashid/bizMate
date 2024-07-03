@@ -3,6 +3,7 @@ import CheckCircleIcon from '@heroicons/react/24/solid/CheckCircleIcon'
 import { Option } from '@mytypes'
 import { shuffleArray } from '@utils/helpers'
 import { InputHTMLAttributes, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { twMerge } from 'tailwind-merge'
 
 export type SimpleRadioProps = InputHTMLAttributes<HTMLInputElement> & {
@@ -18,8 +19,9 @@ export type SimpleRadioProps = InputHTMLAttributes<HTMLInputElement> & {
 }
 
 function RadioInput(props: SimpleRadioProps) {
+	const { t } = useTranslation()
 	const options = useMemo(() => {
-		if (props.options.length === 0) return [{ label: 'No options available', value: '' }]
+		if (props.options.length === 0) return [{ label: t('No options available'), value: '' }]
 		if (props.shuffle) shuffleArray(props.options)
 		if (typeof props.options[0] === 'string' || typeof props.options[0] === 'number') {
 			return props.options.map<Option>((op) => ({ label: op as string, value: op as string }))

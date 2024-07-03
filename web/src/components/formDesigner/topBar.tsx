@@ -7,12 +7,14 @@ import { usePopups } from '@hooks/popups'
 import { Form, StringBoolean } from '@mytypes'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 
 type FormDesignerTopBarProps = {
 	workspaceId: string
 }
 
 function FormDesignerTopBar(props: FormDesignerTopBarProps) {
+	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const { addMessagePopup } = usePopups()
 	const { viewType, changeViewType, meta, rootProps } = useFormDesigner()
@@ -72,15 +74,10 @@ function FormDesignerTopBar(props: FormDesignerTopBarProps) {
 				<Tooltip
 					label={
 						<ul className="block list-disc pl-4">
-							<li className="list-item">Double click on any element to select</li>
-							<li className="list-item">Click on the elements in the left panel to add to form</li>
-							<li className="list-item">Drag elements to re-order</li>
-							<li className="list-item">Set Extra properties for elements in the right panel</li>
-							<li className="list-item">
-								All the
-								<span className="mx-[2px] rounded-md bg-gray-700 px-1 py-[1px] text-white">className</span>
-								props mean tailwind classes
-							</li>
+							<li className="list-item">{t('Double click on any element to select')}</li>
+							<li className="list-item">{t('Click on the elements in the left panel to add to form')}</li>
+							<li className="list-item">{t('Drag elements to re-order')}</li>
+							<li className="list-item">{t('Set Extra properties for elements in the right panel')}</li>
 						</ul>
 					}
 				>

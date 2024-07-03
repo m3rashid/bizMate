@@ -5,6 +5,7 @@ import { useAuthState } from '@hooks/auth'
 import { usePopups } from '@hooks/popups'
 import { useRouterState } from '@tanstack/react-router'
 import { Suspense, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 
 function GoogleIcon() {
 	return (
@@ -38,8 +39,9 @@ type LoginWithGoogleProps = {
 }
 
 function LoginWithGoogle(props: LoginWithGoogleProps) {
-	const { location } = useRouterState()
+	const { t } = useTranslation()
 	const { setAuth } = useAuthState()
+	const { location } = useRouterState()
 	const { addMessagePopup } = usePopups()
 	const windowRef = useRef<Window | null>(null)
 	const previousUrlRef = useRef<string | null>(null)
@@ -103,7 +105,7 @@ function LoginWithGoogle(props: LoginWithGoogleProps) {
 	return (
 		<Suspense fallback={<PageLoader />}>
 			<Button LeftIcon={<GoogleIcon />} variant="primary" onClick={openSignInWindow}>
-				Login with Google
+				{t('Login with Google')}
 			</Button>
 		</Suspense>
 	)

@@ -9,6 +9,7 @@ import { Project } from '@mytypes'
 import { Link, createLazyFileRoute, useParams } from '@tanstack/react-router'
 import dayjs from 'dayjs'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { twMerge } from 'tailwind-merge'
 
 export const Route = createLazyFileRoute('/$workspaceId/projects/')({
@@ -16,6 +17,7 @@ export const Route = createLazyFileRoute('/$workspaceId/projects/')({
 })
 
 function ProjectCard(props: Project & { onEdit: () => void; workspaceId: string }) {
+	const { t } = useTranslation()
 	function handleDeleteProject() {}
 
 	return (
@@ -33,7 +35,9 @@ function ProjectCard(props: Project & { onEdit: () => void; workspaceId: string 
 					</div>
 
 					<div>
-						<div className="text-xs text-disabled">Created: {dayjs(props.createdAt).format('DD MMM, YYYY - HH:mm A')}</div>
+						<div className="text-xs text-disabled">
+							{t('Created')}: {dayjs(props.createdAt).format('DD MMM, YYYY - HH:mm A')}
+						</div>
 						<div className="text-sm">{props.description}</div>
 					</div>
 				</div>
@@ -51,19 +55,19 @@ function ProjectCard(props: Project & { onEdit: () => void; workspaceId: string 
 			<div className="mt-4 flex w-full flex-wrap gap-2">
 				<Tooltip label="Project Guidelines" position="right">
 					<Link to="/$workspaceId/projects/$projectId/readme" params={{ projectId: props.id, workspaceId: props.workspaceId }}>
-						<Chip variant="simple">Readme</Chip>
+						<Chip variant="simple">{t('Readme')}</Chip>
 					</Link>
 				</Tooltip>
 
 				<Tooltip label="Project Guidelines" position="right">
 					<Link to="/$workspaceId/projects/$projectId/guidelines" params={{ projectId: props.id, workspaceId: props.workspaceId }}>
-						<Chip variant="simple">Guidelines</Chip>
+						<Chip variant="simple">{t('Guidelines')}</Chip>
 					</Link>
 				</Tooltip>
 
 				<Tooltip label="Project Guidelines" position="right">
 					<Link to="/$workspaceId/projects/$projectId/docs" params={{ projectId: props.id, workspaceId: props.workspaceId }}>
-						<Chip variant="simple">Docs</Chip>
+						<Chip variant="simple">{t('Docs')}</Chip>
 					</Link>
 				</Tooltip>
 			</div>

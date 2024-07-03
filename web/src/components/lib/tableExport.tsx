@@ -10,6 +10,7 @@ import { ExportableTable, Option } from '@mytypes'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { handleViewTransition } from '@utils/helpers'
 import { FormEvent, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 export type TableExportProps = {
 	tableName: ExportableTable
@@ -25,6 +26,7 @@ const selectOptions: Option[] = [
 ]
 
 function TableExport(props: TableExportProps) {
+	const { t } = useTranslation()
 	const { addMessagePopup } = usePopups()
 	const [open, setOpen] = useState(false)
 
@@ -69,7 +71,7 @@ function TableExport(props: TableExportProps) {
 	return (
 		<>
 			<Button size="small" variant="sucess" LeftIcon={<TableCellsIcon className="h-5 w-5" />} {...props.buttonProps} onClick={() => setOpen(true)}>
-				Export
+				{t('Export')}
 			</Button>
 
 			<Modal title="Export Data" open={open} setOpen={() => handleViewTransition(() => setOpen(false))}>
@@ -77,7 +79,7 @@ function TableExport(props: TableExportProps) {
 					<PageLoader />
 				) : !tableFieldsData || tableFieldsData.fields.length === 0 ? (
 					<div>
-						<label className="block text-sm font-medium leading-6 text-gray-900">No columns to select</label>
+						<label className="block text-sm font-medium leading-6 text-gray-900">{t('No columns to select')}</label>
 					</div>
 				) : (
 					<form className="flex w-full flex-col gap-4" onSubmit={handleSubmit}>
@@ -85,7 +87,7 @@ function TableExport(props: TableExportProps) {
 							<SingleSelectInput name="format" label="Export format" options={selectOptions} />
 						</div>
 
-						<label className="block px-4 text-sm font-medium leading-6 text-gray-900">Select Columns to include</label>
+						<label className="block px-4 text-sm font-medium leading-6 text-gray-900">{t('Select Columns to include')}</label>
 
 						<div className="grid max-h-80 grid-cols-1 gap-2 overflow-auto p-4 pt-0 md:grid-cols-2 md:gap-4">
 							{tableFieldsData.fields.map((field) => (
@@ -95,9 +97,9 @@ function TableExport(props: TableExportProps) {
 
 						<div className="flex flex-grow-0 items-center justify-between p-4">
 							<Button variant="simple" type="reset">
-								Reset
+								{t('Reset')}
 							</Button>
-							<Button type="submit">Export</Button>
+							<Button type="submit">{t('Export')}</Button>
 						</div>
 					</form>
 				)}

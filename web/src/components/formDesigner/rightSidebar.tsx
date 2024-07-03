@@ -6,6 +6,7 @@ import { useFormDesigner } from '@hooks/formDesigner'
 import { usePopups } from '@hooks/popups'
 import { camelCaseToSentenceCase, generateRandomString } from '@utils/helpers'
 import { FormEvent, MouseEvent, useMemo, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 
 type PropsToMetaProps = { _props: Props; values: Record<string, any> }
 function propsToMeta({ _props, values }: PropsToMetaProps): FormElementInstance[] {
@@ -74,6 +75,7 @@ function propsToMeta({ _props, values }: PropsToMetaProps): FormElementInstance[
 }
 
 function RightSidebar() {
+	const { t } = useTranslation()
 	const { addMessagePopup } = usePopups()
 	const { selectedNode, getSelectedNodeProps, updateNode, setFormDesigner } = useFormDesigner()
 
@@ -130,10 +132,10 @@ function RightSidebar() {
 					<h2 className="text-lg font-semibold">{selectedNode ? 'Element settings' : 'Form Settings'}</h2>
 					<div className="flex items-center gap-2">
 						<Button size="small" type="submit" className="py-1">
-							Save
+							{t('Save')}
 						</Button>
 						<Button size="small" variant="simple" onClick={handleReset} className="py-1">
-							Reset
+							{t('Reset')}
 						</Button>
 					</div>
 				</div>

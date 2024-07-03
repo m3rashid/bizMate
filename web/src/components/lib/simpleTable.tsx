@@ -79,9 +79,7 @@ function SimpleTable<T extends DbRow>(props: SimpleTableProps<T>) {
 						</div>
 					) : props.emptyState ? (
 						props.emptyState
-					) : (
-						<div className=""></div>
-					)
+					) : null
 				) : (
 					<div className="-my-2">
 						<div className="inline-block min-w-full py-2 align-middle">

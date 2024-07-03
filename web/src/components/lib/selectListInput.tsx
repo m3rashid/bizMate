@@ -11,6 +11,7 @@ import XMarkIcon from '@heroicons/react/24/outline/XMarkIcon'
 import { usePopups } from '@hooks/popups'
 import { handleViewTransition } from '@utils/helpers'
 import { Dispatch, FormEvent, SetStateAction, useCallback, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { twMerge } from 'tailwind-merge'
 
 function AddEditModal(props: {
@@ -19,6 +20,7 @@ function AddEditModal(props: {
 	setOpen: Dispatch<SetStateAction<boolean>>
 	editData?: string
 }) {
+	const { t } = useTranslation()
 	const { addMessagePopup } = usePopups()
 
 	function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -33,13 +35,13 @@ function AddEditModal(props: {
 	}
 
 	return (
-		<Modal open={props.open} setOpen={props.setOpen} title={!!props.editData ? 'Edit option' : 'Add Option'}>
+		<Modal open={props.open} setOpen={props.setOpen} title={!!props.editData ? t('Update option') : t('Add Option')}>
 			<form className="flex h-full flex-col gap-4 p-4" onSubmit={handleSubmit}>
 				<Input name="value" label="Value" required defaultValue={props.editData ?? ''} />
 
 				<div className="flex flex-grow-0 items-center justify-between pt-3">
 					<Button variant="simple" type="reset">
-						Reset
+						{t('Reset')}
 					</Button>
 					<Button type="submit" label={!!props.editData ? 'Update option' : 'Add Option'} />
 				</div>
@@ -94,6 +96,7 @@ export type SelectListInputProps = {
 }
 
 function SelectListInput(props: SelectListInputProps) {
+	const { t } = useTranslation()
 	const { addMessagePopup } = usePopups()
 	const [open, setOpen] = useState(false)
 	const [options, setOptions] = useState<string[]>([])
@@ -166,7 +169,7 @@ function SelectListInput(props: SelectListInputProps) {
 				<div className="flex flex-col gap-2">
 					<AddEditModal {...{ open, setOpen, onSubmit, editData }} />
 
-					<label className="block text-sm font-medium text-gray-900">Options</label>
+					<label className="block text-sm font-medium text-gray-900">{t('Options')}</label>
 					<input type="hidden" name={props.name} required={props.required} value={JSON.stringify(options)} />
 
 					<SortableContext items={options}>

@@ -1,3 +1,4 @@
+import { headingTypes } from '@components/lib/extras'
 import { Option } from '@mytypes'
 
 export type SupportedValues = 'string' | 'textarea' | 'number' | 'boolean' | 'richText' | Array<string | Option> | 'selectOptions' | 'children'
@@ -78,6 +79,7 @@ export const linkProps: Props = {
 
 export const headingProps: Props = {
 	text: [false, 'Text you want to show', 'string'],
+	type: [false, 'Type of heading', headingTypes as any],
 }
 
 export const codeProps: Props = {

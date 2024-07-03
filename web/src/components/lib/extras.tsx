@@ -1,5 +1,6 @@
+import { filterBykeys } from '@utils/helpers'
+import { AnchorHTMLAttributes, FC, HTMLAttributes, ImgHTMLAttributes, createElement } from 'react'
 import { twMerge } from 'tailwind-merge'
-import { AnchorHTMLAttributes, HTMLAttributes, ImgHTMLAttributes } from 'react'
 
 export type ParagraphProps = Omit<HTMLAttributes<HTMLParagraphElement>, 'children'> & {
 	text: string
@@ -28,53 +29,25 @@ export function Link(props: LinkProps) {
 	)
 }
 
-export type HeadingProps = Omit<HTMLAttributes<HTMLHeadingElement>, 'children'> & { text: string }
-export function H1(props: HeadingProps) {
-	return (
-		<h1 {...props} className={twMerge('mx-0 mb-2 mt-2 block text-3xl font-bold', props.className)}>
-			{props.text}
-		</h1>
-	)
-}
+export const headingTypes = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] as const
+type HeadingType = (typeof headingTypes)[number]
+export const headingVariants: Record<HeadingType, string> = {
+	h1: 'my-2 text-4xl',
+	h2: 'my-2 text-3xl',
+	h3: 'my-2 text-2xl',
+	h4: 'my-1 text-xl',
+	h5: 'my-1 text-lg',
+	h6: 'my-1 text-md ',
+} as const
+export type HeadingProps = Omit<HTMLAttributes<HTMLHeadingElement>, 'children'> & { text: string; type?: HeadingType }
+export const Heading: FC<HeadingProps> = (props) => {
+	const type = props.type && headingTypes.includes(props.type) ? props.type : headingTypes[0]
 
-export function H2(props: HeadingProps) {
-	return (
-		<h2 {...props} className={twMerge('mx-0 mb-3 mt-3 block text-2xl font-bold', props.className)}>
-			{props.text}
-		</h2>
-	)
-}
-
-export function H3(props: HeadingProps) {
-	return (
-		<h3 {...props} className={twMerge('mx-0 mb-4 mt-4 block text-xl font-bold', props.className)}>
-			{props.text}
-		</h3>
-	)
-}
-
-export function H4(props: HeadingProps) {
-	return (
-		<h4 {...props} className={twMerge('mx-0 mb-5 mt-5 block text-lg font-bold', props.className)}>
-			{props.text}
-		</h4>
-	)
-}
-
-export function H5(props: HeadingProps) {
-	return (
-		<h5 {...props} className={twMerge('text-md mx-0 mb-6 mt-6 block font-bold', props.className)}>
-			{props.text}
-		</h5>
-	)
-}
-
-export function H6(props: HeadingProps) {
-	return (
-		<h6 {...props} className={twMerge('mx-0 mb-8 mt-8 block text-sm font-bold', props.className)}>
-			{props.text}
-		</h6>
-	)
+	return createElement(type, {
+		...filterBykeys(props, ['text', 'type', 'className']),
+		className: twMerge('mx-0 block font-bold', headingVariants[type], props.className),
+		children: props.text,
+	})
 }
 
 export type CodeProps = { code: string; className?: string }

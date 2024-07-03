@@ -4,6 +4,7 @@ import ChevronUpDownIcon from '@heroicons/react/20/solid/ChevronUpDownIcon'
 import { Option } from '@mytypes'
 import { shuffleArray } from '@utils/helpers'
 import { useState, Fragment, FC, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { twMerge } from 'tailwind-merge'
 
 export type SingleSelectInputProps = {
@@ -24,8 +25,9 @@ export type SingleSelectInputProps = {
 }
 
 function SingleSelectInput(props: SingleSelectInputProps) {
+	const { t } = useTranslation()
 	const options: Option[] = useMemo(() => {
-		if (props.options.length === 0) return [{ label: 'No options available', value: '' }]
+		if (props.options.length === 0) return [{ label: t('No options available'), value: '' }]
 		if (props.shuffle) shuffleArray(props.options)
 		if (typeof props.options[0] === 'string' || typeof props.options[0] === 'number') {
 			return props.options.map<Option>((op) => ({ label: op as string, value: op as string }))

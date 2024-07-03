@@ -7,6 +7,7 @@ import { DbRow, PaginationResponse } from '@mytypes'
 import { useQuery } from '@tanstack/react-query'
 import { getUniqueObjectsByKey } from '@utils/helpers'
 import { FC, Fragment, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { twMerge } from 'tailwind-merge'
 
 export type AsyncMultiSelectProps<T> = {
@@ -32,6 +33,7 @@ export type AsyncMultiSelectProps<T> = {
 }
 
 function AsyncMultiSelect<T extends DbRow>(props: AsyncMultiSelectProps<T>) {
+	const { t } = useTranslation()
 	const optionsRef = useRef<T[]>([])
 	const hasNextPageRef = useRef<boolean>(true)
 
@@ -155,7 +157,7 @@ function AsyncMultiSelect<T extends DbRow>(props: AsyncMultiSelectProps<T>) {
 										onClick={loadMore}
 										className="mt-1 flex h-8 w-full cursor-pointer items-center justify-center rounded-md bg-skeletonDark px-2 text-sm font-semibold hover:bg-skeletonLight"
 									>
-										Load more
+										{t('Load more')}
 									</div>
 								) : null}
 							</ListboxOptions>

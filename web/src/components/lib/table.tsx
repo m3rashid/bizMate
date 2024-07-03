@@ -11,6 +11,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import qs from 'query-string'
 import { FC, ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { twMerge } from 'tailwind-merge'
 
 export type TableColumn<T> = {
@@ -44,6 +45,7 @@ export type TableProps<T> = {
 }
 
 function Table<T extends DbRow>(props: TableProps<T>) {
+	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const locationSearch = qs.parse(location.search)
 
@@ -78,14 +80,14 @@ function Table<T extends DbRow>(props: TableProps<T>) {
 					props.defaultEmptyStateName ? (
 						<div className="flex h-72 flex-col items-center justify-center gap-4 rounded-md border-2 border-gray-200">
 							<div className="text-center">
-								<h3 className="text-lg font-semibold text-gray-800">{`No ${props.defaultEmptyStateName} found`}</h3>
-								<p className="text-sm text-gray-500">{`Get started by creating a new ${props.defaultEmptyStateName}`}</p>
+								<h3 className="text-lg font-semibold text-gray-800">{`${t('No')} ${props.defaultEmptyStateName} ${t('found')}`}</h3>
+								<p className="text-sm text-gray-500">{`${t('Get started by creating a new')} ${props.defaultEmptyStateName}`}</p>
 							</div>
 							{props.addButtonLink ? (
 								<Button
 									LeftIcon={<PlusIcon className="h-5 w-5" />}
 									onClick={() => navigate({ to: props.addButtonLink, params: { workspaceId: props.workspaceId } })}
-									label={`Create ${props.title || props.defaultEmptyStateName}`}
+									label={`${t('Create')} ${props.title || props.defaultEmptyStateName}`}
 									{...props.addButtonProps}
 								/>
 							) : null}
