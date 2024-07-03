@@ -12,7 +12,11 @@ function Pagination(props: PaginationProps) {
 		<nav className="flex items-center justify-between border-b-2 border-pageBg bg-white p-2" aria-label="Pagination">
 			<div className="hidden sm:block">
 				<p className="text-sm text-gray-700">
-					Showing <span className="font-semibold">{Math.min(props.page * props.limit, props.count)}</span> of&nbsp;
+					Showing&nbsp;
+					<span className="font-semibold">{(props.page - 1) * props.limit + 1}</span>
+					&nbsp;-&nbsp;
+					<span className="font-semibold">{Math.min(props.page * props.limit, props.totalDocs)}</span>
+					&nbsp;of&nbsp;
 					<span className="font-semibold">{props.totalDocs}</span> results
 				</p>
 			</div>

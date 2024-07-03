@@ -1,6 +1,7 @@
 import SkeletonTable from '../skeletons/table'
 import Button, { ButtonProps } from './button'
 import DataListHeader from './dataListHeader'
+import { NotFound } from './notFound'
 import Pagination from './pagination'
 import { TableExportProps } from './tableExport'
 import apiClient from '@api/client'
@@ -52,7 +53,9 @@ function Table<T extends DbRow>(props: TableProps<T>) {
 			apiClient(`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${locationSearch.page}&limit=${props.pageSize || 15}`),
 	})
 
-	if (isPending || !data) return <SkeletonTable contentLength={5} />
+	if (isPending || isFetching) return <SkeletonTable contentLength={5} />
+	if (!data) return <NotFound />
+
 	return (
 		<div className={twMerge('h-full w-full', props.rootClassName)}>
 			<DataListHeader
