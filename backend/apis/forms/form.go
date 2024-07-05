@@ -59,7 +59,7 @@ func updateFormById(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON("Bad Request")
 	}
 
-	db, err := utils.GetDB()
+	db, err := utils.GetPostgresDB()
 	if err != nil {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}

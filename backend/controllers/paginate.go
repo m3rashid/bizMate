@@ -66,7 +66,7 @@ func Paginate[Model DbModel](_options ...PaginateOptions) func(*fiber.Ctx) error
 		reqPageNo := utils.Ternary(reqQuery.Page == 0, 1, reqQuery.Page)
 		reqPageLimit := min(utils.Ternary(reqQuery.Limit == 0, 10, reqQuery.Limit), 50)
 
-		db, err := utils.GetDB()
+		db, err := utils.GetPostgresDB()
 		if err != nil {
 			return ctx.SendStatus(fiber.StatusInternalServerError)
 		}

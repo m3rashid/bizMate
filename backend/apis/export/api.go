@@ -38,7 +38,7 @@ func exportTable(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON("formId is required for this export")
 	}
 
-	db, err := utils.GetDB()
+	db, err := utils.GetPostgresDB()
 	if err != nil {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
@@ -122,7 +122,7 @@ func getExportTableFields(ctx *fiber.Ctx) error {
 	fileNameWithoutExt := getFileName(reqBody.TableName, ctx)
 
 	if table.name == models.FORM_RESPONSE_MODEL_NAME {
-		db, err := utils.GetDB()
+		db, err := utils.GetPostgresDB()
 		if err != nil {
 			return ctx.SendStatus(fiber.StatusInternalServerError)
 		}

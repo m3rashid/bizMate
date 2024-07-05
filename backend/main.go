@@ -98,7 +98,7 @@ func main() {
 		return ctx.SendString(utils.TranslateToLocalLanguage(ctx, "Hello, World!"))
 	})
 
-	utils.MigrateModels(models.AllModels)
+	utils.MigratePostgresModels(models.AllModels)
 	if os.Getenv("SERVER_MODE") == "development" {
 		app.Use(logger.New())
 	}

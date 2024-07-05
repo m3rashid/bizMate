@@ -21,7 +21,7 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 
-	db, err := utils.GetDB()
+	db, err := utils.GetPostgresDB()
 	if err != nil {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
@@ -73,7 +73,7 @@ func editFormResponse(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON("Bad Request")
 	}
 
-	db, err := utils.GetDB()
+	db, err := utils.GetPostgresDB()
 	if err != nil {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
@@ -111,7 +111,7 @@ func editFormResponse(ctx *fiber.Ctx) error {
 func getFormResponseCount(ctx *fiber.Ctx) error {
 	formId := ctx.Params("formId")
 
-	db, err := utils.GetDB()
+	db, err := utils.GetPostgresDB()
 	if err != nil {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
@@ -127,7 +127,7 @@ func getFormResponseCount(ctx *fiber.Ctx) error {
 func getFormResponseAnalysis(ctx *fiber.Ctx) error {
 	formId := ctx.Params("formId")
 
-	db, err := utils.GetDB()
+	db, err := utils.GetPostgresDB()
 	if err != nil {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}

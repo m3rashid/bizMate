@@ -40,7 +40,7 @@ func seedProjects(ctx *fiber.Ctx) error {
 		})
 	}
 
-	db, err := utils.GetDB()
+	db, err := utils.GetPostgresDB()
 	if err != nil {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}

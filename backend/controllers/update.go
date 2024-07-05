@@ -40,7 +40,7 @@ func Update[UpdateBodyType interface{}, Model DbModel](_options ...UpdateOptions
 			return ctx.Status(fiber.StatusBadRequest).JSON(utils.TranslateToLocalLanguage(ctx, "error in form validation"))
 		}
 
-		db, err := utils.GetDB()
+		db, err := utils.GetPostgresDB()
 		if err != nil {
 			return ctx.SendStatus(fiber.StatusInternalServerError)
 		}

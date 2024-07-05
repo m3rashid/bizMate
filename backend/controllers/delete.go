@@ -32,7 +32,7 @@ func Delete[Model DbModel](_options ...DeleteOptions[Model]) func(*fiber.Ctx) er
 	return func(ctx *fiber.Ctx) error {
 		paramValue := ctx.Params(options.ParamValue)
 
-		db, err := utils.GetDB()
+		db, err := utils.GetPostgresDB()
 		if err != nil {
 			return ctx.SendStatus(fiber.StatusInternalServerError)
 		}

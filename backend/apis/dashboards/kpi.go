@@ -23,7 +23,7 @@ func getAllKpiData(ctx *fiber.Ctx) error {
 		return ctx.SendStatus(fiber.StatusBadRequest)
 	}
 
-	db, err := utils.GetDB()
+	db, err := utils.GetPostgresDB()
 	if err != nil {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
@@ -56,7 +56,7 @@ func getSingleKpiData(kpi models.DashboardKpi, workspaceId string) (float64, err
 		return 0, errors.New("invalid model field")
 	}
 
-	db, err := utils.GetDB()
+	db, err := utils.GetPostgresDB()
 	if err != nil {
 		return 0, err
 	}

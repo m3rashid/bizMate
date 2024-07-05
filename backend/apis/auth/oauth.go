@@ -48,7 +48,7 @@ func authCallback(ctx *fiber.Ctx) error {
 		inviteId = inviteIdUuid
 	}
 
-	db, err := utils.GetDB()
+	db, err := utils.GetPostgresDB()
 	if err != nil {
 		return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
 	}

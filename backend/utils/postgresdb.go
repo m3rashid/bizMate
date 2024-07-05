@@ -13,21 +13,21 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-var db *gorm.DB
+var postgresDb *gorm.DB
 
-func GetDB() (*gorm.DB, error) {
-	if db == nil {
-		_db, err := getDbConnection()
+func GetPostgresDB() (*gorm.DB, error) {
+	if postgresDb == nil {
+		_db, err := getPostgresDbConnection()
 		if err != nil {
 			return nil, err
 		}
-		db = _db
+		postgresDb = _db
 	}
 
-	return db, nil
+	return postgresDb, nil
 }
 
-func getDbConnection() (*gorm.DB, error) {
+func getPostgresDbConnection() (*gorm.DB, error) {
 	pgHost := os.Getenv("POSTGRES_HOST")
 	pgUser := os.Getenv("POSTGRES_USER")
 	pgPass := os.Getenv("POSTGRES_PASSWORD")
@@ -83,8 +83,8 @@ func getDbConnection() (*gorm.DB, error) {
 	return gormDB, nil
 }
 
-func MigrateModels(models []interface{}) error {
-	db, err := GetDB()
+func MigratePostgresModels(models []interface{}) error {
+	db, err := GetPostgresDB()
 	if err != nil {
 		log.Fatal(err)
 	}
