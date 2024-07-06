@@ -9,9 +9,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var mongoDb *mongo.Client
+var mongoDb *mongo.Database
 
-func GetMongoDB() (*mongo.Client, error) {
+func GetMongoDB() (*mongo.Database, error) {
 	if mongoDb == nil {
 		_db, err := getMongoDbConnection()
 		if err != nil {
@@ -23,7 +23,7 @@ func GetMongoDB() (*mongo.Client, error) {
 	return mongoDb, nil
 }
 
-func getMongoDbConnection() (*mongo.Client, error) {
+func getMongoDbConnection() (*mongo.Database, error) {
 	mongoHost := os.Getenv("MONGO_HOST")
 	mongoUser := os.Getenv("MONGO_INITDB_ROOT_USERNAME")
 	mongoPass := os.Getenv("MONGO_INITDB_ROOT_PASSWORD")
@@ -39,16 +39,16 @@ func getMongoDbConnection() (*mongo.Client, error) {
 		return nil, err
 	}
 
-	return client, nil
+	return client.Database(mongoDb), nil
 }
 
 func PingMongoDb() error {
-	client, err := GetMongoDB()
+	db, err := GetMongoDB()
 	if err != nil {
 		return err
 	}
 
-	err = client.Ping(context.Background(), nil)
+	err = db.Client().Ping(context.Background(), nil)
 	if err != nil {
 		return err
 	}

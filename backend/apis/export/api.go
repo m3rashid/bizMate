@@ -21,26 +21,26 @@ const (
 func exportTable(ctx *fiber.Ctx) error {
 	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	if userId == uuid.Nil {
-		return ctx.SendStatus(fiber.StatusUnauthorized)
+		return fiber.NewError(fiber.StatusUnauthorized)
 	}
 
 	reqBody := exportTableReqBodyType{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	table, ok := exportableTables[reqBody.TableName]
 	if !ok {
-		return ctx.Status(fiber.StatusBadRequest).JSON("table data not exportable")
+		return fiber.NewError(fiber.StatusBadRequest, "table data not exportable")
 	}
 
 	if table.name == models.FORM_RESPONSE_MODEL_NAME && reqBody.FormId == "" {
-		return ctx.Status(fiber.StatusBadRequest).JSON("formId is required for this export")
+		return fiber.NewError(fiber.StatusBadRequest, "formId is required for this export")
 	}
 
 	db, err := utils.GetPostgresDB()
 	if err != nil {
-		return ctx.SendStatus(fiber.StatusInternalServerError)
+		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	if utils.Includes(reqBody.Fields, "createdBy") {
@@ -56,7 +56,7 @@ func exportTable(ctx *fiber.Ctx) error {
 		responses := []models.FormResponse{}
 		// TODO: point of error (in case of large data from database)
 		if err := db.Where("\"formId\" = ?", reqBody.FormId).Find(&responses).Error; err != nil {
-			return ctx.Status(fiber.StatusNotFound).JSON("form not found")
+			return fiber.NewError(fiber.StatusNotFound, "form not found")
 		}
 
 		for _, response := range responses {
@@ -81,7 +81,7 @@ func exportTable(ctx *fiber.Ctx) error {
 		}
 		// TODO: point of error (in case of large data from database)
 		if err := db.Raw(fmt.Sprintf("SELECT %s FROM %s;", strings.Join(tableFields, ", "), table.name)).Scan(&res).Error; err != nil {
-			return ctx.SendStatus(fiber.StatusInternalServerError)
+			return fiber.NewError(fiber.StatusInternalServerError)
 		}
 	}
 
@@ -91,7 +91,7 @@ func exportTable(ctx *fiber.Ctx) error {
 		return handleExcelExport(reqBody, res, ctx)
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(reqBody)
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(reqBody, "Exported successfully"))
 }
 
 type exportTableFieldsReqBody = struct {
@@ -102,16 +102,16 @@ type exportTableFieldsReqBody = struct {
 func getExportTableFields(ctx *fiber.Ctx) error {
 	reqBody := exportTableFieldsReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	table, ok := exportableTables[reqBody.TableName]
 	if !ok {
-		return ctx.Status(fiber.StatusBadRequest).JSON("table data not exportable")
+		return fiber.NewError(fiber.StatusBadRequest, "table data not exportable")
 	}
 
 	if table.name == models.FORM_RESPONSE_MODEL_NAME && reqBody.FormId == "" {
-		return ctx.Status(fiber.StatusBadRequest).JSON("formId is required for this export")
+		return fiber.NewError(fiber.StatusBadRequest, "formId is required for this export")
 	}
 
 	type resultStr struct {
@@ -130,12 +130,12 @@ func getExportTableFields(ctx *fiber.Ctx) error {
 		// get the corresponding form and generate the schema
 		form := models.Form{}
 		if err := db.Where("id = ?", reqBody.FormId).First(&form).Error; err != nil {
-			return ctx.Status(fiber.StatusNotFound).JSON("form not found")
+			return fiber.NewError(fiber.StatusNotFound, "form not found")
 		}
 
 		formMeta := []models.FormElementInstanceType{}
 		if err := json.Unmarshal([]byte(form.Body), &formMeta); err != nil {
-			return ctx.Status(fiber.StatusNotFound).JSON("error in form json")
+			return fiber.NewError(fiber.StatusNotFound, "error in form json")
 		}
 
 		results := []resultStr{
@@ -153,7 +153,7 @@ func getExportTableFields(ctx *fiber.Ctx) error {
 			}
 		}
 
-		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"fields": results, "fileNameWithoutExt": fileNameWithoutExt})
+		return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(fiber.Map{"fields": results, "fileNameWithoutExt": fileNameWithoutExt}, "Export tables"))
 	}
 
 	results := []resultStr{}
@@ -161,5 +161,5 @@ func getExportTableFields(ctx *fiber.Ctx) error {
 		results = append(results, resultStr{Name: key, Label: utils.CamelCaseToSentenceCase(key)})
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"fields": results, "fileNameWithoutExt": fileNameWithoutExt})
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(fiber.Map{"fields": results, "fileNameWithoutExt": fileNameWithoutExt}, "Export tables"))
 }

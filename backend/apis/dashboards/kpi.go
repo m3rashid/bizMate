@@ -20,17 +20,17 @@ func getAllKpiData(ctx *fiber.Ctx) error {
 	_, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	dashboardId := ctx.Params("dashboardId")
 	if dashboardId == "" {
-		return ctx.SendStatus(fiber.StatusBadRequest)
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid dashboard ID")
 	}
 
 	db, err := utils.GetPostgresDB()
 	if err != nil {
-		return ctx.SendStatus(fiber.StatusInternalServerError)
+		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	var kpis []models.DashboardKpi
 	if err := db.Where("\"workspaceId\" = ? and \"dashboardId\" = ? and deleted = false", workspaceId, dashboardId).Find(&kpis).Error; err != nil {
-		return ctx.SendStatus(fiber.StatusInternalServerError)
+		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	kpiData := []KpiDataResponse{}
@@ -43,7 +43,7 @@ func getAllKpiData(ctx *fiber.Ctx) error {
 		kpiData = append(kpiData, KpiDataResponse{ID: kpi.ID, Title: kpi.Title, Description: kpi.Description, Data: res})
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(kpiData)
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(kpiData, "KPI data fetched successfully"))
 }
 
 func getSingleKpiData(kpi models.DashboardKpi, workspaceId string) (float64, error) {

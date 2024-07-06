@@ -1,16 +1,33 @@
--- SET statement_timeout = 0;
--- SET lock_timeout = 0;
--- SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
--- SET standard_conforming_strings = on;
--- SELECT pg_catalog.set_config('search_path', '', false);
--- SET check_function_bodies = false;
--- SET xmloption = content;
--- SET client_min_messages = warning;
--- SET row_security = off;
--- SET default_tablespace = '';
--- SET default_table_access_method = heap;
 
+CREATE TABLE users (
+  id uuid PRIMARY KEY,
+  deleted boolean DEFAULT false,
+  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  name text NOT NULL,
+  email text NOT NULL UNIQUE,
+  phone text,
+  avatar text,
+  deactivated boolean DEFAULT false,
+  provider text NOT NULL,
+  password text NOT NULL,
+  refresh_token text
+);
+
+CREATE TABLE workspaces (
+  id uuid PRIMARY KEY,
+  name text,
+	description text,
+  deleted boolean DEFAULT false,
+  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+  created_by_id uuid NOT NULL
+);
+
+CREATE TABLE workspaces_user_relation (
+  user_id uuid NOT NULL,
+  workspace_id uuid NOT NULL,
+	PRIMARY KEY (user_id, workspace_id)
+);
 
 CREATE TABLE attendance (
   id uuid PRIMARY KEY,
@@ -260,20 +277,6 @@ CREATE TABLE user_webui_notifications (
   read boolean
 );
 
-CREATE TABLE users (
-  id uuid PRIMARY KEY,
-  deleted boolean DEFAULT false,
-  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-  name text NOT NULL,
-  email text NOT NULL UNIQUE,
-  phone text,
-  avatar text,
-  deactivated boolean,
-  provider text NOT NULL,
-  password text NOT NULL,
-  refresh_token text
-);
-
 CREATE TABLE users_project_relation (
   project_id uuid NOT NULL,
   user_id uuid NOT NULL
@@ -289,40 +292,6 @@ CREATE TABLE users_workspace_relation (
   user_id uuid NOT NULL
 );
 
-CREATE TABLE workflow_execution_logs (
-  id uuid PRIMARY KEY,
-  deleted boolean DEFAULT false,
-  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-  workspace_id uuid NOT NULL,
-  workflow_step_id uuid NOT NULL,
-  output text NOT NULL
-);
-
-CREATE TABLE workflow_steps (
-  id uuid PRIMARY KEY,
-  deleted boolean DEFAULT false,
-  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-  workspace_id uuid NOT NULL,
-  created_by_id uuid NOT NULL,
-  updated_by_id uuid,
-  function_name text NOT NULL,
-  input text NOT NULL,
-  workflow_id uuid NOT NULL
-);
-
-CREATE TABLE workflows (
-  id uuid PRIMARY KEY,
-  deleted boolean DEFAULT false,
-  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-  workspace_id uuid NOT NULL,
-  created_by_id uuid NOT NULL,
-  updated_by_id uuid,
-  name text NOT NULL,
-  description text NOT NULL,
-  active boolean NOT NULL,
-  edges text NOT NULL
-);
-
 CREATE TABLE workspace_webui_notifications (
   id uuid PRIMARY KEY,
   deleted boolean DEFAULT false,
@@ -332,20 +301,6 @@ CREATE TABLE workspace_webui_notifications (
   description text,
   link text,
   read text
-);
-
-CREATE TABLE workspaces (
-  id uuid PRIMARY KEY,
-  deleted boolean DEFAULT false,
-  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-  created_by_id uuid NOT NULL,
-  name text
-);
-
-CREATE TABLE workspaces_user_relation (
-  user_id uuid NOT NULL,
-  workspace_id uuid NOT NULL,
-	PRIMARY KEY (user_id, workspace_id)
 );
 
 ALTER TABLE ONLY attendance ADD CONSTRAINT fk_attendance_created_by_user FOREIGN KEY (created_by_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE;
@@ -437,18 +392,6 @@ ALTER TABLE ONLY users_task_relation ADD CONSTRAINT fk_users_task_relation_user 
 ALTER TABLE ONLY users_workspace_relation ADD CONSTRAINT fk_users_workspace_relation_user FOREIGN KEY (user_id) REFERENCES users(id);
 
 ALTER TABLE ONLY users_workspace_relation ADD CONSTRAINT fk_users_workspace_relation_workspace FOREIGN KEY (workspace_id) REFERENCES workspaces(id);
-
-ALTER TABLE ONLY workflow_execution_logs ADD CONSTRAINT fk_workflow_execution_logs_workflow_step FOREIGN KEY (workflow_step_id) REFERENCES workflow_steps(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY workflow_steps ADD CONSTRAINT fk_workflow_steps_created_by_user FOREIGN KEY (created_by_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY workflow_steps ADD CONSTRAINT fk_workflow_steps_updated_by_user FOREIGN KEY (updated_by_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY workflow_steps ADD CONSTRAINT fk_workflow_steps_workflow FOREIGN KEY (workflow_id) REFERENCES workflows(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY workflows ADD CONSTRAINT fk_workflows_created_by_user FOREIGN KEY (created_by_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY workflows ADD CONSTRAINT fk_workflows_updated_by_user FOREIGN KEY (updated_by_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY workspaces ADD CONSTRAINT fk_workspaces_created_by_user FOREIGN KEY (created_by_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE;
 

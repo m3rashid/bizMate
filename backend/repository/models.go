@@ -285,46 +285,13 @@ type UsersWorkspaceRelation struct {
 	UserID      pgtype.UUID
 }
 
-type Workflow struct {
-	ID          pgtype.UUID
-	Deleted     pgtype.Bool
-	CreatedAt   pgtype.Timestamptz
-	WorkspaceID pgtype.UUID
-	CreatedByID pgtype.UUID
-	UpdatedByID pgtype.UUID
-	Name        string
-	Description string
-	Active      bool
-	Edges       string
-}
-
-type WorkflowExecutionLog struct {
-	ID             pgtype.UUID
-	Deleted        pgtype.Bool
-	CreatedAt      pgtype.Timestamptz
-	WorkspaceID    pgtype.UUID
-	WorkflowStepID pgtype.UUID
-	Output         string
-}
-
-type WorkflowStep struct {
-	ID           pgtype.UUID
-	Deleted      pgtype.Bool
-	CreatedAt    pgtype.Timestamptz
-	WorkspaceID  pgtype.UUID
-	CreatedByID  pgtype.UUID
-	UpdatedByID  pgtype.UUID
-	FunctionName string
-	Input        string
-	WorkflowID   pgtype.UUID
-}
-
 type Workspace struct {
 	ID          pgtype.UUID
+	Name        pgtype.Text
+	Description pgtype.Text
 	Deleted     pgtype.Bool
 	CreatedAt   pgtype.Timestamptz
 	CreatedByID pgtype.UUID
-	Name        pgtype.Text
 }
 
 type WorkspaceWebuiNotification struct {

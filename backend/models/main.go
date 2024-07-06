@@ -30,10 +30,6 @@ var AllModels = []interface{}{
 	&Project{},
 	&ProjectCycle{},
 	&ProjectTaskEvent{},
-
-	&Workflow{},
-	&WorkflowStep{},
-	&WorkflowExectionLog{},
 }
 
 var dashboardIndexableJsonModels = []DashboardIndexableJsonModel{
@@ -62,10 +58,6 @@ var dashboardIndexableJsonModels = []DashboardIndexableJsonModel{
 	ProjectTagJsonModel,
 	ProjectTaskJsonModel,
 	ProjectTaskEventJsonModel,
-
-	WorkflowJsonModel,
-	WorkflowStepJsonModel,
-	WorkflowExectionLogJsonModel,
 }
 
 type jsonModels map[string]map[string]JsonFieldType

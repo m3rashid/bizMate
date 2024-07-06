@@ -46,3 +46,11 @@ type PaginationRequestQuery struct {
 	Page  int `json:"page"`
 	Limit int `json:"limit"`
 }
+
+func SendResponse(data interface{}, msg string) fiber.Map {
+	return fiber.Map{
+		"success": true,
+		"message": msg,
+		"data":    data,
+	}
+}

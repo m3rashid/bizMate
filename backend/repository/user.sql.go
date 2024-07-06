@@ -7,40 +7,91 @@ package repository
 
 import (
 	"context"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const getUsers = `-- name: GetUsers :many
-SELECT id, deleted, created_at, name, email, phone, avatar, deactivated, provider, password, refresh_token FROM users
+const createUser = `-- name: CreateUser :one
+insert into users (email, password, name, phone, refresh_token) 
+	values ($1, $2, $3, $4, $5) 
+	returning id, deleted, created_at, name, email, phone, avatar, deactivated, provider, password, refresh_token
 `
 
-func (q *Queries) GetUsers(ctx context.Context) ([]User, error) {
-	rows, err := q.db.Query(ctx, getUsers)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []User
-	for rows.Next() {
-		var i User
-		if err := rows.Scan(
-			&i.ID,
-			&i.Deleted,
-			&i.CreatedAt,
-			&i.Name,
-			&i.Email,
-			&i.Phone,
-			&i.Avatar,
-			&i.Deactivated,
-			&i.Provider,
-			&i.Password,
-			&i.RefreshToken,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
+type CreateUserParams struct {
+	Email        string
+	Password     string
+	Name         string
+	Phone        pgtype.Text
+	RefreshToken pgtype.Text
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
+	row := q.db.QueryRow(ctx, createUser,
+		arg.Email,
+		arg.Password,
+		arg.Name,
+		arg.Phone,
+		arg.RefreshToken,
+	)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Deleted,
+		&i.CreatedAt,
+		&i.Name,
+		&i.Email,
+		&i.Phone,
+		&i.Avatar,
+		&i.Deactivated,
+		&i.Provider,
+		&i.Password,
+		&i.RefreshToken,
+	)
+	return i, err
+}
+
+const getUserByEmail = `-- name: GetUserByEmail :one
+select id, deleted, created_at, name, email, phone, avatar, deactivated, provider, password, refresh_token from users where deleted = false and email = $1
+`
+
+func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByEmail, email)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Deleted,
+		&i.CreatedAt,
+		&i.Name,
+		&i.Email,
+		&i.Phone,
+		&i.Avatar,
+		&i.Deactivated,
+		&i.Provider,
+		&i.Password,
+		&i.RefreshToken,
+	)
+	return i, err
+}
+
+const getUserById = `-- name: GetUserById :one
+select id, deleted, created_at, name, email, phone, avatar, deactivated, provider, password, refresh_token from users where deleted = false and id = $1
+`
+
+func (q *Queries) GetUserById(ctx context.Context, id pgtype.UUID) (User, error) {
+	row := q.db.QueryRow(ctx, getUserById, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Deleted,
+		&i.CreatedAt,
+		&i.Name,
+		&i.Email,
+		&i.Phone,
+		&i.Avatar,
+		&i.Deactivated,
+		&i.Provider,
+		&i.Password,
+		&i.RefreshToken,
+	)
+	return i, err
 }

@@ -11,68 +11,70 @@ func checkAuth(ctx *fiber.Ctx) error {
 	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	jwtToken, err := utils.GenerateJWT(userId.String(), ctx.Locals("email").(string))
 	if err != nil {
-		return ctx.SendStatus(fiber.StatusInternalServerError)
+		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	return ctx.JSON(fiber.Map{"token": jwtToken})
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(jwtToken, "User authenticated successfully"))
 }
 
 func getUser(ctx *fiber.Ctx) error {
 	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	db, err := utils.GetPostgresDB()
 	if err != nil {
-		return ctx.SendStatus(fiber.StatusInternalServerError)
+		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	user := models.User{}
 	if err = db.Where("id = ?", userId).First(&user).Error; err != nil {
-		return ctx.SendStatus(fiber.StatusNotFound)
+		return fiber.NewError(fiber.StatusNotFound, "User not found")
 	}
 
-	return ctx.JSON(user.ToPartialUser())
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(user.ToPartialUser(), "User found successfully"))
 }
 
 func credentialsLogin(ctx *fiber.Ctx) error {
 	reqBody := loginBodyReq{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	db, err := utils.GetPostgresDB()
 	if err != nil {
-		return ctx.SendStatus(fiber.StatusInternalServerError)
+		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	user := models.User{}
 	if err = db.Where("email = ?", reqBody.Email).First(&user).Error; err != nil || user.ID == "" {
-		return ctx.SendStatus(fiber.StatusUnauthorized)
+		return fiber.NewError(fiber.StatusNotFound, "User not found")
 	}
 
 	if user.Provider != models.PROVIDER_CREDENTIALS {
-		return ctx.SendStatus(fiber.StatusBadRequest)
+		return fiber.NewError(fiber.StatusUnauthorized, "User not found")
 	}
 
 	if !utils.ComparePasswords(user.Password, reqBody.Password) {
-		return ctx.SendStatus(fiber.StatusUnauthorized)
+		return fiber.NewError(fiber.StatusUnauthorized, "Invalid credentials")
 	}
 
 	token, err := utils.GenerateJWT(user.ID, user.Email)
 	if err != nil {
-		return ctx.SendStatus(fiber.StatusInternalServerError)
+		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	return ctx.JSON(fiber.Map{"token": token, "user": user.ToPartialUser()})
+	return ctx.Status(fiber.StatusOK).JSON(
+		utils.SendResponse(fiber.Map{"token": token, "user": user.ToPartialUser()}, "User logged in successfully"),
+	)
 }
 
 func credentialsRegister(ctx *fiber.Ctx) error {
 	reqBody := redisterBodyReq{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	password, err := utils.HashPassword(reqBody.Password)
 	if err != nil {
-		return ctx.SendStatus(fiber.StatusInternalServerError)
+		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	newUser := models.User{
@@ -85,17 +87,19 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 
 	db, err := utils.GetPostgresDB()
 	if err != nil {
-		return ctx.SendStatus(fiber.StatusInternalServerError)
+		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	if err = db.Create(&newUser).Error; err != nil {
-		return ctx.SendStatus(fiber.StatusInternalServerError)
+		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	token, err := utils.GenerateJWT(newUser.ID, newUser.Email)
 	if err != nil {
-		return ctx.SendStatus(fiber.StatusInternalServerError)
+		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	return ctx.JSON(fiber.Map{"token": token, "user": newUser.ToPartialUser()})
+	return ctx.Status(fiber.StatusOK).JSON(
+		utils.SendResponse(fiber.Map{"token": token, "user": newUser.ToPartialUser()}, "User account created successfully"),
+	)
 }
