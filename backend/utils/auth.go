@@ -123,11 +123,11 @@ func GetUserAndWorkspaceIdsOrZero(ctx *fiber.Ctx) (userId uuid.UUID, workspaceId
 	return getId("userId", ctx), getId("workspaceId", ctx)
 }
 
-func GenerateJWT(userId string, email string) (string, error) {
+func GenerateJWT(userId uuid.UUID, email string) (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour)
 	claims := &Claims{
 		Email:            email,
-		UserID:           userId,
+		UserID:           userId.String(),
 		RegisteredClaims: jwt.RegisteredClaims{ExpiresAt: jwt.NewNumericDate(expirationTime)},
 	}
 

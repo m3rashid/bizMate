@@ -8,32 +8,36 @@ package repository
 import (
 	"context"
 
-	"github.com/jackc/pgx/v5/pgtype"
+	"github.com/google/uuid"
 )
 
 const createUser = `-- name: CreateUser :one
-insert into users (email, password, name, provider, phone, refresh_token) 
-	values ($1, $2, $3, $4, $5, $6) 
+insert into users (id, email, password, name, provider, refresh_token, phone, avatar) 
+	values ($1, $2, $3, $4, $5, $6, $7, $8) 
 	returning id, deleted, created_at, name, email, phone, avatar, deactivated, provider, password, refresh_token
 `
 
 type CreateUserParams struct {
+	ID           uuid.UUID
 	Email        string
 	Password     string
 	Name         string
 	Provider     string
-	Phone        string
 	RefreshToken string
+	Phone        string
+	Avatar       string
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
 	row := q.db.QueryRow(ctx, createUser,
+		arg.ID,
 		arg.Email,
 		arg.Password,
 		arg.Name,
 		arg.Provider,
-		arg.Phone,
 		arg.RefreshToken,
+		arg.Phone,
+		arg.Avatar,
 	)
 	var i User
 	err := row.Scan(
@@ -79,7 +83,7 @@ const getUserById = `-- name: GetUserById :one
 select id, deleted, created_at, name, email, phone, avatar, deactivated, provider, password, refresh_token from users where deleted = false and id = $1
 `
 
-func (q *Queries) GetUserById(ctx context.Context, id pgtype.UUID) (User, error) {
+func (q *Queries) GetUserById(ctx context.Context, id uuid.UUID) (User, error) {
 	row := q.db.QueryRow(ctx, getUserById, id)
 	var i User
 	err := row.Scan(

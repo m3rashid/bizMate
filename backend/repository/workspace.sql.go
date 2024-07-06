@@ -8,7 +8,7 @@ package repository
 import (
 	"context"
 
-	"github.com/jackc/pgx/v5/pgtype"
+	"github.com/google/uuid"
 )
 
 const addUserToWorkspace = `-- name: AddUserToWorkspace :one
@@ -17,8 +17,8 @@ insert into users_workspaces_relation (user_id, workspace_id)
 `
 
 type AddUserToWorkspaceParams struct {
-	UserID      pgtype.UUID
-	WorkspaceID pgtype.UUID
+	UserID      uuid.UUID
+	WorkspaceID uuid.UUID
 }
 
 func (q *Queries) AddUserToWorkspace(ctx context.Context, arg AddUserToWorkspaceParams) (UsersWorkspacesRelation, error) {
@@ -34,14 +34,14 @@ insert into workspaces (name, description, created_by_id)
 `
 
 type CreateWorkspaceParams struct {
-	Name        pgtype.Text
-	Description pgtype.Text
-	CreatedByID pgtype.UUID
+	Name        *string
+	Description *string
+	CreatedByID uuid.UUID
 }
 
-func (q *Queries) CreateWorkspace(ctx context.Context, arg CreateWorkspaceParams) (pgtype.UUID, error) {
+func (q *Queries) CreateWorkspace(ctx context.Context, arg CreateWorkspaceParams) (uuid.UUID, error) {
 	row := q.db.QueryRow(ctx, createWorkspace, arg.Name, arg.Description, arg.CreatedByID)
-	var id pgtype.UUID
+	var id uuid.UUID
 	err := row.Scan(&id)
 	return id, err
 }
@@ -52,7 +52,7 @@ select id, name, description, deleted, created_at, created_by_id from workspaces
 	id in (select workspace_id from users_workspaces_relation where user_id = $1)
 `
 
-func (q *Queries) GetCurrentUserWorkspaces(ctx context.Context, userID pgtype.UUID) ([]Workspace, error) {
+func (q *Queries) GetCurrentUserWorkspaces(ctx context.Context, userID uuid.UUID) ([]Workspace, error) {
 	rows, err := q.db.Query(ctx, getCurrentUserWorkspaces, userID)
 	if err != nil {
 		return nil, err
@@ -83,7 +83,7 @@ const getWorkspaceById = `-- name: GetWorkspaceById :one
 select id, name, description, deleted, created_at, created_by_id from workspaces where id = $1 and deleted = false
 `
 
-func (q *Queries) GetWorkspaceById(ctx context.Context, id pgtype.UUID) (Workspace, error) {
+func (q *Queries) GetWorkspaceById(ctx context.Context, id uuid.UUID) (Workspace, error) {
 	row := q.db.QueryRow(ctx, getWorkspaceById, id)
 	var i Workspace
 	err := row.Scan(

@@ -5,44 +5,45 @@
 package repository
 
 import (
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type User struct {
-	ID           pgtype.UUID
-	Deleted      pgtype.Bool
+	ID           uuid.UUID
+	Deleted      *bool
 	CreatedAt    pgtype.Timestamptz
 	Name         string
 	Email        string
 	Phone        string
 	Avatar       string
-	Deactivated  pgtype.Bool
+	Deactivated  *bool
 	Provider     string
 	Password     string
 	RefreshToken string
 }
 
 type UserInvite struct {
-	ID                pgtype.UUID
-	Deleted           pgtype.Bool
+	ID                uuid.UUID
+	Deleted           *bool
 	CreatedAt         pgtype.Timestamptz
-	WorkspaceID       pgtype.UUID
+	WorkspaceID       uuid.UUID
 	Name              string
 	Email             string
-	Status            pgtype.Int8
-	PlainTextPassword pgtype.Text
+	Status            *int64
+	PlainTextPassword *string
 }
 
 type UsersWorkspacesRelation struct {
-	UserID      pgtype.UUID
-	WorkspaceID pgtype.UUID
+	UserID      uuid.UUID
+	WorkspaceID uuid.UUID
 }
 
 type Workspace struct {
-	ID          pgtype.UUID
-	Name        pgtype.Text
-	Description pgtype.Text
-	Deleted     pgtype.Bool
+	ID          uuid.UUID
+	Name        *string
+	Description *string
+	Deleted     *bool
 	CreatedAt   pgtype.Timestamptz
-	CreatedByID pgtype.UUID
+	CreatedByID uuid.UUID
 }

@@ -52,5 +52,5 @@ ALTER TABLE ONLY workspaces ADD CONSTRAINT fk_workspaces_created_by_user FOREIGN
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS workspaces CASCADE;
 DROP TABLE IF EXISTS user_invites CASCADE;
-DROP TABLE IF EXISTS workspaces_user_relation CASCADE;
+DROP TABLE IF EXISTS users_workspaces_relation CASCADE;
 -- +goose StatementEnd

@@ -13,10 +13,10 @@ new-migration:
 	goose -dir db/migrations create $(name) sql
 
 migrate-up:
-	true
+	goose -dir db/migrations postgres postgres://genos:genos@localhost:5432/bizmatedb?sslmode=disable up
 
 migrate-down:
-	true
+	goose -dir db/migrations postgres postgres://genos:genos@localhost:5432/bizmatedb?sslmode=disable down
 
 clean:
 	docker compose down && sudo rm -rf data tmp repository && sqlc generate

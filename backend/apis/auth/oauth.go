@@ -120,7 +120,7 @@ func authCallback(ctx *fiber.Ctx) error {
 	// 	}
 	// }
 
-	jwtToken, err := utils.GenerateJWT(utils.PgTypeUUIDToString(user.ID), user.Email)
+	jwtToken, err := utils.GenerateJWT(user.ID, user.Email)
 	if err != nil {
 		ctx.Redirect(getRedirectUrl(false, "error=no_token"))
 	}

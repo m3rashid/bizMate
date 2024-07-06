@@ -2,7 +2,9 @@ package auth
 
 import (
 	"bizMate/repository"
+	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -23,7 +25,7 @@ type createWorkspaceReq struct {
 }
 
 type partialUser struct {
-	ID        pgtype.UUID        `json:"id"`
+	ID        uuid.UUID          `json:"id"`
 	Name      string             `json:"name"`
 	Email     string             `json:"email"`
 	Avatar    string             `json:"avatar"`
@@ -31,6 +33,7 @@ type partialUser struct {
 }
 
 func toPartialUser(user repository.User) partialUser {
+	fmt.Printf("user: %+v\n", user)
 	return partialUser{
 		ID:        user.ID,
 		Name:      user.Name,

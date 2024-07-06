@@ -4,6 +4,7 @@ import (
 	"bizMate/models"
 	"bizMate/repository"
 	"bizMate/utils"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -16,12 +17,12 @@ func checkAuth(ctx *fiber.Ctx) error {
 	}
 
 	queries := repository.New(pgConn)
-	user, err := queries.GetUserById(ctx.Context(), utils.ToPgTypeUUID(userId))
+	user, err := queries.GetUserById(ctx.Context(), userId)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	jwtToken, err := utils.GenerateJWT(utils.PgTypeUUIDToString(user.ID), user.Email)
+	jwtToken, err := utils.GenerateJWT(user.ID, user.Email)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
@@ -37,7 +38,7 @@ func getUser(ctx *fiber.Ctx) error {
 	}
 
 	queries := repository.New(pgConn)
-	user, err := queries.GetUserById(ctx.Context(), utils.ToPgTypeUUID(userId))
+	user, err := queries.GetUserById(ctx.Context(), userId)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
@@ -59,10 +60,12 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 	queries := repository.New(pgConn)
 	user, err := queries.GetUserByEmail(ctx.Context(), reqBody.Email)
 	if err != nil {
+		fmt.Printf("Error: %+v\n", err)
 		return fiber.NewError(fiber.StatusNotFound, "User not found")
 	}
 
 	if user.Provider != models.PROVIDER_CREDENTIALS {
+		fmt.Printf("Error: %+v\n", "creds")
 		return fiber.NewError(fiber.StatusUnauthorized, "User not found")
 	}
 
@@ -70,7 +73,7 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusUnauthorized, "Invalid credentials")
 	}
 
-	token, err := utils.GenerateJWT(utils.PgTypeUUIDToString(user.ID), user.Email)
+	token, err := utils.GenerateJWT(user.ID, user.Email)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
@@ -91,12 +94,19 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
+	id, err := utils.GenerateUuidV7()
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
 	newUser := repository.CreateUserParams{
 		Name:         reqBody.Name,
 		Email:        reqBody.Email,
-		Phone:        reqBody.Phone,
 		Password:     password,
 		Provider:     "credentials",
+		Phone:        reqBody.Phone,
+		ID:           id,
+		Avatar:       "",
 		RefreshToken: "",
 	}
 
@@ -107,8 +117,11 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 
 	queries := repository.New(pgConn)
 	user, err := queries.CreateUser(ctx.Context(), newUser)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, "User account creation failed")
+	}
 
-	token, err := utils.GenerateJWT(utils.PgTypeUUIDToString(user.ID), newUser.Email)
+	token, err := utils.GenerateJWT(user.ID, newUser.Email)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
