@@ -5,7 +5,6 @@ import (
 	"bizMate/utils"
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -38,26 +37,26 @@ func exportTable(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "formId is required for this export")
 	}
 
-	db, err := utils.GetPostgresDB()
-	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError)
-	}
+	// db, err := utils.GetPostgresDB()
+	// if err != nil {
+	// 	return fiber.NewError(fiber.StatusInternalServerError)
+	// }
 
-	if utils.Includes(reqBody.Fields, "createdBy") {
-		db = db.Preload("CreatedByUser")
-	}
+	// if utils.Includes(reqBody.Fields, "createdBy") {
+	// 	db = db.Preload("CreatedByUser")
+	// }
 
-	if utils.Includes(reqBody.Fields, "updatedBy") {
-		db = db.Preload("UpdatedByUser")
-	}
+	// if utils.Includes(reqBody.Fields, "updatedBy") {
+	// 	db = db.Preload("UpdatedByUser")
+	// }
 
 	res := []map[string]interface{}{}
 	if table.name == models.FORM_RESPONSE_MODEL_NAME {
 		responses := []models.FormResponse{}
 		// TODO: point of error (in case of large data from database)
-		if err := db.Where("\"formId\" = ?", reqBody.FormId).Find(&responses).Error; err != nil {
-			return fiber.NewError(fiber.StatusNotFound, "form not found")
-		}
+		// if err := db.Where("\"formId\" = ?", reqBody.FormId).Find(&responses).Error; err != nil {
+		// 	return fiber.NewError(fiber.StatusNotFound, "form not found")
+		// }
 
 		for _, response := range responses {
 			temp := map[string]interface{}{}
@@ -80,9 +79,9 @@ func exportTable(ctx *fiber.Ctx) error {
 			tableFields = append(tableFields, fmt.Sprintf("\"%s\"", field))
 		}
 		// TODO: point of error (in case of large data from database)
-		if err := db.Raw(fmt.Sprintf("SELECT %s FROM %s;", strings.Join(tableFields, ", "), table.name)).Scan(&res).Error; err != nil {
-			return fiber.NewError(fiber.StatusInternalServerError)
-		}
+		// if err := db.Raw(fmt.Sprintf("SELECT %s FROM %s;", strings.Join(tableFields, ", "), table.name)).Scan(&res).Error; err != nil {
+		// 	return fiber.NewError(fiber.StatusInternalServerError)
+		// }
 	}
 
 	if reqBody.Format == csvFormat {
@@ -122,38 +121,39 @@ func getExportTableFields(ctx *fiber.Ctx) error {
 	fileNameWithoutExt := getFileName(reqBody.TableName, ctx)
 
 	if table.name == models.FORM_RESPONSE_MODEL_NAME {
-		db, err := utils.GetPostgresDB()
-		if err != nil {
-			return ctx.SendStatus(fiber.StatusInternalServerError)
-		}
+		// db, err := utils.GetPostgresDB()
+		// if err != nil {
+		// 	return ctx.SendStatus(fiber.StatusInternalServerError)
+		// }
 
-		// get the corresponding form and generate the schema
-		form := models.Form{}
-		if err := db.Where("id = ?", reqBody.FormId).First(&form).Error; err != nil {
-			return fiber.NewError(fiber.StatusNotFound, "form not found")
-		}
+		// // get the corresponding form and generate the schema
+		// form := models.Form{}
+		// if err := db.Where("id = ?", reqBody.FormId).First(&form).Error; err != nil {
+		// 	return fiber.NewError(fiber.StatusNotFound, "form not found")
+		// }
 
-		formMeta := []models.FormElementInstanceType{}
-		if err := json.Unmarshal([]byte(form.Body), &formMeta); err != nil {
-			return fiber.NewError(fiber.StatusNotFound, "error in form json")
-		}
+		// formMeta := []models.FormElementInstanceType{}
+		// if err := json.Unmarshal([]byte(form.Body), &formMeta); err != nil {
+		// 	return fiber.NewError(fiber.StatusNotFound, "error in form json")
+		// }
 
-		results := []resultStr{
-			{Name: "createdAt", Label: utils.CamelCaseToSentenceCase("createdAt")},
-			{Name: "id", Label: utils.CapitalizeFirstLetter("id")},
-			{Name: "formId", Label: utils.CamelCaseToSentenceCase("formId")},
-			{Name: "deviceIp", Label: utils.CamelCaseToSentenceCase("deviceIp")},
-		}
-		for _, meta := range formMeta {
-			if meta.Name.IsFormInputElement() && meta.Props["name"] != "" && meta.Props["label"] != "" {
-				results = append(results, resultStr{
-					Name:  (meta.Props["name"]).(string),
-					Label: (meta.Props["label"]).(string),
-				})
-			}
-		}
+		// results := []resultStr{
+		// 	{Name: "createdAt", Label: utils.CamelCaseToSentenceCase("createdAt")},
+		// 	{Name: "id", Label: utils.CapitalizeFirstLetter("id")},
+		// 	{Name: "formId", Label: utils.CamelCaseToSentenceCase("formId")},
+		// 	{Name: "deviceIp", Label: utils.CamelCaseToSentenceCase("deviceIp")},
+		// }
+		// for _, meta := range formMeta {
+		// 	if meta.Name.IsFormInputElement() && meta.Props["name"] != "" && meta.Props["label"] != "" {
+		// 		results = append(results, resultStr{
+		// 			Name:  (meta.Props["name"]).(string),
+		// 			Label: (meta.Props["label"]).(string),
+		// 		})
+		// 	}
+		// }
 
-		return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(fiber.Map{"fields": results, "fileNameWithoutExt": fileNameWithoutExt}, "Export tables"))
+		// return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(fiber.Map{"fields": results, "fileNameWithoutExt": fileNameWithoutExt}, "Export tables"))
+		return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(nil, ""))
 	}
 
 	results := []resultStr{}

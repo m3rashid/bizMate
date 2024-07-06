@@ -58,15 +58,15 @@ func updateFormById(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Bad Request")
 	}
 
-	db, err := utils.GetPostgresDB()
-	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError)
-	}
+	// db, err := utils.GetPostgresDB()
+	// if err != nil {
+	// 	return fiber.NewError(fiber.StatusInternalServerError)
+	// }
 
 	form := models.Form{}
-	if err := db.Where("id = ?", updateBody.ID).First(&form).Error; err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError)
-	}
+	// if err := db.Where("id = ?", updateBody.ID).First(&form).Error; err != nil {
+	// 	return fiber.NewError(fiber.StatusInternalServerError)
+	// }
 
 	form.Title = updateBody.Title
 	form.Description = updateBody.Description
@@ -83,9 +83,9 @@ func updateFormById(ctx *fiber.Ctx) error {
 	userIdStr := userId.String()
 	form.UpdatedBy.UpdatedByID = &userIdStr
 
-	if err := db.Save(&form).Error; err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError)
-	}
+	// if err := db.Save(&form).Error; err != nil {
+	// 	return fiber.NewError(fiber.StatusInternalServerError)
+	// }
 
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(form, "Form updated successfully"))
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(nil, "Form updated successfully"))
 }

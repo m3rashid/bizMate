@@ -5,6 +5,6 @@ select * from users where deleted = false and id = $1;
 select * from users where deleted = false and email = $1;
 
 -- name: CreateUser :one
-insert into users (email, password, name, phone, refresh_token) 
-	values ($1, $2, $3, $4, $5) 
+insert into users (email, password, name, provider, phone, refresh_token) 
+	values ($1, $2, $3, $4, $5, $6) 
 	returning *;

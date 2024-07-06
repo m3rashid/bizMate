@@ -1,72 +1,72 @@
 package controllers
 
-import (
-	"bizMate/utils"
+// import (
+// 	"bizMate/utils"
 
-	"github.com/gofiber/fiber/v2"
-	"gorm.io/gorm"
-)
+// 	"github.com/gofiber/fiber/v2"
+// 	"gorm.io/gorm"
+// )
 
-type CreateOptions[CreateBodyType interface{}, Model interface{}] struct {
-	GetDefaultValues func(values *CreateBodyType, ctx *fiber.Ctx) (*Model, error)
-	PreCreate        func(values *CreateBodyType, db *gorm.DB, ctx *fiber.Ctx) (*Model, error)
-	PostCreate       func(values *CreateBodyType, model *Model, db *gorm.DB, ctx *fiber.Ctx) (interface{}, error)
-}
+// type CreateOptions[CreateBodyType interface{}, Model interface{}] struct {
+// 	GetDefaultValues func(values *CreateBodyType, ctx *fiber.Ctx) (*Model, error)
+// 	PreCreate        func(values *CreateBodyType, db *gorm.DB, ctx *fiber.Ctx) (*Model, error)
+// 	PostCreate       func(values *CreateBodyType, model *Model, db *gorm.DB, ctx *fiber.Ctx) (interface{}, error)
+// }
 
-func Create[CreateBodyType interface{}, Model interface{}](tableName string, _options ...CreateOptions[CreateBodyType, Model]) func(*fiber.Ctx) error {
-	if len(_options) > 1 {
-		panic("Only one option is allowed")
-	}
+// func Create[CreateBodyType interface{}, Model interface{}](tableName string, _options ...CreateOptions[CreateBodyType, Model]) func(*fiber.Ctx) error {
+// 	if len(_options) > 1 {
+// 		panic("Only one option is allowed")
+// 	}
 
-	options := CreateOptions[CreateBodyType, Model]{}
-	if len(_options) > 0 {
-		options = _options[0]
-	}
+// 	options := CreateOptions[CreateBodyType, Model]{}
+// 	if len(_options) > 0 {
+// 		options = _options[0]
+// 	}
 
-	if options.GetDefaultValues == nil {
-		panic("GetDefaultValues is required")
-	}
+// 	if options.GetDefaultValues == nil {
+// 		panic("GetDefaultValues is required")
+// 	}
 
-	return func(ctx *fiber.Ctx) error {
-		var formBody CreateBodyType
-		var model *Model
+// 	return func(ctx *fiber.Ctx) error {
+// 		var formBody CreateBodyType
+// 		var model *Model
 
-		if err := utils.ParseBodyAndValidate(ctx, &formBody); err != nil {
-			return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
-		}
+// 		if err := utils.ParseBodyAndValidate(ctx, &formBody); err != nil {
+// 			return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
+// 		}
 
-		if options.GetDefaultValues != nil {
-			_model, err := options.GetDefaultValues(&formBody, ctx)
-			if err != nil {
-				return ctx.SendStatus(fiber.StatusInternalServerError)
-			}
-			model = _model
-		}
+// 		if options.GetDefaultValues != nil {
+// 			_model, err := options.GetDefaultValues(&formBody, ctx)
+// 			if err != nil {
+// 				return ctx.SendStatus(fiber.StatusInternalServerError)
+// 			}
+// 			model = _model
+// 		}
 
-		db, err := utils.GetPostgresDB()
-		if err != nil {
-			return ctx.SendStatus(fiber.StatusInternalServerError)
-		}
+// 		db, err := utils.GetPostgresDB()
+// 		if err != nil {
+// 			return ctx.SendStatus(fiber.StatusInternalServerError)
+// 		}
 
-		if options.PreCreate != nil {
-			model, err = options.PreCreate(&formBody, db, ctx)
-			if err != nil {
-				return ctx.SendStatus(fiber.StatusInternalServerError)
-			}
-		}
+// 		if options.PreCreate != nil {
+// 			model, err = options.PreCreate(&formBody, db, ctx)
+// 			if err != nil {
+// 				return ctx.SendStatus(fiber.StatusInternalServerError)
+// 			}
+// 		}
 
-		if err := db.Table(tableName).Create(utils.Ternary[interface{}](model != nil, &model, &formBody)).Error; err != nil {
-			return ctx.SendStatus(fiber.StatusInternalServerError)
-		}
+// 		if err := db.Table(tableName).Create(utils.Ternary[interface{}](model != nil, &model, &formBody)).Error; err != nil {
+// 			return ctx.SendStatus(fiber.StatusInternalServerError)
+// 		}
 
-		var result interface{} = formBody
-		if options.PostCreate != nil {
-			result, err = options.PostCreate(&formBody, model, db, ctx)
-			if err != nil {
-				return ctx.SendStatus(fiber.StatusInternalServerError)
-			}
-		}
+// 		var result interface{} = formBody
+// 		if options.PostCreate != nil {
+// 			result, err = options.PostCreate(&formBody, model, db, ctx)
+// 			if err != nil {
+// 				return ctx.SendStatus(fiber.StatusInternalServerError)
+// 			}
+// 		}
 
-		return ctx.Status(fiber.StatusCreated).JSON(result)
-	}
-}
+// 		return ctx.Status(fiber.StatusCreated).JSON(result)
+// 	}
+// }

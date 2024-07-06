@@ -12,8 +12,8 @@ import (
 )
 
 const addUserToWorkspace = `-- name: AddUserToWorkspace :one
-insert into users_workspace_relation (user_id, workspace_id) 
-	values ($1, $2) returning workspace_id, user_id
+insert into users_workspaces_relation (user_id, workspace_id) 
+	values ($1, $2) returning user_id, workspace_id
 `
 
 type AddUserToWorkspaceParams struct {
@@ -21,10 +21,10 @@ type AddUserToWorkspaceParams struct {
 	WorkspaceID pgtype.UUID
 }
 
-func (q *Queries) AddUserToWorkspace(ctx context.Context, arg AddUserToWorkspaceParams) (UsersWorkspaceRelation, error) {
+func (q *Queries) AddUserToWorkspace(ctx context.Context, arg AddUserToWorkspaceParams) (UsersWorkspacesRelation, error) {
 	row := q.db.QueryRow(ctx, addUserToWorkspace, arg.UserID, arg.WorkspaceID)
-	var i UsersWorkspaceRelation
-	err := row.Scan(&i.WorkspaceID, &i.UserID)
+	var i UsersWorkspacesRelation
+	err := row.Scan(&i.UserID, &i.WorkspaceID)
 	return i, err
 }
 
@@ -49,7 +49,7 @@ func (q *Queries) CreateWorkspace(ctx context.Context, arg CreateWorkspaceParams
 const getCurrentUserWorkspaces = `-- name: GetCurrentUserWorkspaces :many
 select id, name, description, deleted, created_at, created_by_id from workspaces 
 	where deleted = false and 
-	id in (select workspace_id from users_workspace_relation where user_id = $1)
+	id in (select workspace_id from users_workspaces_relation where user_id = $1)
 `
 
 func (q *Queries) GetCurrentUserWorkspaces(ctx context.Context, userID pgtype.UUID) ([]Workspace, error) {

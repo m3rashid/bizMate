@@ -11,7 +11,6 @@ import (
 	"bizMate/apis/payments"
 	"bizMate/apis/projects"
 	"bizMate/apis/seed"
-	"bizMate/models"
 	"bizMate/utils"
 	"log"
 	"os"
@@ -100,7 +99,6 @@ func main() {
 		return ctx.SendString(utils.TranslateToLocalLanguage(ctx, "Hello, World!"))
 	})
 
-	utils.MigratePostgresModels(models.AllModels)
 	if os.Getenv("SERVER_MODE") == "development" {
 		app.Use(logger.New())
 	}

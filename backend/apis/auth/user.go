@@ -2,6 +2,7 @@ package auth
 
 import (
 	"bizMate/models"
+	"bizMate/repository"
 	"bizMate/utils"
 
 	"github.com/gofiber/fiber/v2"
@@ -9,7 +10,18 @@ import (
 
 func checkAuth(ctx *fiber.Ctx) error {
 	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
-	jwtToken, err := utils.GenerateJWT(userId.String(), ctx.Locals("email").(string))
+	pgConn, err := utils.GetPostgresDB()
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	queries := repository.New(pgConn)
+	user, err := queries.GetUserById(ctx.Context(), utils.ToPgTypeUUID(userId))
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	jwtToken, err := utils.GenerateJWT(utils.PgTypeUUIDToString(user.ID), user.Email)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
@@ -19,17 +31,18 @@ func checkAuth(ctx *fiber.Ctx) error {
 
 func getUser(ctx *fiber.Ctx) error {
 	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
-	db, err := utils.GetPostgresDB()
+	pgConn, err := utils.GetPostgresDB()
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	user := models.User{}
-	if err = db.Where("id = ?", userId).First(&user).Error; err != nil {
-		return fiber.NewError(fiber.StatusNotFound, "User not found")
+	queries := repository.New(pgConn)
+	user, err := queries.GetUserById(ctx.Context(), utils.ToPgTypeUUID(userId))
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(user.ToPartialUser(), "User found successfully"))
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(toPartialUser(user), "User found successfully"))
 }
 
 func credentialsLogin(ctx *fiber.Ctx) error {
@@ -38,13 +51,14 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
-	db, err := utils.GetPostgresDB()
+	pgConn, err := utils.GetPostgresDB()
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	user := models.User{}
-	if err = db.Where("email = ?", reqBody.Email).First(&user).Error; err != nil || user.ID == "" {
+	queries := repository.New(pgConn)
+	user, err := queries.GetUserByEmail(ctx.Context(), reqBody.Email)
+	if err != nil {
 		return fiber.NewError(fiber.StatusNotFound, "User not found")
 	}
 
@@ -56,13 +70,13 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusUnauthorized, "Invalid credentials")
 	}
 
-	token, err := utils.GenerateJWT(user.ID, user.Email)
+	token, err := utils.GenerateJWT(utils.PgTypeUUIDToString(user.ID), user.Email)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(
-		utils.SendResponse(fiber.Map{"token": token, "user": user.ToPartialUser()}, "User logged in successfully"),
+		utils.SendResponse(fiber.Map{"token": token, "user": toPartialUser(user)}, "User logged in successfully"),
 	)
 }
 
@@ -77,29 +91,29 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	newUser := models.User{
-		Name:     reqBody.Name,
-		Email:    reqBody.Email,
-		Phone:    reqBody.Phone,
-		Password: password,
-		Provider: models.PROVIDER_CREDENTIALS,
+	newUser := repository.CreateUserParams{
+		Name:         reqBody.Name,
+		Email:        reqBody.Email,
+		Phone:        reqBody.Phone,
+		Password:     password,
+		Provider:     "credentials",
+		RefreshToken: "",
 	}
 
-	db, err := utils.GetPostgresDB()
+	pgConn, err := utils.GetPostgresDB()
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	if err = db.Create(&newUser).Error; err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError)
-	}
+	queries := repository.New(pgConn)
+	user, err := queries.CreateUser(ctx.Context(), newUser)
 
-	token, err := utils.GenerateJWT(newUser.ID, newUser.Email)
+	token, err := utils.GenerateJWT(utils.PgTypeUUIDToString(user.ID), newUser.Email)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(
-		utils.SendResponse(fiber.Map{"token": token, "user": newUser.ToPartialUser()}, "User account created successfully"),
+		utils.SendResponse(fiber.Map{"token": token, "user": toPartialUser(user)}, "User account created successfully"),
 	)
 }

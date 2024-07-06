@@ -12,8 +12,8 @@ import (
 )
 
 const createUser = `-- name: CreateUser :one
-insert into users (email, password, name, phone, refresh_token) 
-	values ($1, $2, $3, $4, $5) 
+insert into users (email, password, name, provider, phone, refresh_token) 
+	values ($1, $2, $3, $4, $5, $6) 
 	returning id, deleted, created_at, name, email, phone, avatar, deactivated, provider, password, refresh_token
 `
 
@@ -21,8 +21,9 @@ type CreateUserParams struct {
 	Email        string
 	Password     string
 	Name         string
-	Phone        pgtype.Text
-	RefreshToken pgtype.Text
+	Provider     string
+	Phone        string
+	RefreshToken string
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -30,6 +31,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		arg.Email,
 		arg.Password,
 		arg.Name,
+		arg.Provider,
 		arg.Phone,
 		arg.RefreshToken,
 	)

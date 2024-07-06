@@ -1,35 +1,7 @@
 SET client_encoding = 'UTF8';
 
-CREATE TABLE users (
-  id uuid PRIMARY KEY,
-  deleted boolean DEFAULT false,
-  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-  name text NOT NULL,
-  email text NOT NULL UNIQUE,
-  phone text,
-  avatar text,
-  deactivated boolean DEFAULT false,
-  provider text NOT NULL,
-  password text NOT NULL,
-  refresh_token text
-);
 
-CREATE TABLE workspaces (
-  id uuid PRIMARY KEY,
-  name text,
-	description text,
-  deleted boolean DEFAULT false,
-  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-  created_by_id uuid NOT NULL
-);
-
-CREATE TABLE workspaces_user_relation (
-  user_id uuid NOT NULL,
-  workspace_id uuid NOT NULL,
-	PRIMARY KEY (user_id, workspace_id)
-);
-
-CREATE TABLE attendance (
+CREATE TABLE IF NOT EXISTS attendance (
   id uuid PRIMARY KEY,
   deleted boolean DEFAULT false,
   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
@@ -40,7 +12,7 @@ CREATE TABLE attendance (
   end_time timestamp with time zone
 );
 
-CREATE TABLE bulk_email_requests (
+CREATE TABLE IF NOT EXISTS bulk_email_requests (
   id uuid PRIMARY KEY,
   deleted boolean DEFAULT false,
   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
@@ -51,7 +23,7 @@ CREATE TABLE bulk_email_requests (
   subject_variable_mapping text
 );
 
-CREATE TABLE contacts (
+CREATE TABLE IF NOT EXISTS contacts (
   id uuid PRIMARY KEY,
   deleted boolean DEFAULT false,
   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
@@ -67,7 +39,7 @@ CREATE TABLE contacts (
   other_details text
 );
 
-CREATE TABLE dashboard_charts (
+CREATE TABLE IF NOT EXISTS dashboard_charts (
   id uuid PRIMARY KEY,
   deleted boolean DEFAULT false,
   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
@@ -88,7 +60,7 @@ CREATE TABLE dashboard_charts (
   chart_options text
 );
 
-CREATE TABLE dashboard_kpis (
+CREATE TABLE IF NOT EXISTS dashboard_kpis (
   id uuid PRIMARY KEY,
   deleted boolean DEFAULT false,
   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
@@ -104,7 +76,7 @@ CREATE TABLE dashboard_kpis (
   time_period bigint NOT NULL
 );
 
-CREATE TABLE dashboards (
+CREATE TABLE IF NOT EXISTS dashboards (
   id uuid PRIMARY KEY,
   deleted boolean DEFAULT false,
   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
@@ -116,7 +88,7 @@ CREATE TABLE dashboards (
   active boolean DEFAULT false
 );
 
-CREATE TABLE email_templates (
+CREATE TABLE IF NOT EXISTS email_templates (
   id uuid PRIMARY KEY,
   deleted boolean DEFAULT false,
   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
@@ -131,7 +103,7 @@ CREATE TABLE email_templates (
   body_template_design_json text NOT NULL
 );
 
-CREATE TABLE employees (
+CREATE TABLE IF NOT EXISTS employees (
   id uuid PRIMARY KEY,
   deleted boolean DEFAULT false,
   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
@@ -144,7 +116,7 @@ CREATE TABLE employees (
   weekly_hours numeric NOT NULL
 );
 
-CREATE TABLE form_responses (
+CREATE TABLE IF NOT EXISTS form_responses (
   id uuid PRIMARY KEY,
   deleted boolean DEFAULT false,
   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
@@ -156,7 +128,7 @@ CREATE TABLE form_responses (
   device_ip text
 );
 
-CREATE TABLE forms (
+CREATE TABLE IF NOT EXISTS forms (
   id uuid PRIMARY KEY,
   deleted boolean DEFAULT false,
   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
@@ -178,7 +150,7 @@ CREATE TABLE forms (
   previous_version_ids text DEFAULT '[]'::text
 );
 
-CREATE TABLE project_cycles (
+CREATE TABLE IF NOT EXISTS project_cycles (
   id uuid PRIMARY KEY,
   deleted boolean DEFAULT false,
   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
@@ -191,7 +163,7 @@ CREATE TABLE project_cycles (
   start_day timestamp with time zone NOT NULL
 );
 
-CREATE TABLE project_tags (
+CREATE TABLE IF NOT EXISTS project_tags (
   id uuid PRIMARY KEY,
   deleted boolean DEFAULT false,
   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
@@ -199,7 +171,7 @@ CREATE TABLE project_tags (
   name text NOT NULL
 );
 
-CREATE TABLE project_task_comments (
+CREATE TABLE IF NOT EXISTS project_task_comments (
   id uuid PRIMARY KEY,
   deleted boolean DEFAULT false,
   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
@@ -211,7 +183,7 @@ CREATE TABLE project_task_comments (
   data text NOT NULL
 );
 
-CREATE TABLE project_tasks (
+CREATE TABLE IF NOT EXISTS project_tasks (
   id uuid PRIMARY KEY,
   deleted boolean DEFAULT false,
   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
@@ -226,7 +198,7 @@ CREATE TABLE project_tasks (
   parent_task_id uuid
 );
 
-CREATE TABLE projects (
+CREATE TABLE IF NOT EXISTS projects (
   id uuid PRIMARY KEY,
   deleted boolean DEFAULT false,
   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
@@ -242,7 +214,7 @@ CREATE TABLE projects (
   docs text
 );
 
-CREATE TABLE table_export_logs (
+CREATE TABLE IF NOT EXISTS table_export_logs (
   id uuid PRIMARY KEY,
   deleted boolean DEFAULT false,
   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
@@ -250,23 +222,13 @@ CREATE TABLE table_export_logs (
   created_by_id uuid NOT NULL
 );
 
-CREATE TABLE tags_task_relation (
+CREATE TABLE IF NOT EXISTS tags_task_relation (
   project_task_id uuid NOT NULL,
   project_tag_id uuid NOT NULL
 );
 
-CREATE TABLE user_invites (
-  id uuid PRIMARY KEY,
-  deleted boolean DEFAULT false,
-  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-  workspace_id uuid NOT NULL,
-  name text NOT NULL,
-  email text NOT NULL UNIQUE,
-  status bigint,
-  plain_text_password text
-);
 
-CREATE TABLE user_webui_notifications (
+CREATE TABLE IF NOT EXISTS user_webui_notifications (
   id uuid PRIMARY KEY,
   deleted boolean DEFAULT false,
   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
@@ -277,22 +239,17 @@ CREATE TABLE user_webui_notifications (
   read boolean
 );
 
-CREATE TABLE users_project_relation (
+CREATE TABLE IF NOT EXISTS users_project_relation (
   project_id uuid NOT NULL,
   user_id uuid NOT NULL
 );
 
-CREATE TABLE users_task_relation (
+CREATE TABLE IF NOT EXISTS users_task_relation (
   project_task_id uuid NOT NULL,
   user_id uuid NOT NULL
 );
 
-CREATE TABLE users_workspace_relation (
-  workspace_id uuid NOT NULL,
-  user_id uuid NOT NULL
-);
-
-CREATE TABLE workspace_webui_notifications (
+CREATE TABLE IF NOT EXISTS workspace_webui_notifications (
   id uuid PRIMARY KEY,
   deleted boolean DEFAULT false,
   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
@@ -388,13 +345,3 @@ ALTER TABLE ONLY users_project_relation ADD CONSTRAINT fk_users_project_relation
 ALTER TABLE ONLY users_task_relation ADD CONSTRAINT fk_users_task_relation_project_task FOREIGN KEY (project_task_id) REFERENCES project_tasks(id);
 
 ALTER TABLE ONLY users_task_relation ADD CONSTRAINT fk_users_task_relation_user FOREIGN KEY (user_id) REFERENCES users(id);
-
-ALTER TABLE ONLY users_workspace_relation ADD CONSTRAINT fk_users_workspace_relation_user FOREIGN KEY (user_id) REFERENCES users(id);
-
-ALTER TABLE ONLY users_workspace_relation ADD CONSTRAINT fk_users_workspace_relation_workspace FOREIGN KEY (workspace_id) REFERENCES workspaces(id);
-
-ALTER TABLE ONLY workspaces ADD CONSTRAINT fk_workspaces_created_by_user FOREIGN KEY (created_by_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY workspaces_user_relation ADD CONSTRAINT fk_workspaces_user_relation_user FOREIGN KEY (user_id) REFERENCES users(id);
-
-ALTER TABLE ONLY workspaces_user_relation ADD CONSTRAINT fk_workspaces_user_relation_workspace FOREIGN KEY (workspace_id) REFERENCES workspaces(id);

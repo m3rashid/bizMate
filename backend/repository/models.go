@@ -8,244 +8,18 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-type Attendance struct {
-	ID          pgtype.UUID
-	Deleted     pgtype.Bool
-	CreatedAt   pgtype.Timestamptz
-	WorkspaceID pgtype.UUID
-	CreatedByID pgtype.UUID
-	EmployeeID  pgtype.UUID
-	StartTime   pgtype.Timestamptz
-	EndTime     pgtype.Timestamptz
-}
-
-type BulkEmailRequest struct {
-	ID                     pgtype.UUID
-	Deleted                pgtype.Bool
-	CreatedAt              pgtype.Timestamptz
-	WorkspaceID            pgtype.UUID
-	CreatedByID            pgtype.UUID
-	EmailTemplateID        pgtype.UUID
-	BodyVariableMapping    pgtype.Text
-	SubjectVariableMapping pgtype.Text
-}
-
-type Contact struct {
-	ID           pgtype.UUID
-	Deleted      pgtype.Bool
-	CreatedAt    pgtype.Timestamptz
-	WorkspaceID  pgtype.UUID
-	CreatedByID  pgtype.UUID
-	UpdatedByID  pgtype.UUID
-	Name         string
-	Email        string
-	Phone        pgtype.Text
-	Birthday     pgtype.Timestamptz
-	OtherPhones  pgtype.Text
-	OtherEmails  pgtype.Text
-	OtherDetails pgtype.Text
-}
-
-type Dashboard struct {
-	ID          pgtype.UUID
-	Deleted     pgtype.Bool
-	CreatedAt   pgtype.Timestamptz
-	WorkspaceID pgtype.UUID
-	CreatedByID pgtype.UUID
-	UpdatedByID pgtype.UUID
-	Title       string
-	Description string
-	Active      pgtype.Bool
-}
-
-type DashboardChart struct {
-	ID              pgtype.UUID
-	Deleted         pgtype.Bool
-	CreatedAt       pgtype.Timestamptz
-	WorkspaceID     pgtype.UUID
-	CreatedByID     pgtype.UUID
-	UpdatedByID     pgtype.UUID
-	DashboardID     pgtype.UUID
-	Title           string
-	Description     string
-	RefreshInterval int64
-	Position        int64
-	Model           string
-	XLabel          pgtype.Text
-	YLabel          pgtype.Text
-	XDataKey        pgtype.Text
-	YDataKey        pgtype.Text
-	ChartType       pgtype.Text
-	ChartOptions    pgtype.Text
-}
-
-type DashboardKpi struct {
-	ID              pgtype.UUID
-	Deleted         pgtype.Bool
-	CreatedAt       pgtype.Timestamptz
-	WorkspaceID     pgtype.UUID
-	CreatedByID     pgtype.UUID
-	UpdatedByID     pgtype.UUID
-	DashboardID     pgtype.UUID
-	Title           string
-	Description     string
-	Model           string
-	ModelField      string
-	AggregationType string
-	TimePeriod      int64
-}
-
-type EmailTemplate struct {
-	ID                     pgtype.UUID
-	Deleted                pgtype.Bool
-	CreatedAt              pgtype.Timestamptz
-	WorkspaceID            pgtype.UUID
-	CreatedByID            pgtype.UUID
-	UpdatedByID            pgtype.UUID
-	Title                  string
-	Description            pgtype.Text
-	Variables              pgtype.Text
-	SubjectTemplate        string
-	BodyTemplateHtml       string
-	BodyTemplateDesignJson string
-}
-
-type Employee struct {
-	ID              pgtype.UUID
-	Deleted         pgtype.Bool
-	CreatedAt       pgtype.Timestamptz
-	WorkspaceID     pgtype.UUID
-	CreatedByID     pgtype.UUID
-	UpdatedByID     pgtype.UUID
-	UserID          pgtype.UUID
-	EmployementType int64
-	MonthlySalary   pgtype.Numeric
-	WeeklyHours     pgtype.Numeric
-}
-
-type Form struct {
-	ID                     pgtype.UUID
-	Deleted                pgtype.Bool
-	CreatedAt              pgtype.Timestamptz
-	WorkspaceID            pgtype.UUID
-	CreatedByID            pgtype.UUID
-	UpdatedByID            pgtype.UUID
-	Title                  string
-	Description            string
-	Body                   string
-	SubmitText             string
-	CancelText             string
-	SuccessPage            pgtype.Text
-	FailurePage            pgtype.Text
-	Active                 pgtype.Bool
-	SendResponseEmail      pgtype.Bool
-	AllowAnonymousResponse pgtype.Bool
-	AllowResponseUpdate    pgtype.Bool
-	AllowMultipleResponse  pgtype.Bool
-	PreviousVersionIds     pgtype.Text
-}
-
-type FormResponse struct {
-	ID          pgtype.UUID
-	Deleted     pgtype.Bool
-	CreatedAt   pgtype.Timestamptz
-	WorkspaceID pgtype.UUID
-	UpdatedByID pgtype.UUID
-	CreatedByID pgtype.UUID
-	FormID      pgtype.UUID
-	Response    string
-	DeviceIp    pgtype.Text
-}
-
-type Project struct {
-	ID          pgtype.UUID
-	Deleted     pgtype.Bool
-	CreatedAt   pgtype.Timestamptz
-	WorkspaceID pgtype.UUID
-	CreatedByID pgtype.UUID
-	UpdatedByID pgtype.UUID
-	Name        string
-	Description string
-	Abandoned   pgtype.Bool
-	Completed   pgtype.Bool
-	Readme      pgtype.Text
-	Guidelines  pgtype.Text
-	Docs        pgtype.Text
-}
-
-type ProjectCycle struct {
-	ID             pgtype.UUID
-	Deleted        pgtype.Bool
-	CreatedAt      pgtype.Timestamptz
-	WorkspaceID    pgtype.UUID
-	CreatedByID    pgtype.UUID
-	UpdatedByID    pgtype.UUID
-	CycleGoals     pgtype.Text
-	ProjectID      pgtype.UUID
-	CycleDaysCount int64
-	StartDay       pgtype.Timestamptz
-}
-
-type ProjectTag struct {
-	ID          pgtype.UUID
-	Deleted     pgtype.Bool
-	CreatedAt   pgtype.Timestamptz
-	WorkspaceID pgtype.UUID
-	Name        string
-}
-
-type ProjectTask struct {
-	ID           pgtype.UUID
-	Deleted      pgtype.Bool
-	CreatedAt    pgtype.Timestamptz
-	WorkspaceID  pgtype.UUID
-	CreatedByID  pgtype.UUID
-	UpdatedByID  pgtype.UUID
-	Title        string
-	Description  string
-	Status       string
-	Deadline     pgtype.Timestamptz
-	ProjectID    pgtype.UUID
-	ParentTaskID pgtype.UUID
-}
-
-type ProjectTaskComment struct {
-	ID          pgtype.UUID
-	Deleted     pgtype.Bool
-	CreatedAt   pgtype.Timestamptz
-	WorkspaceID pgtype.UUID
-	CreatedByID pgtype.UUID
-	UpdatedByID pgtype.UUID
-	TaskID      pgtype.UUID
-	Type        string
-	Data        string
-}
-
-type TableExportLog struct {
-	ID          pgtype.UUID
-	Deleted     pgtype.Bool
-	CreatedAt   pgtype.Timestamptz
-	WorkspaceID pgtype.UUID
-	CreatedByID pgtype.UUID
-}
-
-type TagsTaskRelation struct {
-	ProjectTaskID pgtype.UUID
-	ProjectTagID  pgtype.UUID
-}
-
 type User struct {
 	ID           pgtype.UUID
 	Deleted      pgtype.Bool
 	CreatedAt    pgtype.Timestamptz
 	Name         string
 	Email        string
-	Phone        pgtype.Text
-	Avatar       pgtype.Text
+	Phone        string
+	Avatar       string
 	Deactivated  pgtype.Bool
 	Provider     string
 	Password     string
-	RefreshToken pgtype.Text
+	RefreshToken string
 }
 
 type UserInvite struct {
@@ -259,30 +33,9 @@ type UserInvite struct {
 	PlainTextPassword pgtype.Text
 }
 
-type UserWebuiNotification struct {
-	ID          pgtype.UUID
-	Deleted     pgtype.Bool
-	CreatedAt   pgtype.Timestamptz
-	WorkspaceID pgtype.UUID
-	Title       string
-	Description pgtype.Text
-	Link        pgtype.Text
-	Read        pgtype.Bool
-}
-
-type UsersProjectRelation struct {
-	ProjectID pgtype.UUID
-	UserID    pgtype.UUID
-}
-
-type UsersTaskRelation struct {
-	ProjectTaskID pgtype.UUID
-	UserID        pgtype.UUID
-}
-
-type UsersWorkspaceRelation struct {
-	WorkspaceID pgtype.UUID
+type UsersWorkspacesRelation struct {
 	UserID      pgtype.UUID
+	WorkspaceID pgtype.UUID
 }
 
 type Workspace struct {
@@ -292,20 +45,4 @@ type Workspace struct {
 	Deleted     pgtype.Bool
 	CreatedAt   pgtype.Timestamptz
 	CreatedByID pgtype.UUID
-}
-
-type WorkspaceWebuiNotification struct {
-	ID          pgtype.UUID
-	Deleted     pgtype.Bool
-	CreatedAt   pgtype.Timestamptz
-	WorkspaceID pgtype.UUID
-	Title       string
-	Description pgtype.Text
-	Link        pgtype.Text
-	Read        pgtype.Text
-}
-
-type WorkspacesUserRelation struct {
-	UserID      pgtype.UUID
-	WorkspaceID pgtype.UUID
 }

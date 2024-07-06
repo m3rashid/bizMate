@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"bizMate/models"
 	"bizMate/utils"
 	"fmt"
 
@@ -9,22 +8,20 @@ import (
 )
 
 func getWorkspaces(ctx *fiber.Ctx) error {
-	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
-	db, err := utils.GetPostgresDB()
-	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError)
-	}
+	// userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	// db, err := utils.GetPostgresDB()
+	// if err != nil {
+	// 	return fiber.NewError(fiber.StatusInternalServerError)
+	// }
 
-	workspaces := []models.Workspace{}
-	currentUser := models.User{BaseModel: models.BaseModel{ID: userId.String()}}
-	filter := models.Workspace{Users: []*models.User{&currentUser}}
-	if err := db.Preload("Users").Where(&filter).Find(&workspaces).Error; err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError)
-	}
+	// workspaces := []models.Workspace{}
+	// currentUser := models.User{BaseModel: models.BaseModel{ID: userId.String()}}
+	// filter := models.Workspace{Users: []*models.User{&currentUser}}
+	// if err := db.Preload("Users").Where(&filter).Find(&workspaces).Error; err != nil {
+	// 	return fiber.NewError(fiber.StatusInternalServerError)
+	// }
 
-	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-		"success": true,
-	})
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(true, "success"))
 }
 
 func createWorkspace(ctx *fiber.Ctx) error {
