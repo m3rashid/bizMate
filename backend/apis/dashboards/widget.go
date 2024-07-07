@@ -1,11 +1,15 @@
 package dashboards
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"bizMate/utils"
+
+	"github.com/gofiber/fiber/v2"
+)
 
 func createChartForDashboard(ctx *fiber.Ctx) error {
-	return ctx.SendString("hello from createChartForDashboard")
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(nil, "hello from createChartForDashboard"))
 }
 
 func updateChartForDashboard(ctx *fiber.Ctx) error {
-	return ctx.SendString("hello from updateChartForDashboard")
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(nil, "hello from updateChartForDashboard"))
 }

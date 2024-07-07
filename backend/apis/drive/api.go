@@ -16,14 +16,14 @@ func uploadFile(ctx *fiber.Ctx) error {
 	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	reqBody := uploadFileReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	key := fmt.Sprintf("%d/%d/%s-%s", workspaceId, userId, utils.RandomString32(), reqBody.Name)
 	presignedUrl, err := utils.PutPresignURL(key)
 	if err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"url": presignedUrl, "key": key})
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(fiber.Map{"url": presignedUrl, "key": key}, "Presigned URL generated successfully"))
 }

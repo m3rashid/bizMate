@@ -20,9 +20,9 @@ export async function checkAuth() {
 			Authorization: `Bearer ${localStorage.getItem('token')}`,
 		},
 	})
-	const data = await res.json()
-	if (!data.id) return null
-	return data
+	const resJson = await res.json()
+	if (!resJson.success) throw new Error('Failed')
+	return resJson.data
 }
 
 export function useAuthState() {

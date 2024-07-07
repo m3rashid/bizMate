@@ -1,0 +1,29 @@
+{
+  "version": "2",
+  "sql": [
+    {
+      "engine": "postgresql",
+      "queries": "./db/query/*.sql",
+      "schema": "./db/migrations",
+      "gen": {
+        "go": {
+          "package": "repository",
+          "out": "repository",
+          "sql_package": "pgx/v5",
+          "emit_pointers_for_null_types": true,
+          "emit_json_tags": true,
+          "overrides": [
+            {
+              "db_type": "uuid",
+              "go_type": { "import": "github.com/google/uuid", "type": "UUID" }
+            },
+            {
+              "db_type": "text",
+              "go_type": { "type": "string" }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

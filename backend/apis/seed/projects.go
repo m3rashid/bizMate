@@ -40,14 +40,14 @@ func seedProjects(ctx *fiber.Ctx) error {
 		})
 	}
 
-	db, err := utils.GetDB()
-	if err != nil {
-		return ctx.SendStatus(fiber.StatusInternalServerError)
-	}
+	// db, err := utils.GetPostgresDB()
+	// if err != nil {
+	// 	return ctx.SendStatus(fiber.StatusInternalServerError)
+	// }
 
-	if err := db.CreateInBatches(projects, batchSize).Error; err != nil {
-		return ctx.SendStatus(fiber.StatusInternalServerError)
-	}
+	// if err := db.CreateInBatches(projects, batchSize).Error; err != nil {
+	// 	return ctx.SendStatus(fiber.StatusInternalServerError)
+	// }
 
 	return ctx.SendStatus(fiber.StatusOK)
 }

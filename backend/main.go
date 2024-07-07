@@ -2,18 +2,15 @@ package main
 
 import (
 	"bizMate/apis/auth"
-	"bizMate/apis/automations"
 	"bizMate/apis/contacts"
 	"bizMate/apis/dashboards"
 	"bizMate/apis/drive"
 	"bizMate/apis/export"
 	"bizMate/apis/forms"
-	"bizMate/apis/host"
 	"bizMate/apis/notifications"
 	"bizMate/apis/payments"
 	"bizMate/apis/projects"
 	"bizMate/apis/seed"
-	"bizMate/models"
 	"bizMate/utils"
 	"log"
 	"os"
@@ -58,7 +55,11 @@ func main() {
 			if e, ok := err.(*fiber.Error); ok {
 				code = e.Code
 			}
-			return ctx.SendStatus(code)
+			return ctx.Status(code).JSON(fiber.Map{
+				"data":    nil,
+				"success": false,
+				"message": utils.Ternary(err.Error() != "", err.Error(), "Something went wrong!"),
+			})
 		},
 	})
 
@@ -98,19 +99,16 @@ func main() {
 		return ctx.SendString(utils.TranslateToLocalLanguage(ctx, "Hello, World!"))
 	})
 
-	utils.MigrateModels(models.AllModels)
 	if os.Getenv("SERVER_MODE") == "development" {
 		app.Use(logger.New())
 	}
 
 	auth.Setup("/auth", app)
-	automations.Setup("/:workspaceId/automations", app)
 	contacts.Setup("/:workspaceId/contacts", app)
 	dashboards.Setup("/:workspaceId/dashboards", app)
 	drive.Setup("/:workspaceId/drive", app)
 	export.Setup("/:workspaceId/export", app)
 	forms.Setup("/:workspaceId/forms", app)
-	host.Setup("/host", app)
 	notifications.Setup("/:workspaceId/notifications", app)
 	payments.Setup("/:workspaceId/payments", app)
 	projects.Setup("/:workspaceId/projects", app)

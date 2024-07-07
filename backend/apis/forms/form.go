@@ -1,7 +1,6 @@
 package forms
 
 import (
-	"bizMate/controllers"
 	"bizMate/models"
 	"bizMate/utils"
 
@@ -24,50 +23,50 @@ type formReqBody struct {
 	SendResponseEmail      *bool  `json:"sendResponseEmail" validate:"required"`
 }
 
-var createNewForm = controllers.Create(models.FORM_MODEL_NAME, controllers.CreateOptions[formReqBody, models.Form]{
-	GetDefaultValues: func(values *formReqBody, ctx *fiber.Ctx) (*models.Form, error) {
-		userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
-		return &models.Form{
-			Title:                  values.Title,
-			Body:                   values.Body,
-			SubmitText:             values.SubmitText,
-			CancelText:             values.CancelText,
-			Description:            values.Description,
-			SuccessPage:            "[]",
-			FailurePage:            "[]",
-			PreviousVersionIDs:     "[]",
-			CreatedBy:              models.CreatedBy{CreatedByID: userId.String()},
-			BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId.String()},
-			Active:                 utils.Ternary(values.Active != nil, *values.Active, false),
-			SendResponseEmail:      utils.Ternary(values.SendResponseEmail != nil, *values.SendResponseEmail, false),
-			AllowResponseUpdate:    utils.Ternary(values.AllowResponseUpdate != nil, *values.AllowResponseUpdate, false),
-			AllowAnonymousResponse: utils.Ternary(values.AllowAnonymousResponse != nil, *values.AllowAnonymousResponse, false),
-			AllowMultipleResponse:  utils.Ternary(values.AllowMultipleResponse != nil, *values.AllowMultipleResponse, false),
-		}, nil
-	},
-})
+// var createNewForm = controllers.Create(models.FORM_MODEL_NAME, controllers.CreateOptions[formReqBody, models.Form]{
+// 	GetDefaultValues: func(values *formReqBody, ctx *fiber.Ctx) (*models.Form, error) {
+// 		userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+// 		return &models.Form{
+// 			Title:                  values.Title,
+// 			Body:                   values.Body,
+// 			SubmitText:             values.SubmitText,
+// 			CancelText:             values.CancelText,
+// 			Description:            values.Description,
+// 			SuccessPage:            "[]",
+// 			FailurePage:            "[]",
+// 			PreviousVersionIDs:     "[]",
+// 			CreatedBy:              models.CreatedBy{CreatedByID: userId.String()},
+// 			BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId.String()},
+// 			Active:                 utils.Ternary(values.Active != nil, *values.Active, false),
+// 			SendResponseEmail:      utils.Ternary(values.SendResponseEmail != nil, *values.SendResponseEmail, false),
+// 			AllowResponseUpdate:    utils.Ternary(values.AllowResponseUpdate != nil, *values.AllowResponseUpdate, false),
+// 			AllowAnonymousResponse: utils.Ternary(values.AllowAnonymousResponse != nil, *values.AllowAnonymousResponse, false),
+// 			AllowMultipleResponse:  utils.Ternary(values.AllowMultipleResponse != nil, *values.AllowMultipleResponse, false),
+// 		}, nil
+// 	},
+// })
 
 func updateFormById(ctx *fiber.Ctx) error {
 	updateBody := formReqBody{}
 	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 
 	if err := utils.ParseBodyAndValidate(ctx, &updateBody); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	if updateBody.ID == "" {
-		return ctx.Status(fiber.StatusBadRequest).JSON("Bad Request")
+		return fiber.NewError(fiber.StatusBadRequest, "Bad Request")
 	}
 
-	db, err := utils.GetDB()
-	if err != nil {
-		return ctx.SendStatus(fiber.StatusInternalServerError)
-	}
+	// db, err := utils.GetPostgresDB()
+	// if err != nil {
+	// 	return fiber.NewError(fiber.StatusInternalServerError)
+	// }
 
 	form := models.Form{}
-	if err := db.Where("id = ?", updateBody.ID).First(&form).Error; err != nil {
-		return ctx.SendStatus(fiber.StatusInternalServerError)
-	}
+	// if err := db.Where("id = ?", updateBody.ID).First(&form).Error; err != nil {
+	// 	return fiber.NewError(fiber.StatusInternalServerError)
+	// }
 
 	form.Title = updateBody.Title
 	form.Description = updateBody.Description
@@ -84,9 +83,9 @@ func updateFormById(ctx *fiber.Ctx) error {
 	userIdStr := userId.String()
 	form.UpdatedBy.UpdatedByID = &userIdStr
 
-	if err := db.Save(&form).Error; err != nil {
-		return ctx.SendStatus(fiber.StatusInternalServerError)
-	}
+	// if err := db.Save(&form).Error; err != nil {
+	// 	return fiber.NewError(fiber.StatusInternalServerError)
+	// }
 
-	return ctx.Status(fiber.StatusOK).JSON(form)
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(nil, "Form updated successfully"))
 }

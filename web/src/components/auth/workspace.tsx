@@ -2,6 +2,7 @@ import apiClient from '@api/client'
 import Button from '@components/lib/button'
 import Input from '@components/lib/input'
 import Modal from '@components/lib/modal'
+import TextAreaInput from '@components/lib/textAreaInput'
 import { PlusIcon } from '@heroicons/react/24/outline'
 import { usePopups } from '@hooks/popups'
 import { Workspace } from '@mytypes'
@@ -48,10 +49,11 @@ export function CreateWorkspace(props: CreateWorkspaceProps) {
 				</div>
 			</div>
 
-			<Modal title="Create new Workspace" open={open} setOpen={() => setOpen(false)}>
+			<Modal title="Create new workspace" open={open} setOpen={() => setOpen(false)}>
 				<form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-					<div className="p-4">
+					<div className="flex flex-col gap-4 p-4">
 						<Input name="name" type="name" label="Name" placeholder="BizMate Hero" required />
+						<TextAreaInput name="description" label="Description" />
 					</div>
 
 					<div className="flex items-center justify-between border-t border-borderColor p-2">

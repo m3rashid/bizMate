@@ -19,7 +19,7 @@ func (b *BaseModel) BeforeCreate(tx *gorm.DB) error {
 		return err
 	}
 
-	b.ID = id
+	b.ID = id.String()
 	return nil
 }
 
@@ -36,7 +36,7 @@ func (b *BaseModelWithWorkspace) BeforeCreate(tx *gorm.DB) error {
 		return err
 	}
 
-	b.ID = id
+	b.ID = id.String()
 	return nil
 }
 

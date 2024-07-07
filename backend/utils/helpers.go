@@ -69,10 +69,10 @@ func GenerateUuid() string {
 	return uuid.New().String()
 }
 
-func GenerateUuidV7() (string, error) {
+func GenerateUuidV7() (uuid.UUID, error) {
 	id, err := uuid.NewV7()
 	if err != nil {
-		return "", err
+		return uuid.Nil, err
 	}
-	return id.String(), nil
+	return id, nil
 }

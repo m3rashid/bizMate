@@ -22,6 +22,18 @@ function LoginWithCredentials(props: LoginWithCredentialsProps) {
 	const { setAuth } = useAuthState()
 	const { addMessagePopup } = usePopups()
 
+	function onSuccess(res: any) {
+		localStorage.setItem('token', res.data.token)
+		addMessagePopup({ id: 'Logged in Successfully', type: 'success', message: 'Logged in successfully' })
+		setAuth((prev) => ({ ...prev, isAuthenticated: true, user: res.data.user }))
+		if (props.onSuccess) props.onSuccess()
+	}
+
+	function onError() {
+		addMessagePopup({ id: 'Login Failed', type: 'error', message: 'Login failed. Please check your credentials and try again.' })
+		if (props.onFailure) props.onFailure()
+	}
+
 	const { isPending: isLoginPending, mutate: handleLogin } = useMutation({
 		mutationKey: ['login'],
 		mutationFn: async (body: LoginBody) => apiClient('/auth/login', { method: 'POST', body: JSON.stringify(body) }),
@@ -31,18 +43,6 @@ function LoginWithCredentials(props: LoginWithCredentialsProps) {
 		mutationKey: ['register'],
 		mutationFn: async (body: RegisterBody) => apiClient('/auth/register', { method: 'POST', body: JSON.stringify(body) }),
 	})
-
-	function onSuccess(data: any) {
-		localStorage.setItem('token', data.token)
-		addMessagePopup({ id: 'Logged in Successfully', type: 'success', message: 'Logged in successfully' })
-		setAuth((prev) => ({ ...prev, isAuthenticated: true, user: data.user }))
-		if (props.onSuccess) props.onSuccess()
-	}
-
-	function onError() {
-		addMessagePopup({ id: 'Login Failed', type: 'error', message: 'Login failed. Please check your credentials and try again.' })
-		if (props.onFailure) props.onFailure()
-	}
 
 	function handleSubmit(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault()
