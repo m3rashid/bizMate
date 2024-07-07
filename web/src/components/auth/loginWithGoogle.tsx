@@ -84,7 +84,6 @@ function LoginWithGoogle(props: LoginWithGoogleProps) {
 
 	useEffect(() => {
 		if (window.opener) {
-			console.log('location.search', location.search)
 			window.opener.postMessage(location.search)
 			window.close()
 		}

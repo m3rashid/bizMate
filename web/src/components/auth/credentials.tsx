@@ -23,15 +23,13 @@ function LoginWithCredentials(props: LoginWithCredentialsProps) {
 	const { addMessagePopup } = usePopups()
 
 	function onSuccess(res: any) {
-		console.log(res)
 		localStorage.setItem('token', res.data.token)
 		addMessagePopup({ id: 'Logged in Successfully', type: 'success', message: 'Logged in successfully' })
 		setAuth((prev) => ({ ...prev, isAuthenticated: true, user: res.data.user }))
 		if (props.onSuccess) props.onSuccess()
 	}
 
-	function onError(err: any) {
-		console.log(err)
+	function onError() {
 		addMessagePopup({ id: 'Login Failed', type: 'error', message: 'Login failed. Please check your credentials and try again.' })
 		if (props.onFailure) props.onFailure()
 	}
