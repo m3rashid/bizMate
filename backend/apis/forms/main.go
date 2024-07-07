@@ -7,24 +7,17 @@ import (
 )
 
 func Setup(initialRoute string, app *fiber.App) {
-	// app.Get(initialRoute+"/one/:formId", utils.CheckAuthMiddlewareButAllowUnauthorized, controllers.Get[models.Form](controllers.GetOptions{
-	// 	ParamKey:               "id",
-	// 	ParamValue:             "formId",
-	// 	DontIncludeWorkspaceID: true,
-	// }))
+	app.Get(initialRoute+"/one/:formId", utils.CheckAuthMiddlewareButAllowUnauthorized, getOneForm)
 
-	// app.Post(initialRoute+"/create", utils.CheckAuthMiddlewareWithWorkspace, createNewForm)
+	app.Post(initialRoute+"/create", utils.CheckAuthMiddlewareWithWorkspace, createNewForm)
 
-	// app.Get(initialRoute+"/all", utils.CheckAuthMiddlewareWithWorkspace, controllers.Paginate[models.Form]())
+	app.Post(initialRoute+"/new-form-version", utils.CheckAuthMiddlewareWithWorkspace, addNewFormVersion)
+
+	app.Get(initialRoute+"/all", utils.CheckAuthMiddlewareWithWorkspace, paginateForms)
 
 	app.Post(initialRoute+"/update", utils.CheckAuthMiddlewareWithWorkspace, updateFormById)
 
 	app.Get(initialRoute+"/analysis/:formId", utils.CheckAuthMiddlewareWithWorkspace, getFormResponseAnalysis)
-
-	// app.Post(initialRoute+"/delete/:formId", utils.CheckAuthMiddlewareWithWorkspace, controllers.Delete(controllers.DeleteOptions[models.Form]{
-	// 	ParamKey:   "id",
-	// 	ParamValue: "formId",
-	// }))
 
 	app.Post(initialRoute+"/response/:formId/submit", utils.CheckAuthMiddlewareButAllowUnauthorized, submitFormResponse)
 

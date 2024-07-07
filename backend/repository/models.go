@@ -9,6 +9,24 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type Form struct {
+	ID                     uuid.UUID          `json:"id"`
+	Deleted                *bool              `json:"deleted"`
+	CreatedAt              pgtype.Timestamptz `json:"created_at"`
+	WorkspaceID            uuid.UUID          `json:"workspace_id"`
+	CreatedByID            uuid.UUID          `json:"created_by_id"`
+	Title                  string             `json:"title"`
+	Description            string             `json:"description"`
+	BodyIds                []uuid.UUID        `json:"body_ids"`
+	SubmitText             string             `json:"submit_text"`
+	CancelText             string             `json:"cancel_text"`
+	Active                 *bool              `json:"active"`
+	IsStepForm             *bool              `json:"is_step_form"`
+	SendResponseEmail      *bool              `json:"send_response_email"`
+	AllowAnonymousResponse *bool              `json:"allow_anonymous_response"`
+	AllowMultipleResponse  *bool              `json:"allow_multiple_response"`
+}
+
 type User struct {
 	ID           uuid.UUID          `json:"id"`
 	Deleted      *bool              `json:"deleted"`
@@ -30,7 +48,7 @@ type UserInvite struct {
 	WorkspaceID       uuid.UUID          `json:"workspace_id"`
 	Name              string             `json:"name"`
 	Email             string             `json:"email"`
-	Status            *int64             `json:"status"`
+	Status            int32              `json:"status"`
 	PlainTextPassword *string            `json:"plain_text_password"`
 }
 

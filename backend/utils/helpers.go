@@ -76,3 +76,11 @@ func GenerateUuidV7() (uuid.UUID, error) {
 	}
 	return id, nil
 }
+
+func StringToUuid(id string) (uuid.UUID, error) {
+	val, err := uuid.Parse(id)
+	if err != nil {
+		return uuid.Nil, err
+	}
+	return val, nil
+}

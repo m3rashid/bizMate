@@ -116,40 +116,6 @@ CREATE TABLE IF NOT EXISTS employees (
   weekly_hours numeric NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS form_responses (
-  id uuid PRIMARY KEY,
-  deleted boolean DEFAULT false,
-  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-  workspace_id uuid NOT NULL,
-  updated_by_id uuid,
-  created_by_id uuid,
-  form_id uuid NOT NULL,
-  response text NOT NULL,
-  device_ip text
-);
-
-CREATE TABLE IF NOT EXISTS forms (
-  id uuid PRIMARY KEY,
-  deleted boolean DEFAULT false,
-  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-  workspace_id uuid NOT NULL,
-  created_by_id uuid NOT NULL,
-  updated_by_id uuid,
-  title text NOT NULL,
-  description text NOT NULL,
-  body text NOT NULL,
-  submit_text text NOT NULL,
-  cancel_text text NOT NULL,
-  success_page text,
-  failure_page text,
-  active boolean DEFAULT false,
-  send_response_email boolean DEFAULT false,
-  allow_anonymous_response boolean DEFAULT true,
-  allow_response_update boolean DEFAULT false,
-  allow_multiple_response boolean DEFAULT false,
-  previous_version_ids text DEFAULT '[]'::text
-);
-
 CREATE TABLE IF NOT EXISTS project_cycles (
   id uuid PRIMARY KEY,
   deleted boolean DEFAULT false,
@@ -297,16 +263,6 @@ ALTER TABLE ONLY employees ADD CONSTRAINT fk_employees_created_by_user FOREIGN K
 ALTER TABLE ONLY employees ADD CONSTRAINT fk_employees_updated_by_user FOREIGN KEY (updated_by_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY employees ADD CONSTRAINT fk_employees_user FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY form_responses ADD CONSTRAINT fk_form_responses_created_by_user FOREIGN KEY (created_by_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY form_responses ADD CONSTRAINT fk_form_responses_form FOREIGN KEY (form_id) REFERENCES forms(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY form_responses ADD CONSTRAINT fk_form_responses_updated_by_user FOREIGN KEY (updated_by_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY forms ADD CONSTRAINT fk_forms_created_by_user FOREIGN KEY (created_by_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY forms ADD CONSTRAINT fk_forms_updated_by_user FOREIGN KEY (updated_by_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_cycles ADD CONSTRAINT fk_project_cycles_created_by_user FOREIGN KEY (created_by_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE;
 

@@ -1,25 +1,109 @@
 package forms
 
 import (
+	"bizMate/repository"
 	"bizMate/utils"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 type formReqBody struct {
-	ID                     string `json:"id,omitempty" required:""`
-	Title                  string `json:"title" validate:"required"`
-	Description            string `json:"description" validate:"required"`
-	Body                   string `json:"body" validate:"required"`
-	SubmitText             string `json:"submitText" validate:"required"`
-	CancelText             string `json:"cancelText" validate:"required"`
-	SuccessPage            string `json:"successPage,omitempty"`
-	FailurePage            string `json:"failurePage,omitempty"`
-	Active                 *bool  `json:"active" validate:"required"`
-	AllowAnonymousResponse *bool  `json:"allowAnonymousResponse" validate:"required"`
-	AllowResponseUpdate    *bool  `json:"allowResponseUpdate" validate:"required"`
-	AllowMultipleResponse  *bool  `json:"allowMultipleResponse" validate:"required"`
-	SendResponseEmail      *bool  `json:"sendResponseEmail" validate:"required"`
+	Title                  string `json:"title" validate:"required, min=5, max=50"`
+	Description            string `json:"description" validate:"max=50"`
+	SubmitText             string `json:"submit_text" validate:"max=30"`
+	CancelText             string `json:"cancel_text" validate:"max=30"`
+	Active                 *bool  `json:"active"`
+	IsStepForm             *bool  `json:"is_step_form"`
+	SendResponseEmail      *bool  `json:"send_response_email"`
+	AllowAnonymousResponse *bool  `json:"allow_anonymous_response"`
+	AllowMultipleResponse  *bool  `json:"allow_multiple_response"`
+}
+
+func createNewForm(ctx *fiber.Ctx) error {
+	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	if userId == uuid.Nil || workspaceId == uuid.Nil {
+		return fiber.NewError(fiber.StatusBadRequest, "User or Workspace not present")
+	}
+
+	reqBody := formReqBody{}
+	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	id, err := utils.GenerateUuidV7()
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	pgConn, err := utils.GetPostgresDB()
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	queries := repository.New(pgConn)
+	form, err := queries.CreateForm(ctx.Context(), repository.CreateFormParams{
+		ID:                     id,
+		WorkspaceID:            workspaceId,
+		CreatedByID:            userId,
+		Title:                  reqBody.Title,
+		Description:            reqBody.Description,
+		SubmitText:             reqBody.SubmitText,
+		CancelText:             reqBody.CancelText,
+		Active:                 reqBody.Active,
+		IsStepForm:             reqBody.IsStepForm,
+		SendResponseEmail:      reqBody.SendResponseEmail,
+		AllowAnonymousResponse: reqBody.AllowAnonymousResponse,
+		AllowMultipleResponse:  reqBody.AllowMultipleResponse,
+	})
+
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(form, "Form Created Successfully"))
+}
+
+func addNewFormVersion(ctx *fiber.Ctx) error {
+	return nil
+}
+
+func paginateForms(ctx *fiber.Ctx) error {
+	return nil
+}
+
+func getOneForm(ctx *fiber.Ctx) error {
+	_, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	if workspaceId == uuid.Nil {
+		return fiber.NewError(fiber.StatusBadRequest, "Unknown workspace")
+	}
+
+	_formId := ctx.Params("formId")
+	if _formId == "" {
+		return fiber.NewError(fiber.StatusBadRequest, "Unknown form")
+	}
+
+	formId, err := utils.StringToUuid(_formId)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	pgConn, err := utils.GetPostgresDB()
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	queries := repository.New(pgConn)
+	form, err := queries.GetFormById(ctx.Context(), repository.GetFormByIdParams{
+		ID:          formId,
+		WorkspaceID: workspaceId,
+	})
+
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(form, "Form received successfully"))
 }
 
 // var createNewForm = controllers.Create(models.FORM_MODEL_NAME, controllers.CreateOptions[formReqBody, models.Form]{
