@@ -1,7 +1,5 @@
 package models
 
-import "time"
-
 const EMPLOYEE_MODEL_NAME string = "employees"
 const ATTENDANCE_MODEL_NAME string = "attendance"
 
@@ -15,17 +13,6 @@ const (
 	Intern     EmployementType = 2
 	FreeLancer EmployementType = 1
 )
-
-type Employee struct {
-	BaseModelWithWorkspace
-	CreatedBy
-	UpdatedBy
-	UserID          string          `json:"userId" gorm:"type:uuid;column:userId;not null" validate:"required"`
-	User            *User           `json:"user" gorm:"column:userId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	EmployementType EmployementType `json:"employementType" gorm:"column:employementType;not null" validate:"required"`
-	MonthlySalary   float64         `json:"monthlySalary" gorm:"column:monthlySalary;not null" validate:"required"`
-	WeeklyHours     float64         `json:"weeklyHours" gorm:"column:weeklyHours;not null" validate:"required"`
-}
 
 var EmployeeJsonModel = DashboardIndexableJsonModel{
 	ModelName: EMPLOYEE_MODEL_NAME,
@@ -41,15 +28,6 @@ var EmployeeJsonModel = DashboardIndexableJsonModel{
 	},
 }
 
-type Attendance struct {
-	BaseModelWithWorkspace
-	CreatedBy
-	EmployeeID string    `json:"employeeId" gorm:"type:uuid;column:employeeId;not null" validate:"required"`
-	Employee   *Employee `json:"employee" gorm:"foreignKey:employeeId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	StartTime  time.Time `json:"startTime" gorm:"column:startTime;not null" validate:"required"`
-	EndTime    time.Time `json:"endTime" gorm:"column:endTime" validate:""`
-}
-
 var AttendanceJsonModel = DashboardIndexableJsonModel{
 	ModelName: ATTENDANCE_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
@@ -60,12 +38,4 @@ var AttendanceJsonModel = DashboardIndexableJsonModel{
 		"createdBy":  JsonCreatedBy,
 		"employeeId": JsonString,
 	},
-}
-
-func (Employee) TableName() string {
-	return EMPLOYEE_MODEL_NAME
-}
-
-func (Attendance) TableName() string {
-	return ATTENDANCE_MODEL_NAME
 }

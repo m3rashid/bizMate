@@ -1,37 +1,5 @@
 package models
 
-var AllModels = []interface{}{
-	&User{},
-	&Workspace{},
-	&UserInvite{},
-
-	&Contact{},
-
-	&DashboardKpi{},
-	&DashboardChart{},
-	&Dashboard{},
-
-	&EmailTemplate{},
-	&BulkEmailRequest{},
-
-	&TableExportLog{},
-
-	&Form{},
-	&FormResponse{},
-
-	&Employee{},
-	&Attendance{},
-
-	&UserWebUiNotification{},
-	&WorkspaceWebUiNotification{},
-
-	&ProjectTag{},
-	&ProjectTask{},
-	&Project{},
-	&ProjectCycle{},
-	&ProjectTaskEvent{},
-}
-
 var dashboardIndexableJsonModels = []DashboardIndexableJsonModel{
 	UserJsonModel,
 	UserInviteJsonModel,

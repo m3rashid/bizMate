@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS user_invites (
   workspace_id uuid NOT NULL,
   name VARCHAR(50) NOT NULL,
   email VARCHAR(50) NOT NULL UNIQUE,
-  status bigint, -- 0 for pending, 1 for accepted, 2 for rejected
+  status int NOT NULL DEFAULT 0, -- 0=pending, 1=accepted, -1=rejected
   plain_text_password VARCHAR(20)
 );
 
