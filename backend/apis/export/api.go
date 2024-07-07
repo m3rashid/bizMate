@@ -3,11 +3,8 @@ package export
 import (
 	"bizMate/models"
 	"bizMate/utils"
-	"encoding/json"
-	"fmt"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
 
 type ExportFormat string
@@ -18,24 +15,24 @@ const (
 )
 
 func exportTable(ctx *fiber.Ctx) error {
-	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
-	if userId == uuid.Nil {
-		return fiber.NewError(fiber.StatusUnauthorized)
-	}
+	// userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	// if userId == uuid.Nil {
+	// 	return fiber.NewError(fiber.StatusUnauthorized)
+	// }
 
-	reqBody := exportTableReqBodyType{}
-	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, err.Error())
-	}
+	// reqBody := exportTableReqBodyType{}
+	// if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
+	// 	return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	// }
 
-	table, ok := exportableTables[reqBody.TableName]
-	if !ok {
-		return fiber.NewError(fiber.StatusBadRequest, "table data not exportable")
-	}
+	// table, ok := exportableTables[reqBody.TableName]
+	// if !ok {
+	// 	return fiber.NewError(fiber.StatusBadRequest, "table data not exportable")
+	// }
 
-	if table.name == models.FORM_RESPONSE_MODEL_NAME && reqBody.FormId == "" {
-		return fiber.NewError(fiber.StatusBadRequest, "formId is required for this export")
-	}
+	// if table.name == models.FORM_RESPONSE_MODEL_NAME && reqBody.FormId == "" {
+	// 	return fiber.NewError(fiber.StatusBadRequest, "formId is required for this export")
+	// }
 
 	// db, err := utils.GetPostgresDB()
 	// if err != nil {
@@ -50,47 +47,47 @@ func exportTable(ctx *fiber.Ctx) error {
 	// 	db = db.Preload("UpdatedByUser")
 	// }
 
-	res := []map[string]interface{}{}
-	if table.name == models.FORM_RESPONSE_MODEL_NAME {
-		responses := []models.FormResponse{}
-		// TODO: point of error (in case of large data from database)
-		// if err := db.Where("\"formId\" = ?", reqBody.FormId).Find(&responses).Error; err != nil {
-		// 	return fiber.NewError(fiber.StatusNotFound, "form not found")
-		// }
+	// res := []map[string]interface{}{}
+	// if table.name == models.FORM_RESPONSE_MODEL_NAME {
+	// 	responses := []models.FormResponse{}
+	// TODO: point of error (in case of large data from database)
+	// if err := db.Where("\"formId\" = ?", reqBody.FormId).Find(&responses).Error; err != nil {
+	// 	return fiber.NewError(fiber.StatusNotFound, "form not found")
+	// }
 
-		for _, response := range responses {
-			temp := map[string]interface{}{}
-			if err := json.Unmarshal([]byte(response.Response), &temp); err != nil {
-				continue
-			}
+	// 	for _, response := range responses {
+	// 		temp := map[string]interface{}{}
+	// 		if err := json.Unmarshal([]byte(response.Response), &temp); err != nil {
+	// 			continue
+	// 		}
 
-			temp["id"] = response.ID
-			temp["formId"] = response.FormID
-			temp["deviceIp"] = utils.Ternary(response.DeviceIP == "", "-", response.DeviceIP)
-			temp["createdAt"] = response.CreatedAt
-			res = append(res, temp)
-		}
-	} else {
-		tableFields := []string{}
-		for _, field := range reqBody.Fields {
-			if field == "createdBy" || field == "updatedBy" {
-				continue
-			}
-			tableFields = append(tableFields, fmt.Sprintf("\"%s\"", field))
-		}
-		// TODO: point of error (in case of large data from database)
-		// if err := db.Raw(fmt.Sprintf("SELECT %s FROM %s;", strings.Join(tableFields, ", "), table.name)).Scan(&res).Error; err != nil {
-		// 	return fiber.NewError(fiber.StatusInternalServerError)
-		// }
-	}
+	// 		temp["id"] = response.ID
+	// 		temp["formId"] = response.FormID
+	// 		temp["deviceIp"] = utils.Ternary(response.DeviceIP == "", "-", response.DeviceIP)
+	// 		temp["createdAt"] = response.CreatedAt
+	// 		res = append(res, temp)
+	// 	}
+	// } else {
+	// 	tableFields := []string{}
+	// 	for _, field := range reqBody.Fields {
+	// 		if field == "createdBy" || field == "updatedBy" {
+	// 			continue
+	// 		}
+	// 		tableFields = append(tableFields, fmt.Sprintf("\"%s\"", field))
+	// 	}
+	// TODO: point of error (in case of large data from database)
+	// if err := db.Raw(fmt.Sprintf("SELECT %s FROM %s;", strings.Join(tableFields, ", "), table.name)).Scan(&res).Error; err != nil {
+	// 	return fiber.NewError(fiber.StatusInternalServerError)
+	// }
+	// }
 
-	if reqBody.Format == csvFormat {
-		return handleCsvExport(reqBody, res, ctx)
-	} else if reqBody.Format == excelFormat {
-		return handleExcelExport(reqBody, res, ctx)
-	}
+	// if reqBody.Format == csvFormat {
+	// 	return handleCsvExport(reqBody, res, ctx)
+	// } else if reqBody.Format == excelFormat {
+	// 	return handleExcelExport(reqBody, res, ctx)
+	// }
 
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(reqBody, "Exported successfully"))
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(nil, "Exported successfully"))
 }
 
 type exportTableFieldsReqBody = struct {

@@ -1,12 +1,7 @@
 package seed
 
 import (
-	"bizMate/models"
-	"bizMate/utils"
-
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
-	"github.com/jaswdr/faker/v2"
 )
 
 type seedProjectReqBody struct {
@@ -15,30 +10,30 @@ type seedProjectReqBody struct {
 }
 
 func seedProjects(ctx *fiber.Ctx) error {
-	const batchSize = 100
-	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
-	if userId == uuid.Nil {
-		return ctx.SendStatus(fiber.StatusUnauthorized)
-	}
+	// const batchSize = 100
+	// userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	// if userId == uuid.Nil {
+	// 	return ctx.SendStatus(fiber.StatusUnauthorized)
+	// }
 
-	reqBody := seedProjectReqBody{}
-	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
-		return ctx.SendStatus(fiber.StatusBadRequest)
-	}
-	if reqBody.Count < 1 {
-		return ctx.SendStatus(fiber.StatusBadRequest)
-	}
+	// reqBody := seedProjectReqBody{}
+	// if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
+	// 	return ctx.SendStatus(fiber.StatusBadRequest)
+	// }
+	// if reqBody.Count < 1 {
+	// 	return ctx.SendStatus(fiber.StatusBadRequest)
+	// }
 
-	projects := []models.Project{}
-	fake := faker.New()
-	for i := 0; i < reqBody.Count; i++ {
-		projects = append(projects, models.Project{
-			Name:                   fake.Company().Name(),
-			Description:            fake.Company().CatchPhrase(),
-			CreatedBy:              models.CreatedBy{CreatedByID: userId.String()},
-			BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: reqBody.WorkspaceID},
-		})
-	}
+	// projects := []models.Project{}
+	// fake := faker.New()
+	// for i := 0; i < reqBody.Count; i++ {
+	// 	projects = append(projects, models.Project{
+	// 		Name:                   fake.Company().Name(),
+	// 		Description:            fake.Company().CatchPhrase(),
+	// 		CreatedBy:              models.CreatedBy{CreatedByID: userId.String()},
+	// 		BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: reqBody.WorkspaceID},
+	// 	})
+	// }
 
 	// db, err := utils.GetPostgresDB()
 	// if err != nil {

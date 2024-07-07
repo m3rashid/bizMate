@@ -82,11 +82,11 @@ func Setup(initialRoute string, app *fiber.App) {
 	// 	ParamKeys: []string{"dashboardId"},
 	// }))
 
-	app.Get(initialRoute+"/kpis/:dashboardId/all", utils.CheckAuthMiddlewareWithWorkspace, getAllKpiData)
+	// app.Get(initialRoute+"/kpis/:dashboardId/all", utils.CheckAuthMiddlewareWithWorkspace, getAllKpiData)
 
-	app.Post(initialRoute+"/charts/create/:dashboardId", utils.CheckAuthMiddlewareWithWorkspace, createChartForDashboard)
+	// app.Post(initialRoute+"/charts/create/:dashboardId", utils.CheckAuthMiddlewareWithWorkspace, createChartForDashboard)
 
-	app.Post(initialRoute+"/charts/update/:chartId", utils.CheckAuthMiddlewareWithWorkspace, updateChartForDashboard)
+	// app.Post(initialRoute+"/charts/update/:chartId", utils.CheckAuthMiddlewareWithWorkspace, updateChartForDashboard)
 
 	// app.Post(initialRoute+"/charts/delete/:chartId", utils.CheckAuthMiddlewareWithWorkspace, controllers.Delete(controllers.DeleteOptions[models.DashboardChart]{
 	// 	ParamKey:   "id",
@@ -95,5 +95,5 @@ func Setup(initialRoute string, app *fiber.App) {
 	// }))
 
 	// data routes
-	app.Get(initialRoute+"/data/:dashboardId/:chartId", utils.CheckAuthMiddlewareWithWorkspace, getDataForChart)
+	// app.Get(initialRoute+"/data/:dashboardId/:chartId", utils.CheckAuthMiddlewareWithWorkspace, getDataForChart)
 }

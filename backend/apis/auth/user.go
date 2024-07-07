@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"bizMate/models"
 	"bizMate/repository"
 	"bizMate/utils"
 
@@ -62,7 +61,7 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusNotFound, "User not found")
 	}
 
-	if user.Provider != models.PROVIDER_CREDENTIALS {
+	if user.Provider != providerCredentials {
 		return fiber.NewError(fiber.StatusUnauthorized, "User not found")
 	}
 

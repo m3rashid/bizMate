@@ -1,7 +1,6 @@
 package forms
 
 import (
-	"bizMate/models"
 	"bizMate/utils"
 
 	"github.com/gofiber/fiber/v2"
@@ -47,41 +46,41 @@ type formReqBody struct {
 // })
 
 func updateFormById(ctx *fiber.Ctx) error {
-	updateBody := formReqBody{}
-	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	// updateBody := formReqBody{}
+	// userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 
-	if err := utils.ParseBodyAndValidate(ctx, &updateBody); err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, err.Error())
-	}
+	// if err := utils.ParseBodyAndValidate(ctx, &updateBody); err != nil {
+	// 	return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	// }
 
-	if updateBody.ID == "" {
-		return fiber.NewError(fiber.StatusBadRequest, "Bad Request")
-	}
+	// if updateBody.ID == "" {
+	// 	return fiber.NewError(fiber.StatusBadRequest, "Bad Request")
+	// }
 
 	// db, err := utils.GetPostgresDB()
 	// if err != nil {
 	// 	return fiber.NewError(fiber.StatusInternalServerError)
 	// }
 
-	form := models.Form{}
+	// form := models.Form{}
 	// if err := db.Where("id = ?", updateBody.ID).First(&form).Error; err != nil {
 	// 	return fiber.NewError(fiber.StatusInternalServerError)
 	// }
 
-	form.Title = updateBody.Title
-	form.Description = updateBody.Description
-	form.SubmitText = updateBody.SubmitText
-	form.CancelText = updateBody.CancelText
+	// form.Title = updateBody.Title
+	// form.Description = updateBody.Description
+	// form.SubmitText = updateBody.SubmitText
+	// form.CancelText = updateBody.CancelText
 	//  `body` and `previousVersionIDs` are not updatable fields because form may get inconsistent
 	// form `body` cannot be updated, in case of update, new form should be created and old form should be marked as inactive, and `previousVersionIDs` field of the new form should be updated
-	form.SuccessPage = utils.Ternary(updateBody.SuccessPage != "", updateBody.SuccessPage, form.SuccessPage)
-	form.FailurePage = utils.Ternary(updateBody.FailurePage != "", updateBody.FailurePage, form.FailurePage)
-	form.Active = utils.Ternary(updateBody.Active != nil, *updateBody.Active, false)
-	form.AllowAnonymousResponse = utils.Ternary(updateBody.AllowAnonymousResponse != nil, *updateBody.AllowAnonymousResponse, false)
-	form.AllowResponseUpdate = utils.Ternary(updateBody.AllowResponseUpdate != nil, *updateBody.AllowResponseUpdate, false)
-	form.AllowMultipleResponse = utils.Ternary(updateBody.AllowMultipleResponse != nil, *updateBody.AllowMultipleResponse, false)
-	userIdStr := userId.String()
-	form.UpdatedBy.UpdatedByID = &userIdStr
+	// form.SuccessPage = utils.Ternary(updateBody.SuccessPage != "", updateBody.SuccessPage, form.SuccessPage)
+	// form.FailurePage = utils.Ternary(updateBody.FailurePage != "", updateBody.FailurePage, form.FailurePage)
+	// form.Active = utils.Ternary(updateBody.Active != nil, *updateBody.Active, false)
+	// form.AllowAnonymousResponse = utils.Ternary(updateBody.AllowAnonymousResponse != nil, *updateBody.AllowAnonymousResponse, false)
+	// form.AllowResponseUpdate = utils.Ternary(updateBody.AllowResponseUpdate != nil, *updateBody.AllowResponseUpdate, false)
+	// form.AllowMultipleResponse = utils.Ternary(updateBody.AllowMultipleResponse != nil, *updateBody.AllowMultipleResponse, false)
+	// userIdStr := userId.String()
+	// form.UpdatedBy.UpdatedByID = &userIdStr
 
 	// if err := db.Save(&form).Error; err != nil {
 	// 	return fiber.NewError(fiber.StatusInternalServerError)
