@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
   deleted boolean DEFAULT false,
   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
   name VARCHAR(50) NOT NULL,
-  email text NOT NULL UNIQUE,
+  email VARCHAR(50) NOT NULL UNIQUE,
   phone VARCHAR(15) NOT NULL,
   avatar text NOT NULL,
   deactivated boolean DEFAULT false,
@@ -16,8 +16,8 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS workspaces (
   id uuid PRIMARY KEY,
-  name text,
-	description text,
+  name VARCHAR(50) NOT NULL,
+	description VARCHAR(500),
   deleted boolean DEFAULT false,
   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
   created_by_id uuid NOT NULL
@@ -34,10 +34,10 @@ CREATE TABLE IF NOT EXISTS user_invites (
   deleted boolean DEFAULT false,
   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
   workspace_id uuid NOT NULL,
-  name text NOT NULL,
-  email text NOT NULL UNIQUE,
-  status bigint,
-  plain_text_password text
+  name VARCHAR(50) NOT NULL,
+  email VARCHAR(50) NOT NULL UNIQUE,
+  status bigint, -- 0 for pending, 1 for accepted, 2 for rejected
+  plain_text_password VARCHAR(20)
 );
 
 ALTER TABLE ONLY users_workspaces_relation ADD CONSTRAINT fk_users_workspace_relation_user FOREIGN KEY (user_id) REFERENCES users(id);

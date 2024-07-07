@@ -4,11 +4,11 @@ import (
 	"bizMate/repository"
 	"bizMate/utils"
 	"encoding/json"
-	"fmt"
 	"log"
 	"os"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 	"github.com/shareed2k/goth_fiber"
 )
 
@@ -35,97 +35,53 @@ func authCallback(ctx *fiber.Ctx) error {
 		return ctx.Redirect(getRedirectUrl(false, "error=auth_failed"))
 	}
 
-	// inviteId := uuid.Nil
-	// if strings.Contains(state, "inviteId-") {
-	// 	str := strings.SplitAfter(state, "inviteId-")
-	// 	inviteIdUuid, err := uuid.Parse(str[1])
-	// 	if err != nil {
-	// 		return ctx.Redirect(getRedirectUrl(false, "error=bad_request"))
-	// 	}
-	// 	inviteId = inviteIdUuid
-	// }
-
-	// toCreateNewUser := false
+	toCreateNewUser := false
 
 	pgConn, err := utils.GetPostgresDB()
 	if err != nil {
 		return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
 	}
+
 	queries := repository.New(pgConn)
-	user, err := queries.GetUserByEmail(ctx.Context(), authCallbackUser.Email)
+	dbUser, err := queries.GetUserByEmail(ctx.Context(), authCallbackUser.Email)
 	if err != nil {
-		fmt.Println("User not found", err.Error())
-		return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
+		toCreateNewUser = true
 	}
-	fmt.Printf("%+v\n", user)
 
-	// if err = db.Where("email = ?", authCallbackUser.Email).First(&user).Error; err != nil {
-	// 	if errors.Is(err, gorm.ErrRecordNotFound) {
-	// 		toCreateNewUser = true
-	// 	} else {
-	// 		return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
-	// 	}
-	// }
+	if dbUser.ID == uuid.Nil {
+		toCreateNewUser = true
+	}
 
-	// if user.ID == "" {
-	// 	toCreateNewUser = true
-	// }
+	if toCreateNewUser {
+		id, err := utils.GenerateUuidV7()
+		if err != nil {
+			return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
+		}
 
-	// if toCreateNewUser { // create user
-	// 	newUser := models.User{
-	// 		Name:         authCallbackUser.Name,
-	// 		Email:        authCallbackUser.Email,
-	// 		RefreshToken: authCallbackUser.RefreshToken,
-	// 		Provider:     models.PROVIDER_GOOGLE,
-	// 	}
+		_newUser := repository.CreateUserParams{
+			ID:           id,
+			Email:        authCallbackUser.Email,
+			Password:     "",
+			Name:         authCallbackUser.Name,
+			Provider:     "google",
+			RefreshToken: authCallbackUser.RefreshToken,
+			Phone:        "",
+			Avatar:       authCallbackUser.AvatarURL,
+		}
 
-	// 	if err := db.Create(&newUser).Error; err != nil {
-	// 		return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
-	// 	}
+		newUser, err := queries.CreateUser(ctx.Context(), _newUser)
+		if err != nil {
+			return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
+		}
+		dbUser = newUser
+	}
 
-	// 	user = newUser
-	// }
-
-	// if inviteId != uuid.Nil {
-	// 	invite := models.UserInvite{}
-	// 	if err := db.Where("id = ?", inviteId.String()).First(&invite).Error; err != nil {
-	// 		return ctx.Redirect(getRedirectUrl(true, "error=invalid_invite_id"))
-	// 	}
-
-	// 	if invite.ID == "" || invite.Status != models.InvitePending {
-	// 		return ctx.Redirect(getRedirectUrl(true, "error=invalid_invite_status"))
-	// 	}
-
-	// 	err := db.Transaction(func(tx *gorm.DB) error {
-	// 		invite.Status = models.InviteAccepted
-	// 		if err := tx.Save(&invite).Error; err != nil {
-	// 			return err
-	// 		}
-
-	// 		workspace := models.Workspace{}
-	// 		if err := tx.Where("id = ?", invite.WorkspaceID).First(&workspace).Error; err != nil {
-	// 			return err
-	// 		}
-
-	// 		workspace.Users = append(workspace.Users, &user)
-	// 		if err := tx.Save(&workspace).Error; err != nil {
-	// 			return err
-	// 		}
-
-	// 		return nil
-	// 	})
-
-	// 	if err != nil {
-	// 		return ctx.Redirect(getRedirectUrl(true, "error=not_added_to_workspace"))
-	// 	}
-	// }
-
-	jwtToken, err := utils.GenerateJWT(user.ID, user.Email)
+	jwtToken, err := utils.GenerateJWT(dbUser.ID, dbUser.Email)
 	if err != nil {
 		ctx.Redirect(getRedirectUrl(false, "error=no_token"))
 	}
 
-	jsonStr, err := json.Marshal(toPartialUser(user))
+	jsonStr, err := json.Marshal(toPartialUser(dbUser))
 	if err != nil {
 		return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
 	}

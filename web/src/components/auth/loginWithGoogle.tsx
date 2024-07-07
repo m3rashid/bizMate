@@ -2,7 +2,6 @@ import { baseUrl } from '@api/client'
 import Button from '@components/lib/button'
 import { PageLoader } from '@components/lib/loader'
 import { useAuthState } from '@hooks/auth'
-import { usePopups } from '@hooks/popups'
 import { useRouterState } from '@tanstack/react-router'
 import { Suspense, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -42,7 +41,6 @@ function LoginWithGoogle(props: LoginWithGoogleProps) {
 	const { t } = useTranslation()
 	const { setAuth } = useAuthState()
 	const { location } = useRouterState()
-	const { addMessagePopup } = usePopups()
 	const windowRef = useRef<Window | null>(null)
 	const previousUrlRef = useRef<string | null>(null)
 
@@ -50,6 +48,7 @@ function LoginWithGoogle(props: LoginWithGoogleProps) {
 		try {
 			if (!windowBaseUrl || event.origin !== windowBaseUrl) throw new Error('Request has been forged')
 			if (!event.source || (event.source as any).name !== windowTargetName) throw new Error('Invalid event source')
+			console.log(event.data)
 			if (!event.data || !event.data.token || !event.data.success || !event.data.user || !event.data.user.id) throw new Error('Invalid data')
 
 			localStorage.setItem('token', event.data.token)
@@ -67,17 +66,7 @@ function LoginWithGoogle(props: LoginWithGoogleProps) {
 	function openSignInWindow() {
 		window.removeEventListener('message', receiveMessage)
 
-		const param = 'inviteId'
-		let url = `${baseUrl}/auth/google?state=${window.location.host}`
-
-		if (window.location.search.includes(param)) {
-			const id = window.location.search.split(`?${param}=`)?.[1]
-			if (!id || isNaN(Number(id)) || Number(id) < 1) {
-				addMessagePopup({ message: 'Invalid workspace id', type: 'error', id: 'invalidWorkspaceId' })
-				return
-			}
-			url += `--${param}-${Number(id)}`
-		}
+		const url = `${baseUrl}/auth/google?state=${window.location.host}`
 
 		const strWindowFeatures = 'toolbar=no, menubar=no, width=600, height=700, top=100, left=100'
 		if (windowRef.current === null || windowRef.current.closed) {

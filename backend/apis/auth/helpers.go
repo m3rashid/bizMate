@@ -9,19 +9,20 @@ import (
 )
 
 type redisterBodyReq struct {
-	Name     string `json:"name" validate:"required"`
-	Email    string `json:"email" validate:"required,email"`
+	Name     string `json:"name" validate:"required,min=3,max=50"`
+	Email    string `json:"email" validate:"required,email,min=5,max=50"`
 	Phone    string `json:"phone,omitempty"`
-	Password string `json:"password" validate:"required"`
+	Password string `json:"password" validate:"required,min=8,max=20"`
 }
 
 type loginBodyReq struct {
-	Email    string `json:"email" validate:"required,email"`
+	Email    string `json:"email" validate:"required,email,min=3,max=50"`
 	Password string `json:"password" validate:"required"`
 }
 
 type createWorkspaceReq struct {
-	Name string `json:"name"`
+	Name        string `json:"name" validate:"required,min=3,max=50"`
+	Description string `json:"description" validate:"max=500"`
 }
 
 type partialUser struct {

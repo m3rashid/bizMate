@@ -4,7 +4,6 @@ import (
 	"bizMate/models"
 	"bizMate/repository"
 	"bizMate/utils"
-	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -60,12 +59,10 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 	queries := repository.New(pgConn)
 	user, err := queries.GetUserByEmail(ctx.Context(), reqBody.Email)
 	if err != nil {
-		fmt.Printf("Error: %+v\n", err)
 		return fiber.NewError(fiber.StatusNotFound, "User not found")
 	}
 
 	if user.Provider != models.PROVIDER_CREDENTIALS {
-		fmt.Printf("Error: %+v\n", "creds")
 		return fiber.NewError(fiber.StatusUnauthorized, "User not found")
 	}
 

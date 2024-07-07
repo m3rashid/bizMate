@@ -18,14 +18,14 @@ insert into users (id, email, password, name, provider, refresh_token, phone, av
 `
 
 type CreateUserParams struct {
-	ID           uuid.UUID
-	Email        string
-	Password     string
-	Name         string
-	Provider     string
-	RefreshToken string
-	Phone        string
-	Avatar       string
+	ID           uuid.UUID `json:"id"`
+	Email        string    `json:"email"`
+	Password     string    `json:"password"`
+	Name         string    `json:"name"`
+	Provider     string    `json:"provider"`
+	RefreshToken string    `json:"refresh_token"`
+	Phone        string    `json:"phone"`
+	Avatar       string    `json:"avatar"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {

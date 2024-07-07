@@ -10,40 +10,40 @@ import (
 )
 
 type User struct {
-	ID           uuid.UUID
-	Deleted      *bool
-	CreatedAt    pgtype.Timestamptz
-	Name         string
-	Email        string
-	Phone        string
-	Avatar       string
-	Deactivated  *bool
-	Provider     string
-	Password     string
-	RefreshToken string
+	ID           uuid.UUID          `json:"id"`
+	Deleted      *bool              `json:"deleted"`
+	CreatedAt    pgtype.Timestamptz `json:"created_at"`
+	Name         string             `json:"name"`
+	Email        string             `json:"email"`
+	Phone        string             `json:"phone"`
+	Avatar       string             `json:"avatar"`
+	Deactivated  *bool              `json:"deactivated"`
+	Provider     string             `json:"provider"`
+	Password     string             `json:"password"`
+	RefreshToken string             `json:"refresh_token"`
 }
 
 type UserInvite struct {
-	ID                uuid.UUID
-	Deleted           *bool
-	CreatedAt         pgtype.Timestamptz
-	WorkspaceID       uuid.UUID
-	Name              string
-	Email             string
-	Status            *int64
-	PlainTextPassword *string
+	ID                uuid.UUID          `json:"id"`
+	Deleted           *bool              `json:"deleted"`
+	CreatedAt         pgtype.Timestamptz `json:"created_at"`
+	WorkspaceID       uuid.UUID          `json:"workspace_id"`
+	Name              string             `json:"name"`
+	Email             string             `json:"email"`
+	Status            *int64             `json:"status"`
+	PlainTextPassword *string            `json:"plain_text_password"`
 }
 
 type UsersWorkspacesRelation struct {
-	UserID      uuid.UUID
-	WorkspaceID uuid.UUID
+	UserID      uuid.UUID `json:"user_id"`
+	WorkspaceID uuid.UUID `json:"workspace_id"`
 }
 
 type Workspace struct {
-	ID          uuid.UUID
-	Name        *string
-	Description *string
-	Deleted     *bool
-	CreatedAt   pgtype.Timestamptz
-	CreatedByID uuid.UUID
+	ID          uuid.UUID          `json:"id"`
+	Name        string             `json:"name"`
+	Description *string            `json:"description"`
+	Deleted     *bool              `json:"deleted"`
+	CreatedAt   pgtype.Timestamptz `json:"created_at"`
+	CreatedByID uuid.UUID          `json:"created_by_id"`
 }

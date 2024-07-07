@@ -11,39 +11,50 @@ import (
 	"github.com/google/uuid"
 )
 
-const addUserToWorkspace = `-- name: AddUserToWorkspace :one
+const addUserToWorkspace = `-- name: AddUserToWorkspace :exec
 insert into users_workspaces_relation (user_id, workspace_id) 
-	values ($1, $2) returning user_id, workspace_id
+	values ($1, $2)
 `
 
 type AddUserToWorkspaceParams struct {
-	UserID      uuid.UUID
-	WorkspaceID uuid.UUID
+	UserID      uuid.UUID `json:"user_id"`
+	WorkspaceID uuid.UUID `json:"workspace_id"`
 }
 
-func (q *Queries) AddUserToWorkspace(ctx context.Context, arg AddUserToWorkspaceParams) (UsersWorkspacesRelation, error) {
-	row := q.db.QueryRow(ctx, addUserToWorkspace, arg.UserID, arg.WorkspaceID)
-	var i UsersWorkspacesRelation
-	err := row.Scan(&i.UserID, &i.WorkspaceID)
-	return i, err
+func (q *Queries) AddUserToWorkspace(ctx context.Context, arg AddUserToWorkspaceParams) error {
+	_, err := q.db.Exec(ctx, addUserToWorkspace, arg.UserID, arg.WorkspaceID)
+	return err
 }
 
 const createWorkspace = `-- name: CreateWorkspace :one
-insert into workspaces (name, description, created_by_id)
-	values ($1, $2, $3) returning id
+insert into workspaces (id, name, description, created_by_id)
+	values ($1, $2, $3, $4) returning id, name, description, deleted, created_at, created_by_id
 `
 
 type CreateWorkspaceParams struct {
-	Name        *string
-	Description *string
-	CreatedByID uuid.UUID
+	ID          uuid.UUID `json:"id"`
+	Name        string    `json:"name"`
+	Description *string   `json:"description"`
+	CreatedByID uuid.UUID `json:"created_by_id"`
 }
 
-func (q *Queries) CreateWorkspace(ctx context.Context, arg CreateWorkspaceParams) (uuid.UUID, error) {
-	row := q.db.QueryRow(ctx, createWorkspace, arg.Name, arg.Description, arg.CreatedByID)
-	var id uuid.UUID
-	err := row.Scan(&id)
-	return id, err
+func (q *Queries) CreateWorkspace(ctx context.Context, arg CreateWorkspaceParams) (Workspace, error) {
+	row := q.db.QueryRow(ctx, createWorkspace,
+		arg.ID,
+		arg.Name,
+		arg.Description,
+		arg.CreatedByID,
+	)
+	var i Workspace
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Description,
+		&i.Deleted,
+		&i.CreatedAt,
+		&i.CreatedByID,
+	)
+	return i, err
 }
 
 const getCurrentUserWorkspaces = `-- name: GetCurrentUserWorkspaces :many

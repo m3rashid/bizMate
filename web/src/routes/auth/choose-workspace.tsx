@@ -15,7 +15,11 @@ export const Route = createFileRoute('/auth/choose-workspace')({
 })
 
 function ChooseWorkspace() {
-	const { data, isPending, refetch } = useQuery<Workspace[]>({
+	const {
+		data: result,
+		isPending,
+		refetch,
+	} = useQuery<{ data: Workspace[]; message: string; success: boolean }>({
 		queryKey: ['getUserWorkspaces'],
 		queryFn: () => apiClient('/auth/workspaces'),
 	})
@@ -32,7 +36,9 @@ function ChooseWorkspace() {
 	return (
 		<PageContainer workspaceId="">
 			<div className="flex flex-wrap items-center gap-4">
-				{data?.map((workspace) => <WorkspaceCard key={workspace.id} {...workspace} onClick={() => handleChooseWorkspace(workspace.id)} />)}
+				{result
+					? result.data?.map((workspace) => <WorkspaceCard key={workspace.id} {...workspace} onClick={() => handleChooseWorkspace(workspace.id)} />)
+					: null}
 				<CreateWorkspace onSuccess={refetch} />
 			</div>
 		</PageContainer>
