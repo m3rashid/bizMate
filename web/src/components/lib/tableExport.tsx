@@ -6,7 +6,7 @@ import SingleSelectInput from '@components/lib/singleSelectInput'
 import TogglerInput from '@components/lib/toggle'
 import TableCellsIcon from '@heroicons/react/24/outline/TableCellsIcon'
 import { usePopups } from '@hooks/popups'
-import { ExportableTable, Option } from '@mytypes'
+import { ApiResponse, ExportableTable, Option } from '@mytypes'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { handleViewTransition } from '@utils/helpers'
 import { FormEvent, useState } from 'react'
@@ -30,7 +30,7 @@ function TableExport(props: TableExportProps) {
 	const { addMessagePopup } = usePopups()
 	const [open, setOpen] = useState(false)
 
-	const { data: tableFieldsData, isPending } = useQuery<{ fileNameWithoutExt: string; fields: Array<{ name: string; label: string }> }>({
+	const { data: result, isPending } = useQuery<ApiResponse<{ fileNameWithoutExt: string; fields: Array<{ name: string; label: string }> }>>({
 		queryKey: [props.tableName, props.workspaceId, ...(props.mutationKeys || []), ...(props.formId ? [props.formId] : [])],
 		queryFn: () =>
 			apiClient(`/${props.workspaceId}/export/table-fields`, {
@@ -46,7 +46,7 @@ function TableExport(props: TableExportProps) {
 			addMessagePopup({
 				type: 'error',
 				message: (error as any) || 'An error occurred',
-				id: `${tableFieldsData?.fileNameWithoutExt}.${variables.format}` || `${props.tableName}.${variables.format}`,
+				id: `${result?.data.fileNameWithoutExt}.${variables.format}` || `${props.tableName}.${variables.format}`,
 			})
 		},
 		mutationKey: [props.tableName, ...(props.mutationKeys || [])],
@@ -54,7 +54,7 @@ function TableExport(props: TableExportProps) {
 			apiClient(
 				`/${props.workspaceId}/export/table`,
 				{ method: 'POST', body: JSON.stringify(data) },
-				{ downloadableContent: { fileName: `${tableFieldsData?.fileNameWithoutExt}.${data.format}` || `${props.tableName}.${data.format}` } },
+				{ downloadableContent: { fileName: `${result?.data.fileNameWithoutExt}.${data.format}` || `${props.tableName}.${data.format}` } },
 			),
 	})
 
@@ -77,7 +77,7 @@ function TableExport(props: TableExportProps) {
 			<Modal title="Export Data" open={open} setOpen={() => handleViewTransition(() => setOpen(false))}>
 				{isPending ? (
 					<PageLoader />
-				) : !tableFieldsData || tableFieldsData.fields.length === 0 ? (
+				) : !result || result.data.fields.length === 0 ? (
 					<div>
 						<label className="block text-sm font-medium leading-6 text-gray-900">{t('No columns to select')}</label>
 					</div>
@@ -90,7 +90,7 @@ function TableExport(props: TableExportProps) {
 						<label className="block px-4 text-sm font-medium leading-6 text-gray-900">{t('Select Columns to include')}</label>
 
 						<div className="grid max-h-80 grid-cols-1 gap-2 overflow-auto p-4 pt-0 md:grid-cols-2 md:gap-4">
-							{tableFieldsData.fields.map((field) => (
+							{result.data.fields.map((field) => (
 								<TogglerInput key={field.name} name={field.name} label={field.label} defaultChecked />
 							))}
 						</div>

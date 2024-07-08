@@ -16,6 +16,8 @@ export type Option = { value: string; label: ReactNode }
 
 export type PageRoute = RouteIds<typeof routeTree>
 
+export type ApiResponse<T> = { data: T; message: string; success: boolean }
+
 export type PaginationType = {
 	limit: number
 	count: number

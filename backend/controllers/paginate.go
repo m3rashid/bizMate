@@ -32,10 +32,10 @@ package controllers
 // 	}
 
 // 	return func(ctx *fiber.Ctx) error {
-// 		reqQuery := utils.PaginationRequestQuery{}
-// 		if err := ctx.QueryParser(&reqQuery); err != nil {
-// 			return ctx.Status(fiber.StatusBadRequest).JSON(utils.TranslateToLocalLanguage(ctx, "Bad Request"))
-// 		}
+// reqQuery := utils.PaginationRequestQuery{}
+// if err := ctx.QueryParser(&reqQuery); err != nil {
+// 	return ctx.Status(fiber.StatusBadRequest).JSON(utils.TranslateToLocalLanguage(ctx, "Bad Request"))
+// }
 
 // 		var workspaceId uuid.UUID
 // 		if paginationOptions.GetWorkspaceID != nil {

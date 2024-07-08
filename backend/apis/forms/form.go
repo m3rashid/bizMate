@@ -72,7 +72,43 @@ func addNewFormVersion(ctx *fiber.Ctx) error {
 }
 
 func paginateForms(ctx *fiber.Ctx) error {
-	return nil
+	_, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	if workspaceId == uuid.Nil {
+		return fiber.NewError(fiber.StatusBadRequest, "Unknown workspace")
+	}
+
+	paginationRes := utils.PaginationResponse[repository.Form]{}
+	if err := paginationRes.ParseQuery(ctx, 50); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "Incorrect Parameters")
+	}
+
+	pgConn, err := utils.GetPostgresDB()
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	queries := repository.New(pgConn)
+	forms, err := queries.PaginateForms(ctx.Context(), repository.PaginateFormsParams{
+		WorkspaceID: workspaceId,
+		Limit:       paginationRes.Limit,
+		Offset:      (paginationRes.CurrentPage - 1) * paginationRes.Limit,
+	})
+
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	paginationRes.Docs = forms
+
+	formsCount, err := queries.GetFormsCount(ctx.Context(), workspaceId)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	paginationRes.TotalDocs = formsCount
+	paginationRes.BuildPaginationResponse()
+
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(paginationRes, "Got forms successfully"))
 }
 
 func getOneForm(ctx *fiber.Ctx) error {

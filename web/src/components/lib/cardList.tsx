@@ -35,13 +35,18 @@ function CardList<T extends DbRow>(props: CardListProps<T>) {
 	const navigate = useNavigate()
 	const locationSearch = qs.parse(location.search)
 
-	const { isPending, data, refetch, isFetching } = useQuery<PaginationResponse<T>>({
+	const {
+		refetch,
+		isPending,
+		isFetching,
+		data: result,
+	} = useQuery<{ data: PaginationResponse<T>; message: string; success: boolean }>({
 		queryKey: [...props.queryKeys, props.pageSize || 15, locationSearch.page, props.workspaceId],
 		queryFn: () =>
 			apiClient(`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${locationSearch.page}&limit=${props.pageSize || 15}`),
 	})
 
-	if (isPending || !data) return <SkeletonCardList />
+	if (isPending || !result) return <SkeletonCardList />
 	return (
 		<div className={twMerge('h-full w-full', props.rootClassName)}>
 			<DataListHeader
@@ -65,7 +70,7 @@ function CardList<T extends DbRow>(props: CardListProps<T>) {
 				className={twMerge('col-span-1 md:col-span-2 lg:col-span-3', props.masonryProps?.className)}
 			>
 				<Masonry gutter="1rem" className="mb-4">
-					{data.docs.map((item) => (
+					{result.data.docs.map((item) => (
 						<props.cardRenderer key={item.id} {...item} />
 					))}
 				</Masonry>
@@ -73,12 +78,12 @@ function CardList<T extends DbRow>(props: CardListProps<T>) {
 
 			<Pagination
 				{...{
-					page: data.page,
-					count: data.count,
-					limit: data.limit,
-					totalDocs: data.totalDocs,
-					hasNextPage: data.hasNextPage,
-					hasPreviousPage: data.hasPreviousPage,
+					page: result.data.page,
+					count: result.data.count,
+					limit: result.data.limit,
+					totalDocs: result.data.totalDocs,
+					hasNextPage: result.data.hasNextPage,
+					hasPreviousPage: result.data.hasPreviousPage,
 					onNextClick: () => navigate({ search: (prev: PageSearchParams) => ({ page: prev.page + 1 }) }),
 					onPreviousClick: () => navigate({ search: (prev: PageSearchParams) => ({ page: prev.page !== 1 ? prev.page - 1 : prev }) }),
 				}}

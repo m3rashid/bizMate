@@ -22,16 +22,6 @@ func GetDeviceIP(ctx *fiber.Ctx) string {
 	return ctx.Get("X-Forwarded-For")
 }
 
-type PaginationResponse[T any] struct {
-	Docs            []T   `json:"docs"`
-	Limit           int   `json:"limit"`
-	Count           int   `json:"count"`
-	TotalDocs       int64 `json:"totalDocs"`
-	CurrentPage     int   `json:"page"`
-	HasNextPage     bool  `json:"hasNextPage"`
-	HasPreviousPage bool  `json:"hasPreviousPage"`
-}
-
 var DefaultPaginationResponse = PaginationResponse[interface{}]{
 	Docs:            []interface{}{},
 	Limit:           0,
@@ -42,11 +32,6 @@ var DefaultPaginationResponse = PaginationResponse[interface{}]{
 	HasPreviousPage: false,
 }
 
-type PaginationRequestQuery struct {
-	Page  int `json:"page"`
-	Limit int `json:"limit"`
-}
-
 func SendResponse(data interface{}, msg string) fiber.Map {
 	return fiber.Map{
 		"success": true,
@@ -54,3 +39,9 @@ func SendResponse(data interface{}, msg string) fiber.Map {
 		"data":    data,
 	}
 }
+
+// func GetPaginationResponse[T interface{}](data []T, count int64) PaginationResponse[T] {
+// 	return PaginationResponse[T]{
+// 		Docs: data,
+// 	}
+// }

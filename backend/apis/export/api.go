@@ -158,6 +158,7 @@ func getExportTableFields(ctx *fiber.Ctx) error {
 	// }
 
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(
-		// fiber.Map{"fields": results, "fileNameWithoutExt": fileNameWithoutExt},
-		nil, "Export tables"))
+		fiber.Map{"fields": []string{}, "fileNameWithoutExt": ""},
+		"Export tables",
+	))
 }
