@@ -1,7 +1,6 @@
 import AdjustmentsHorizontalIcon from '@heroicons/react/24/outline/AdjustmentsHorizontalIcon'
 import AtSymbolIcon from '@heroicons/react/24/outline/AtSymbolIcon'
 import CogIcon from '@heroicons/react/24/outline/CogIcon'
-import DeviceTabletIcon from '@heroicons/react/24/outline/DeviceTabletIcon'
 import ListBulletIcon from '@heroicons/react/24/outline/ListBulletIcon'
 import UsersIcon from '@heroicons/react/24/outline/UsersIcon'
 import { PageRoute } from '@mytypes'
@@ -26,15 +25,16 @@ export const apps: App[] = [
 		name: 'Forms',
 		description: 'Create, publish, and get analytics for your forms',
 		routes: [
-			{ name: 'Designer', icon: DeviceTabletIcon, link: '/$workspaceId/forms/designer', description: 'Design your forms' },
-			{ name: 'All Forms', icon: ListBulletIcon, link: '/$workspaceId/forms/', description: 'List all forms', search: { 'page': 1 } },
+			// Designer to be specific to a single form, not generic
+			// { name: 'Designer', icon: DeviceTabletIcon, link: '/$workspaceId/forms/designer', description: 'Design your forms' },
+			{ name: 'Forms', icon: ListBulletIcon, link: '/$workspaceId/forms/', description: 'List all forms', search: { 'page': 1 } },
 		],
 	},
 	{
 		name: 'Dashboards',
 		description: 'Create and manage your dashboards',
 		routes: [
-			{ name: 'All Dashboards', icon: ListBulletIcon, description: 'List all dashboards', link: '/$workspaceId/dashboards/', search: { 'page': 1 } },
+			{ name: 'Dashboards', icon: ListBulletIcon, description: 'List all dashboards', link: '/$workspaceId/dashboards/', search: { 'page': 1 } },
 			//
 		],
 	},
@@ -44,7 +44,7 @@ export const apps: App[] = [
 		routes: [
 			{ name: 'Designer', icon: AdjustmentsHorizontalIcon, description: 'Create a new automation', link: '/$workspaceId/automations/designer' },
 			{
-				name: 'All Automations',
+				name: 'Automations',
 				icon: ListBulletIcon,
 				link: '/$workspaceId/automations/',
 				description: 'List all automations',
@@ -78,7 +78,7 @@ export const apps: App[] = [
 		name: 'Projects',
 		description: 'Create and manage your projects',
 		routes: [
-			{ name: 'All Projects', icon: ListBulletIcon, link: '/$workspaceId/projects/', description: 'List all projects', search: { 'page': 1 } },
+			{ name: 'Projects', icon: ListBulletIcon, link: '/$workspaceId/projects/', description: 'List all projects', search: { 'page': 1 } },
 			//
 		],
 	},

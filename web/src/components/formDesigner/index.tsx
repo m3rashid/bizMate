@@ -7,7 +7,7 @@ import { useSensor, useSensors, DndContext, PointerSensor, closestCorners, Keybo
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 import { useFormDesigner } from '@hooks/formDesigner'
 
-function FormDesigner(props: { workspaceId: string }) {
+function FormDesigner(props: { workspaceId: string; formId: string }) {
 	const { handleDragEnd } = useFormDesigner()
 
 	const sensors = useSensors(
@@ -29,7 +29,7 @@ function FormDesigner(props: { workspaceId: string }) {
 				</div>
 
 				<div className="flex w-full flex-col items-center overflow-auto bg-white p-4 pb-10">
-					<FormDesignerTopBar workspaceId={props.workspaceId} />
+					<FormDesignerTopBar workspaceId={props.workspaceId} formId={props.formId} />
 					<FormDesignerCore />
 				</div>
 

@@ -36,9 +36,6 @@ const WorkspaceIdDashboardsIndexLazyImport = createFileRoute(
 const WorkspaceIdAutomationsIndexLazyImport = createFileRoute(
   '/$workspaceId/automations/',
 )()
-const WorkspaceIdFormsDesignerLazyImport = createFileRoute(
-  '/$workspaceId/forms/designer',
-)()
 const WorkspaceIdAutomationsDesignerLazyImport = createFileRoute(
   '/$workspaceId/automations/designer',
 )()
@@ -71,6 +68,9 @@ const WorkspaceIdFormsFormIdResponsesLazyImport = createFileRoute(
 )()
 const WorkspaceIdFormsFormIdFillLazyImport = createFileRoute(
   '/$workspaceId/forms/$formId/fill',
+)()
+const WorkspaceIdFormsFormIdDesignerLazyImport = createFileRoute(
+  '/$workspaceId/forms/$formId/designer',
 )()
 const WorkspaceIdFormsFormIdAnalyticsLazyImport = createFileRoute(
   '/$workspaceId/forms/$formId/analytics',
@@ -158,14 +158,6 @@ const WorkspaceIdAutomationsIndexLazyRoute =
     getParentRoute: () => rootRoute,
   } as any).lazy(() =>
     import('./routes/$workspaceId/automations/index.lazy').then((d) => d.Route),
-  )
-
-const WorkspaceIdFormsDesignerLazyRoute =
-  WorkspaceIdFormsDesignerLazyImport.update({
-    path: '/$workspaceId/forms/designer',
-    getParentRoute: () => rootRoute,
-  } as any).lazy(() =>
-    import('./routes/$workspaceId/forms/designer.lazy').then((d) => d.Route),
   )
 
 const WorkspaceIdAutomationsDesignerLazyRoute =
@@ -278,6 +270,16 @@ const WorkspaceIdFormsFormIdFillLazyRoute =
     ),
   )
 
+const WorkspaceIdFormsFormIdDesignerLazyRoute =
+  WorkspaceIdFormsFormIdDesignerLazyImport.update({
+    path: '/$workspaceId/forms/$formId/designer',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/$workspaceId/forms/$formId/designer.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
 const WorkspaceIdFormsFormIdAnalyticsLazyRoute =
   WorkspaceIdFormsFormIdAnalyticsLazyImport.update({
     path: '/$workspaceId/forms/$formId/analytics',
@@ -370,10 +372,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkspaceIdAutomationsDesignerLazyImport
       parentRoute: typeof rootRoute
     }
-    '/$workspaceId/forms/designer': {
-      preLoaderRoute: typeof WorkspaceIdFormsDesignerLazyImport
-      parentRoute: typeof rootRoute
-    }
     '/$workspaceId/automations/': {
       preLoaderRoute: typeof WorkspaceIdAutomationsIndexLazyImport
       parentRoute: typeof rootRoute
@@ -408,6 +406,10 @@ declare module '@tanstack/react-router' {
     }
     '/$workspaceId/forms/$formId/analytics': {
       preLoaderRoute: typeof WorkspaceIdFormsFormIdAnalyticsLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/$workspaceId/forms/$formId/designer': {
+      preLoaderRoute: typeof WorkspaceIdFormsFormIdDesignerLazyImport
       parentRoute: typeof rootRoute
     }
     '/$workspaceId/forms/$formId/fill': {
@@ -468,7 +470,6 @@ export const routeTree = rootRoute.addChildren([
   WorkspaceIdPaymentLazyRoute,
   WorkspaceIdIndexLazyRoute,
   WorkspaceIdAutomationsDesignerLazyRoute,
-  WorkspaceIdFormsDesignerLazyRoute,
   WorkspaceIdAutomationsIndexLazyRoute,
   WorkspaceIdDashboardsIndexLazyRoute,
   WorkspaceIdFormsIndexLazyRoute,
@@ -478,6 +479,7 @@ export const routeTree = rootRoute.addChildren([
   WorkspaceIdCommunicationsEmailsTemplatesLazyRoute,
   WorkspaceIdDashboardsDashboardIdDesignerLazyRoute,
   WorkspaceIdFormsFormIdAnalyticsLazyRoute,
+  WorkspaceIdFormsFormIdDesignerLazyRoute,
   WorkspaceIdFormsFormIdFillLazyRoute,
   WorkspaceIdFormsFormIdResponsesLazyRoute,
   WorkspaceIdProjectsProjectIdAnalyticsLazyRoute,

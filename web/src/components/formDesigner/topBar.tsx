@@ -4,20 +4,21 @@ import Tooltip from '@components/lib/tooltip'
 import InformationCircleIcon from '@heroicons/react/24/outline/InformationCircleIcon'
 import { useFormDesigner } from '@hooks/formDesigner'
 import { usePopups } from '@hooks/popups'
-import { Form, StringBoolean } from '@mytypes'
+import { Form, FormInnerBody, StringBoolean } from '@mytypes'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 
 type FormDesignerTopBarProps = {
 	workspaceId: string
+	formId: string
 }
 
 function FormDesignerTopBar(props: FormDesignerTopBarProps) {
 	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const { addMessagePopup } = usePopups()
-	const { viewType, changeViewType, meta, rootProps } = useFormDesigner()
+	const { viewType, changeViewType, meta } = useFormDesigner()
 
 	const { isPending, mutate: saveForm } = useMutation({
 		mutationKey: ['saveForm', props.workspaceId],
@@ -36,27 +37,32 @@ function FormDesignerTopBar(props: FormDesignerTopBarProps) {
 		}
 
 		const checkCondition = (val?: StringBoolean | undefined) => (val && val === 'on' ? true : false)
-		const form: Partial<Form> = {
-			body: JSON.stringify(
-				meta.map((el) => ({
-					...el,
-					props: {
-						...el.props,
-						...(el.props.required ? { required: checkCondition(el.props.required) } : {}),
-					},
-				})),
-			),
-			title: rootProps.title,
-			cancelText: rootProps.cancelText,
-			submitText: rootProps.submitText,
-			description: rootProps.description,
-			allowAnonymousResponse: checkCondition(rootProps.allowAnonymousResponse),
-			active: false,
-			sendResponseEmail: checkCondition(rootProps.sendResponseEmail),
-			allowMultipleResponse: checkCondition(rootProps.allowMultipleResponse),
-			allowResponseUpdate: checkCondition(rootProps.allowResponseUpdate),
+		const formInnerBody: Partial<FormInnerBody> = {
+			meta: meta.map((el) => ({
+				...el,
+				props: { ...el.props, ...(el.props.required ? { required: checkCondition(el.props.required) } : {}) },
+			})),
 		}
-		saveForm(form)
+		// body: JSON.stringify(
+		// 	meta.map((el) => ({
+		// 		...el,
+		// 		props: {
+		// 			...el.props,
+		// 			...(el.props.required ? { required: checkCondition(el.props.required) } : {}),
+		// 		},
+		// 	})),
+		// ),
+		// title: rootProps.title,
+		// cancelText: rootProps.cancelText,
+		// submitText: rootProps.submitText,
+		// description: rootProps.description,
+		// allowAnonymousResponse: checkCondition(rootProps.allowAnonymousResponse),
+		// active: false,
+		// sendResponseEmail: checkCondition(rootProps.sendResponseEmail),
+		// allowMultipleResponse: checkCondition(rootProps.allowMultipleResponse),
+		// allowResponseUpdate: checkCondition(rootProps.allowResponseUpdate),
+
+		saveForm({ formInnerBody })
 	}
 
 	return (

@@ -166,24 +166,29 @@ func getOneForm(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
+	queries := repository.New(pgConn)
+	form, err := queries.GetFormById(ctx.Context(), repository.GetFormByIdParams{ID: formId, WorkspaceID: workspaceId})
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
 	mongoDb, err := utils.GetMongoDB()
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	formBody := &repository.FormBodyDocument{}
-	if err = mongoDb.Collection(repository.FORM_BODY_COLLECTION_NAME).FindOne(ctx.Context(), bson.M{"form_id": _formId}).Decode(formBody); err != nil {
+	oid, err := primitive.ObjectIDFromHex(form.FormBodyID)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	if err = mongoDb.Collection(repository.FORM_BODY_COLLECTION_NAME).FindOne(ctx.Context(), bson.M{"_id": oid}).Decode(formBody); err != nil {
 		if err == mongo.ErrNoDocuments {
 			formBody = nil
 		} else {
 			return fiber.NewError(fiber.StatusInternalServerError)
 		}
-	}
-
-	queries := repository.New(pgConn)
-	form, err := queries.GetFormById(ctx.Context(), repository.GetFormByIdParams{ID: formId, WorkspaceID: workspaceId})
-	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(fiber.Map{"form": form, "formBody": formBody}, "Form received successfully"))

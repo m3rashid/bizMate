@@ -14,7 +14,6 @@ function FormPreview() {
 	const { formId, workspaceId } = useParams({ from: '/$workspaceId/forms/$formId/preview' })
 
 	const { data: res, isPending } = useQuery<ApiResponse<{ form: Form; formBody?: FormBodyDocument }>>({
-		// formBody is incorrect type here
 		queryKey: ['getForm', formId, workspaceId],
 		queryFn: () => apiClient(`/${workspaceId}/forms/one/${formId}`),
 	})
