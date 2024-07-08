@@ -229,40 +229,57 @@ func ValidateFormJsonString(jsonStr string) error {
 	return utils.Ternary(len(errorArr) == 0, nil, errors.New(fmt.Sprint(len(errorArr))+" errors occured"))
 }
 
-type FormBody struct {
-	FormID      uuid.UUID                   `json:"form_id" bson:"form_id"`
-	CreatedAt   time.Time                   `json:"created_at" bson:"created_at"`
-	WorkspaceID uuid.UUID                   `json:"workspace_id" bson:"workspace_id"`
-	CreatedByID uuid.UUID                   `json:"created_by_id" bson:"created_by_id"`
-	Body        [][]FormElementInstanceType `json:"body" bson:"body"`
+type FormInnerBody struct {
+	CreatedAt   time.Time                 `json:"created_at" bson:"created_at"`
+	CreatedByID uuid.UUID                 `json:"created_by_id" bson:"created_by_id"`
+	Meta        []FormElementInstanceType `json:"meta" bson:"meta"`
 }
 
-func (formBody *FormBody) MarshalBSON() ([]byte, error) {
+func (formBody *FormInnerBody) MarshalBSON() ([]byte, error) {
 	if formBody.CreatedAt.IsZero() {
 		formBody.CreatedAt = time.Now()
 	}
 
-	type fb FormBody
+	type fb FormInnerBody
 	return bson.Marshal((*fb)(formBody))
 }
 
-func InsertNewForm(db *mongo.Database, ctx context.Context, formId uuid.UUID, workspaceId uuid.UUID, createdById uuid.UUID, formBody []FormElementInstanceType) error {
-	if _, err := db.Collection(FORM_BODY_COLLECTION_NAME).InsertOne(ctx, FormBody{
-		FormID:      formId,
-		WorkspaceID: workspaceId,
-		CreatedByID: createdById,
-		Body:        [][]FormElementInstanceType{formBody},
+type FormBodyDocument struct {
+	FormID        uuid.UUID       `json:"form_id" bson:"form_id"`
+	CreatedAt     time.Time       `json:"created_at" bson:"created_at"`
+	WorkspaceID   uuid.UUID       `json:"workspace_id" bson:"workspace_id"`
+	CreatedByID   uuid.UUID       `json:"created_by_id" bson:"created_by_id"`
+	FormInnerBody []FormInnerBody `json:"formInnerBody" bson:"formInnerBody"`
+}
+
+func (formBody *FormBodyDocument) MarshalBSON() ([]byte, error) {
+	if formBody.CreatedAt.IsZero() {
+		formBody.CreatedAt = time.Now()
+	}
+
+	type fb FormBodyDocument
+	return bson.Marshal((*fb)(formBody))
+}
+
+func InsertNewVersionForm(db *mongo.Database, ctx context.Context, formId uuid.UUID, workspaceId uuid.UUID, createdById uuid.UUID, formBody FormInnerBody) error {
+	if _, err := db.Collection(FORM_BODY_COLLECTION_NAME).InsertOne(ctx, FormBodyDocument{
+		FormID:        formId,
+		WorkspaceID:   workspaceId,
+		CreatedByID:   createdById,
+		FormInnerBody: []FormInnerBody{formBody},
 	}); err != nil {
 		return err
 	}
+
 	return nil
 }
 
-func InsertNewBodyInForm(db *mongo.Database, ctx context.Context, formBodyId primitive.ObjectID, formBody []FormElementInstanceType) error {
+func InsertNewBodyInSameVersionForm(db *mongo.Database, ctx context.Context, formBodyId primitive.ObjectID, formBody FormInnerBody) error {
 	if _, err := db.Collection(FORM_BODY_COLLECTION_NAME).UpdateByID(ctx, formBodyId, bson.M{
-		"$push": bson.M{"body": formBody},
+		"$push": bson.M{"formInnerBody": formBody},
 	}); err != nil {
 		return err
 	}
+
 	return nil
 }

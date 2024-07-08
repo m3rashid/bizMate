@@ -11,13 +11,12 @@ import (
 	"bizMate/apis/payments"
 	"bizMate/apis/projects"
 	"bizMate/apis/seed"
+	"bizMate/repository"
 	"bizMate/utils"
 	"log"
 	"os"
 	"strings"
 	"time"
-
-	// "github.com/nicksnyder/go-i18n/v2/i18n"
 
 	"github.com/gofiber/contrib/fiberi18n/v2"
 	"github.com/gofiber/fiber/v2"
@@ -38,6 +37,10 @@ func init() {
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
+	}
+
+	if err = repository.CreateMongoCollectionIndices(); err != nil {
+		log.Fatal("Error creating collection indices", err)
 	}
 }
 

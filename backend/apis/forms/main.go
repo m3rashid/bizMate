@@ -13,11 +13,11 @@ func Setup(initialRoute string, app *fiber.App) {
 
 	app.Post(initialRoute+"/create", utils.CheckAuthMiddlewareWithWorkspace, createNewForm)
 
-	app.Post(initialRoute+"/new-form-version", utils.CheckAuthMiddlewareWithWorkspace, addNewFormVersion)
+	app.Post(initialRoute+"/update", utils.CheckAuthMiddlewareWithWorkspace, updateFormById)
 
 	app.Get(initialRoute+"/all", utils.CheckAuthMiddlewareWithWorkspace, paginateForms)
 
-	app.Post(initialRoute+"/update", utils.CheckAuthMiddlewareWithWorkspace, updateFormById)
+	app.Post(initialRoute+"/new-form-version", utils.CheckAuthMiddlewareWithWorkspace, addNewFormVersion)
 
 	app.Get(initialRoute+"/analysis/:formId", utils.CheckAuthMiddlewareWithWorkspace, getFormResponseAnalysis)
 

@@ -9,6 +9,7 @@ import (
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type CreateFormReqBody struct {
@@ -49,9 +50,34 @@ func createNewForm(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
+	mongoDb, err := utils.GetMongoDB()
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	tx, err := pgConn.Begin(ctx.Context())
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
 	queries := repository.New(pgConn)
-	form, err := queries.CreateForm(ctx.Context(), repository.CreateFormParams{
+	txQueries := queries.WithTx(tx)
+
+	formBody, err := mongoDb.Collection(repository.FORM_BODY_COLLECTION_NAME).InsertOne(ctx.Context(), repository.FormBodyDocument{
+		FormID:        id,
+		WorkspaceID:   workspaceId,
+		CreatedByID:   userId,
+		FormInnerBody: []repository.FormInnerBody{},
+	})
+
+	if err != nil {
+		tx.Rollback(ctx.Context())
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	form, err := txQueries.CreateForm(ctx.Context(), repository.CreateFormParams{
 		ID:                     id,
+		FormBodyID:             formBody.InsertedID.(primitive.ObjectID).Hex(),
 		WorkspaceID:            workspaceId,
 		CreatedByID:            userId,
 		Title:                  reqBody.Title,
@@ -63,13 +89,14 @@ func createNewForm(ctx *fiber.Ctx) error {
 		SendResponseEmail:      reqBody.SendResponseEmail,
 		AllowAnonymousResponse: reqBody.AllowAnonymousResponse,
 		AllowMultipleResponse:  reqBody.AllowMultipleResponse,
-		BodyIds:                []uuid.UUID{},
 	})
 
 	if err != nil {
-		fmt.Printf("%+v\n", err)
+		tx.Rollback(ctx.Context())
+		fmt.Println("here 02", err)
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
+	tx.Commit(ctx.Context())
 
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(form, "Form Created Successfully"))
 }
@@ -139,17 +166,27 @@ func getOneForm(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	queries := repository.New(pgConn)
-	form, err := queries.GetFormById(ctx.Context(), repository.GetFormByIdParams{
-		ID:          formId,
-		WorkspaceID: workspaceId,
-	})
-
+	mongoDb, err := utils.GetMongoDB()
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(form, "Form received successfully"))
+	formBody := &repository.FormBodyDocument{}
+	if err = mongoDb.Collection(repository.FORM_BODY_COLLECTION_NAME).FindOne(ctx.Context(), bson.M{"form_id": _formId}).Decode(formBody); err != nil {
+		if err == mongo.ErrNoDocuments {
+			formBody = nil
+		} else {
+			return fiber.NewError(fiber.StatusInternalServerError)
+		}
+	}
+
+	queries := repository.New(pgConn)
+	form, err := queries.GetFormById(ctx.Context(), repository.GetFormByIdParams{ID: formId, WorkspaceID: workspaceId})
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(fiber.Map{"form": form, "formBody": formBody}, "Form received successfully"))
 }
 
 func createFormBody(ctx *fiber.Ctx) error {
@@ -167,7 +204,7 @@ func getFormBodyById(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	formBody := repository.FormBody{}
+	formBody := repository.FormBodyDocument{}
 	err = mongoDb.Collection(repository.FORM_BODY_COLLECTION_NAME).FindOne(ctx.Context(), bson.D{
 		primitive.E{Key: "_id", Value: formBodyId},
 	}).Decode(&formBody)

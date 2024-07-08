@@ -30,7 +30,7 @@ func getMongoDbConnection() (*mongo.Database, error) {
 	mongoDb := os.Getenv("MONGO_INITDB_DATABASE")
 	mongoPort := os.Getenv("MONGO_PORT")
 
-	connectionStr := fmt.Sprintf("mongodb://%s:%s@%s:%s/%s", mongoUser, mongoPass, mongoHost, mongoPort, mongoDb)
+	connectionStr := fmt.Sprintf("mongodb://%s:%s@%s:%s/%s?ssl=false&authSource=admin", mongoUser, mongoPass, mongoHost, mongoPort, mongoDb)
 	loggerOptions := options.Logger().SetComponentLevel(options.LogComponentCommand, options.LogLevelDebug)
 	clientOptions := options.Client().ApplyURI(connectionStr).SetLoggerOptions(loggerOptions)
 

@@ -5,7 +5,6 @@ import CardList from '@components/lib/cardList'
 import Chip from '@components/lib/chip'
 import Tooltip from '@components/lib/tooltip'
 import PageContainer from '@components/pageContainer'
-import ArrowPathIcon from '@heroicons/react/24/outline/ArrowPathIcon'
 import ClipboardIcon from '@heroicons/react/24/outline/ClipboardIcon'
 import EyeIcon from '@heroicons/react/24/outline/EyeIcon'
 import InformationCircleIcon from '@heroicons/react/24/outline/InformationCircleIcon'
@@ -91,10 +90,6 @@ function FormCard(props: Form & { onEdit: () => void; workspaceId: string }) {
 							<div className="flex items-center gap-2">
 								{props.allow_anonymous_response ? <LockOpenIcon className="h-4 w-4" /> : <LockClosedIcon className="h-4 w-4" />}
 								<span>{props.allow_anonymous_response ? t('Accepting anonymous responses') : t('Not accepting anonymous responses')}</span>
-							</div>
-							<div className="flex items-center gap-2">
-								<ArrowPathIcon className="h-4 w-4" />
-								<span>{`${props.body_ids.length === 0 ? 'No' : props.body_ids.length} previous versions`}</span>
 							</div>
 						</div>
 					}

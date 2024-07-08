@@ -12,7 +12,7 @@ insert into forms (
 	send_response_email, 
 	allow_anonymous_response, 
 	allow_multiple_response,
-	body_ids
+	form_body_id
 ) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning *;
 
 -- name: GetFormById :one
@@ -35,10 +35,4 @@ update forms set
 	send_response_email = $8, 
 	allow_anonymous_response = $9, 
 	allow_multiple_response = $10
-where id = $1 returning *;
-
-
--- name: InsertNewVersionForm :one
-update forms set 
-	body_ids = array_prepend($2::uuid, body_ids)
 where id = $1 returning *;

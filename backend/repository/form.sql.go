@@ -25,24 +25,24 @@ insert into forms (
 	send_response_email, 
 	allow_anonymous_response, 
 	allow_multiple_response,
-	body_ids
-) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning id, deleted, created_at, workspace_id, created_by_id, title, description, body_ids, submit_text, cancel_text, active, is_step_form, send_response_email, allow_anonymous_response, allow_multiple_response
+	form_body_id
+) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning id, deleted, created_at, workspace_id, created_by_id, title, description, form_body_id, submit_text, cancel_text, active, is_step_form, send_response_email, allow_anonymous_response, allow_multiple_response
 `
 
 type CreateFormParams struct {
-	ID                     uuid.UUID   `json:"id"`
-	WorkspaceID            uuid.UUID   `json:"workspace_id"`
-	CreatedByID            uuid.UUID   `json:"created_by_id"`
-	Title                  string      `json:"title"`
-	Description            string      `json:"description"`
-	SubmitText             string      `json:"submit_text"`
-	CancelText             string      `json:"cancel_text"`
-	Active                 *bool       `json:"active"`
-	IsStepForm             *bool       `json:"is_step_form"`
-	SendResponseEmail      *bool       `json:"send_response_email"`
-	AllowAnonymousResponse *bool       `json:"allow_anonymous_response"`
-	AllowMultipleResponse  *bool       `json:"allow_multiple_response"`
-	BodyIds                []uuid.UUID `json:"body_ids"`
+	ID                     uuid.UUID `json:"id"`
+	WorkspaceID            uuid.UUID `json:"workspace_id"`
+	CreatedByID            uuid.UUID `json:"created_by_id"`
+	Title                  string    `json:"title"`
+	Description            string    `json:"description"`
+	SubmitText             string    `json:"submit_text"`
+	CancelText             string    `json:"cancel_text"`
+	Active                 *bool     `json:"active"`
+	IsStepForm             *bool     `json:"is_step_form"`
+	SendResponseEmail      *bool     `json:"send_response_email"`
+	AllowAnonymousResponse *bool     `json:"allow_anonymous_response"`
+	AllowMultipleResponse  *bool     `json:"allow_multiple_response"`
+	FormBodyID             string    `json:"form_body_id"`
 }
 
 func (q *Queries) CreateForm(ctx context.Context, arg CreateFormParams) (Form, error) {
@@ -59,7 +59,7 @@ func (q *Queries) CreateForm(ctx context.Context, arg CreateFormParams) (Form, e
 		arg.SendResponseEmail,
 		arg.AllowAnonymousResponse,
 		arg.AllowMultipleResponse,
-		arg.BodyIds,
+		arg.FormBodyID,
 	)
 	var i Form
 	err := row.Scan(
@@ -70,7 +70,7 @@ func (q *Queries) CreateForm(ctx context.Context, arg CreateFormParams) (Form, e
 		&i.CreatedByID,
 		&i.Title,
 		&i.Description,
-		&i.BodyIds,
+		&i.FormBodyID,
 		&i.SubmitText,
 		&i.CancelText,
 		&i.Active,
@@ -83,7 +83,7 @@ func (q *Queries) CreateForm(ctx context.Context, arg CreateFormParams) (Form, e
 }
 
 const getFormById = `-- name: GetFormById :one
-select id, deleted, created_at, workspace_id, created_by_id, title, description, body_ids, submit_text, cancel_text, active, is_step_form, send_response_email, allow_anonymous_response, allow_multiple_response from forms where id = $1 and workspace_id = $2
+select id, deleted, created_at, workspace_id, created_by_id, title, description, form_body_id, submit_text, cancel_text, active, is_step_form, send_response_email, allow_anonymous_response, allow_multiple_response from forms where id = $1 and workspace_id = $2
 `
 
 type GetFormByIdParams struct {
@@ -102,7 +102,7 @@ func (q *Queries) GetFormById(ctx context.Context, arg GetFormByIdParams) (Form,
 		&i.CreatedByID,
 		&i.Title,
 		&i.Description,
-		&i.BodyIds,
+		&i.FormBodyID,
 		&i.SubmitText,
 		&i.CancelText,
 		&i.Active,
@@ -125,42 +125,8 @@ func (q *Queries) GetFormsCount(ctx context.Context, workspaceID uuid.UUID) (int
 	return count, err
 }
 
-const insertNewVersionForm = `-- name: InsertNewVersionForm :one
-update forms set 
-	body_ids = array_prepend($2::uuid, body_ids)
-where id = $1 returning id, deleted, created_at, workspace_id, created_by_id, title, description, body_ids, submit_text, cancel_text, active, is_step_form, send_response_email, allow_anonymous_response, allow_multiple_response
-`
-
-type InsertNewVersionFormParams struct {
-	ID      uuid.UUID `json:"id"`
-	Column2 uuid.UUID `json:"column_2"`
-}
-
-func (q *Queries) InsertNewVersionForm(ctx context.Context, arg InsertNewVersionFormParams) (Form, error) {
-	row := q.db.QueryRow(ctx, insertNewVersionForm, arg.ID, arg.Column2)
-	var i Form
-	err := row.Scan(
-		&i.ID,
-		&i.Deleted,
-		&i.CreatedAt,
-		&i.WorkspaceID,
-		&i.CreatedByID,
-		&i.Title,
-		&i.Description,
-		&i.BodyIds,
-		&i.SubmitText,
-		&i.CancelText,
-		&i.Active,
-		&i.IsStepForm,
-		&i.SendResponseEmail,
-		&i.AllowAnonymousResponse,
-		&i.AllowMultipleResponse,
-	)
-	return i, err
-}
-
 const paginateForms = `-- name: PaginateForms :many
-select id, deleted, created_at, workspace_id, created_by_id, title, description, body_ids, submit_text, cancel_text, active, is_step_form, send_response_email, allow_anonymous_response, allow_multiple_response from forms where workspace_id = $1 order by id desc limit $2 offset $3
+select id, deleted, created_at, workspace_id, created_by_id, title, description, form_body_id, submit_text, cancel_text, active, is_step_form, send_response_email, allow_anonymous_response, allow_multiple_response from forms where workspace_id = $1 order by id desc limit $2 offset $3
 `
 
 type PaginateFormsParams struct {
@@ -186,7 +152,7 @@ func (q *Queries) PaginateForms(ctx context.Context, arg PaginateFormsParams) ([
 			&i.CreatedByID,
 			&i.Title,
 			&i.Description,
-			&i.BodyIds,
+			&i.FormBodyID,
 			&i.SubmitText,
 			&i.CancelText,
 			&i.Active,
@@ -216,7 +182,7 @@ update forms set
 	send_response_email = $8, 
 	allow_anonymous_response = $9, 
 	allow_multiple_response = $10
-where id = $1 returning id, deleted, created_at, workspace_id, created_by_id, title, description, body_ids, submit_text, cancel_text, active, is_step_form, send_response_email, allow_anonymous_response, allow_multiple_response
+where id = $1 returning id, deleted, created_at, workspace_id, created_by_id, title, description, form_body_id, submit_text, cancel_text, active, is_step_form, send_response_email, allow_anonymous_response, allow_multiple_response
 `
 
 type UpdateFormParams struct {
@@ -254,7 +220,7 @@ func (q *Queries) UpdateForm(ctx context.Context, arg UpdateFormParams) (Form, e
 		&i.CreatedByID,
 		&i.Title,
 		&i.Description,
-		&i.BodyIds,
+		&i.FormBodyID,
 		&i.SubmitText,
 		&i.CancelText,
 		&i.Active,

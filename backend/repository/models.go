@@ -17,7 +17,7 @@ type Form struct {
 	CreatedByID            uuid.UUID          `json:"created_by_id"`
 	Title                  string             `json:"title"`
 	Description            string             `json:"description"`
-	BodyIds                []uuid.UUID        `json:"body_ids"`
+	FormBodyID             string             `json:"form_body_id"`
 	SubmitText             string             `json:"submit_text"`
 	CancelText             string             `json:"cancel_text"`
 	Active                 *bool              `json:"active"`

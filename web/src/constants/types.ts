@@ -1,4 +1,5 @@
 import { exportableTables, kpiAggregationType, taskStatuses } from '.'
+import { FormElementInstance } from '@components/forms/constants'
 import { RouteIds } from '@tanstack/react-router'
 import { ReactNode } from 'react'
 import { routeTree } from 'src/routeTree.gen'
@@ -59,7 +60,7 @@ export type Form = BaseModel &
 	CreatedBy & {
 		title: string
 		description: string
-		body_ids: string[]
+		form_body_id: string
 		submit_text: string
 		cancel_text: string
 		active: boolean
@@ -68,6 +69,20 @@ export type Form = BaseModel &
 		allow_anonymous_response: boolean
 		allow_multiple_response: boolean
 	}
+
+export type FormInnerBody = {
+	created_at: string
+	created_by_id: string
+	meta: FormElementInstance[]
+}
+
+export type FormBodyDocument = {
+	form_id: string
+	created_at: string
+	created_by_id: string
+	workspace_id: string
+	formInnerBody: FormInnerBody[]
+}
 
 export type FormResponse = BaseModel &
 	CreatedBy &

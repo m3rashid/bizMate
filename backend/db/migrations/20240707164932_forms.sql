@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS forms (
   created_by_id uuid NOT NULL,
   title VARCHAR(50) NOT NULL,
   description VARCHAR(500) NOT NULL,
-	body_ids uuid[] NOT NULL,
+	form_body_id text NOT NULL,
   submit_text VARCHAR(30) NOT NULL,
   cancel_text VARCHAR(30) NOT NULL,
   active boolean DEFAULT false,
