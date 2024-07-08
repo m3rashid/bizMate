@@ -1,7 +1,12 @@
 package seed
 
 import (
+	"bizMate/repository"
+	"bizMate/utils"
+	"os"
+
 	"github.com/gofiber/fiber/v2"
+	"github.com/jaswdr/faker/v2"
 )
 
 type seedUserReqBody struct {
@@ -9,44 +14,57 @@ type seedUserReqBody struct {
 }
 
 func seedUsers(ctx *fiber.Ctx) error {
-	// const batchSize = 100
-	// defaultPassword := os.Getenv("SEED_DEFAULT_PASSWORD")
-	// if defaultPassword == "" {
-	// 	return ctx.SendStatus(fiber.StatusInternalServerError)
-	// }
-	// password, err := utils.HashPassword(defaultPassword)
-	// if err != nil {
-	// 	return ctx.SendStatus(fiber.StatusInternalServerError)
-	// }
+	defaultPassword := os.Getenv("SEED_DEFAULT_PASSWORD")
+	if defaultPassword == "" {
+		return ctx.SendStatus(fiber.StatusInternalServerError)
+	}
+	password, err := utils.HashPassword(defaultPassword)
+	if err != nil {
+		return ctx.SendStatus(fiber.StatusInternalServerError)
+	}
 
-	// reqBody := seedUserReqBody{}
-	// if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
-	// 	return ctx.SendStatus(fiber.StatusBadRequest)
-	// }
-	// if reqBody.Count < 1 {
-	// 	return ctx.SendStatus(fiber.StatusBadRequest)
-	// }
+	reqBody := seedUserReqBody{}
+	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
+		return ctx.SendStatus(fiber.StatusBadRequest)
+	}
 
-	// users := []models.User{}
+	if reqBody.Count < 1 || reqBody.Count > 5000 {
+		return ctx.SendStatus(fiber.StatusBadRequest)
+	}
 
-	// fake := faker.New()
-	// for i := 0; i < reqBody.Count; i++ {
-	// 	users = append(users, models.User{
-	// 		Name:     fake.Person().Name(),
-	// 		Email:    fake.Internet().Email(),
-	// 		Password: password,
-	// 		Provider: models.PROVIDER_CREDENTIALS,
-	// 	})
-	// }
+	pgConn, err := utils.GetPostgresDB()
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
 
-	// db, err := utils.GetPostgresDB()
-	// if err != nil {
-	// 	return ctx.SendStatus(fiber.StatusInternalServerError)
-	// }
+	fake := faker.New()
 
-	// if err := db.CreateInBatches(users, batchSize).Error; err != nil {
-	// 	return ctx.SendStatus(fiber.StatusInternalServerError)
-	// }
+	insertCount := 0
+	queries := repository.New(pgConn)
+	for i := 0; i < reqBody.Count; i++ {
+		id, err := utils.GenerateUuidV7()
+		if err != nil {
+			continue
+		}
 
-	return ctx.SendStatus(fiber.StatusOK)
+		if _, err = queries.CreateUser(ctx.Context(), repository.CreateUserParams{
+			ID:           id,
+			Name:         fake.Person().Name(),
+			Email:        fake.Internet().Email(),
+			Password:     password,
+			Provider:     repository.PROVIDER_CREDENTIALS,
+			Phone:        "",
+			RefreshToken: "",
+			Avatar:       "",
+		}); err != nil {
+			break
+		}
+
+		insertCount++
+	}
+
+	return ctx.Status(fiber.StatusCreated).JSON(utils.SendResponse(
+		fiber.Map{"inserted": insertCount, "expected": reqBody.Count, "failed": reqBody.Count - insertCount},
+		"Users seeded successfully",
+	))
 }

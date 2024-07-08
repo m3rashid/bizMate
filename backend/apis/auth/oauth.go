@@ -63,7 +63,7 @@ func authCallback(ctx *fiber.Ctx) error {
 			Email:        authCallbackUser.Email,
 			Password:     "",
 			Name:         authCallbackUser.Name,
-			Provider:     "google",
+			Provider:     repository.PROVIDER_GOOGLE,
 			RefreshToken: authCallbackUser.RefreshToken,
 			Phone:        "",
 			Avatar:       authCallbackUser.AvatarURL,

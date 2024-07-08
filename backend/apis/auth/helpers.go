@@ -8,9 +8,6 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const providerCredentials = "credentials"
-const providerGoogle = "google"
-
 type redisterBodyReq struct {
 	Name     string `json:"name" validate:"required,min=3,max=50"`
 	Email    string `json:"email" validate:"required,email,min=5,max=50"`

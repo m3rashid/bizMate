@@ -3,9 +3,12 @@ package forms
 import (
 	"bizMate/repository"
 	"bizMate/utils"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type formReqBody struct {
@@ -106,28 +109,32 @@ func getOneForm(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(form, "Form received successfully"))
 }
 
-// var createNewForm = controllers.Create(models.FORM_MODEL_NAME, controllers.CreateOptions[formReqBody, models.Form]{
-// 	GetDefaultValues: func(values *formReqBody, ctx *fiber.Ctx) (*models.Form, error) {
-// 		userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
-// 		return &models.Form{
-// 			Title:                  values.Title,
-// 			Body:                   values.Body,
-// 			SubmitText:             values.SubmitText,
-// 			CancelText:             values.CancelText,
-// 			Description:            values.Description,
-// 			SuccessPage:            "[]",
-// 			FailurePage:            "[]",
-// 			PreviousVersionIDs:     "[]",
-// 			CreatedBy:              models.CreatedBy{CreatedByID: userId.String()},
-// 			BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: workspaceId.String()},
-// 			Active:                 utils.Ternary(values.Active != nil, *values.Active, false),
-// 			SendResponseEmail:      utils.Ternary(values.SendResponseEmail != nil, *values.SendResponseEmail, false),
-// 			AllowResponseUpdate:    utils.Ternary(values.AllowResponseUpdate != nil, *values.AllowResponseUpdate, false),
-// 			AllowAnonymousResponse: utils.Ternary(values.AllowAnonymousResponse != nil, *values.AllowAnonymousResponse, false),
-// 			AllowMultipleResponse:  utils.Ternary(values.AllowMultipleResponse != nil, *values.AllowMultipleResponse, false),
-// 		}, nil
-// 	},
-// })
+func createFormBody(ctx *fiber.Ctx) error {
+	return nil
+}
+
+func getFormBodyById(ctx *fiber.Ctx) error {
+	formBodyId := ctx.Params("formBodyId")
+	if formBodyId == "" {
+		return fiber.NewError(fiber.StatusBadRequest)
+	}
+
+	mongoDb, err := utils.GetMongoDB()
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	formBody := repository.FormBody{}
+	err = mongoDb.Collection(repository.FORM_BODY_COLLECTION_NAME).FindOne(ctx.Context(), bson.D{
+		primitive.E{Key: "_id", Value: formBodyId},
+	}).Decode(&formBody)
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "Form Body not found")
+	}
+
+	fmt.Printf("res: %+v\n", formBody)
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(formBody, "Form Fetched successfully"))
+}
 
 func updateFormById(ctx *fiber.Ctx) error {
 	// updateBody := formReqBody{}

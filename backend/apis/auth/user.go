@@ -61,7 +61,7 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusNotFound, "User not found")
 	}
 
-	if user.Provider != providerCredentials {
+	if user.Provider != repository.PROVIDER_CREDENTIALS {
 		return fiber.NewError(fiber.StatusUnauthorized, "User not found")
 	}
 
@@ -99,7 +99,7 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 		Name:         reqBody.Name,
 		Email:        reqBody.Email,
 		Password:     password,
-		Provider:     "credentials",
+		Provider:     repository.PROVIDER_CREDENTIALS,
 		Phone:        reqBody.Phone,
 		ID:           id,
 		Avatar:       "",

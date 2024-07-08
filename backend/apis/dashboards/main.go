@@ -1,7 +1,7 @@
 package dashboards
 
 import (
-	"bizMate/models"
+	"bizMate/repository"
 	"bizMate/utils"
 
 	"github.com/gofiber/fiber/v2"
@@ -9,11 +9,11 @@ import (
 
 func Setup(initialRoute string, app *fiber.App) {
 	app.Get(initialRoute+"/models", utils.CheckAuthMiddlewareWithWorkspace, func(ctx *fiber.Ctx) error {
-		return ctx.Status(fiber.StatusOK).JSON(models.DashboardIndexableJsonModels)
+		return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(repository.DashboardIndexableJsonModels, ""))
 	})
 
 	app.Get(initialRoute+"/model-names/all", utils.CheckAuthMiddlewareWithWorkspace, func(c *fiber.Ctx) error {
-		return c.Status(fiber.StatusOK).JSON(models.DashboardIndexableModelNames)
+		return c.Status(fiber.StatusOK).JSON(utils.SendResponse(repository.DashboardIndexableModelNames, ""))
 	})
 
 	// app.Get(initialRoute+"/all", utils.CheckAuthMiddlewareWithWorkspace, controllers.Paginate[models.Dashboard]())

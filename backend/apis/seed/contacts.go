@@ -1,7 +1,10 @@
 package seed
 
 import (
+	"bizMate/utils"
+
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 type seedContactReqBody struct {
@@ -10,19 +13,19 @@ type seedContactReqBody struct {
 }
 
 func seedContacts(ctx *fiber.Ctx) error {
-	// const batchSize = 100
-	// userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
-	// if userId == uuid.Nil {
-	// 	return ctx.SendStatus(fiber.StatusUnauthorized)
-	// }
+	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	if userId == uuid.Nil {
+		return fiber.NewError(fiber.StatusUnauthorized)
+	}
 
-	// reqBody := seedContactReqBody{}
-	// if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
-	// 	return ctx.SendStatus(fiber.StatusBadRequest)
-	// }
-	// if reqBody.Count < 1 {
-	// 	return ctx.SendStatus(fiber.StatusBadRequest)
-	// }
+	reqBody := seedContactReqBody{}
+	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
+		return ctx.SendStatus(fiber.StatusBadRequest)
+	}
+
+	if reqBody.Count < 1 || reqBody.Count > 5000 {
+		return ctx.SendStatus(fiber.StatusBadRequest)
+	}
 
 	// contacts := []models.Contact{}
 	// fake := faker.New()
@@ -44,5 +47,5 @@ func seedContacts(ctx *fiber.Ctx) error {
 	// 	return ctx.SendStatus(fiber.StatusInternalServerError)
 	// }
 
-	return ctx.SendStatus(fiber.StatusOK)
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(nil, "Contacts seeded successfully"))
 }
