@@ -2,6 +2,7 @@ package repository
 
 import (
 	"bizMate/utils"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -10,16 +11,18 @@ import (
 
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 const FORM_BODY_COLLECTION_NAME = "forms_body"
 
 const (
-	formString      string = "string"
-	formTextarea    string = "textArea"
-	formNumber      string = "number"
 	formBoolean     bool   = false
+	formString      string = "string"
+	formNumber      string = "number"
 	formStringArray string = "options"
+	formTextarea    string = "textArea"
 )
 
 type Props map[string]interface{}
@@ -227,17 +230,39 @@ func ValidateFormJsonString(jsonStr string) error {
 }
 
 type FormBody struct {
-	FormID      uuid.UUID                 `json:"form_id" bson:"form_id"`
-	CreatedAt   time.Time                 `json:"created_at" bson:"created_at"`
-	WorkspaceID uuid.UUID                 `json:"workspace_id" bson:"workspace_id"`
-	CreatedByID uuid.UUID                 `json:"created_by_id" bson:"created_by_id"`
-	Body        []FormElementInstanceType `json:"body" bson:"body"`
+	FormID      uuid.UUID                   `json:"form_id" bson:"form_id"`
+	CreatedAt   time.Time                   `json:"created_at" bson:"created_at"`
+	WorkspaceID uuid.UUID                   `json:"workspace_id" bson:"workspace_id"`
+	CreatedByID uuid.UUID                   `json:"created_by_id" bson:"created_by_id"`
+	Body        [][]FormElementInstanceType `json:"body" bson:"body"`
 }
 
 func (formBody *FormBody) MarshalBSON() ([]byte, error) {
 	if formBody.CreatedAt.IsZero() {
 		formBody.CreatedAt = time.Now()
 	}
+
 	type fb FormBody
 	return bson.Marshal((*fb)(formBody))
+}
+
+func InsertNewForm(db *mongo.Database, ctx context.Context, formId uuid.UUID, workspaceId uuid.UUID, createdById uuid.UUID, formBody []FormElementInstanceType) error {
+	if _, err := db.Collection(FORM_BODY_COLLECTION_NAME).InsertOne(ctx, FormBody{
+		FormID:      formId,
+		WorkspaceID: workspaceId,
+		CreatedByID: createdById,
+		Body:        [][]FormElementInstanceType{formBody},
+	}); err != nil {
+		return err
+	}
+	return nil
+}
+
+func InsertNewBodyInForm(db *mongo.Database, ctx context.Context, formBodyId primitive.ObjectID, formBody []FormElementInstanceType) error {
+	if _, err := db.Collection(FORM_BODY_COLLECTION_NAME).UpdateByID(ctx, formBodyId, bson.M{
+		"$push": bson.M{"body": formBody},
+	}); err != nil {
+		return err
+	}
+	return nil
 }

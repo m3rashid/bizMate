@@ -1,7 +1,6 @@
 -- name: CreateForm :one
 insert into forms (
 	id, 
-	body_ids, 
 	workspace_id, 
 	created_by_id, 
 	title, 
@@ -12,8 +11,9 @@ insert into forms (
 	is_step_form, 
 	send_response_email, 
 	allow_anonymous_response, 
-	allow_multiple_response
-) values ($1, array[$2], $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning *;
+	allow_multiple_response,
+	body_ids
+) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning *;
 
 -- name: GetFormById :one
 select * from forms where id = $1 and workspace_id = $2;

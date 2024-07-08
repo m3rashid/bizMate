@@ -32,17 +32,19 @@ export type PaginationResponse<T> = PaginationType & { docs: Array<T> }
 export type BaseModel = {
 	id: ID
 	deleted?: boolean
-	createdAt: string
+	created_at: string
 }
 
 export type CreatedBy = {
-	createdById?: ID
-	createdByUser?: User
+	created_by_id?: ID
+}
+
+export type WorkspaceScope = {
+	workspace_id: string
 }
 
 export type UpdatedBy = {
-	updatedById?: ID
-	updatedByUser?: User
+	updated_by_id?: ID
 }
 
 export type User = BaseModel & {
@@ -53,22 +55,18 @@ export type User = BaseModel & {
 }
 
 export type Form = BaseModel &
-	CreatedBy &
-	UpdatedBy & {
+	WorkspaceScope &
+	CreatedBy & {
 		title: string
 		description: string
-		body: string
-		submitText: string
-		cancelText: string
-		successPage: string
-		failurePage: string
-		previousVersionIDs: string
-		createdAt: string
+		body_ids: string[]
+		submit_text: string
+		cancel_text: string
 		active: boolean
-		sendResponseEmail: boolean
-		allowAnonymousResponse: boolean
-		allowResponseUpdate: boolean
-		allowMultipleResponse: boolean
+		is_step_form: boolean
+		send_response_email: boolean
+		allow_anonymous_response: boolean
+		allow_multiple_response: boolean
 	}
 
 export type FormResponse = BaseModel &

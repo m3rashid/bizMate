@@ -11,8 +11,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type formReqBody struct {
-	Title                  string `json:"title" validate:"required, min=5, max=50"`
+type CreateFormReqBody struct {
+	Title                  string `json:"title" validate:"required,min=5,max=50"`
 	Description            string `json:"description" validate:"max=50"`
 	SubmitText             string `json:"submit_text" validate:"max=30"`
 	CancelText             string `json:"cancel_text" validate:"max=30"`
@@ -23,13 +23,18 @@ type formReqBody struct {
 	AllowMultipleResponse  *bool  `json:"allow_multiple_response"`
 }
 
+type UpdateFormReqBody struct {
+	CreateFormReqBody
+	ID uuid.UUID `json:"id" validate:"required"`
+}
+
 func createNewForm(ctx *fiber.Ctx) error {
 	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	if userId == uuid.Nil || workspaceId == uuid.Nil {
 		return fiber.NewError(fiber.StatusBadRequest, "User or Workspace not present")
 	}
 
-	reqBody := formReqBody{}
+	reqBody := CreateFormReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
@@ -58,9 +63,11 @@ func createNewForm(ctx *fiber.Ctx) error {
 		SendResponseEmail:      reqBody.SendResponseEmail,
 		AllowAnonymousResponse: reqBody.AllowAnonymousResponse,
 		AllowMultipleResponse:  reqBody.AllowMultipleResponse,
+		BodyIds:                []uuid.UUID{},
 	})
 
 	if err != nil {
+		fmt.Printf("%+v\n", err)
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
@@ -173,45 +180,36 @@ func getFormBodyById(ctx *fiber.Ctx) error {
 }
 
 func updateFormById(ctx *fiber.Ctx) error {
-	// updateBody := formReqBody{}
-	// userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	if userId == uuid.Nil || workspaceId == uuid.Nil {
+		return fiber.NewError(fiber.StatusBadRequest, "User or Workspace not present")
+	}
 
-	// if err := utils.ParseBodyAndValidate(ctx, &updateBody); err != nil {
-	// 	return fiber.NewError(fiber.StatusBadRequest, err.Error())
-	// }
+	reqBody := UpdateFormReqBody{}
+	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
 
-	// if updateBody.ID == "" {
-	// 	return fiber.NewError(fiber.StatusBadRequest, "Bad Request")
-	// }
+	pgConn, err := utils.GetPostgresDB()
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
 
-	// db, err := utils.GetPostgresDB()
-	// if err != nil {
-	// 	return fiber.NewError(fiber.StatusInternalServerError)
-	// }
-
-	// form := models.Form{}
-	// if err := db.Where("id = ?", updateBody.ID).First(&form).Error; err != nil {
-	// 	return fiber.NewError(fiber.StatusInternalServerError)
-	// }
-
-	// form.Title = updateBody.Title
-	// form.Description = updateBody.Description
-	// form.SubmitText = updateBody.SubmitText
-	// form.CancelText = updateBody.CancelText
-	//  `body` and `previousVersionIDs` are not updatable fields because form may get inconsistent
-	// form `body` cannot be updated, in case of update, new form should be created and old form should be marked as inactive, and `previousVersionIDs` field of the new form should be updated
-	// form.SuccessPage = utils.Ternary(updateBody.SuccessPage != "", updateBody.SuccessPage, form.SuccessPage)
-	// form.FailurePage = utils.Ternary(updateBody.FailurePage != "", updateBody.FailurePage, form.FailurePage)
-	// form.Active = utils.Ternary(updateBody.Active != nil, *updateBody.Active, false)
-	// form.AllowAnonymousResponse = utils.Ternary(updateBody.AllowAnonymousResponse != nil, *updateBody.AllowAnonymousResponse, false)
-	// form.AllowResponseUpdate = utils.Ternary(updateBody.AllowResponseUpdate != nil, *updateBody.AllowResponseUpdate, false)
-	// form.AllowMultipleResponse = utils.Ternary(updateBody.AllowMultipleResponse != nil, *updateBody.AllowMultipleResponse, false)
-	// userIdStr := userId.String()
-	// form.UpdatedBy.UpdatedByID = &userIdStr
-
-	// if err := db.Save(&form).Error; err != nil {
-	// 	return fiber.NewError(fiber.StatusInternalServerError)
-	// }
+	queries := repository.New(pgConn)
+	if _, err = queries.UpdateForm(ctx.Context(), repository.UpdateFormParams{
+		ID:                     reqBody.ID,
+		Title:                  reqBody.Title,
+		Description:            reqBody.Description,
+		SubmitText:             reqBody.SubmitText,
+		CancelText:             reqBody.CancelText,
+		Active:                 reqBody.Active,
+		IsStepForm:             reqBody.IsStepForm,
+		SendResponseEmail:      reqBody.SendResponseEmail,
+		AllowAnonymousResponse: reqBody.AllowAnonymousResponse,
+		AllowMultipleResponse:  reqBody.AllowMultipleResponse,
+	}); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest)
+	}
 
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(nil, "Form updated successfully"))
 }

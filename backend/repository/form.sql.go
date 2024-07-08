@@ -14,7 +14,6 @@ import (
 const createForm = `-- name: CreateForm :one
 insert into forms (
 	id, 
-	body_ids, 
 	workspace_id, 
 	created_by_id, 
 	title, 
@@ -25,13 +24,13 @@ insert into forms (
 	is_step_form, 
 	send_response_email, 
 	allow_anonymous_response, 
-	allow_multiple_response
-) values ($1, array[$2], $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning id, deleted, created_at, workspace_id, created_by_id, title, description, body_ids, submit_text, cancel_text, active, is_step_form, send_response_email, allow_anonymous_response, allow_multiple_response
+	allow_multiple_response,
+	body_ids
+) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning id, deleted, created_at, workspace_id, created_by_id, title, description, body_ids, submit_text, cancel_text, active, is_step_form, send_response_email, allow_anonymous_response, allow_multiple_response
 `
 
 type CreateFormParams struct {
 	ID                     uuid.UUID   `json:"id"`
-	Column2                interface{} `json:"column_2"`
 	WorkspaceID            uuid.UUID   `json:"workspace_id"`
 	CreatedByID            uuid.UUID   `json:"created_by_id"`
 	Title                  string      `json:"title"`
@@ -43,12 +42,12 @@ type CreateFormParams struct {
 	SendResponseEmail      *bool       `json:"send_response_email"`
 	AllowAnonymousResponse *bool       `json:"allow_anonymous_response"`
 	AllowMultipleResponse  *bool       `json:"allow_multiple_response"`
+	BodyIds                []uuid.UUID `json:"body_ids"`
 }
 
 func (q *Queries) CreateForm(ctx context.Context, arg CreateFormParams) (Form, error) {
 	row := q.db.QueryRow(ctx, createForm,
 		arg.ID,
-		arg.Column2,
 		arg.WorkspaceID,
 		arg.CreatedByID,
 		arg.Title,
@@ -60,6 +59,7 @@ func (q *Queries) CreateForm(ctx context.Context, arg CreateFormParams) (Form, e
 		arg.SendResponseEmail,
 		arg.AllowAnonymousResponse,
 		arg.AllowMultipleResponse,
+		arg.BodyIds,
 	)
 	var i Form
 	err := row.Scan(

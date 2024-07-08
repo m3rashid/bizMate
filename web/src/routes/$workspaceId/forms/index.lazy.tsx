@@ -1,5 +1,5 @@
 import apiClient from '@api/client'
-import EditForm from '@components/apps/forms/editForm'
+import AddEditForm from '@components/apps/forms/editForm'
 import Button from '@components/lib/button'
 import CardList from '@components/lib/cardList'
 import Chip from '@components/lib/chip'
@@ -12,6 +12,7 @@ import InformationCircleIcon from '@heroicons/react/24/outline/InformationCircle
 import LockClosedIcon from '@heroicons/react/24/outline/LockClosedIcon'
 import LockOpenIcon from '@heroicons/react/24/outline/LockOpenIcon'
 import PencilSquareIcon from '@heroicons/react/24/outline/PencilSquareIcon'
+import PlusIcon from '@heroicons/react/24/outline/PlusIcon'
 import TrashIcon from '@heroicons/react/24/outline/TrashIcon'
 import { usePopups } from '@hooks/popups'
 import { Form, PageSearchParams } from '@mytypes'
@@ -32,7 +33,6 @@ function FormCard(props: Form & { onEdit: () => void; workspaceId: string }) {
 	const { t } = useTranslation()
 	const [showActions, setShowActions] = useState(false)
 	const { addMessagePopup, addActionPopup, removeActionPopup } = usePopups()
-	const arr = JSON.parse(props.previousVersionIDs)
 
 	const { mutate: deleteForm } = useMutation({
 		mutationKey: ['deleteForm', props.id],
@@ -89,12 +89,12 @@ function FormCard(props: Form & { onEdit: () => void; workspaceId: string }) {
 								<span>{props.active ? 'This form is active' : 'This form is inactive'}</span>
 							</div>
 							<div className="flex items-center gap-2">
-								{props.allowAnonymousResponse ? <LockOpenIcon className="h-4 w-4" /> : <LockClosedIcon className="h-4 w-4" />}
-								<span>{props.allowAnonymousResponse ? t('Accepting anonymous responses') : t('Not accepting anonymous responses')}</span>
+								{props.allow_anonymous_response ? <LockOpenIcon className="h-4 w-4" /> : <LockClosedIcon className="h-4 w-4" />}
+								<span>{props.allow_anonymous_response ? t('Accepting anonymous responses') : t('Not accepting anonymous responses')}</span>
 							</div>
 							<div className="flex items-center gap-2">
 								<ArrowPathIcon className="h-4 w-4" />
-								<span>{`${arr.length === 0 ? 'No' : arr.length} previous versions`}</span>
+								<span>{`${props.body_ids.length === 0 ? 'No' : props.body_ids.length} previous versions`}</span>
 							</div>
 						</div>
 					}
@@ -104,7 +104,7 @@ function FormCard(props: Form & { onEdit: () => void; workspaceId: string }) {
 			</div>
 
 			<div className="mb-2 text-xs text-disabled">
-				{t('Created')}: {dayjs(props.createdAt).format('DD MMM, YYYY - HH:mm A')}
+				{t('Created')}: {dayjs(props.created_at).format('DD MMM, YYYY - HH:mm A')}
 			</div>
 			{props.description ? <div className="text-sm">{props.description}</div> : null}
 
@@ -155,15 +155,23 @@ function FormCard(props: Form & { onEdit: () => void; workspaceId: string }) {
 }
 
 function Forms() {
+	const [open, setOpen] = useState(false)
 	const { workspaceId } = useParams({ from: '/$workspaceId/forms/' })
 	const [editRow, setEditRow] = useState<Form | undefined>(undefined)
 
 	return (
 		<PageContainer workspaceId={workspaceId}>
-			<EditForm
+			<AddEditForm
+				open={open}
+				refetch={() => {}}
 				workspaceId={workspaceId}
-				setOpen={() => handleViewTransition(() => setEditRow(undefined))}
-				{...(!!editRow ? { form: editRow, refetch: () => {} } : { form: undefined })}
+				form={!!editRow ? editRow : undefined}
+				onClose={() =>
+					handleViewTransition(() => {
+						setOpen(false)
+						setEditRow(undefined)
+					})
+				}
 			/>
 
 			<CardList<Form>
@@ -172,11 +180,25 @@ function Forms() {
 				queryKeys={['getForms']}
 				workspaceId={workspaceId}
 				defaultEmptyStateName="forms"
-				addButtonLink="/$workspaceId/forms/designer"
-				addButtonProps={{ label: 'New Form' }}
+				otherActions={
+					<Button size="small" onClick={() => setOpen(true)} LeftIcon={<PlusIcon className="h-4 w-4" />}>
+						New Form
+					</Button>
+				}
 				description="Create and manage all forms"
 				tableExportprops={{ tableName: 'forms_table', mutationKeys: [], workspaceId }}
-				cardRenderer={(form) => <FormCard workspaceId={workspaceId} {...{ ...form, onEdit: () => setEditRow(form) }} />}
+				cardRenderer={(form) => (
+					<FormCard
+						workspaceId={workspaceId}
+						{...{
+							...form,
+							onEdit: () => {
+								setEditRow(form)
+								setOpen(true)
+							},
+						}}
+					/>
+				)}
 			/>
 		</PageContainer>
 	)
