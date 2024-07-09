@@ -7,6 +7,7 @@ import (
 	"unicode"
 
 	"github.com/google/uuid"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/exp/constraints"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -83,4 +84,12 @@ func StringToUuid(id string) (uuid.UUID, error) {
 		return uuid.Nil, err
 	}
 	return val, nil
+}
+
+func StringToObjectID(id string) (primitive.ObjectID, error) {
+	oid, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return primitive.NilObjectID, err
+	}
+	return oid, nil
 }

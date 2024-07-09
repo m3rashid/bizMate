@@ -1,10 +1,7 @@
 package repository
 
 import (
-	"bizMate/utils"
 	"context"
-	"encoding/json"
-	"errors"
 	"fmt"
 	"reflect"
 	"time"
@@ -173,7 +170,7 @@ func (elName FormElementName) GetSupportedProps() Props {
 	return val
 }
 
-func validateFormElementInstance(el FormElementInstanceType) []string {
+func (el FormElementInstanceType) validateFormElementInstance() []string {
 	errorArr := []string{}
 	elementProps := el.Props
 	supportedProps := el.Name.GetSupportedProps()
@@ -184,13 +181,12 @@ func validateFormElementInstance(el FormElementInstanceType) []string {
 
 	if len(el.Children) > 0 {
 		for _, formElement := range el.Children {
-			errorArr = append(errorArr, validateFormElementInstance(formElement)...)
+			errorArr = append(errorArr, formElement.validateFormElementInstance()...)
 		}
 	}
 
 	for propName, propValueType := range supportedProps {
 		if _, ok := elementProps[propName]; !ok {
-			fmt.Println(propName + " not present")
 			continue
 		}
 
@@ -202,7 +198,8 @@ func validateFormElementInstance(el FormElementInstanceType) []string {
 			errorArr = append(errorArr, "invalid data type for "+propName)
 			// } else if propValueType == _FORM_CHILDREN {
 			// this will be formElement instance
-		} else if propValueType == formStringArray && reflect.TypeOf(elementProps[propName]) != reflect.TypeOf([]string{}) {
+		} else if propValueType == formStringArray && reflect.TypeOf(elementProps[propName]) != reflect.TypeOf([]interface{}{}) {
+			fmt.Println(propValueType, reflect.TypeOf(elementProps[propName]))
 			errorArr = append(errorArr, "invalid data type for "+propName)
 		}
 	}
@@ -210,28 +207,22 @@ func validateFormElementInstance(el FormElementInstanceType) []string {
 	return errorArr
 }
 
-func ValidateFormJsonString(jsonStr string) error {
-	jsonArr := []FormElementInstanceType{}
-	errorArr := []string{}
-
-	err := json.Unmarshal([]byte(jsonStr), &jsonArr)
-	if err != nil {
-		fmt.Println("Error in unmarshal json", err)
-		return err
+func ValidateFormBodyMeta(els []FormElementInstanceType) [][]string {
+	validationErrors := [][]string{}
+	for _, elementInstance := range els {
+		validErr := elementInstance.validateFormElementInstance()
+		if len(validErr) > 0 {
+			validationErrors = append(validationErrors, validErr)
+		}
 	}
 
-	for _, elementInstance := range jsonArr {
-		errorArr = append(errorArr, validateFormElementInstance(elementInstance)...)
-	}
-
-	fmt.Println("errors", errorArr)
-
-	return utils.Ternary(len(errorArr) == 0, nil, errors.New(fmt.Sprint(len(errorArr))+" errors occured"))
+	return validationErrors
 }
 
 type FormInnerBody struct {
 	CreatedAt   time.Time                 `json:"created_at" bson:"created_at"`
 	CreatedByID uuid.UUID                 `json:"created_by_id" bson:"created_by_id"`
+	IsStepForm  bool                      `json:"is_step_form" bson:"is_step_form"`
 	Meta        []FormElementInstanceType `json:"meta" bson:"meta"`
 }
 
@@ -261,7 +252,7 @@ func (formBody *FormBodyDocument) MarshalBSON() ([]byte, error) {
 	return bson.Marshal((*fb)(formBody))
 }
 
-func InsertNewVersionForm(db *mongo.Database, ctx context.Context, formId uuid.UUID, workspaceId uuid.UUID, createdById uuid.UUID, formBody FormInnerBody) error {
+func InsertNewFormBody(db *mongo.Database, ctx context.Context, formId uuid.UUID, workspaceId uuid.UUID, createdById uuid.UUID, formBody FormInnerBody) error {
 	if _, err := db.Collection(FORM_BODY_COLLECTION_NAME).InsertOne(ctx, FormBodyDocument{
 		FormID:        formId,
 		WorkspaceID:   workspaceId,
@@ -274,7 +265,7 @@ func InsertNewVersionForm(db *mongo.Database, ctx context.Context, formId uuid.U
 	return nil
 }
 
-func InsertNewBodyInSameVersionForm(db *mongo.Database, ctx context.Context, formBodyId primitive.ObjectID, formBody FormInnerBody) error {
+func InsertNewFormPageInSameFormBody(db *mongo.Database, ctx context.Context, formBodyId primitive.ObjectID, formBody FormInnerBody) error {
 	if _, err := db.Collection(FORM_BODY_COLLECTION_NAME).UpdateByID(ctx, formBodyId, bson.M{
 		"$push": bson.M{"formInnerBody": formBody},
 	}); err != nil {

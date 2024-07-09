@@ -101,10 +101,6 @@ func createNewForm(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(form, "Form Created Successfully"))
 }
 
-func addNewFormVersion(ctx *fiber.Ctx) error {
-	return nil
-}
-
 func paginateForms(ctx *fiber.Ctx) error {
 	_, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	if workspaceId == uuid.Nil {
@@ -192,33 +188,6 @@ func getOneForm(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(fiber.Map{"form": form, "formBody": formBody}, "Form received successfully"))
-}
-
-func createFormBody(ctx *fiber.Ctx) error {
-	return nil
-}
-
-func getFormBodyById(ctx *fiber.Ctx) error {
-	formBodyId := ctx.Params("formBodyId")
-	if formBodyId == "" {
-		return fiber.NewError(fiber.StatusBadRequest)
-	}
-
-	mongoDb, err := utils.GetMongoDB()
-	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError)
-	}
-
-	formBody := repository.FormBodyDocument{}
-	err = mongoDb.Collection(repository.FORM_BODY_COLLECTION_NAME).FindOne(ctx.Context(), bson.D{
-		primitive.E{Key: "_id", Value: formBodyId},
-	}).Decode(&formBody)
-	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Form Body not found")
-	}
-
-	fmt.Printf("res: %+v\n", formBody)
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(formBody, "Form Fetched successfully"))
 }
 
 func updateFormById(ctx *fiber.Ctx) error {

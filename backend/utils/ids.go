@@ -12,7 +12,7 @@ func ToPgTypeUUID(u uuid.UUID) pgtype.UUID {
 	return pgtype.UUID{Bytes: u, Valid: true}
 }
 
-func StringToUUID(s string) pgtype.UUID {
+func StringToPgTypeUuid(s string) pgtype.UUID {
 	data, err := parseUUID(s)
 	if err != nil {
 		return pgtype.UUID{

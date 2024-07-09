@@ -4,7 +4,7 @@ import Tooltip from '@components/lib/tooltip'
 import InformationCircleIcon from '@heroicons/react/24/outline/InformationCircleIcon'
 import { useFormDesigner } from '@hooks/formDesigner'
 import { usePopups } from '@hooks/popups'
-import { Form, FormInnerBody, StringBoolean } from '@mytypes'
+import { FormInnerBody, StringBoolean } from '@mytypes'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
@@ -23,9 +23,10 @@ function FormDesignerTopBar(props: FormDesignerTopBarProps) {
 	const { isPending, mutate: saveForm } = useMutation({
 		mutationKey: ['saveForm', props.workspaceId],
 		onError: () => addMessagePopup({ id: 'errorCreateForm', message: 'Error in creating form', type: 'error' }),
-		mutationFn: async (body: any) => apiClient(`/${props.workspaceId}/forms/create`, { method: 'POST', body: JSON.stringify(body) }),
+		mutationFn: async (body: any) =>
+			apiClient(`/${props.workspaceId}/forms/${props.formId}/create-new-formbody`, { method: 'POST', body: JSON.stringify(body) }),
 		onSuccess: () => {
-			navigate({ to: '/$workspaceId/forms', params: { workspaceId: props.workspaceId }, search: { page: 1 } })
+			// navigate({ to: '/$workspaceId/forms', params: { workspaceId: props.workspaceId }, search: { page: 1 } })
 			addMessagePopup({ id: 'saveForm', message: 'Successfully created form', type: 'success' })
 		},
 	})
@@ -43,26 +44,7 @@ function FormDesignerTopBar(props: FormDesignerTopBarProps) {
 				props: { ...el.props, ...(el.props.required ? { required: checkCondition(el.props.required) } : {}) },
 			})),
 		}
-		// body: JSON.stringify(
-		// 	meta.map((el) => ({
-		// 		...el,
-		// 		props: {
-		// 			...el.props,
-		// 			...(el.props.required ? { required: checkCondition(el.props.required) } : {}),
-		// 		},
-		// 	})),
-		// ),
-		// title: rootProps.title,
-		// cancelText: rootProps.cancelText,
-		// submitText: rootProps.submitText,
-		// description: rootProps.description,
-		// allowAnonymousResponse: checkCondition(rootProps.allowAnonymousResponse),
-		// active: false,
-		// sendResponseEmail: checkCondition(rootProps.sendResponseEmail),
-		// allowMultipleResponse: checkCondition(rootProps.allowMultipleResponse),
-		// allowResponseUpdate: checkCondition(rootProps.allowResponseUpdate),
-
-		saveForm({ formInnerBody })
+		saveForm(formInnerBody)
 	}
 
 	return (
