@@ -64,7 +64,6 @@ export type Form = BaseModel &
 		submit_text: string
 		cancel_text: string
 		active: boolean
-		is_step_form: boolean
 		send_response_email: boolean
 		allow_anonymous_response: boolean
 		allow_multiple_response: boolean

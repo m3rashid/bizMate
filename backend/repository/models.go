@@ -18,10 +18,7 @@ type Form struct {
 	Title                  string             `json:"title"`
 	Description            string             `json:"description"`
 	FormBodyID             string             `json:"form_body_id"`
-	SubmitText             string             `json:"submit_text"`
-	CancelText             string             `json:"cancel_text"`
 	Active                 *bool              `json:"active"`
-	IsStepForm             *bool              `json:"is_step_form"`
 	SendResponseEmail      *bool              `json:"send_response_email"`
 	AllowAnonymousResponse *bool              `json:"allow_anonymous_response"`
 	AllowMultipleResponse  *bool              `json:"allow_multiple_response"`

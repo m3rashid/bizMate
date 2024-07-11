@@ -18,7 +18,6 @@ type CreateFormReqBody struct {
 	SubmitText             string `json:"submit_text" validate:"max=30"`
 	CancelText             string `json:"cancel_text" validate:"max=30"`
 	Active                 *bool  `json:"active"`
-	IsStepForm             *bool  `json:"is_step_form"`
 	SendResponseEmail      *bool  `json:"send_response_email"`
 	AllowAnonymousResponse *bool  `json:"allow_anonymous_response"`
 	AllowMultipleResponse  *bool  `json:"allow_multiple_response"`
@@ -85,7 +84,6 @@ func createNewForm(ctx *fiber.Ctx) error {
 		SubmitText:             reqBody.SubmitText,
 		CancelText:             reqBody.CancelText,
 		Active:                 reqBody.Active,
-		IsStepForm:             reqBody.IsStepForm,
 		SendResponseEmail:      reqBody.SendResponseEmail,
 		AllowAnonymousResponse: reqBody.AllowAnonymousResponse,
 		AllowMultipleResponse:  reqBody.AllowMultipleResponse,
@@ -214,7 +212,6 @@ func updateFormById(ctx *fiber.Ctx) error {
 		SubmitText:             reqBody.SubmitText,
 		CancelText:             reqBody.CancelText,
 		Active:                 reqBody.Active,
-		IsStepForm:             reqBody.IsStepForm,
 		SendResponseEmail:      reqBody.SendResponseEmail,
 		AllowAnonymousResponse: reqBody.AllowAnonymousResponse,
 		AllowMultipleResponse:  reqBody.AllowMultipleResponse,

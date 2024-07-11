@@ -13,20 +13,17 @@ import (
 
 const createForm = `-- name: CreateForm :one
 insert into forms (
-	id, 
-	workspace_id, 
-	created_by_id, 
-	title, 
-	description, 
-	submit_text, 
-	cancel_text, 
-	active, 
-	is_step_form, 
-	send_response_email, 
-	allow_anonymous_response, 
+	id,
+	workspace_id,
+	created_by_id,
+	title,
+	description,
+	active,
+	send_response_email,
+	allow_anonymous_response,
 	allow_multiple_response,
 	form_body_id
-) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning id, deleted, created_at, workspace_id, created_by_id, title, description, form_body_id, submit_text, cancel_text, active, is_step_form, send_response_email, allow_anonymous_response, allow_multiple_response
+) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) returning id, deleted, created_at, workspace_id, created_by_id, title, description, form_body_id, active, send_response_email, allow_anonymous_response, allow_multiple_response
 `
 
 type CreateFormParams struct {
@@ -35,10 +32,7 @@ type CreateFormParams struct {
 	CreatedByID            uuid.UUID `json:"created_by_id"`
 	Title                  string    `json:"title"`
 	Description            string    `json:"description"`
-	SubmitText             string    `json:"submit_text"`
-	CancelText             string    `json:"cancel_text"`
 	Active                 *bool     `json:"active"`
-	IsStepForm             *bool     `json:"is_step_form"`
 	SendResponseEmail      *bool     `json:"send_response_email"`
 	AllowAnonymousResponse *bool     `json:"allow_anonymous_response"`
 	AllowMultipleResponse  *bool     `json:"allow_multiple_response"`
@@ -52,10 +46,7 @@ func (q *Queries) CreateForm(ctx context.Context, arg CreateFormParams) (Form, e
 		arg.CreatedByID,
 		arg.Title,
 		arg.Description,
-		arg.SubmitText,
-		arg.CancelText,
 		arg.Active,
-		arg.IsStepForm,
 		arg.SendResponseEmail,
 		arg.AllowAnonymousResponse,
 		arg.AllowMultipleResponse,
@@ -71,10 +62,7 @@ func (q *Queries) CreateForm(ctx context.Context, arg CreateFormParams) (Form, e
 		&i.Title,
 		&i.Description,
 		&i.FormBodyID,
-		&i.SubmitText,
-		&i.CancelText,
 		&i.Active,
-		&i.IsStepForm,
 		&i.SendResponseEmail,
 		&i.AllowAnonymousResponse,
 		&i.AllowMultipleResponse,
@@ -83,7 +71,7 @@ func (q *Queries) CreateForm(ctx context.Context, arg CreateFormParams) (Form, e
 }
 
 const getFormById = `-- name: GetFormById :one
-select id, deleted, created_at, workspace_id, created_by_id, title, description, form_body_id, submit_text, cancel_text, active, is_step_form, send_response_email, allow_anonymous_response, allow_multiple_response from forms where id = $1 and workspace_id = $2
+select id, deleted, created_at, workspace_id, created_by_id, title, description, form_body_id, active, send_response_email, allow_anonymous_response, allow_multiple_response from forms where id = $1 and workspace_id = $2
 `
 
 type GetFormByIdParams struct {
@@ -103,10 +91,7 @@ func (q *Queries) GetFormById(ctx context.Context, arg GetFormByIdParams) (Form,
 		&i.Title,
 		&i.Description,
 		&i.FormBodyID,
-		&i.SubmitText,
-		&i.CancelText,
 		&i.Active,
-		&i.IsStepForm,
 		&i.SendResponseEmail,
 		&i.AllowAnonymousResponse,
 		&i.AllowMultipleResponse,
@@ -126,7 +111,7 @@ func (q *Queries) GetFormsCount(ctx context.Context, workspaceID uuid.UUID) (int
 }
 
 const paginateForms = `-- name: PaginateForms :many
-select id, deleted, created_at, workspace_id, created_by_id, title, description, form_body_id, submit_text, cancel_text, active, is_step_form, send_response_email, allow_anonymous_response, allow_multiple_response from forms where workspace_id = $1 order by id desc limit $2 offset $3
+select id, deleted, created_at, workspace_id, created_by_id, title, description, form_body_id, active, send_response_email, allow_anonymous_response, allow_multiple_response from forms where workspace_id = $1 order by id desc limit $2 offset $3
 `
 
 type PaginateFormsParams struct {
@@ -153,10 +138,7 @@ func (q *Queries) PaginateForms(ctx context.Context, arg PaginateFormsParams) ([
 			&i.Title,
 			&i.Description,
 			&i.FormBodyID,
-			&i.SubmitText,
-			&i.CancelText,
 			&i.Active,
-			&i.IsStepForm,
 			&i.SendResponseEmail,
 			&i.AllowAnonymousResponse,
 			&i.AllowMultipleResponse,
@@ -172,27 +154,21 @@ func (q *Queries) PaginateForms(ctx context.Context, arg PaginateFormsParams) ([
 }
 
 const updateForm = `-- name: UpdateForm :one
-update forms set 
-	title = $2, 
-	description = $3, 
-	submit_text = $4, 
-	cancel_text = $5, 
-	active = $6, 
-	is_step_form = $7, 
-	send_response_email = $8, 
-	allow_anonymous_response = $9, 
-	allow_multiple_response = $10
-where id = $1 returning id, deleted, created_at, workspace_id, created_by_id, title, description, form_body_id, submit_text, cancel_text, active, is_step_form, send_response_email, allow_anonymous_response, allow_multiple_response
+update forms set
+	title = $2,
+	description = $3,
+	active = $4,
+	send_response_email = $5,
+	allow_anonymous_response = $6,
+	allow_multiple_response = $7
+where id = $1 returning id, deleted, created_at, workspace_id, created_by_id, title, description, form_body_id, active, send_response_email, allow_anonymous_response, allow_multiple_response
 `
 
 type UpdateFormParams struct {
 	ID                     uuid.UUID `json:"id"`
 	Title                  string    `json:"title"`
 	Description            string    `json:"description"`
-	SubmitText             string    `json:"submit_text"`
-	CancelText             string    `json:"cancel_text"`
 	Active                 *bool     `json:"active"`
-	IsStepForm             *bool     `json:"is_step_form"`
 	SendResponseEmail      *bool     `json:"send_response_email"`
 	AllowAnonymousResponse *bool     `json:"allow_anonymous_response"`
 	AllowMultipleResponse  *bool     `json:"allow_multiple_response"`
@@ -203,10 +179,7 @@ func (q *Queries) UpdateForm(ctx context.Context, arg UpdateFormParams) (Form, e
 		arg.ID,
 		arg.Title,
 		arg.Description,
-		arg.SubmitText,
-		arg.CancelText,
 		arg.Active,
-		arg.IsStepForm,
 		arg.SendResponseEmail,
 		arg.AllowAnonymousResponse,
 		arg.AllowMultipleResponse,
@@ -221,10 +194,7 @@ func (q *Queries) UpdateForm(ctx context.Context, arg UpdateFormParams) (Form, e
 		&i.Title,
 		&i.Description,
 		&i.FormBodyID,
-		&i.SubmitText,
-		&i.CancelText,
 		&i.Active,
-		&i.IsStepForm,
 		&i.SendResponseEmail,
 		&i.AllowAnonymousResponse,
 		&i.AllowMultipleResponse,

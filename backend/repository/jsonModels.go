@@ -88,7 +88,6 @@ var FormJsonModel = DashboardIndexableJsonModel{
 		"submit_text":              jsonString,
 		"cancel_text":              jsonString,
 		"active":                   jsonBool,
-		"is_step_form":             jsonBool,
 		"send_response_email":      jsonBool,
 		"allow_anonymous_response": jsonBool,
 		"allow_multiple_response":  jsonBool,

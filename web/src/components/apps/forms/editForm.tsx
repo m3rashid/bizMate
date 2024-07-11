@@ -6,7 +6,7 @@ import Modal from '@components/lib/modal'
 import { usePopups } from '@hooks/popups'
 import { Form, StringBoolean } from '@mytypes'
 import { useMutation } from '@tanstack/react-query'
-import { camelCaseToSentenceCase } from '@utils/helpers'
+import { snakeCaseToSentenceCase } from '@utils/helpers'
 import { FormEvent, useMemo } from 'react'
 
 export type AddEditFormProps = { open: boolean; onClose: () => void; workspaceId: string; refetch: () => void } & (
@@ -14,7 +14,8 @@ export type AddEditFormProps = { open: boolean; onClose: () => void; workspaceId
 	| { form: Form }
 )
 
-function editFormMeta(form: Array<[keyof Form, string | boolean, string, SupportedWidgetName, boolean?, Record<string, any>?]>) {
+type EditFormMeta = Array<[keyof Form, string | boolean, string, SupportedWidgetName, boolean?, Record<string, any>?]>
+function editFormMeta(form: EditFormMeta) {
 	// Array<[name, value, descriptionText, type, required]>
 	const meta: FormElementInstance[] = []
 	for (let i = 0; i < form.length; i++) {
@@ -26,7 +27,7 @@ function editFormMeta(form: Array<[keyof Form, string | boolean, string, Support
 				required: form[i][4],
 				defaultValue: form[i][1],
 				descriptionText: form[i][2],
-				label: camelCaseToSentenceCase(form[i][0]),
+				label: snakeCaseToSentenceCase(form[i][0]),
 				...(form[i][5] || {}),
 			},
 		})
@@ -64,7 +65,7 @@ function AddEditForm(props: AddEditFormProps) {
 	})
 
 	const meta = useMemo(() => {
-		return editFormMeta([
+		const _formMeta: EditFormMeta = [
 			['title', props.form?.title || '', 'Form title', 'input', true],
 			['description', props.form?.description || '', 'Form description', 'textareaInput'],
 			['cancel_text', props.form?.cancel_text || 'Cancel', 'Cancel button text', 'input', true],
@@ -85,16 +86,13 @@ function AddEditForm(props: AddEditFormProps) {
 				true,
 				{ defaultChecked: props.form?.allow_multiple_response },
 			],
-			[
-				'is_step_form',
-				props.form?.is_step_form ? 'on' : 'off',
-				'Do you want to ask questions one by one from the user?',
-				'togglerInput',
-				true,
-				{ defaultChecked: props.form?.is_step_form },
-			],
-			['active', props.form?.active ? 'on' : 'off', 'Is this form active', 'togglerInput', true, { defaultChecked: props.form?.active }],
-		])
+		]
+
+		if (props.form) {
+			_formMeta.push(['active', props.form.active ? 'on' : 'off', 'Is this form active', 'togglerInput', true, { defaultChecked: props.form.active }])
+		}
+
+		return editFormMeta(_formMeta)
 	}, [props.form?.id])
 
 	function handleStringBoolean(entry?: StringBoolean) {
@@ -109,15 +107,16 @@ function AddEditForm(props: AddEditFormProps) {
 			...formData,
 			allow_anonymous_response: handleStringBoolean(formData.allow_anonymous_response),
 			allow_multiple_response: handleStringBoolean(formData.allow_multiple_response),
-			is_step_form: handleStringBoolean(formData.is_step_form),
 			active: handleStringBoolean(formData.active),
 		}
 		if (!props.form) createForm(form)
 		else updateForm(form)
 	}
 
+	console.log(props.form, meta)
+
 	return (
-		<Modal open={props.open} setOpen={props.onClose} title={`Edit Form ${props.form ? `(${props.form.title})` : ''}`}>
+		<Modal open={props.open} setOpen={props.onClose} title={!!props.form ? `Edit Form (${props.form.title})` : 'Create new form'}>
 			<form className="h-full" onSubmit={handleAddEditForm}>
 				<div className="flex h-full max-h-96 flex-grow flex-col gap-4 overflow-y-auto p-4">
 					<FormRenderer meta={meta} />

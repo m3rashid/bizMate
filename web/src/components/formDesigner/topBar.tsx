@@ -26,7 +26,7 @@ function FormDesignerTopBar(props: FormDesignerTopBarProps) {
 		mutationFn: async (body: any) =>
 			apiClient(`/${props.workspaceId}/forms/${props.formId}/create-new-formbody`, { method: 'POST', body: JSON.stringify(body) }),
 		onSuccess: () => {
-			// navigate({ to: '/$workspaceId/forms', params: { workspaceId: props.workspaceId }, search: { page: 1 } })
+			navigate({ to: '/$workspaceId/forms', params: { workspaceId: props.workspaceId }, search: { page: 1 } })
 			addMessagePopup({ id: 'saveForm', message: 'Successfully created form', type: 'success' })
 		},
 	})

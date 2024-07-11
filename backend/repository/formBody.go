@@ -222,7 +222,8 @@ func ValidateFormBodyMeta(els []FormElementInstanceType) [][]string {
 type FormInnerBody struct {
 	CreatedAt   time.Time                 `json:"created_at" bson:"created_at"`
 	CreatedByID uuid.UUID                 `json:"created_by_id" bson:"created_by_id"`
-	IsStepForm  bool                      `json:"is_step_form" bson:"is_step_form"`
+	SubmitText  string                    `json:"submit_text" bson:"submit_text"`
+	CancelText  string                    `json:"cancel_text" bson:"cancel_text"`
 	Meta        []FormElementInstanceType `json:"meta" bson:"meta"`
 }
 

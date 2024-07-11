@@ -16,6 +16,11 @@ export function camelCaseToSentenceCase(str: string) {
 	return toSentenceCase(result)
 }
 
+export function snakeCaseToSentenceCase(str: string) {
+	const result = str.replace(/_/g, ' ')
+	return toSentenceCase(result)
+}
+
 /**
  * @returns Object with keys that are not in the keys array
  */

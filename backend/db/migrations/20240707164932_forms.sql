@@ -9,10 +9,7 @@ CREATE TABLE IF NOT EXISTS forms (
   title VARCHAR(50) NOT NULL,
   description VARCHAR(500) NOT NULL,
 	form_body_id text NOT NULL,
-  submit_text VARCHAR(30) NOT NULL,
-  cancel_text VARCHAR(30) NOT NULL,
   active boolean DEFAULT false,
-	is_step_form boolean DEFAULT false,
   send_response_email boolean DEFAULT false,
   allow_anonymous_response boolean DEFAULT true,
   allow_multiple_response boolean DEFAULT false
