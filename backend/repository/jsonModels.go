@@ -84,7 +84,7 @@ var FormJsonModel = DashboardIndexableJsonModel{
 		"created_by_id":            jsonCreatedById,
 		"title":                    jsonString,
 		"description":              jsonString,
-		"body_ids":                 jsonArray,
+		"form_body_id":             jsonString,
 		"submit_text":              jsonString,
 		"cancel_text":              jsonString,
 		"active":                   jsonBool,
@@ -92,6 +92,25 @@ var FormJsonModel = DashboardIndexableJsonModel{
 		"allow_anonymous_response": jsonBool,
 		"allow_multiple_response":  jsonBool,
 	},
+}
+
+var FormBodyJsonModel = DashboardIndexableJsonModel{
+	ModelName: FORM_BODY_COLLECTION_NAME,
+	Fields: map[string]JsonFieldType{
+		"form_id":         jsonString,
+		"created_at":      jsonString,
+		"workspace_id":    jsonString,
+		"created_by_id":   jsonString,
+		"form_inner_body": jsonArray,
+	},
+}
+
+var FormInnerBodyFieldsJson = map[string]JsonFieldType{
+	"created_at":    jsonString,
+	"created_by_id": jsonString,
+	"submit_text":   jsonString,
+	"cancel_text":   jsonString,
+	"meta":          jsonArray,
 }
 
 var dashboardIndexableJsonModels = []DashboardIndexableJsonModel{

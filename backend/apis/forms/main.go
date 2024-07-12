@@ -13,7 +13,7 @@ func Setup(initialRoute string, app *fiber.App) {
 
 	app.Post(initialRoute+"/create", utils.CheckAuthMiddlewareWithWorkspace, createNewForm)
 
-	app.Post(initialRoute+"/:formId/create-new-formbody", utils.CheckAuthMiddlewareWithWorkspace, createNewFormBody)
+	app.Post(initialRoute+"/:formId/create-new-form-innerbody", utils.CheckAuthMiddlewareWithWorkspace, createNewFormInnerBody)
 
 	app.Post(initialRoute+"/update", utils.CheckAuthMiddlewareWithWorkspace, updateFormById)
 

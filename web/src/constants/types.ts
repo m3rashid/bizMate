@@ -61,8 +61,6 @@ export type Form = BaseModel &
 		title: string
 		description: string
 		form_body_id: string
-		submit_text: string
-		cancel_text: string
 		active: boolean
 		send_response_email: boolean
 		allow_anonymous_response: boolean
@@ -72,6 +70,8 @@ export type Form = BaseModel &
 export type FormInnerBody = {
 	created_at: string
 	created_by_id: string
+	submit_text: string
+	cancel_text: string
 	meta: FormElementInstance[]
 }
 
@@ -80,7 +80,7 @@ export type FormBodyDocument = {
 	created_at: string
 	created_by_id: string
 	workspace_id: string
-	formInnerBody: FormInnerBody[]
+	form_inner_body: FormInnerBody[]
 }
 
 export type FormResponse = BaseModel &

@@ -19,7 +19,6 @@ function FormPreview() {
 	})
 
 	if (isPending || !res) return <PageLoader />
-	console.log(res)
 	return (
 		<PageContainer workspaceId={workspaceId} bodyClassName="flex flex-col items-center">
 			<FormView type="preview" form={res.data.form} formBody={res.data.formBody} />

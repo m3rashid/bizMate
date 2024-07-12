@@ -12,11 +12,18 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type newFormBodyReqBody struct {
-	Meta []repository.FormElementInstanceType `json:"meta"`
+type newFormInnerBodyReqBody struct {
+	Meta       []repository.FormElementInstanceType `json:"meta"`
+	SubmitText string                               `json:"submit_text"`
+	CancelText string                               `json:"cancel_text"`
 }
 
-func createNewFormBody(ctx *fiber.Ctx) error {
+func createNewFormInnerBody(ctx *fiber.Ctx) error {
+	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	if userId == uuid.Nil || workspaceId == uuid.Nil {
+		return fiber.NewError(fiber.StatusBadRequest, "User or Workspace not present")
+	}
+
 	_formId := ctx.Params("formId")
 	if _formId == "" {
 		return fiber.NewError(fiber.StatusBadRequest)
@@ -25,11 +32,6 @@ func createNewFormBody(ctx *fiber.Ctx) error {
 	formUid, err := utils.StringToUuid(_formId)
 	if err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid form id")
-	}
-
-	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
-	if userId == uuid.Nil || workspaceId == uuid.Nil {
-		return fiber.NewError(fiber.StatusBadRequest, "User or Workspace not present")
 	}
 
 	pgConn, err := utils.GetPostgresDB()
@@ -56,7 +58,7 @@ func createNewFormBody(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Form not found")
 	}
 
-	reqBody := newFormBodyReqBody{}
+	reqBody := newFormInnerBodyReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
@@ -75,9 +77,11 @@ func createNewFormBody(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	if err = repository.InsertNewFormPageInSameFormBody(mongoDb, ctx.Context(), formBodyObjectId, repository.FormInnerBody{
+	if err = repository.InsertFormInnerBodyInSameFormBody(mongoDb, ctx.Context(), formBodyObjectId, repository.FormInnerBody{
 		CreatedByID: userId,
 		Meta:        reqBody.Meta,
+		SubmitText:  reqBody.SubmitText,
+		CancelText:  reqBody.CancelText,
 	}); err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}

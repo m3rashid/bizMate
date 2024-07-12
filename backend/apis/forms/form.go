@@ -15,8 +15,6 @@ import (
 type CreateFormReqBody struct {
 	Title                  string `json:"title" validate:"required,min=5,max=50"`
 	Description            string `json:"description" validate:"max=50"`
-	SubmitText             string `json:"submit_text" validate:"max=30"`
-	CancelText             string `json:"cancel_text" validate:"max=30"`
 	Active                 *bool  `json:"active"`
 	SendResponseEmail      *bool  `json:"send_response_email"`
 	AllowAnonymousResponse *bool  `json:"allow_anonymous_response"`
@@ -81,8 +79,6 @@ func createNewForm(ctx *fiber.Ctx) error {
 		CreatedByID:            userId,
 		Title:                  reqBody.Title,
 		Description:            reqBody.Description,
-		SubmitText:             reqBody.SubmitText,
-		CancelText:             reqBody.CancelText,
 		Active:                 reqBody.Active,
 		SendResponseEmail:      reqBody.SendResponseEmail,
 		AllowAnonymousResponse: reqBody.AllowAnonymousResponse,
@@ -209,8 +205,6 @@ func updateFormById(ctx *fiber.Ctx) error {
 		ID:                     reqBody.ID,
 		Title:                  reqBody.Title,
 		Description:            reqBody.Description,
-		SubmitText:             reqBody.SubmitText,
-		CancelText:             reqBody.CancelText,
 		Active:                 reqBody.Active,
 		SendResponseEmail:      reqBody.SendResponseEmail,
 		AllowAnonymousResponse: reqBody.AllowAnonymousResponse,

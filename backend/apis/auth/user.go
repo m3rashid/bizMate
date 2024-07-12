@@ -3,6 +3,7 @@ package auth
 import (
 	"bizMate/repository"
 	"bizMate/utils"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -58,6 +59,7 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 	queries := repository.New(pgConn)
 	user, err := queries.GetUserByEmail(ctx.Context(), reqBody.Email)
 	if err != nil {
+		fmt.Println("error: ", err)
 		return fiber.NewError(fiber.StatusNotFound, "User not found")
 	}
 

@@ -68,8 +68,6 @@ function AddEditForm(props: AddEditFormProps) {
 		const _formMeta: EditFormMeta = [
 			['title', props.form?.title || '', 'Form title', 'input', true],
 			['description', props.form?.description || '', 'Form description', 'textareaInput'],
-			['cancel_text', props.form?.cancel_text || 'Cancel', 'Cancel button text', 'input', true],
-			['submit_text', props.form?.submit_text || 'Submit', 'Submit button text', 'input', true],
 			[
 				'allow_anonymous_response',
 				props.form?.allow_anonymous_response ? 'on' : 'off',
@@ -112,8 +110,6 @@ function AddEditForm(props: AddEditFormProps) {
 		if (!props.form) createForm(form)
 		else updateForm(form)
 	}
-
-	console.log(props.form, meta)
 
 	return (
 		<Modal open={props.open} setOpen={props.onClose} title={!!props.form ? `Edit Form (${props.form.title})` : 'Create new form'}>

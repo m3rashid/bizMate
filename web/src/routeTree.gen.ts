@@ -30,23 +30,8 @@ const WorkspaceIdProjectsIndexLazyImport = createFileRoute(
 const WorkspaceIdFormsIndexLazyImport = createFileRoute(
   '/$workspaceId/forms/',
 )()
-const WorkspaceIdDashboardsIndexLazyImport = createFileRoute(
-  '/$workspaceId/dashboards/',
-)()
-const WorkspaceIdAutomationsIndexLazyImport = createFileRoute(
-  '/$workspaceId/automations/',
-)()
-const WorkspaceIdAutomationsDesignerLazyImport = createFileRoute(
-  '/$workspaceId/automations/designer',
-)()
 const WorkspaceIdProjectsProjectIdIndexLazyImport = createFileRoute(
   '/$workspaceId/projects/$projectId/',
-)()
-const WorkspaceIdDashboardsDashboardIdIndexLazyImport = createFileRoute(
-  '/$workspaceId/dashboards/$dashboardId/',
-)()
-const WorkspaceIdCommunicationsEmailsIndexLazyImport = createFileRoute(
-  '/$workspaceId/communications/emails/',
 )()
 const WorkspaceIdCommunicationsContactsIndexLazyImport = createFileRoute(
   '/$workspaceId/communications/contacts/',
@@ -74,15 +59,6 @@ const WorkspaceIdFormsFormIdDesignerLazyImport = createFileRoute(
 )()
 const WorkspaceIdFormsFormIdAnalyticsLazyImport = createFileRoute(
   '/$workspaceId/forms/$formId/analytics',
-)()
-const WorkspaceIdDashboardsDashboardIdDesignerLazyImport = createFileRoute(
-  '/$workspaceId/dashboards/$dashboardId/designer',
-)()
-const WorkspaceIdCommunicationsEmailsTemplatesLazyImport = createFileRoute(
-  '/$workspaceId/communications/emails/templates',
-)()
-const WorkspaceIdCommunicationsEmailsDesignerLazyImport = createFileRoute(
-  '/$workspaceId/communications/emails/designer',
 )()
 const WorkspaceIdProjectsProjectIdTasksTaskIdIndexLazyImport = createFileRoute(
   '/$workspaceId/projects/$projectId/tasks/$taskId/',
@@ -144,58 +120,12 @@ const WorkspaceIdFormsIndexLazyRoute = WorkspaceIdFormsIndexLazyImport.update({
   import('./routes/$workspaceId/forms/index.lazy').then((d) => d.Route),
 )
 
-const WorkspaceIdDashboardsIndexLazyRoute =
-  WorkspaceIdDashboardsIndexLazyImport.update({
-    path: '/$workspaceId/dashboards/',
-    getParentRoute: () => rootRoute,
-  } as any).lazy(() =>
-    import('./routes/$workspaceId/dashboards/index.lazy').then((d) => d.Route),
-  )
-
-const WorkspaceIdAutomationsIndexLazyRoute =
-  WorkspaceIdAutomationsIndexLazyImport.update({
-    path: '/$workspaceId/automations/',
-    getParentRoute: () => rootRoute,
-  } as any).lazy(() =>
-    import('./routes/$workspaceId/automations/index.lazy').then((d) => d.Route),
-  )
-
-const WorkspaceIdAutomationsDesignerLazyRoute =
-  WorkspaceIdAutomationsDesignerLazyImport.update({
-    path: '/$workspaceId/automations/designer',
-    getParentRoute: () => rootRoute,
-  } as any).lazy(() =>
-    import('./routes/$workspaceId/automations/designer.lazy').then(
-      (d) => d.Route,
-    ),
-  )
-
 const WorkspaceIdProjectsProjectIdIndexLazyRoute =
   WorkspaceIdProjectsProjectIdIndexLazyImport.update({
     path: '/$workspaceId/projects/$projectId/',
     getParentRoute: () => rootRoute,
   } as any).lazy(() =>
     import('./routes/$workspaceId/projects/$projectId/index.lazy').then(
-      (d) => d.Route,
-    ),
-  )
-
-const WorkspaceIdDashboardsDashboardIdIndexLazyRoute =
-  WorkspaceIdDashboardsDashboardIdIndexLazyImport.update({
-    path: '/$workspaceId/dashboards/$dashboardId/',
-    getParentRoute: () => rootRoute,
-  } as any).lazy(() =>
-    import('./routes/$workspaceId/dashboards/$dashboardId/index.lazy').then(
-      (d) => d.Route,
-    ),
-  )
-
-const WorkspaceIdCommunicationsEmailsIndexLazyRoute =
-  WorkspaceIdCommunicationsEmailsIndexLazyImport.update({
-    path: '/$workspaceId/communications/emails/',
-    getParentRoute: () => rootRoute,
-  } as any).lazy(() =>
-    import('./routes/$workspaceId/communications/emails/index.lazy').then(
       (d) => d.Route,
     ),
   )
@@ -290,36 +220,6 @@ const WorkspaceIdFormsFormIdAnalyticsLazyRoute =
     ),
   )
 
-const WorkspaceIdDashboardsDashboardIdDesignerLazyRoute =
-  WorkspaceIdDashboardsDashboardIdDesignerLazyImport.update({
-    path: '/$workspaceId/dashboards/$dashboardId/designer',
-    getParentRoute: () => rootRoute,
-  } as any).lazy(() =>
-    import('./routes/$workspaceId/dashboards/$dashboardId/designer.lazy').then(
-      (d) => d.Route,
-    ),
-  )
-
-const WorkspaceIdCommunicationsEmailsTemplatesLazyRoute =
-  WorkspaceIdCommunicationsEmailsTemplatesLazyImport.update({
-    path: '/$workspaceId/communications/emails/templates',
-    getParentRoute: () => rootRoute,
-  } as any).lazy(() =>
-    import('./routes/$workspaceId/communications/emails/templates.lazy').then(
-      (d) => d.Route,
-    ),
-  )
-
-const WorkspaceIdCommunicationsEmailsDesignerLazyRoute =
-  WorkspaceIdCommunicationsEmailsDesignerLazyImport.update({
-    path: '/$workspaceId/communications/emails/designer',
-    getParentRoute: () => rootRoute,
-  } as any).lazy(() =>
-    import('./routes/$workspaceId/communications/emails/designer.lazy').then(
-      (d) => d.Route,
-    ),
-  )
-
 const WorkspaceIdFormsFormIdPreviewRoute =
   WorkspaceIdFormsFormIdPreviewImport.update({
     path: '/$workspaceId/forms/$formId/preview',
@@ -368,18 +268,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkspaceIdIndexLazyImport
       parentRoute: typeof rootRoute
     }
-    '/$workspaceId/automations/designer': {
-      preLoaderRoute: typeof WorkspaceIdAutomationsDesignerLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/$workspaceId/automations/': {
-      preLoaderRoute: typeof WorkspaceIdAutomationsIndexLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/$workspaceId/dashboards/': {
-      preLoaderRoute: typeof WorkspaceIdDashboardsIndexLazyImport
-      parentRoute: typeof rootRoute
-    }
     '/$workspaceId/forms/': {
       preLoaderRoute: typeof WorkspaceIdFormsIndexLazyImport
       parentRoute: typeof rootRoute
@@ -390,18 +278,6 @@ declare module '@tanstack/react-router' {
     }
     '/$workspaceId/forms/$formId/preview': {
       preLoaderRoute: typeof WorkspaceIdFormsFormIdPreviewImport
-      parentRoute: typeof rootRoute
-    }
-    '/$workspaceId/communications/emails/designer': {
-      preLoaderRoute: typeof WorkspaceIdCommunicationsEmailsDesignerLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/$workspaceId/communications/emails/templates': {
-      preLoaderRoute: typeof WorkspaceIdCommunicationsEmailsTemplatesLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/$workspaceId/dashboards/$dashboardId/designer': {
-      preLoaderRoute: typeof WorkspaceIdDashboardsDashboardIdDesignerLazyImport
       parentRoute: typeof rootRoute
     }
     '/$workspaceId/forms/$formId/analytics': {
@@ -440,14 +316,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkspaceIdCommunicationsContactsIndexLazyImport
       parentRoute: typeof rootRoute
     }
-    '/$workspaceId/communications/emails/': {
-      preLoaderRoute: typeof WorkspaceIdCommunicationsEmailsIndexLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/$workspaceId/dashboards/$dashboardId/': {
-      preLoaderRoute: typeof WorkspaceIdDashboardsDashboardIdIndexLazyImport
-      parentRoute: typeof rootRoute
-    }
     '/$workspaceId/projects/$projectId/': {
       preLoaderRoute: typeof WorkspaceIdProjectsProjectIdIndexLazyImport
       parentRoute: typeof rootRoute
@@ -469,15 +337,9 @@ export const routeTree = rootRoute.addChildren([
   AuthLoginRoute,
   WorkspaceIdPaymentLazyRoute,
   WorkspaceIdIndexLazyRoute,
-  WorkspaceIdAutomationsDesignerLazyRoute,
-  WorkspaceIdAutomationsIndexLazyRoute,
-  WorkspaceIdDashboardsIndexLazyRoute,
   WorkspaceIdFormsIndexLazyRoute,
   WorkspaceIdProjectsIndexLazyRoute,
   WorkspaceIdFormsFormIdPreviewRoute,
-  WorkspaceIdCommunicationsEmailsDesignerLazyRoute,
-  WorkspaceIdCommunicationsEmailsTemplatesLazyRoute,
-  WorkspaceIdDashboardsDashboardIdDesignerLazyRoute,
   WorkspaceIdFormsFormIdAnalyticsLazyRoute,
   WorkspaceIdFormsFormIdDesignerLazyRoute,
   WorkspaceIdFormsFormIdFillLazyRoute,
@@ -487,8 +349,6 @@ export const routeTree = rootRoute.addChildren([
   WorkspaceIdProjectsProjectIdGuidelinesLazyRoute,
   WorkspaceIdProjectsProjectIdReadmeLazyRoute,
   WorkspaceIdCommunicationsContactsIndexLazyRoute,
-  WorkspaceIdCommunicationsEmailsIndexLazyRoute,
-  WorkspaceIdDashboardsDashboardIdIndexLazyRoute,
   WorkspaceIdProjectsProjectIdIndexLazyRoute,
   WorkspaceIdProjectsProjectIdTasksTaskIdIndexLazyRoute,
 ])

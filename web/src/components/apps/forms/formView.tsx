@@ -33,10 +33,10 @@ function FormView(props: FormViewProps) {
 				}
 				size="small"
 			>
-				{props.formBody && props.formBody.formInnerBody.length > 0 ? 'Add More form Pages' : 'Add form pages'}
+				{props.formBody && props.formBody.form_inner_body.length > 0 ? 'Add More form Pages' : 'Add form pages'}
 			</Button>
 
-			{props.formBody?.formInnerBody.map((singleFormBody) => (
+			{props.formBody?.form_inner_body.map((singleFormBody) => (
 				<form
 					{...(props.type === 'fill' ? { ref: props.formRef, onSubmit: props.handleSubmit } : {})}
 					className="flex w-full min-w-80 max-w-[800px] flex-col gap-4"
@@ -46,11 +46,11 @@ function FormView(props: FormViewProps) {
 					<div className="flex items-center justify-between rounded-lg border-[1px] border-gray-200 bg-white p-4 shadow-md">
 						<Button
 							variant="simple"
-							label={props.form?.cancel_text}
+							label={singleFormBody.cancel_text}
 							disabled={props.type === 'preview'}
 							{...(props.type === 'fill' ? { onClick: props.handleCancel } : {})}
 						/>
-						<Button type="submit" variant="primary" label={props.form?.submit_text} disabled={props.type === 'preview'} />
+						<Button type="submit" variant="primary" label={singleFormBody.submit_text} disabled={props.type === 'preview'} />
 					</div>
 				</form>
 			))}

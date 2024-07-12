@@ -46,7 +46,7 @@ function CardList<T extends DbRow>(props: CardListProps<T>) {
 			apiClient(`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${locationSearch.page}&limit=${props.pageSize || 15}`),
 	})
 
-	if (isPending || !result) return <SkeletonCardList />
+	if (isPending) return <SkeletonCardList />
 	return (
 		<div className={twMerge('h-full w-full', props.rootClassName)}>
 			<DataListHeader
@@ -70,24 +70,24 @@ function CardList<T extends DbRow>(props: CardListProps<T>) {
 				className={twMerge('col-span-1 md:col-span-2 lg:col-span-3', props.masonryProps?.className)}
 			>
 				<Masonry gutter="1rem" className="mb-4">
-					{result.data.docs.map((item) => (
-						<props.cardRenderer key={item.id} {...item} />
-					))}
+					{result?.data.docs.map((item) => <props.cardRenderer key={item.id} {...item} />)}
 				</Masonry>
 			</ResponsiveMasonry>
 
-			<Pagination
-				{...{
-					page: result.data.page,
-					count: result.data.count,
-					limit: result.data.limit,
-					totalDocs: result.data.totalDocs,
-					hasNextPage: result.data.hasNextPage,
-					hasPreviousPage: result.data.hasPreviousPage,
-					onNextClick: () => navigate({ search: (prev: PageSearchParams) => ({ page: prev.page + 1 }) }),
-					onPreviousClick: () => navigate({ search: (prev: PageSearchParams) => ({ page: prev.page !== 1 ? prev.page - 1 : prev }) }),
-				}}
-			/>
+			{!!result ? (
+				<Pagination
+					{...{
+						page: result?.data.page,
+						count: result?.data.count,
+						limit: result?.data.limit,
+						totalDocs: result?.data.totalDocs,
+						hasNextPage: result?.data.hasNextPage,
+						hasPreviousPage: result?.data.hasPreviousPage,
+						onNextClick: () => navigate({ search: (prev: PageSearchParams) => ({ page: prev.page + 1 }) }),
+						onPreviousClick: () => navigate({ search: (prev: PageSearchParams) => ({ page: prev.page !== 1 ? prev.page - 1 : prev }) }),
+					}}
+				/>
+			) : null}
 		</div>
 	)
 }

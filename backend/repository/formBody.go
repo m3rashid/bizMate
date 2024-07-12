@@ -241,7 +241,7 @@ type FormBodyDocument struct {
 	CreatedAt     time.Time       `json:"created_at" bson:"created_at"`
 	WorkspaceID   uuid.UUID       `json:"workspace_id" bson:"workspace_id"`
 	CreatedByID   uuid.UUID       `json:"created_by_id" bson:"created_by_id"`
-	FormInnerBody []FormInnerBody `json:"formInnerBody" bson:"formInnerBody"`
+	FormInnerBody []FormInnerBody `json:"form_inner_body" bson:"form_inner_body"`
 }
 
 func (formBody *FormBodyDocument) MarshalBSON() ([]byte, error) {
@@ -266,9 +266,9 @@ func InsertNewFormBody(db *mongo.Database, ctx context.Context, formId uuid.UUID
 	return nil
 }
 
-func InsertNewFormPageInSameFormBody(db *mongo.Database, ctx context.Context, formBodyId primitive.ObjectID, formBody FormInnerBody) error {
+func InsertFormInnerBodyInSameFormBody(db *mongo.Database, ctx context.Context, formBodyId primitive.ObjectID, formBody FormInnerBody) error {
 	if _, err := db.Collection(FORM_BODY_COLLECTION_NAME).UpdateByID(ctx, formBodyId, bson.M{
-		"$push": bson.M{"formInnerBody": formBody},
+		"$push": bson.M{"form_inner_body": formBody},
 	}); err != nil {
 		return err
 	}

@@ -18,16 +18,16 @@ function FormDesignerTopBar(props: FormDesignerTopBarProps) {
 	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const { addMessagePopup } = usePopups()
-	const { viewType, changeViewType, meta } = useFormDesigner()
+	const { viewType, changeViewType, meta, rootProps } = useFormDesigner()
 
 	const { isPending, mutate: saveForm } = useMutation({
 		mutationKey: ['saveForm', props.workspaceId],
 		onError: () => addMessagePopup({ id: 'errorCreateForm', message: 'Error in creating form', type: 'error' }),
 		mutationFn: async (body: any) =>
-			apiClient(`/${props.workspaceId}/forms/${props.formId}/create-new-formbody`, { method: 'POST', body: JSON.stringify(body) }),
+			apiClient(`/${props.workspaceId}/forms/${props.formId}/create-new-form-innerbody`, { method: 'POST', body: JSON.stringify(body) }),
 		onSuccess: () => {
-			navigate({ to: '/$workspaceId/forms', params: { workspaceId: props.workspaceId }, search: { page: 1 } })
 			addMessagePopup({ id: 'saveForm', message: 'Successfully created form', type: 'success' })
+			navigate({ to: '/$workspaceId/forms/$formId/preview', params: { workspaceId: props.workspaceId, formId: props.formId }, search: { page: 1 } })
 		},
 	})
 
@@ -37,8 +37,11 @@ function FormDesignerTopBar(props: FormDesignerTopBarProps) {
 			return
 		}
 
+		console.log(rootProps, meta)
 		const checkCondition = (val?: StringBoolean | undefined) => (val && val === 'on' ? true : false)
 		const formInnerBody: Partial<FormInnerBody> = {
+			submit_text: rootProps.submitText,
+			cancel_text: rootProps.cancelText,
 			meta: meta.map((el) => ({
 				...el,
 				props: { ...el.props, ...(el.props.required ? { required: checkCondition(el.props.required) } : {}) },

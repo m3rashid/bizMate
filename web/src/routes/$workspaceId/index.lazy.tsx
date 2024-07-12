@@ -1,4 +1,3 @@
-import HomePageDashboards from '@components/home'
 import PageContainer from '@components/pageContainer'
 import { createLazyFileRoute, useParams } from '@tanstack/react-router'
 
@@ -10,7 +9,7 @@ function Index() {
 	const { workspaceId } = useParams({ from: '/$workspaceId/' })
 	return (
 		<PageContainer workspaceId={workspaceId}>
-			<HomePageDashboards workspaceId={workspaceId} />
+			<div />
 		</PageContainer>
 	)
 }
