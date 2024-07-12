@@ -37,7 +37,7 @@ function FormView(props: FormViewProps) {
 			</Button>
 
 			{props.formBody?.form_inner_body.map((singleFormBody) => (
-				<form
+				<form key={singleFormBody.created_at}
 					{...(props.type === 'fill' ? { ref: props.formRef, onSubmit: props.handleSubmit } : {})}
 					className="flex w-full min-w-80 max-w-[800px] flex-col gap-4"
 				>
