@@ -36,7 +36,7 @@ function ProjectCard(props: Project & { onEdit: () => void; workspaceId: string 
 
 					<div>
 						<div className="text-xs text-disabled">
-							{t('Created')}: {dayjs(props.createdAt).format('DD MMM, YYYY - HH:mm A')}
+							{t('Created')}: {dayjs(props.created_at).format('DD MMM, YYYY - HH:mm A')}
 						</div>
 						<div className="text-sm">{props.description}</div>
 					</div>

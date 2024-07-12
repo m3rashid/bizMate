@@ -1,5 +1,5 @@
 import apiClient from '@api/client'
-import AddEditForm from '@components/apps/forms/editForm'
+import AddEditForm from '@components/formDesigner/editForm'
 import Button from '@components/lib/button'
 import CardList from '@components/lib/cardList'
 import Chip from '@components/lib/chip'

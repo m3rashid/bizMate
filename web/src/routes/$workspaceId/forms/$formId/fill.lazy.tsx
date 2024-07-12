@@ -1,5 +1,5 @@
 import apiClient from '@api/client'
-import FormView, { ShowMetaType } from '@components/apps/forms/formView'
+import FormView, { ShowMetaType } from '@components/formDesigner/formView'
 import { FormElementInstance } from '@components/forms/constants'
 import { PageLoader } from '@components/lib/loader'
 import { PageNotFound } from '@components/lib/notFound'
@@ -47,11 +47,11 @@ function FormFill() {
 			}),
 		onSuccess: () => {
 			formRef.current?.reset()
-			handleFormStatusChange('success', form?.successPage)
+			// handleFormStatusChange('success', form?.successPage)
 		},
 		onError: (error) => {
 			console.error(error)
-			handleFormStatusChange('failure', form?.failurePage)
+			// handleFormStatusChange('failure', form?.failurePage)
 		},
 	})
 
@@ -109,7 +109,7 @@ function FormFill() {
 		)
 	}
 
-	if (!form.allowAnonymousResponse && !auth.isAuthenticated) {
+	if (!form.allow_anonymous_response && !auth.isAuthenticated) {
 		return (
 			<div className="flex h-screen flex-col items-center justify-center gap-8 p-4">
 				<label className="text-3xl font-bold leading-6 text-gray-900">You need to be logged in to fill this form</label>

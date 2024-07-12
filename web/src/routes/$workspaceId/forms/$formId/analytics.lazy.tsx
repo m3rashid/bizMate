@@ -1,5 +1,5 @@
 import apiClient from '@api/client'
-import AnalyticsCard, { Analysis, ChartType } from '@components/apps/forms/analyticsCard'
+import AnalyticsCard, { Analysis, ChartType } from '@components/formDesigner/analyticsCard'
 import DataListHeader from '@components/lib/dataListHeader'
 import { PageLoader } from '@components/lib/loader'
 import Modal from '@components/lib/modal'

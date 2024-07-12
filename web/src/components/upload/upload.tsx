@@ -7,6 +7,7 @@ type UploaderProps = {
 }
 
 function Uploader(props: UploaderProps) {
+	console.log(props)
 	const [files, setFiles] = useState<File[]>([])
 	const onDrop = useCallback((acceptedFiles: File[]) => {
 		setFiles((prevFiles) => getUniqueObjectsByKey([...prevFiles, ...acceptedFiles], 'name'))

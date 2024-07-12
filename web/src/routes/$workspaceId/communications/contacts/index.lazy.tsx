@@ -25,7 +25,7 @@ function Contacts() {
 		{ title: 'Email', dataKey: 'email' },
 		{ title: 'Phone', dataKey: 'phone' },
 		{ title: 'Birthday', dataKey: 'birthday', render: ({ row }) => dayjs(row.birthday).format('DD MMM, YYYY') },
-		{ title: 'Created At', dataKey: 'createdAt', render: ({ row }) => dayjs(row.createdAt).format('DD MMM, YYYY - HH:mm A') },
+		{ title: 'Created At', dataKey: 'created_at', render: ({ row }) => dayjs(row.created_at).format('DD MMM, YYYY - HH:mm A') },
 		{
 			dataKey: 'id',
 			title: 'Actions',

@@ -1,5 +1,5 @@
 import apiClient from '@api/client'
-import FormResponsesTable from '@components/apps/forms/formResponse'
+import FormResponsesTable from '@components/formDesigner/formResponse'
 import { PageLoader } from '@components/lib/loader'
 import { NotFound } from '@components/lib/notFound'
 import PageContainer from '@components/pageContainer'

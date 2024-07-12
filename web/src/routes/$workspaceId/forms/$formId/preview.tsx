@@ -1,5 +1,5 @@
 import apiClient from '@api/client'
-import FormView from '@components/apps/forms/formView'
+import FormView from '@components/formDesigner/formView'
 import { PageLoader } from '@components/lib/loader'
 import PageContainer from '@components/pageContainer'
 import { ApiResponse, Form, FormBodyDocument } from '@mytypes'

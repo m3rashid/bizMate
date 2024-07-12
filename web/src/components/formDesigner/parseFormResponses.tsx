@@ -56,8 +56,8 @@ export function parseFormResponses(
 					...formRes,
 					id: data.docs[i].id,
 					deviceIp: data.docs[i].deviceIp,
-					createdAt: data.docs[i].createdAt,
-					...(!form.allowAnonymousResponse ? { createdByUser: data.docs[i].createdByUser } : {}),
+					createdAt: data.docs[i].created_at,
+					...(!form.allow_anonymous_response ? { createdByUser: data.docs[i].created_by_id } : {}),
 				})
 			} catch (err) {
 				console.error('Error in parsing form response: ', err)
@@ -79,16 +79,15 @@ export function parseFormResponses(
 				],
 				[
 					{ title: 'Created At', dataKey: 'createdAt', render: ({ row }) => dayjs(row.createdAt).format('DD MMM, YYYY - HH:mm A') },
-					...(!form.allowAnonymousResponse
+					...(!form.allow_anonymous_response
 						? [
 								{
 									title: 'Submitted By',
 									dataKey: 'createdByUser',
-									render: ({ row: { createdByUser } }: { row: CreatedBy }) => {
+									render: ({ row: { created_by_id } }: { row: CreatedBy }) => {
 										return (
 											<div className="flex flex-col">
-												<span className="font-semibold">{createdByUser?.name}</span>
-												<span className="text-sm text-disabled">{createdByUser?.email}</span>
+												<span className="text-sm text-disabled">{created_by_id}</span>
 											</div>
 										)
 									},
