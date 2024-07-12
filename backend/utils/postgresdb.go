@@ -5,25 +5,25 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/lib/pq"
 )
 
-var postgresDb *pgx.Conn
+var postgresDbPool *pgxpool.Pool
 
-func GetPostgresDB() (*pgx.Conn, error) {
-	if postgresDb == nil {
+func GetPostgresDB() (*pgxpool.Pool, error) {
+	if postgresDbPool == nil {
 		_db, err := getPostgresDbConnection()
 		if err != nil {
 			return nil, err
 		}
-		postgresDb = _db
+		postgresDbPool = _db
 	}
 
-	return postgresDb, nil
+	return postgresDbPool, nil
 }
 
-func getPostgresDbConnection() (*pgx.Conn, error) {
+func getPostgresDbConnection() (*pgxpool.Pool, error) {
 	pgHost := os.Getenv("POSTGRES_HOST")
 	pgUser := os.Getenv("POSTGRES_USER")
 	pgPass := os.Getenv("POSTGRES_PASSWORD")
@@ -31,9 +31,9 @@ func getPostgresDbConnection() (*pgx.Conn, error) {
 	pgPort := os.Getenv("POSTGRES_PORT")
 
 	connectionStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", pgUser, pgPass, pgHost, pgPort, pgDb)
-	conn, err := pgx.Connect(context.Background(), connectionStr)
+	pool, err := pgxpool.New(context.Background(), connectionStr)
 	if err != nil {
 		return nil, err
 	}
-	return conn, nil
+	return pool, nil
 }
