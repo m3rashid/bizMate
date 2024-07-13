@@ -39,7 +39,6 @@ func handleExcelExport(reqBody exportTableReqBodyType, allData []map[string]inte
 	const sheet1 = "Sheet1"
 	index, err := f.NewSheet(sheet1)
 	if err != nil {
-		fmt.Println(err)
 		return err
 	}
 	f.SetActiveSheet(index)

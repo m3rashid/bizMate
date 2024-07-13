@@ -8,28 +8,24 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type FormResponse struct {
-	ID          primitive.ObjectID     `json:"_id" bson:"_id"`
+type FormResponseBody struct {
 	CreatedAt   time.Time              `json:"created_at" bson:"created_at"`
-	WorkspaceID uuid.UUID              `json:"workspace_id" bson:"workspace_id"`
 	CreatedByID uuid.UUID              `json:"created_by_id" bson:"created_by_id"`
-	FormID      uuid.UUID              `json:"form_id" bson:"form_id"`
 	DeviceIP    string                 `json:"device_ip" bson:"device_ip"`
 	Response    map[string]interface{} `json:"response" bson:"response"`
 }
 
-type CreateFormResponseParams struct {
-	WorkspaceID uuid.UUID
-	CreatedByID uuid.UUID
-	FormID      uuid.UUID
-	DeviceIP    string
-	Response    map[string]interface{}
+type FormResponseDocument struct {
+	ID          primitive.ObjectID `json:"_id" bson:"_id"`
+	WorkspaceID uuid.UUID          `json:"workspace_id" bson:"workspace_id"`
+	FormID      uuid.UUID          `json:"form_id" bson:"form_id"`
+	Responses   []FormResponseBody `json:"responses" bson:"responses"`
 }
 
-func (formRes *FormResponse) MarshalBSON() ([]byte, error) {
+func (formRes *FormResponseBody) MarshalBSON() ([]byte, error) {
 	if formRes.CreatedAt.IsZero() {
 		formRes.CreatedAt = time.Now()
 	}
-	type fr FormResponse
+	type fr FormResponseBody
 	return bson.Marshal((*fr)(formRes))
 }

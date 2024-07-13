@@ -17,7 +17,7 @@ export type TabProps = {
 }
 
 function Tabs(props: TabProps) {
-	const [selectedTab, setSelectedTab] = useState(props.tabs[0].id)
+	const [selectedTab, setSelectedTab] = useState(props.tabs[0]?.id)
 
 	const currentTab = props.tabs.find((tab) => tab.id === selectedTab)
 
@@ -29,6 +29,7 @@ function Tabs(props: TabProps) {
 		)
 	}
 
+	if (props.tabs.length === 0) return null
 	return (
 		<div className={twMerge('flex flex-col items-center', props.rootClassName)}>
 			<div className="mb-4 flex min-w-full items-center justify-center sm:hidden">
@@ -59,7 +60,9 @@ function Tabs(props: TabProps) {
 				))}
 			</div>
 
-			{selectedTab ? currentTab ? <currentTab.Component {...currentTab.componentProps} /> : <NotFound /> : null}
+			<div className='w-full'>
+				{selectedTab ? currentTab ? <currentTab.Component {...currentTab.componentProps} /> : <NotFound /> : null}
+			</div>
 		</div>
 	)
 }

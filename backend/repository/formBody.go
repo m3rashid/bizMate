@@ -237,20 +237,12 @@ func (formBody *FormInnerBody) MarshalBSON() ([]byte, error) {
 }
 
 type FormBodyDocument struct {
-	FormID        uuid.UUID       `json:"form_id" bson:"form_id"`
-	CreatedAt     time.Time       `json:"created_at" bson:"created_at"`
-	WorkspaceID   uuid.UUID       `json:"workspace_id" bson:"workspace_id"`
-	CreatedByID   uuid.UUID       `json:"created_by_id" bson:"created_by_id"`
-	FormInnerBody []FormInnerBody `json:"form_inner_body" bson:"form_inner_body"`
-}
-
-func (formBody *FormBodyDocument) MarshalBSON() ([]byte, error) {
-	if formBody.CreatedAt.IsZero() {
-		formBody.CreatedAt = time.Now()
-	}
-
-	type fb FormBodyDocument
-	return bson.Marshal((*fb)(formBody))
+	ID            primitive.ObjectID `json:"_id" bson:"_id"`
+	FormID        uuid.UUID          `json:"form_id" bson:"form_id"`
+	CreatedAt     time.Time          `json:"created_at" bson:"created_at"`
+	WorkspaceID   uuid.UUID          `json:"workspace_id" bson:"workspace_id"`
+	CreatedByID   uuid.UUID          `json:"created_by_id" bson:"created_by_id"`
+	FormInnerBody []FormInnerBody    `json:"form_inner_body" bson:"form_inner_body"`
 }
 
 func InsertNewFormBody(db *mongo.Database, ctx context.Context, formId uuid.UUID, workspaceId uuid.UUID, createdById uuid.UUID, formBody FormInnerBody) error {

@@ -1,59 +1,132 @@
 package forms
 
 import (
+	"bizMate/repository"
 	"bizMate/utils"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type formResponseReqBody struct {
-	ID       string `json:"id"`
-	Response string `json:"response" validate:"required"`
+	Response       map[string]interface{} `json:"response" validate:"required"`
+	PageNumber     *int32                 `json:"pageNumber" validate:"required"`
+	FormBodyID     primitive.ObjectID     `json:"formBodyId" validate:"required"`
+	FormResponseID primitive.ObjectID     `json:"formResponseId"`
 }
 
 func submitFormResponse(ctx *fiber.Ctx) error {
-	reqBody := formResponseReqBody{}
 	formId := ctx.Params("formId")
+	formUid, err := utils.StringToUuid(formId)
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
 
+	reqBody := formResponseReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil || formId == "" {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
-	// db, err := utils.GetPostgresDB()
-	// if err != nil {
-	// 	return fiber.NewError(fiber.StatusInternalServerError)
-	// }
+	pgConn, err := utils.GetPostgresDB()
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
 
-	// form := models.Form{}
-	// if err := db.Where("id = ?", formId).First(&form).Error; err != nil {
-	// 	return ctx.SendStatus(fiber.StatusInternalServerError)
-	// }
+	queries := repository.New(pgConn)
+	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	form, err := queries.GetFormById(ctx.Context(), repository.GetFormByIdParams{ID: formUid, WorkspaceID: workspaceId})
+	if err != nil {
+		return ctx.SendStatus(fiber.StatusInternalServerError)
+	}
 
-	// if !form.Active {
-	// 	return fiber.NewError(fiber.StatusTooEarly, "form_inactive")
-	// }
+	if form.ID == uuid.Nil {
+		return ctx.SendStatus(fiber.StatusInternalServerError)
+	}
 
-	// userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
-	// if !form.AllowAnonymousResponse && userId == uuid.Nil {
-	// 	return fiber.NewError(fiber.StatusUnauthorized, "unauthorized")
-	// }
+	if !*form.Active {
+		return fiber.NewError(fiber.StatusTooEarly, "form is not active")
+	}
 
-	// userIdStr := userId.String()
-	// formResponse := models.FormResponse{
-	// 	FormID:                 form.ID,
-	// 	Response:               reqBody.Response,
-	// 	DeviceIP:               utils.GetDeviceIP(ctx),
-	// 	BaseModelWithWorkspace: models.BaseModelWithWorkspace{WorkspaceID: form.WorkspaceID},
-	// 	OptionalCreatedBy:      utils.Ternary(userIdStr != "", models.OptionalCreatedBy{CreatedByID: &userIdStr}, models.OptionalCreatedBy{}),
-	// }
+	if !*form.AllowAnonymousResponse && userId == uuid.Nil {
+		return fiber.NewError(fiber.StatusUnauthorized, "unauthorized")
+	}
 
-	// if err := db.Create(&formResponse).Error; err != nil {
-	// 	return fiber.NewError(fiber.StatusInternalServerError)
-	// }
+	mongoDb, err := utils.GetMongoDB()
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
 
-	// if form.SendResponseEmail {
-	// 	sendResponseEmail(form, formResponse, userId.String(), db)
-	// }
+	formBodyOid, err := utils.StringToObjectID(form.FormBodyID)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	formBody := repository.FormBodyDocument{}
+	if err := mongoDb.Collection(repository.FORM_BODY_COLLECTION_NAME).FindOne(ctx.Context(), bson.D{
+		primitive.E{Key: "_id", Value: formBodyOid},
+	}).Decode(&formBody); err != nil {
+		return fiber.NewError(fiber.StatusNotFound, "form not found")
+	}
+
+	toCreateNewBody := false
+	formResponse := repository.FormResponseDocument{}
+
+	if reqBody.FormResponseID == primitive.NilObjectID {
+		toCreateNewBody = true
+	} else {
+		if err := mongoDb.Collection(repository.FORM_RESPONSE_COLLECTION_NAME).FindOne(ctx.Context(), bson.D{
+			primitive.E{Key: "", Value: reqBody.FormResponseID},
+		}).Decode(&formResponse); err != nil {
+			if err == mongo.ErrNoDocuments {
+				toCreateNewBody = true
+			} else {
+				return fiber.NewError(fiber.StatusInternalServerError)
+			}
+		}
+	}
+
+	if toCreateNewBody {
+		newFormInnerResponse := make([]repository.FormResponseBody, len(formBody.FormInnerBody))
+
+		res, err := mongoDb.Collection(repository.FORM_RESPONSE_COLLECTION_NAME).InsertOne(ctx.Context(), repository.FormResponseDocument{
+			WorkspaceID: workspaceId,
+			FormID:      form.ID,
+			Responses:   newFormInnerResponse,
+		})
+		if err != nil {
+			return fiber.NewError(fiber.StatusInternalServerError)
+		}
+
+		if err := mongoDb.Collection(repository.FORM_RESPONSE_COLLECTION_NAME).FindOne(ctx.Context(), bson.D{
+			primitive.E{Key: "_id", Value: res.InsertedID},
+		}).Decode(&formResponse); err != nil {
+			return fiber.NewError(fiber.StatusInternalServerError)
+		}
+	}
+
+	formResponseBodyArr := formResponse.Responses
+
+	res := repository.FormResponseBody{
+		CreatedAt:   time.Now(),
+		CreatedByID: userId,
+		DeviceIP:    utils.GetDeviceIP(ctx),
+		Response:    reqBody.Response,
+	}
+
+	formResponseBodyArr[*reqBody.PageNumber] = res
+	if _, err := mongoDb.Collection(repository.FORM_RESPONSE_COLLECTION_NAME).UpdateOne(ctx.Context(), bson.D{
+		primitive.E{Key: "_id", Value: formResponse.ID},
+	}, bson.D{
+		primitive.E{Key: "$set", Value: bson.D{
+			primitive.E{Key: "responses", Value: formResponseBodyArr},
+		}},
+	}); err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
 
 	return ctx.Status(fiber.StatusCreated).JSON(utils.SendResponse(nil, "Response submitted successfully"))
 }
@@ -67,9 +140,9 @@ func editFormResponse(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Bad Request")
 	}
 
-	if reqBody.ID == "" {
-		return fiber.NewError(fiber.StatusBadRequest, "Bad Request")
-	}
+	// if reqBody.ID == "" {
+	// 	return fiber.NewError(fiber.StatusBadRequest, "Bad Request")
+	// }
 
 	// db, err := utils.GetPostgresDB()
 	// if err != nil {

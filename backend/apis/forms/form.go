@@ -3,7 +3,6 @@ package forms
 import (
 	"bizMate/repository"
 	"bizMate/utils"
-	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -87,7 +86,6 @@ func createNewForm(ctx *fiber.Ctx) error {
 
 	if err != nil {
 		tx.Rollback(ctx.Context())
-		fmt.Println("here 02", err)
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 	tx.Commit(ctx.Context())
