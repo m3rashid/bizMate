@@ -40,8 +40,8 @@ function FormDesignerTopBar(props: FormDesignerTopBarProps) {
 		console.log(rootProps, meta)
 		const checkCondition = (val?: StringBoolean | undefined) => (val && val === 'on' ? true : false)
 		const formInnerBody: Partial<FormInnerBody> = {
-			submit_text: rootProps.submitText,
-			cancel_text: rootProps.cancelText,
+			next_text: rootProps.nextText,
+			previous_text: rootProps.previousText,
 			meta: meta.map((el) => ({
 				...el,
 				props: { ...el.props, ...(el.props.required ? { required: checkCondition(el.props.required) } : {}) },

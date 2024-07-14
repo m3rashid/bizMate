@@ -87,7 +87,7 @@ function RightSidebar() {
 		e.preventDefault()
 		formRef.current?.reset()
 		if (selectedNode) updateNode(selectedNode.id, {})
-		else setFormDesigner((prev) => ({ ...prev, cancelText: 'Cancel', submitText: 'Submit Form' }))
+		else setFormDesigner((prev) => ({ ...prev, previousText: 'Previous', nextText: 'Next' }))
 	}
 
 	function handleSave(e: FormEvent<HTMLFormElement>) {
@@ -113,8 +113,8 @@ function RightSidebar() {
 				...prev,
 				rootProps: {
 					title: formData.title,
-					cancelText: formData.cancelText,
-					submitText: formData.submitText,
+					previousText: formData.previousText,
+					nextText: formData.nextText,
 					description: formData.description,
 					sendResponseEmail: formData.sendResponseEmail,
 					allowResponseUpdate: formData.allowResponseUpdate,

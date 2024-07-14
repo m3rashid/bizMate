@@ -9,9 +9,10 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const createForm = `-- name: CreateForm :one
+const createForm = `-- name: CreateForm :exec
 insert into forms (
 	id,
 	workspace_id,
@@ -21,9 +22,8 @@ insert into forms (
 	active,
 	send_response_email,
 	allow_anonymous_response,
-	allow_multiple_response,
-	form_body_id
-) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) returning id, deleted, created_at, workspace_id, created_by_id, title, description, form_body_id, active, send_response_email, allow_anonymous_response, allow_multiple_response
+	allow_multiple_response
+) values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 `
 
 type CreateFormParams struct {
@@ -36,11 +36,10 @@ type CreateFormParams struct {
 	SendResponseEmail      *bool     `json:"send_response_email"`
 	AllowAnonymousResponse *bool     `json:"allow_anonymous_response"`
 	AllowMultipleResponse  *bool     `json:"allow_multiple_response"`
-	FormBodyID             string    `json:"form_body_id"`
 }
 
-func (q *Queries) CreateForm(ctx context.Context, arg CreateFormParams) (Form, error) {
-	row := q.db.QueryRow(ctx, createForm,
+func (q *Queries) CreateForm(ctx context.Context, arg CreateFormParams) error {
+	_, err := q.db.Exec(ctx, createForm,
 		arg.ID,
 		arg.WorkspaceID,
 		arg.CreatedByID,
@@ -50,28 +49,21 @@ func (q *Queries) CreateForm(ctx context.Context, arg CreateFormParams) (Form, e
 		arg.SendResponseEmail,
 		arg.AllowAnonymousResponse,
 		arg.AllowMultipleResponse,
-		arg.FormBodyID,
 	)
-	var i Form
-	err := row.Scan(
-		&i.ID,
-		&i.Deleted,
-		&i.CreatedAt,
-		&i.WorkspaceID,
-		&i.CreatedByID,
-		&i.Title,
-		&i.Description,
-		&i.FormBodyID,
-		&i.Active,
-		&i.SendResponseEmail,
-		&i.AllowAnonymousResponse,
-		&i.AllowMultipleResponse,
-	)
-	return i, err
+	return err
+}
+
+const deleteForm = `-- name: DeleteForm :exec
+update forms set deleted = true where id = $1
+`
+
+func (q *Queries) DeleteForm(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteForm, id)
+	return err
 }
 
 const getFormById = `-- name: GetFormById :one
-select id, deleted, created_at, workspace_id, created_by_id, title, description, form_body_id, active, send_response_email, allow_anonymous_response, allow_multiple_response from forms where id = $1 and workspace_id = $2
+select id, deleted, created_at, workspace_id, created_by_id, title, description, form_body, active, send_response_email, allow_anonymous_response, allow_multiple_response from forms where id = $1 and workspace_id = $2 and deleted = false
 `
 
 type GetFormByIdParams struct {
@@ -90,7 +82,7 @@ func (q *Queries) GetFormById(ctx context.Context, arg GetFormByIdParams) (Form,
 		&i.CreatedByID,
 		&i.Title,
 		&i.Description,
-		&i.FormBodyID,
+		&i.FormBody,
 		&i.Active,
 		&i.SendResponseEmail,
 		&i.AllowAnonymousResponse,
@@ -100,7 +92,7 @@ func (q *Queries) GetFormById(ctx context.Context, arg GetFormByIdParams) (Form,
 }
 
 const getFormsCount = `-- name: GetFormsCount :one
-select count(id) from forms where workspace_id = $1
+select count(id) from forms where workspace_id = $1 and deleted = false
 `
 
 func (q *Queries) GetFormsCount(ctx context.Context, workspaceID uuid.UUID) (int64, error) {
@@ -111,7 +103,18 @@ func (q *Queries) GetFormsCount(ctx context.Context, workspaceID uuid.UUID) (int
 }
 
 const paginateForms = `-- name: PaginateForms :many
-select id, deleted, created_at, workspace_id, created_by_id, title, description, form_body_id, active, send_response_email, allow_anonymous_response, allow_multiple_response from forms where workspace_id = $1 order by id desc limit $2 offset $3
+select
+	id,
+	created_at,
+	workspace_id,
+	created_by_id,
+	title,
+	active,
+	description,
+	send_response_email,
+	allow_anonymous_response,
+	allow_multiple_response
+from forms where workspace_id = $1 and deleted = false order by id desc limit $2 offset $3
 `
 
 type PaginateFormsParams struct {
@@ -120,25 +123,36 @@ type PaginateFormsParams struct {
 	Offset      int32     `json:"offset"`
 }
 
-func (q *Queries) PaginateForms(ctx context.Context, arg PaginateFormsParams) ([]Form, error) {
+type PaginateFormsRow struct {
+	ID                     uuid.UUID          `json:"id"`
+	CreatedAt              pgtype.Timestamptz `json:"created_at"`
+	WorkspaceID            uuid.UUID          `json:"workspace_id"`
+	CreatedByID            uuid.UUID          `json:"created_by_id"`
+	Title                  string             `json:"title"`
+	Active                 *bool              `json:"active"`
+	Description            string             `json:"description"`
+	SendResponseEmail      *bool              `json:"send_response_email"`
+	AllowAnonymousResponse *bool              `json:"allow_anonymous_response"`
+	AllowMultipleResponse  *bool              `json:"allow_multiple_response"`
+}
+
+func (q *Queries) PaginateForms(ctx context.Context, arg PaginateFormsParams) ([]PaginateFormsRow, error) {
 	rows, err := q.db.Query(ctx, paginateForms, arg.WorkspaceID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Form
+	var items []PaginateFormsRow
 	for rows.Next() {
-		var i Form
+		var i PaginateFormsRow
 		if err := rows.Scan(
 			&i.ID,
-			&i.Deleted,
 			&i.CreatedAt,
 			&i.WorkspaceID,
 			&i.CreatedByID,
 			&i.Title,
-			&i.Description,
-			&i.FormBodyID,
 			&i.Active,
+			&i.Description,
 			&i.SendResponseEmail,
 			&i.AllowAnonymousResponse,
 			&i.AllowMultipleResponse,
@@ -153,7 +167,7 @@ func (q *Queries) PaginateForms(ctx context.Context, arg PaginateFormsParams) ([
 	return items, nil
 }
 
-const updateForm = `-- name: UpdateForm :one
+const updateForm = `-- name: UpdateForm :exec
 update forms set
 	title = $2,
 	description = $3,
@@ -161,7 +175,7 @@ update forms set
 	send_response_email = $5,
 	allow_anonymous_response = $6,
 	allow_multiple_response = $7
-where id = $1 returning id, deleted, created_at, workspace_id, created_by_id, title, description, form_body_id, active, send_response_email, allow_anonymous_response, allow_multiple_response
+where id = $1 and deleted = false
 `
 
 type UpdateFormParams struct {
@@ -174,8 +188,8 @@ type UpdateFormParams struct {
 	AllowMultipleResponse  *bool     `json:"allow_multiple_response"`
 }
 
-func (q *Queries) UpdateForm(ctx context.Context, arg UpdateFormParams) (Form, error) {
-	row := q.db.QueryRow(ctx, updateForm,
+func (q *Queries) UpdateForm(ctx context.Context, arg UpdateFormParams) error {
+	_, err := q.db.Exec(ctx, updateForm,
 		arg.ID,
 		arg.Title,
 		arg.Description,
@@ -184,20 +198,19 @@ func (q *Queries) UpdateForm(ctx context.Context, arg UpdateFormParams) (Form, e
 		arg.AllowAnonymousResponse,
 		arg.AllowMultipleResponse,
 	)
-	var i Form
-	err := row.Scan(
-		&i.ID,
-		&i.Deleted,
-		&i.CreatedAt,
-		&i.WorkspaceID,
-		&i.CreatedByID,
-		&i.Title,
-		&i.Description,
-		&i.FormBodyID,
-		&i.Active,
-		&i.SendResponseEmail,
-		&i.AllowAnonymousResponse,
-		&i.AllowMultipleResponse,
-	)
-	return i, err
+	return err
+}
+
+const updateFormBody = `-- name: UpdateFormBody :exec
+update forms set form_body = $2 where id = $1 and deleted = false
+`
+
+type UpdateFormBodyParams struct {
+	ID       uuid.UUID `json:"id"`
+	FormBody FormBody  `json:"form_body"`
+}
+
+func (q *Queries) UpdateFormBody(ctx context.Context, arg UpdateFormBodyParams) error {
+	_, err := q.db.Exec(ctx, updateFormBody, arg.ID, arg.FormBody)
+	return err
 }

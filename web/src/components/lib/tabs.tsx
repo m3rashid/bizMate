@@ -18,7 +18,6 @@ export type TabProps = {
 
 function Tabs(props: TabProps) {
 	const [selectedTab, setSelectedTab] = useState(props.tabs[0]?.id)
-
 	const currentTab = props.tabs.find((tab) => tab.id === selectedTab)
 
 	function SelectRender({ tab }: { tab: Tab }) {
@@ -51,7 +50,7 @@ function Tabs(props: TabProps) {
 						key={tab.id}
 						className={twMerge(
 							'cursor-pointer rounded-full px-2 py-1 text-sm font-medium hover:bg-primaryLight',
-							tab.id === selectedTab ? ' bg-primary text-white' : 'hover:text-white',
+							tab.id === selectedTab ? 'bg-primary text-white hover:text-black' : '',
 						)}
 						onClick={() => setSelectedTab(tab.id)}
 					>
@@ -60,9 +59,7 @@ function Tabs(props: TabProps) {
 				))}
 			</div>
 
-			<div className='w-full'>
-				{selectedTab ? currentTab ? <currentTab.Component {...currentTab.componentProps} /> : <NotFound /> : null}
-			</div>
+			<div className="w-full">{selectedTab ? currentTab ? <currentTab.Component {...currentTab.componentProps} /> : <NotFound /> : null}</div>
 		</div>
 	)
 }

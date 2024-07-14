@@ -9,8 +9,6 @@ import (
 func Setup(initialRoute string, app *fiber.App) {
 	app.Get(initialRoute+"/one/:formId", utils.CheckAuthMiddlewareButAllowUnauthorized, getOneForm)
 
-	app.Get(initialRoute+"/body/:formId", utils.CheckAuthMiddlewareButAllowUnauthorized, getFormBodyById)
-
 	app.Post(initialRoute+"/create", utils.CheckAuthMiddlewareWithWorkspace, createNewForm)
 
 	app.Post(initialRoute+"/:formId/create-new-form-innerbody", utils.CheckAuthMiddlewareWithWorkspace, createNewFormInnerBody)

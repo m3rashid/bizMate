@@ -1,15 +1,8 @@
 package repository
 
 import (
-	"context"
 	"fmt"
 	"reflect"
-	"time"
-
-	"github.com/google/uuid"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 const FORM_BODY_COLLECTION_NAME = "forms_body"
@@ -215,55 +208,13 @@ func ValidateFormBodyMeta(els []FormElementInstanceType) [][]string {
 			validationErrors = append(validationErrors, validErr)
 		}
 	}
-
 	return validationErrors
 }
 
-type FormInnerBody struct {
-	CreatedAt   time.Time                 `json:"created_at" bson:"created_at"`
-	CreatedByID uuid.UUID                 `json:"created_by_id" bson:"created_by_id"`
-	SubmitText  string                    `json:"submit_text" bson:"submit_text"`
-	CancelText  string                    `json:"cancel_text" bson:"cancel_text"`
-	Meta        []FormElementInstanceType `json:"meta" bson:"meta"`
+type FormBodyMeta struct {
+	Meta         []FormElementInstanceType `json:"meta"`
+	NextText     string                    `json:"next_text"`
+	PreviousText string                    `json:"previous_text"`
 }
 
-func (formBody *FormInnerBody) MarshalBSON() ([]byte, error) {
-	if formBody.CreatedAt.IsZero() {
-		formBody.CreatedAt = time.Now()
-	}
-
-	type fb FormInnerBody
-	return bson.Marshal((*fb)(formBody))
-}
-
-type FormBodyDocument struct {
-	ID            primitive.ObjectID `json:"_id" bson:"_id"`
-	FormID        uuid.UUID          `json:"form_id" bson:"form_id"`
-	CreatedAt     time.Time          `json:"created_at" bson:"created_at"`
-	WorkspaceID   uuid.UUID          `json:"workspace_id" bson:"workspace_id"`
-	CreatedByID   uuid.UUID          `json:"created_by_id" bson:"created_by_id"`
-	FormInnerBody []FormInnerBody    `json:"form_inner_body" bson:"form_inner_body"`
-}
-
-func InsertNewFormBody(db *mongo.Database, ctx context.Context, formId uuid.UUID, workspaceId uuid.UUID, createdById uuid.UUID, formBody FormInnerBody) error {
-	if _, err := db.Collection(FORM_BODY_COLLECTION_NAME).InsertOne(ctx, FormBodyDocument{
-		FormID:        formId,
-		WorkspaceID:   workspaceId,
-		CreatedByID:   createdById,
-		FormInnerBody: []FormInnerBody{formBody},
-	}); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func InsertFormInnerBodyInSameFormBody(db *mongo.Database, ctx context.Context, formBodyId primitive.ObjectID, formBody FormInnerBody) error {
-	if _, err := db.Collection(FORM_BODY_COLLECTION_NAME).UpdateByID(ctx, formBodyId, bson.M{
-		"$push": bson.M{"form_inner_body": formBody},
-	}); err != nil {
-		return err
-	}
-
-	return nil
-}
+type FormBody []FormBodyMeta

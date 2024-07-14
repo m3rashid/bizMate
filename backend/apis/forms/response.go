@@ -3,20 +3,13 @@ package forms
 import (
 	"bizMate/repository"
 	"bizMate/utils"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type formResponseReqBody struct {
-	Response       map[string]interface{} `json:"response" validate:"required"`
-	PageNumber     *int32                 `json:"pageNumber" validate:"required"`
-	FormBodyID     primitive.ObjectID     `json:"formBodyId" validate:"required"`
-	FormResponseID primitive.ObjectID     `json:"formResponseId"`
+	Responses []map[string]interface{} `json:"response" validate:"required"`
 }
 
 func submitFormResponse(ctx *fiber.Ctx) error {
@@ -55,78 +48,82 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusUnauthorized, "unauthorized")
 	}
 
-	mongoDb, err := utils.GetMongoDB()
-	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError)
-	}
+	// mongoDb, err := utils.GetMongoDB()
+	// if err != nil {
+	// 	return fiber.NewError(fiber.StatusInternalServerError)
+	// }
 
-	formBodyOid, err := utils.StringToObjectID(form.FormBodyID)
-	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError)
-	}
+	// formBodyOid, err := utils.StringToObjectID(form.FormBodyID)
+	// if err != nil {
+	// 	return fiber.NewError(fiber.StatusInternalServerError)
+	// }
 
-	formBody := repository.FormBodyDocument{}
-	if err := mongoDb.Collection(repository.FORM_BODY_COLLECTION_NAME).FindOne(ctx.Context(), bson.D{
-		primitive.E{Key: "_id", Value: formBodyOid},
-	}).Decode(&formBody); err != nil {
-		return fiber.NewError(fiber.StatusNotFound, "form not found")
-	}
+	// formBody := repository.FormBodyDocument{}
+	// if err := mongoDb.Collection(repository.FORM_BODY_COLLECTION_NAME).FindOne(ctx.Context(), bson.D{
+	// 	primitive.E{Key: "_id", Value: formBodyOid},
+	// }).Decode(&formBody); err != nil {
+	// 	return fiber.NewError(fiber.StatusNotFound, "form not found")
+	// }
 
-	toCreateNewBody := false
-	formResponse := repository.FormResponseDocument{}
+	// validate reqBody with form Body
+	// if len(reqBody.Responses) != len(formBody.FormInnerBody) {
+	// 	return fiber.NewError(fiber.StatusBadRequest, "invalid request body")
+	// }
 
-	if reqBody.FormResponseID == primitive.NilObjectID {
-		toCreateNewBody = true
-	} else {
-		if err := mongoDb.Collection(repository.FORM_RESPONSE_COLLECTION_NAME).FindOne(ctx.Context(), bson.D{
-			primitive.E{Key: "", Value: reqBody.FormResponseID},
-		}).Decode(&formResponse); err != nil {
-			if err == mongo.ErrNoDocuments {
-				toCreateNewBody = true
-			} else {
-				return fiber.NewError(fiber.StatusInternalServerError)
-			}
-		}
-	}
+	// validate required fields in form body
+	// formResponse := repository.FormResponseDocument{
+	// 	ID:          primitive.NewObjectID(),
+	// 	WorkspaceID: workspaceId,
+	// 	FormID:      form.ID,
+	// 	CreatedAt:   time.Now(),
+	// 	CreatedByID: userId,
+	// 	DeviceIP:    utils.GetDeviceIP(ctx),
+	// 	Responses:   reqBody.Responses,
+	// }
 
-	if toCreateNewBody {
-		newFormInnerResponse := make([]repository.FormResponseBody, len(formBody.FormInnerBody))
+	// res, err := mongoDb.Collection(repository.FORM_RESPONSES_MODEL_NAME).InsertOne(ctx.Context(), formResponse)
+	// if err != nil {
+	// 	return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	// }
 
-		res, err := mongoDb.Collection(repository.FORM_RESPONSE_COLLECTION_NAME).InsertOne(ctx.Context(), repository.FormResponseDocument{
-			WorkspaceID: workspaceId,
-			FormID:      form.ID,
-			Responses:   newFormInnerResponse,
-		})
-		if err != nil {
-			return fiber.NewError(fiber.StatusInternalServerError)
-		}
+	// if toCreateNewBody {
+	// 	newFormInnerResponse := make([]repository.FormResponseBody, len(formBody.FormInnerBody))
 
-		if err := mongoDb.Collection(repository.FORM_RESPONSE_COLLECTION_NAME).FindOne(ctx.Context(), bson.D{
-			primitive.E{Key: "_id", Value: res.InsertedID},
-		}).Decode(&formResponse); err != nil {
-			return fiber.NewError(fiber.StatusInternalServerError)
-		}
-	}
+	// 	res, err := mongoDb.Collection(repository.FORM_RESPONSE_COLLECTION_NAME).InsertOne(ctx.Context(), repository.FormResponseDocument{
+	// 		WorkspaceID: workspaceId,
+	// 		FormID:      form.ID,
+	// 		Responses:   newFormInnerResponse,
+	// 	})
+	// 	if err != nil {
+	// 		return fiber.NewError(fiber.StatusInternalServerError)
+	// 	}
 
-	formResponseBodyArr := formResponse.Responses
+	// 	if err := mongoDb.Collection(repository.FORM_RESPONSE_COLLECTION_NAME).FindOne(ctx.Context(), bson.D{
+	// 		primitive.E{Key: "_id", Value: res.InsertedID},
+	// 	}).Decode(&formResponse); err != nil {
+	// 		return fiber.NewError(fiber.StatusInternalServerError)
+	// 	}
+	// }
 
-	res := repository.FormResponseBody{
-		CreatedAt:   time.Now(),
-		CreatedByID: userId,
-		DeviceIP:    utils.GetDeviceIP(ctx),
-		Response:    reqBody.Response,
-	}
+	// formResponseBodyArr := formResponse.Responses
 
-	formResponseBodyArr[*reqBody.PageNumber] = res
-	if _, err := mongoDb.Collection(repository.FORM_RESPONSE_COLLECTION_NAME).UpdateOne(ctx.Context(), bson.D{
-		primitive.E{Key: "_id", Value: formResponse.ID},
-	}, bson.D{
-		primitive.E{Key: "$set", Value: bson.D{
-			primitive.E{Key: "responses", Value: formResponseBodyArr},
-		}},
-	}); err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError)
-	}
+	// res := repository.FormResponseBody{
+	// 	CreatedAt:   time.Now(),
+	// 	CreatedByID: userId,
+	// 	DeviceIP:    utils.GetDeviceIP(ctx),
+	// 	Response:    reqBody.Response,
+	// }
+
+	// formResponseBodyArr[*reqBody.PageNumber] = res
+	// if _, err := mongoDb.Collection(repository.FORM_RESPONSE_COLLECTION_NAME).UpdateOne(ctx.Context(), bson.D{
+	// 	primitive.E{Key: "_id", Value: formResponse.ID},
+	// }, bson.D{
+	// 	primitive.E{Key: "$set", Value: bson.D{
+	// 		primitive.E{Key: "responses", Value: formResponseBodyArr},
+	// 	}},
+	// }); err != nil {
+	// 	return fiber.NewError(fiber.StatusInternalServerError)
+	// }
 
 	return ctx.Status(fiber.StatusCreated).JSON(utils.SendResponse(nil, "Response submitted successfully"))
 }

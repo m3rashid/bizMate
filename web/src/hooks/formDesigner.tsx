@@ -7,15 +7,15 @@ import { generateRandomString, handleViewTransition } from '@utils/helpers'
 import { atom, useRecoilState } from 'recoil'
 
 const propsNodeNotSelected: Props = {
-	cancelText: [true, 'Cancel button text', 'string'],
-	submitText: [true, 'Submit button text', 'string'],
+	previousText: [true, 'Previous button text', 'string'],
+	nextText: [true, 'Next button text', 'string'],
 }
 
 export type FormDesignerType = 'header' | 'body'
 export type FormDesigner = {
 	rootProps: {
-		submitText: string
-		cancelText: string
+		nextText: string
+		previousText: string
 	}
 	viewType: 'build' | 'preview'
 	meta: FormElementInstance[]
@@ -33,8 +33,8 @@ const formDesignerDefaultState: FormDesigner = {
 	viewType: 'build',
 	selectedNode: null,
 	rootProps: {
-		cancelText: 'Cancel',
-		submitText: 'Submit Form',
+		previousText: 'Back',
+		nextText: 'Next',
 	},
 }
 

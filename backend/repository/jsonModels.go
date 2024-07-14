@@ -63,7 +63,7 @@ var UserInviteJsonModel = DashboardIndexableJsonModel{
 }
 
 var FormResponseJsonModel = DashboardIndexableJsonModel{
-	ModelName: FORM_RESPONSE_COLLECTION_NAME,
+	ModelName: FORM_RESPONSES_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
 		"id":            jsonString,
 		"created_at":    jsonDate,
@@ -85,8 +85,8 @@ var FormJsonModel = DashboardIndexableJsonModel{
 		"title":                    jsonString,
 		"description":              jsonString,
 		"form_body_id":             jsonString,
-		"submit_text":              jsonString,
-		"cancel_text":              jsonString,
+		"next_text":                jsonString,
+		"previous_text":            jsonString,
 		"active":                   jsonBool,
 		"send_response_email":      jsonBool,
 		"allow_anonymous_response": jsonBool,
@@ -108,8 +108,8 @@ var FormBodyJsonModel = DashboardIndexableJsonModel{
 var FormInnerBodyFieldsJson = map[string]JsonFieldType{
 	"created_at":    jsonString,
 	"created_by_id": jsonString,
-	"submit_text":   jsonString,
-	"cancel_text":   jsonString,
+	"next_text":     jsonString,
+	"previous_text": jsonString,
 	"meta":          jsonArray,
 }
 

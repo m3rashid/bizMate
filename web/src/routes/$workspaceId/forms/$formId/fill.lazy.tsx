@@ -35,7 +35,7 @@ function FormFill() {
 		},
 	})
 
-	function handleSubmit(e: FormEvent<HTMLFormElement>, index: number) {
+	function handleNext(e: FormEvent<HTMLFormElement>, index: number) {
 		e.preventDefault()
 		if (!res?.data.form) {
 			addMessagePopup({ id: 'noForm', message: 'Form not found', type: 'error' })
@@ -66,7 +66,7 @@ function FormFill() {
 		}
 	}
 
-	function handleCancel(e: MouseEvent<HTMLButtonElement>, index: number) {
+	function handlePrevious(e: MouseEvent<HTMLButtonElement>, index: number) {
 		console.log(index)
 		e.preventDefault()
 		formRef.current?.reset()
@@ -108,8 +108,8 @@ function FormFill() {
 						type: 'fill',
 						form: res.data.form,
 						singleFormInnerBody: formInnerBody,
-						handleSubmit: (e: FormEvent<HTMLFormElement>) => handleSubmit(e, index),
-						handleCancel: (e: MouseEvent<HTMLButtonElement>) => handleCancel(e, index),
+						handleNext: (e: FormEvent<HTMLFormElement>) => handleNext(e, index),
+						handlePrevious: (e: MouseEvent<HTMLButtonElement>) => handlePrevious(e, index),
 					},
 				}))}
 			/>

@@ -41,7 +41,6 @@ CREATE TABLE IF NOT EXISTS user_invites (
 );
 
 ALTER TABLE ONLY users_workspaces_relation ADD CONSTRAINT fk_users_workspace_relation_user FOREIGN KEY (user_id) REFERENCES users(id);
-
 ALTER TABLE ONLY users_workspaces_relation ADD CONSTRAINT fk_users_workspace_relation_workspace FOREIGN KEY (workspace_id) REFERENCES workspaces(id);
 
 ALTER TABLE ONLY workspaces ADD CONSTRAINT fk_workspaces_created_by_user FOREIGN KEY (created_by_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE;

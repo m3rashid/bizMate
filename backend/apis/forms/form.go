@@ -6,9 +6,6 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type CreateFormReqBody struct {
@@ -38,42 +35,17 @@ func createNewForm(ctx *fiber.Ctx) error {
 
 	id, err := utils.GenerateUuidV7()
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError)
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 
 	pgConn, err := utils.GetPostgresDB()
 	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError)
-	}
-
-	mongoDb, err := utils.GetMongoDB()
-	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError)
-	}
-
-	tx, err := pgConn.Begin(ctx.Context())
-	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError)
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 
 	queries := repository.New(pgConn)
-	txQueries := queries.WithTx(tx)
-
-	formBody, err := mongoDb.Collection(repository.FORM_BODY_COLLECTION_NAME).InsertOne(ctx.Context(), repository.FormBodyDocument{
-		FormID:        id,
-		WorkspaceID:   workspaceId,
-		CreatedByID:   userId,
-		FormInnerBody: []repository.FormInnerBody{},
-	})
-
-	if err != nil {
-		tx.Rollback(ctx.Context())
-		return fiber.NewError(fiber.StatusInternalServerError)
-	}
-
-	form, err := txQueries.CreateForm(ctx.Context(), repository.CreateFormParams{
+	if err = queries.CreateForm(ctx.Context(), repository.CreateFormParams{
 		ID:                     id,
-		FormBodyID:             formBody.InsertedID.(primitive.ObjectID).Hex(),
 		WorkspaceID:            workspaceId,
 		CreatedByID:            userId,
 		Title:                  reqBody.Title,
@@ -82,15 +54,11 @@ func createNewForm(ctx *fiber.Ctx) error {
 		SendResponseEmail:      reqBody.SendResponseEmail,
 		AllowAnonymousResponse: reqBody.AllowAnonymousResponse,
 		AllowMultipleResponse:  reqBody.AllowMultipleResponse,
-	})
-
-	if err != nil {
-		tx.Rollback(ctx.Context())
+	}); err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
-	tx.Commit(ctx.Context())
 
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(form, "Form Created Successfully"))
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(nil, "Form Created Successfully"))
 }
 
 func paginateForms(ctx *fiber.Ctx) error {
@@ -99,7 +67,7 @@ func paginateForms(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Unknown workspace")
 	}
 
-	paginationRes := utils.PaginationResponse[repository.Form]{}
+	paginationRes := utils.PaginationResponse[repository.PaginateFormsRow]{}
 	if err := paginationRes.ParseQuery(ctx, 50); err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, "Incorrect Parameters")
 	}
@@ -121,7 +89,6 @@ func paginateForms(ctx *fiber.Ctx) error {
 	}
 
 	paginationRes.Docs = forms
-
 	formsCount, err := queries.GetFormsCount(ctx.Context(), workspaceId)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
@@ -160,26 +127,7 @@ func getOneForm(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	mongoDb, err := utils.GetMongoDB()
-	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError)
-	}
-
-	formBody := &repository.FormBodyDocument{}
-	oid, err := primitive.ObjectIDFromHex(form.FormBodyID)
-	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError)
-	}
-
-	if err = mongoDb.Collection(repository.FORM_BODY_COLLECTION_NAME).FindOne(ctx.Context(), bson.M{"_id": oid}).Decode(formBody); err != nil {
-		if err == mongo.ErrNoDocuments {
-			formBody = nil
-		} else {
-			return fiber.NewError(fiber.StatusInternalServerError)
-		}
-	}
-
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(fiber.Map{"form": form, "formBody": formBody}, "Form received successfully"))
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(form, "Form received successfully"))
 }
 
 func updateFormById(ctx *fiber.Ctx) error {
@@ -199,7 +147,7 @@ func updateFormById(ctx *fiber.Ctx) error {
 	}
 
 	queries := repository.New(pgConn)
-	if _, err = queries.UpdateForm(ctx.Context(), repository.UpdateFormParams{
+	if err = queries.UpdateForm(ctx.Context(), repository.UpdateFormParams{
 		ID:                     reqBody.ID,
 		Title:                  reqBody.Title,
 		Description:            reqBody.Description,

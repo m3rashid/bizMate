@@ -4,18 +4,15 @@ import (
 	"bizMate/repository"
 	"bizMate/utils"
 	"encoding/json"
-	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type newFormInnerBodyReqBody struct {
-	Meta       []repository.FormElementInstanceType `json:"meta"`
-	SubmitText string                               `json:"submit_text"`
-	CancelText string                               `json:"cancel_text"`
+	Meta         []repository.FormElementInstanceType `json:"meta" validate:"required"`
+	NextText     string                               `json:"next_text" validate:"required,alphanum"`
+	PreviousText string                               `json:"previous_text" validate:"required,alphanum"`
 }
 
 func createNewFormInnerBody(ctx *fiber.Ctx) error {
@@ -25,13 +22,18 @@ func createNewFormInnerBody(ctx *fiber.Ctx) error {
 	}
 
 	_formId := ctx.Params("formId")
-	if _formId == "" {
-		return fiber.NewError(fiber.StatusBadRequest)
+	formUuid, err := utils.StringToUuid(_formId)
+	if err != nil || formUuid == uuid.Nil {
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid form id")
 	}
 
-	formUid, err := utils.StringToUuid(_formId)
-	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Invalid form id")
+	reqBody := newFormInnerBodyReqBody{}
+	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	if reqBody.Meta == nil || len(reqBody.Meta) == 0 || reqBody.NextText == "" || reqBody.PreviousText == "" {
+		return fiber.NewError(fiber.StatusBadRequest)
 	}
 
 	pgConn, err := utils.GetPostgresDB()
@@ -40,27 +42,9 @@ func createNewFormInnerBody(ctx *fiber.Ctx) error {
 	}
 
 	queries := repository.New(pgConn)
-	form, err := queries.GetFormById(ctx.Context(), repository.GetFormByIdParams{
-		WorkspaceID: workspaceId,
-		ID:          formUid,
-	})
-
-	if err != nil {
+	form, err := queries.GetFormById(ctx.Context(), repository.GetFormByIdParams{WorkspaceID: workspaceId, ID: formUuid})
+	if err != nil || form.ID == uuid.Nil {
 		return fiber.NewError(fiber.StatusBadRequest, "Form not found")
-	}
-
-	if form.ID == uuid.Nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Form not found")
-	}
-
-	formBodyObjectId, err := utils.StringToObjectID(form.FormBodyID)
-	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Form not found")
-	}
-
-	reqBody := newFormInnerBodyReqBody{}
-	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	validationErrors := repository.ValidateFormBodyMeta(reqBody.Meta)
@@ -72,42 +56,39 @@ func createNewFormInnerBody(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, string(jsonStr))
 	}
 
-	mongoDb, err := utils.GetMongoDB()
-	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError)
-	}
+	newFormBody := form.FormBody
+	newFormBody = append(newFormBody, repository.FormBodyMeta{
+		Meta:         reqBody.Meta,
+		NextText:     reqBody.NextText,
+		PreviousText: reqBody.PreviousText,
+	})
 
-	if err = repository.InsertFormInnerBodyInSameFormBody(mongoDb, ctx.Context(), formBodyObjectId, repository.FormInnerBody{
-		CreatedByID: userId,
-		Meta:        reqBody.Meta,
-		SubmitText:  reqBody.SubmitText,
-		CancelText:  reqBody.CancelText,
-	}); err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError)
+	if err = queries.UpdateFormBody(ctx.Context(), repository.UpdateFormBodyParams{ID: form.ID, FormBody: newFormBody}); err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(nil, "Form Body created successfully"))
 }
 
-func getFormBodyById(ctx *fiber.Ctx) error {
-	formBodyId := ctx.Params("formBodyId")
-	if formBodyId == "" {
-		return fiber.NewError(fiber.StatusBadRequest)
-	}
+// func getFormBodyById(ctx *fiber.Ctx) error {
+// 	formBodyId := ctx.Params("formBodyId")
+// 	if formBodyId == "" {
+// 		return fiber.NewError(fiber.StatusBadRequest)
+// 	}
 
-	mongoDb, err := utils.GetMongoDB()
-	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError)
-	}
+// 	mongoDb, err := utils.GetMongoDB()
+// 	if err != nil {
+// 		return fiber.NewError(fiber.StatusInternalServerError)
+// 	}
 
-	formBody := repository.FormBodyDocument{}
-	err = mongoDb.Collection(repository.FORM_BODY_COLLECTION_NAME).FindOne(ctx.Context(), bson.D{
-		primitive.E{Key: "_id", Value: formBodyId},
-	}).Decode(&formBody)
-	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Form Body not found")
-	}
+// 	formBody := repository.FormBodyDocument{}
+// 	err = mongoDb.Collection(repository.FORM_BODY_COLLECTION_NAME).FindOne(ctx.Context(), bson.D{
+// 		primitive.E{Key: "_id", Value: formBodyId},
+// 	}).Decode(&formBody)
+// 	if err != nil {
+// 		return fiber.NewError(fiber.StatusBadRequest, "Form Body not found")
+// 	}
 
-	fmt.Printf("res: %+v\n", formBody)
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(formBody, "Form Fetched successfully"))
-}
+// 	fmt.Printf("res: %+v\n", formBody)
+// 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(formBody, "Form Fetched successfully"))
+// }
