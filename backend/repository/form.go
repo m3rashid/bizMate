@@ -3,6 +3,9 @@ package repository
 import (
 	"fmt"
 	"reflect"
+	"time"
+
+	"github.com/google/uuid"
 )
 
 const FORM_BODY_COLLECTION_NAME = "forms_body"
@@ -212,9 +215,12 @@ func ValidateFormBodyMeta(els []FormElementInstanceType) [][]string {
 }
 
 type FormBodyMeta struct {
+	ID           uuid.UUID                 `json:"id"`
 	Meta         []FormElementInstanceType `json:"meta"`
 	NextText     string                    `json:"next_text"`
 	PreviousText string                    `json:"previous_text"`
+	CreatedAt    time.Time                 `json:"created_at"`
+	CreatedByID  uuid.UUID                 `json:"created_by_id"`
 }
 
 type FormBody []FormBodyMeta

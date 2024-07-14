@@ -68,9 +68,12 @@ export type Form = BaseModel &
 	}
 
 export type FormBodyMeta = {
+	id: ID
 	meta: FormElementInstance[]
 	next_text: string
 	previous_text: string
+	created_at: BaseModel['created_at']
+	created_by_id: ID
 }
 
 export type FormResponse = BaseModel &
@@ -79,55 +82,6 @@ export type FormResponse = BaseModel &
 		formId: ID
 		response: string | Record<string, string>
 		deviceIp?: string
-	}
-
-export type KpiAggregationType = (typeof kpiAggregationType)[number]
-export type DashboardKpi = BaseModel &
-	CreatedBy &
-	UpdatedBy & {
-		title: string
-		description: string
-		model: string
-		modelField: string
-		aggregationType: KpiAggregationType
-		TimePeriod: number // days
-	}
-
-export type DashboardChart = BaseModel &
-	CreatedBy &
-	UpdatedBy & {
-		dashboardId: ID
-		dashboard: Dashboard
-		title: string
-		description: string
-		refreshInterval: number
-		position: number
-		model: string
-		xLabel: string
-		yLabel: string
-		xDataKey: string
-		yDataKey: string
-		chartType: string
-		chartOptions: string
-	}
-
-export type Dashboard = BaseModel &
-	CreatedBy &
-	UpdatedBy & {
-		title: string
-		description: string
-		active: boolean
-	}
-
-export type Workflow = BaseModel &
-	CreatedBy &
-	UpdatedBy & {
-		name: string
-		description: string
-		active: boolean
-		startNodeId: ID
-		endNodeId: ID
-		edges: any // handle this type
 	}
 
 export type Project = BaseModel &

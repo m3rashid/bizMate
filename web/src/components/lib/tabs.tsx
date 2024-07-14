@@ -3,26 +3,27 @@ import SingleSelectInput from '@components/lib/singleSelectInput'
 import { FC, ReactNode, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
 
-export type Tab = {
+export type Tab<T> = {
 	id: string
 	label?: ReactNode
 	Component: FC<any>
-	componentProps?: any
+	componentProps?: T
 }
 
-export type TabProps = {
-	tabs: Tab[]
+export type TabProps<T> = {
+	tabs: Tab<T>[]
 	rootClassName?: string
 	tabClassName?: string
+	selectedTab: string
+	setSelectedTab: (tabId: string) => void
 }
 
-function Tabs(props: TabProps) {
-	const [selectedTab, setSelectedTab] = useState(props.tabs[0]?.id)
-	const currentTab = props.tabs.find((tab) => tab.id === selectedTab)
+function Tabs<T = any>(props: TabProps<T>) {
+	const currentTab = props.tabs.find((tab) => tab?.id === props.selectedTab)
 
-	function SelectRender({ tab }: { tab: Tab }) {
+	function SelectRender({ tab }: { tab: Tab<T> }) {
 		return (
-			<div key={tab.id} className="w-full" onClick={() => setSelectedTab(tab.id)}>
+			<div key={tab.id} className="w-full" onClick={() => props.setSelectedTab(tab.id)}>
 				{tab.label ?? tab.id}
 			</div>
 		)
@@ -34,12 +35,13 @@ function Tabs(props: TabProps) {
 			<div className="mb-4 flex min-w-full items-center justify-center sm:hidden">
 				<SingleSelectInput
 					className="w-full"
-					value={selectedTab}
-					default={selectedTab}
-					onChange={setSelectedTab}
+					value={props.selectedTab}
+					default={props.selectedTab}
+					onChange={props.setSelectedTab}
 					options={props.tabs.map((tab) => ({ value: tab.id, label: tab.label || tab.id }))}
 					render={({ option }) => {
-						return <SelectRender tab={props.tabs.find((tab) => tab.id === option.value) || props.tabs[0]} />
+						console.log(option)
+						return <SelectRender tab={props.tabs.find((tab) => tab.id === option?.value) || props.tabs[0]} />
 					}}
 				/>
 			</div>
@@ -49,17 +51,17 @@ function Tabs(props: TabProps) {
 					<div
 						key={tab.id}
 						className={twMerge(
-							'cursor-pointer rounded-full px-2 py-1 text-sm font-medium hover:bg-primaryLight',
-							tab.id === selectedTab ? 'bg-primary text-white hover:text-black' : '',
+							'cursor-pointer rounded-full px-3 py-1 text-sm font-medium',
+							tab.id === props.selectedTab ? 'bg-primary text-white' : 'hover:bg-primaryLight hover:text-black',
 						)}
-						onClick={() => setSelectedTab(tab.id)}
+						onClick={() => props.setSelectedTab(tab.id)}
 					>
 						{tab.label ?? tab.id}
 					</div>
 				))}
 			</div>
 
-			<div className="w-full">{selectedTab ? currentTab ? <currentTab.Component {...currentTab.componentProps} /> : <NotFound /> : null}</div>
+			<div className="w-full">{props.selectedTab ? currentTab ? <currentTab.Component {...currentTab.componentProps} /> : <NotFound /> : null}</div>
 		</div>
 	)
 }

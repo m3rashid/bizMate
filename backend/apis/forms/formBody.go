@@ -4,6 +4,7 @@ import (
 	"bizMate/repository"
 	"bizMate/utils"
 	"encoding/json"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -36,6 +37,11 @@ func createNewFormInnerBody(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest)
 	}
 
+	newFormBodyMetaId, err := utils.GenerateUuidV7()
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
 	pgConn, err := utils.GetPostgresDB()
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
@@ -58,8 +64,11 @@ func createNewFormInnerBody(ctx *fiber.Ctx) error {
 
 	newFormBody := form.FormBody
 	newFormBody = append(newFormBody, repository.FormBodyMeta{
+		ID:           newFormBodyMetaId,
 		Meta:         reqBody.Meta,
 		NextText:     reqBody.NextText,
+		CreatedAt:    time.Now(),
+		CreatedByID:  userId,
 		PreviousText: reqBody.PreviousText,
 	})
 
@@ -69,26 +78,3 @@ func createNewFormInnerBody(ctx *fiber.Ctx) error {
 
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(nil, "Form Body created successfully"))
 }
-
-// func getFormBodyById(ctx *fiber.Ctx) error {
-// 	formBodyId := ctx.Params("formBodyId")
-// 	if formBodyId == "" {
-// 		return fiber.NewError(fiber.StatusBadRequest)
-// 	}
-
-// 	mongoDb, err := utils.GetMongoDB()
-// 	if err != nil {
-// 		return fiber.NewError(fiber.StatusInternalServerError)
-// 	}
-
-// 	formBody := repository.FormBodyDocument{}
-// 	err = mongoDb.Collection(repository.FORM_BODY_COLLECTION_NAME).FindOne(ctx.Context(), bson.D{
-// 		primitive.E{Key: "_id", Value: formBodyId},
-// 	}).Decode(&formBody)
-// 	if err != nil {
-// 		return fiber.NewError(fiber.StatusBadRequest, "Form Body not found")
-// 	}
-
-// 	fmt.Printf("res: %+v\n", formBody)
-// 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(formBody, "Form Fetched successfully"))
-// }
