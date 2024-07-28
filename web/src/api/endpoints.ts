@@ -1,6 +1,5 @@
-export const queries = {} as const
+export type ApiGroup = Record<string, [string, string, string[]]>;
 
-export const mutations = {
-	login: '/api/login',
-	register: '/api/register',
-} as const
+export const endpoints: ApiGroup = {
+	createForm: ['POST', '/', []],
+};

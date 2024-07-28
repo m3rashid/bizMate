@@ -1,71 +1,70 @@
-import { BlockNoteView } from '@blocknote/mantine'
-import '@blocknote/mantine/style.css'
-import { useCreateBlockNote } from '@blocknote/react'
-import { filterBykeys, safeJsonParse } from '@utils/helpers'
-import { ChangeEvent, FC, TextareaHTMLAttributes, useState } from 'react'
-import { twMerge } from 'tailwind-merge'
+'use client';
+
+import { cn, filterBykeys, safeJsonParse } from '@/utils/helpers';
+import { BlockNoteView } from '@blocknote/mantine';
+import '@blocknote/mantine/style.css';
+import { useCreateBlockNote } from '@blocknote/react';
+import { ChangeEvent, FC, TextareaHTMLAttributes, useState } from 'react';
 
 export type RichTextInputProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
-	label?: string
-	icon?: FC<any>
-	errorText?: string
-	labelClassName?: string
-	descriptionText?: string
-	onChange?: (e: ChangeEvent<HTMLInputElement>) => void
-}
+	label?: string;
+	icon?: FC<any>;
+	errorText?: string;
+	labelClassName?: string;
+	descriptionText?: string;
+	onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+};
 
-function RichTextInput(props: RichTextInputProps) {
-	const [editorContent, setEditorContent] = useState<any>()
+export function RichTextInput(props: RichTextInputProps) {
+	const [editorContent, setEditorContent] = useState<any>();
 
 	const editor = useCreateBlockNote({
 		...(!!props.defaultValue ? { initialContent: safeJsonParse(props.defaultValue as string, undefined, (res) => res.length > 0) } : {}),
-	})
+	});
 
 	editor.onChange((content) => {
-		setEditorContent(content.document)
-	})
+		setEditorContent(content.document);
+	});
 
 	return (
-		<div className="w-full">
+		<div className='w-full'>
 			{props.label ? (
-				<label htmlFor={props.name} className={twMerge('block text-sm font-medium leading-6 text-gray-900', props.labelClassName)}>
+				<label htmlFor={props.name} className={cn('block text-sm font-medium leading-6 text-gray-900', props.labelClassName)}>
 					{props.label}&nbsp;
-					<span className="text-red-500">{props.required ? '*' : ''}</span>
+					<span className='text-red-500'>{props.required ? '*' : ''}</span>
 				</label>
 			) : null}
 
-			{props.errorText ? <p className="mt-1 text-sm text-red-500">{props.errorText}</p> : null}
+			{props.errorText ? <p className='mt-1 text-sm text-red-500'>{props.errorText}</p> : null}
 
-			<div className="relative rounded-md shadow-sm">
+			<div className='relative rounded-md shadow-sm'>
 				{props.icon ? (
-					<div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-						<props.icon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+					<div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3'>
+						<props.icon className='h-5 w-5 text-gray-400' aria-hidden='true' />
 					</div>
 				) : null}
 
 				<input
-					type="hidden"
+					type='hidden'
 					value={JSON.stringify(editorContent)}
 					{...filterBykeys(props, ['label', 'icon', 'errorText', 'labelClassName', 'descriptionText'])}
 				/>
 				<BlockNoteView
 					{...filterBykeys(props, ['label', 'icon', 'errorText', 'labelClassName', 'descriptionText'])}
-					theme="light"
+					theme='light'
 					editor={editor}
-					itemType="input"
+					itemType='input'
 					id={props.name}
-					className={twMerge(
+					className={cn(
 						'block w-full rounded-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
 						!props.icon ? 'pl-3' : 'pl-10',
 						props.errorText ? 'text-red-500 ring-1 ring-inset ring-red-300 placeholder:text-red-300' : '',
-						props.className,
+						props.className
 					)}
 				/>
 			</div>
 
-			{props.descriptionText ? <p className="mt-1 text-sm text-gray-500">{props.descriptionText}</p> : null}
+			{props.descriptionText ? <p className='mt-1 text-sm text-gray-500'>{props.descriptionText}</p> : null}
 		</div>
-	)
+	);
 }
-
-export default RichTextInput
