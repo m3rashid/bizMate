@@ -19,7 +19,6 @@ services:
     command: air -c air.toml
     depends_on:
       - postgresdb
-      - mongodb
 
   postgresdb:
     image: postgres:16

@@ -1,23 +1,52 @@
 'use client';
 
-import { loginAction, registerAction } from '@/actions/auth';
+import { Loader } from '../lib/loaders';
+import { baseUrl } from '@/api/config';
 import { Button } from '@/components/lib/button';
 import { Input } from '@/components/lib/input';
 import { PhoneNumberInput } from '@/components/lib/phoneNumberInput';
+import { usePopups } from '@/hooks/popups';
 import LockClosedIcon from '@heroicons/react/20/solid/LockClosedIcon';
-import { useFormState } from 'react-dom';
+import { FormEvent, useState } from 'react';
 
 export type CredentialsAuthFormProps = {
 	type: 'login' | 'register';
 };
 
-const credentialActions = { login: loginAction, register: registerAction } as const;
-
 export function CredentialsAuthForm(props: CredentialsAuthFormProps) {
-	const [state, formAction] = useFormState<{ error: string }, FormData>(credentialActions[props.type], { error: '' });
+	const { addMessagePopup } = usePopups();
+	const [loading, setLoading] = useState(false);
+
+	async function onSubmit(e: FormEvent<HTMLFormElement>) {
+		e.preventDefault();
+		e.stopPropagation();
+		setLoading(true);
+		try {
+			const data = Object.fromEntries(new FormData(e.currentTarget).entries());
+			const res = await fetch(baseUrl + '/auth/login', {
+				method: 'POST',
+				body: JSON.stringify(data),
+				headers: { 'Content-Type': 'application/json' },
+				credentials: 'include',
+			});
+			if (!res.ok) throw new Error('Failed to login');
+			const json = await res.json();
+			console.log(json);
+			addMessagePopup({
+				type: 'success',
+				id: 'loginSuccess',
+				message: props.type === 'login' ? 'Successfully Logged in' : 'Successfully Created account',
+			});
+		} catch (err: any) {
+			console.log(err);
+			addMessagePopup({ id: 'loginError', message: props.type === 'login' ? 'Login Failed' : 'Create account failed', type: 'error' });
+		} finally {
+			setLoading(false);
+		}
+	}
 
 	return (
-		<form className='flex w-full flex-col gap-4' action={formAction}>
+		<form className='flex w-full flex-col gap-4' onSubmit={onSubmit}>
 			{props.type === 'register' ? <Input name='name' type='name' label='Name' placeholder='BizMate Hero' required /> : null}
 
 			<Input name='email' type='email' label='Email' placeholder='rashid@bizmate.com' required descriptionText='We will never share your email.' />
@@ -29,11 +58,10 @@ export function CredentialsAuthForm(props: CredentialsAuthFormProps) {
 			<Button
 				type='submit'
 				className='mt-2'
+				{...(loading ? { RightIcon: <Loader /> } : {})}
 				LeftIcon={<LockClosedIcon className='h-5 w-5' />}
 				label={props.type === 'register' ? 'Register' : 'Login'}
-				// {...(isLoginPending || isRegisterPending ? { RightIcon: <Loader /> } : {})}
 			/>
-			{state.error ? <p>{state.error}</p> : null}
 		</form>
 	);
 }

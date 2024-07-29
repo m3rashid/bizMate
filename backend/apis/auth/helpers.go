@@ -3,6 +3,7 @@ package auth
 import (
 	"bizMate/repository"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
@@ -40,4 +41,18 @@ func toPartialUser(user repository.User) partialUser {
 		Avatar:    user.Avatar,
 		CreatedAt: user.CreatedAt,
 	}
+}
+
+func setCookie(ctx *fiber.Ctx, token string) {
+	ctx.Cookie(&fiber.Cookie{
+		Name:     "token",
+		Value:    "Bearer " + token,
+		SameSite: "Lax",
+		// HTTPOnly: true,
+		// MaxAge:   60 * 60 * 24, // 1 day
+	})
+}
+
+func clearCookie(ctx *fiber.Ctx) {
+	ctx.ClearCookie("token")
 }

@@ -1,6 +1,5 @@
 import tailwindConfig from '../../tailwind.config';
 import { type ClassValue, clsx } from 'clsx';
-import { GetServerSidePropsContext } from 'next';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {

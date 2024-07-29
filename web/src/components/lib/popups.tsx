@@ -1,3 +1,5 @@
+'use client';
+
 import { ActionPopupType, MessagePopupType, PopupType, usePopups } from '@/hooks/popups';
 import { cn } from '@/utils/helpers';
 import CheckCircleIcon from '@heroicons/react/20/solid/CheckCircleIcon';

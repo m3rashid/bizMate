@@ -35,7 +35,7 @@ export async function Header(props: { workspaceId?: string }) {
 				<div className='flex gap-2'>
 					<Link href={pages.about}>About</Link>
 					<Link href={pages.changelogs}>Changelogs</Link>
-					<Link href={pages.login}>Login</Link>
+					{session.isAuthenticated ? <Link href={pages.chooseWorkspace}>Goto App</Link> : <Link href={pages.login}>Login</Link>}
 				</div>
 			)}
 		</div>

@@ -30,13 +30,17 @@ func Setup(initialRoute string, app *fiber.App) {
 	})
 
 	goth.UseProviders(google.New(googleOauthClientId, googleOauthClientSecret, googleOauthCallbackUrl))
+
 	app.Get(initialRoute+"/user", utils.CheckAuthMiddlewareWithoutWorkspace, getUser)
 	app.Get(initialRoute+"/check", utils.CheckAuthMiddlewareWithWorkspace, checkAuth)
+
+	app.Get(initialRoute+"/logout", logout)
 	app.Post(initialRoute+"/login", credentialsLogin)
 	app.Post(initialRoute+"/register", credentialsRegister)
-	app.Get(initialRoute+"/logout", logout)
+
 	app.Get(initialRoute+"/workspaces", utils.CheckAuthMiddlewareWithoutWorkspace, getWorkspaces)
 	app.Post(initialRoute+"/workspaces/create", utils.CheckAuthMiddlewareWithoutWorkspace, createWorkspace)
+
 	app.Get(initialRoute+"/:provider", beginAuth)
 	app.Get(initialRoute+"/:provider/callback", authCallback)
 }

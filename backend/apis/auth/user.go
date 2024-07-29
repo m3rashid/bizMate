@@ -26,7 +26,8 @@ func checkAuth(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(jwtToken, "User authenticated successfully"))
+	setCookie(ctx, jwtToken)
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(nil, "User authenticated successfully"))
 }
 
 func getUser(ctx *fiber.Ctx) error {
@@ -76,8 +77,9 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
+	setCookie(ctx, token)
 	return ctx.Status(fiber.StatusOK).JSON(
-		utils.SendResponse(fiber.Map{"token": token, "user": toPartialUser(user)}, "User logged in successfully"),
+		utils.SendResponse(toPartialUser(user), "User logged in successfully"),
 	)
 }
 
@@ -124,7 +126,8 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
+	setCookie(ctx, token)
 	return ctx.Status(fiber.StatusOK).JSON(
-		utils.SendResponse(fiber.Map{"token": token, "user": toPartialUser(user)}, "User account created successfully"),
+		utils.SendResponse(toPartialUser(user), "User account created successfully"),
 	)
 }

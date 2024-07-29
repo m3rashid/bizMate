@@ -9,7 +9,7 @@ import { redirect } from 'next/navigation';
 export type SessionData = { user: User | null; token: string; isAuthenticated: boolean };
 const sessionOptions: SessionOptions = {
 	password: process.env.AUTH_SECRET_KEY!,
-	cookieName: 'bizmate-auth-session',
+	cookieName: 'token',
 	cookieOptions: {
 		secure: process.env.NODE_ENV === 'production', // HTTPS only in production
 	},

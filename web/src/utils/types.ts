@@ -55,5 +55,11 @@ export type User = BaseModel & {
 	avatar?: string;
 };
 
+export type Workspace = BaseModel &
+	CreatedBy & {
+		name: string;
+		users: User[];
+	};
+
 export type PageRoute = UnionOfObject<typeof pages>;
 export type ExportableTable = (typeof exportableTables)[number];

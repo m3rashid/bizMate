@@ -47,7 +47,7 @@ func setAuthLocals(ctx *fiber.Ctx, email string, userId uuid.UUID, workspaceId u
 }
 
 func getClaims(ctx *fiber.Ctx) *Claims {
-	clientToken := ctx.Get("Authorization")
+	clientToken := ctx.Cookies("token", "")
 	if clientToken == "" {
 		return nil
 	}

@@ -5,6 +5,7 @@ import (
 	"bizMate/utils"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 func getWorkspaces(ctx *fiber.Ctx) error {
@@ -24,6 +25,10 @@ func getWorkspaces(ctx *fiber.Ctx) error {
 }
 
 func createWorkspace(ctx *fiber.Ctx) error {
+	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	if userId == uuid.Nil {
+		return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized")
+	}
 	reqBody := createWorkspaceReq{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
@@ -34,7 +39,6 @@ func createWorkspace(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	pgConn, err := utils.GetPostgresDB()
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)

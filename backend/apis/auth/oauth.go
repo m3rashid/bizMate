@@ -86,6 +86,7 @@ func authCallback(ctx *fiber.Ctx) error {
 		return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
 	}
 
+	setCookie(ctx, jwtToken)
 	return ctx.Redirect(getRedirectUrl(true, "token="+jwtToken, "user="+string(jsonStr)))
 }
 
@@ -93,6 +94,6 @@ func logout(ctx *fiber.Ctx) error {
 	if err := goth_fiber.Logout(ctx); err != nil {
 		log.Fatal(err)
 	}
-
+	clearCookie(ctx)
 	return ctx.SendStatus(fiber.StatusOK)
 }

@@ -9,8 +9,8 @@ export type AuthRootProps = {
 
 export function AuthRoot(props: AuthRootProps) {
 	return (
-		<div className='flex h-full items-center justify-center'>
-			<div className='relative flex w-full max-w-96 flex-col gap-4 rounded-lg border border-borderColor bg-white px-6 pb-12 pt-[90px] shadow-lg'>
+		<div className='flex h-full items-center justify-center bg-pageBg'>
+			<div className='relative flex w-full max-w-96 flex-col gap-4 rounded-lg bg-white px-6 pb-12 pt-[90px] shadow-lg'>
 				<BrandLogo className='absolute -top-6 left-6' />
 				<h2 className='absolute left-[132px] top-6 text-xl font-semibold'>
 					{props.type === 'login' ? 'Login to Continue' : 'Register to get Started'}
