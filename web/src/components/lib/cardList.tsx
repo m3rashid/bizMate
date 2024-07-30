@@ -7,7 +7,7 @@ import { SkeletonCardList } from '@/components/lib/loaders';
 import { Pagination } from '@/components/lib/pagination';
 import { TableExportProps } from '@/components/lib/tableExport';
 import { cn } from '@/utils/helpers';
-import { DbRow, PageRoute, PageSearchParams, PaginationResponse } from '@/utils/types';
+import { DbRow, PageSearchParams, PaginationResponse } from '@/utils/types';
 import { useQuery } from '@tanstack/react-query';
 import qs from 'query-string';
 import { ReactNode } from 'react';
@@ -21,7 +21,7 @@ export type CardListProps<T> = {
 	queryKeys: string[];
 	title?: string;
 	description?: string;
-	addButtonLink?: PageRoute;
+	addButtonLink?: string;
 	addButtonProps?: ButtonProps;
 	rootClassName?: string;
 	onEdit?: (item: T) => void;

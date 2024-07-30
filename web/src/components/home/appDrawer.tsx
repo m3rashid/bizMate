@@ -6,7 +6,7 @@ import { Drawer } from '@/components/lib/drawer';
 import Squares2X2Icon from '@heroicons/react/24/outline/Squares2X2Icon';
 import { useState } from 'react';
 
-export function AppDrawer() {
+export function AppDrawer(props: { workspaceId: string }) {
 	const [open, setOpen] = useState(false);
 	return (
 		<>
@@ -14,9 +14,9 @@ export function AppDrawer() {
 			<Drawer className='max-w-80' from='left' title='Apps and Services' open={open} setOpen={setOpen}>
 				<div className='flex flex-col gap-6 p-3'>
 					{apps.map((app) => (
-						<RenderApp key={app.name} {...app} />
+						<RenderApp key={app.name} app={app} workspaceId={props.workspaceId} />
 					))}
-					<RenderApp {...sideApp} />
+					<RenderApp app={sideApp} workspaceId={props.workspaceId} />
 				</div>
 			</Drawer>
 		</>

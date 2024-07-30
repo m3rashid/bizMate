@@ -1,6 +1,5 @@
 import { CredentialsAuthForm, CredentialsAuthFormProps } from './form';
 import { BrandLogo } from '@/components/lib/brandLogo';
-import { pages } from '@/utils/constants';
 import { Link } from 'next-view-transitions';
 
 export type AuthRootProps = {
@@ -18,7 +17,7 @@ export function AuthRoot(props: AuthRootProps) {
 
 				<CredentialsAuthForm type={props.type} />
 				<Link
-					href={props.type === 'login' ? pages.register : pages.login}
+					href={props.type === 'login' ? '/auth/register' : '/auth/login'}
 					className='mb-1 cursor-pointer text-center text-sm text-primary hover:text-danger'
 				>
 					{props.type === 'login' ? "Don't have an account? Register Instead" : 'Already have an account? Login Instead'}

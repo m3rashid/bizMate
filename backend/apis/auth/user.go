@@ -21,13 +21,15 @@ func checkAuth(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	jwtToken, err := utils.GenerateJWT(user.ID, user.Email)
+	token, err := utils.GenerateJWT(user.ID, user.Email, user.Avatar)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	setCookie(ctx, jwtToken)
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(nil, "User authenticated successfully"))
+	setTokenCookie(ctx, token)
+	return ctx.Status(fiber.StatusOK).JSON(
+		utils.SendResponse(fiber.Map{"user": toPartialUser(user), "token": "Bearer " + token}, "User authenticated successfully"),
+	)
 }
 
 func getUser(ctx *fiber.Ctx) error {
@@ -72,12 +74,12 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusUnauthorized, "Invalid credentials")
 	}
 
-	token, err := utils.GenerateJWT(user.ID, user.Email)
+	token, err := utils.GenerateJWT(user.ID, user.Email, user.Avatar)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	setCookie(ctx, token)
+	setTokenCookie(ctx, token)
 	return ctx.Status(fiber.StatusOK).JSON(
 		utils.SendResponse(toPartialUser(user), "User logged in successfully"),
 	)
@@ -121,12 +123,12 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "User account creation failed")
 	}
 
-	token, err := utils.GenerateJWT(user.ID, newUser.Email)
+	token, err := utils.GenerateJWT(user.ID, newUser.Email, newUser.Avatar)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	setCookie(ctx, token)
+	setTokenCookie(ctx, token)
 	return ctx.Status(fiber.StatusOK).JSON(
 		utils.SendResponse(toPartialUser(user), "User account created successfully"),
 	)

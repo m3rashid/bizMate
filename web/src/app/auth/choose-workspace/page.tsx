@@ -1,23 +1,29 @@
-import { getSession } from '@/actions/auth';
+import { getSessionCookie } from '@/actions/auth';
 import { apiClient } from '@/api/config';
 import { CreateWorkspace, WorkspaceCard } from '@/components/auth/chooseWorkspace';
 import { PageContainer } from '@/components/pageContainer';
-import { isUuid } from '@/utils/helpers';
+import { ServerSideMessagePopup } from '@/components/serverSidePopup';
 import { ApiResponse, Workspace } from '@/utils/types';
 import { redirect } from 'next/navigation';
 
 export default async function ChooseWorkspace() {
-	const session = await getSession();
-	if (!session.isAuthenticated) redirect('/auth/login');
+	const sessionCookie = await getSessionCookie();
 
-	const result: ApiResponse<Workspace[]> = await apiClient('/auth/workspaces', {
-		headers: { Authorization: `Bearer ${session.token}` },
-	});
+	if (!sessionCookie) {
+		// TODO: handle redirect
+		redirect('/auth/login');
+	}
+
+	const result: ApiResponse<Workspace[]> = await apiClient('/auth/workspaces', { headers: { Authorization: sessionCookie } });
 
 	return (
 		<PageContainer>
 			<div className='flex flex-wrap items-center gap-4'>
-				{result ? result.data?.map((workspace) => <WorkspaceCard key={workspace.id} {...workspace} />) : null}
+				{result ? (
+					result.data?.map((workspace) => <WorkspaceCard key={workspace.id} {...workspace} />)
+				) : (
+					<ServerSideMessagePopup id='no-workspaces' message='Could not get workspaces' type='error' />
+				)}
 				<CreateWorkspace />
 			</div>
 		</PageContainer>

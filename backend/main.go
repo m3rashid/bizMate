@@ -21,8 +21,6 @@ import (
 	"github.com/gofiber/contrib/fiberi18n/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/fiber/v2/middleware/csrf"
-	"github.com/gofiber/fiber/v2/middleware/encryptcookie"
 	"github.com/gofiber/fiber/v2/middleware/favicon"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -99,11 +97,6 @@ func main() {
 			AcceptLanguages:  []language.Tag{language.English, language.Hindi},
 		}),
 	)
-
-	app.Use(encryptcookie.New(encryptcookie.Config{
-		Key:    os.Getenv("SESSION_SECRET"),
-		Except: []string{csrf.ConfigDefault.CookieName}, // exclude CSRF cookie
-	}))
 
 	app.Get("/", func(ctx *fiber.Ctx) error {
 		return ctx.SendString(utils.TranslateToLocalLanguage(ctx, "Hello, World!"))

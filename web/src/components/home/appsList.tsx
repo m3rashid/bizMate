@@ -1,3 +1,4 @@
+import { workspaceKey } from '@/utils/constants';
 import CogIcon from '@heroicons/react/24/outline/CogIcon';
 import ListBulletIcon from '@heroicons/react/24/outline/ListBulletIcon';
 import UsersIcon from '@heroicons/react/24/outline/UsersIcon';
@@ -21,7 +22,7 @@ export const apps: App[] = [
 		name: 'Forms',
 		description: 'Create, publish, and get analytics for your forms',
 		routes: [
-			{ name: 'Forms', icon: ListBulletIcon, link: '/$workspaceId/forms?page=1', description: 'List all forms' },
+			{ name: 'Forms', icon: ListBulletIcon, link: `/${workspaceKey}/forms?page=1`, description: 'List all forms' },
 			//
 		],
 	},
@@ -32,7 +33,7 @@ export const apps: App[] = [
 			{
 				name: 'Contacts',
 				icon: UsersIcon,
-				link: '/$workspaceId/communications/contacts?page=1',
+				link: `/${workspaceKey}/communications/contacts?page=1`,
 				description: 'List all your contacts',
 			},
 		],
@@ -41,7 +42,7 @@ export const apps: App[] = [
 		name: 'Projects',
 		description: 'Create and manage your projects',
 		routes: [
-			{ name: 'Projects', icon: ListBulletIcon, link: '/$workspaceId/projects?page=1', description: 'List all projects' },
+			{ name: 'Projects', icon: ListBulletIcon, link: `/${workspaceKey}/projects?page=1`, description: 'List all projects' },
 			//
 		],
 	},

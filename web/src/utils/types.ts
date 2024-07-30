@@ -1,4 +1,4 @@
-import { exportableTables, pages } from '@/utils/constants';
+import { exportableTables } from '@/utils/constants';
 import { ReactNode } from 'react';
 
 export type UnionOfObject<T> = T[keyof T];
@@ -54,6 +54,7 @@ export type User = BaseModel & {
 	phone?: string;
 	avatar?: string;
 };
+export type CookieUser = { userId: string; email: string; avatar: string };
 
 export type Workspace = BaseModel &
 	CreatedBy & {
@@ -61,5 +62,4 @@ export type Workspace = BaseModel &
 		users: User[];
 	};
 
-export type PageRoute = UnionOfObject<typeof pages>;
 export type ExportableTable = (typeof exportableTables)[number];

@@ -1,8 +1,5 @@
-import { getSession } from '@/actions/auth';
 import { Header } from '@/components/home/header';
-import { pages } from '@/utils/constants';
 import { cn } from '@/utils/helpers';
-import { redirect } from 'next/navigation';
 import { PropsWithChildren } from 'react';
 
 export type PageContainerProps = PropsWithChildren<{ workspaceId?: string; bodyClassName?: string }>;

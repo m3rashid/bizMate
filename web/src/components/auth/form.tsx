@@ -7,6 +7,7 @@ import { Input } from '@/components/lib/input';
 import { PhoneNumberInput } from '@/components/lib/phoneNumberInput';
 import { usePopups } from '@/hooks/popups';
 import LockClosedIcon from '@heroicons/react/20/solid/LockClosedIcon';
+import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
 
 export type CredentialsAuthFormProps = {
@@ -15,6 +16,7 @@ export type CredentialsAuthFormProps = {
 
 export function CredentialsAuthForm(props: CredentialsAuthFormProps) {
 	const { addMessagePopup } = usePopups();
+	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 
 	async function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -22,21 +24,23 @@ export function CredentialsAuthForm(props: CredentialsAuthFormProps) {
 		e.stopPropagation();
 		setLoading(true);
 		try {
-			const data = Object.fromEntries(new FormData(e.currentTarget).entries());
+			const formData = Object.fromEntries(new FormData(e.currentTarget).entries());
 			const res = await fetch(baseUrl + '/auth/login', {
 				method: 'POST',
-				body: JSON.stringify(data),
-				headers: { 'Content-Type': 'application/json' },
 				credentials: 'include',
+				body: JSON.stringify(formData),
+				headers: { 'Content-Type': 'application/json' },
 			});
 			if (!res.ok) throw new Error('Failed to login');
-			const json = await res.json();
-			console.log(json);
+			const _data = await res.json();
+
 			addMessagePopup({
 				type: 'success',
 				id: 'loginSuccess',
 				message: props.type === 'login' ? 'Successfully Logged in' : 'Successfully Created account',
 			});
+			// TODO: handle redirects
+			router.replace('/auth/choose-workspace');
 		} catch (err: any) {
 			console.log(err);
 			addMessagePopup({ id: 'loginError', message: props.type === 'login' ? 'Login Failed' : 'Create account failed', type: 'error' });

@@ -8,7 +8,7 @@ import { apiClient } from '@/api/config';
 import { DataListHeader } from '@/components/lib/dataListHeader';
 import { SkeletonTable } from '@/components/lib/loaders';
 import { cn } from '@/utils/helpers';
-import { DbRow, PageRoute, PageSearchParams, PaginationResponse } from '@/utils/types';
+import { DbRow, PageSearchParams, PaginationResponse } from '@/utils/types';
 import PlusIcon from '@heroicons/react/24/outline/PlusIcon';
 import { useQuery } from '@tanstack/react-query';
 import { useTransitionRouter } from 'next-view-transitions';
@@ -33,7 +33,7 @@ export type TableProps<T> = {
 	workspaceId: string;
 	title?: string;
 	description?: string;
-	addButtonLink?: PageRoute;
+	addButtonLink?: string;
 	addButtonProps?: ButtonProps;
 	rootClassName?: string;
 	tableRowClassName?: (data: T, rowIndex: number) => string;

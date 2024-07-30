@@ -1,11 +1,11 @@
-import { getSession } from '@/actions/auth';
+import { getSessionCookie } from '@/actions/auth';
 import { AuthRoot } from '@/components/auth/root';
 import { redirect } from 'next/navigation';
 
 export default async function Login() {
-	const session = await getSession();
+	const sessionCookie = await getSessionCookie();
 
-	if (session.isAuthenticated) {
+	if (sessionCookie) {
 		// TODO: handle redirect
 		redirect('/');
 	}

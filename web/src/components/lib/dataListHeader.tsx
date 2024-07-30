@@ -3,7 +3,6 @@
 import { Button, ButtonProps } from '@/components/lib/button';
 import { TableExport, TableExportProps } from '@/components/lib/tableExport';
 import { cn } from '@/utils/helpers';
-import { PageRoute } from '@/utils/types';
 import ArrowPathIcon from '@heroicons/react/24/outline/ArrowPathIcon';
 import PlusIcon from '@heroicons/react/24/outline/PlusIcon';
 import { useTransitionRouter } from 'next-view-transitions';
@@ -16,7 +15,7 @@ type DataListHeaderProps = {
 	workspaceId: string;
 	description?: string;
 	hideRefresh?: boolean;
-	addButtonLink?: PageRoute;
+	addButtonLink?: string;
 	otherActions?: ReactNode;
 	addButtonProps?: ButtonProps;
 	defaultEmptyStateName?: string;

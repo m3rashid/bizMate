@@ -43,16 +43,14 @@ func toPartialUser(user repository.User) partialUser {
 	}
 }
 
-func setCookie(ctx *fiber.Ctx, token string) {
+func setTokenCookie(ctx *fiber.Ctx, token string) {
 	ctx.Cookie(&fiber.Cookie{
 		Name:     "token",
 		Value:    "Bearer " + token,
-		SameSite: "Lax",
-		// HTTPOnly: true,
-		// MaxAge:   60 * 60 * 24, // 1 day
+		HTTPOnly: true,
 	})
 }
 
-func clearCookie(ctx *fiber.Ctx) {
+func removeCookie(ctx *fiber.Ctx) {
 	ctx.ClearCookie("token")
 }
