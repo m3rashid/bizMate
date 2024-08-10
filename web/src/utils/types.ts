@@ -1,3 +1,4 @@
+import { FormElementType } from '@/components/apps/forms/renderer/types';
 import { exportableTables } from '@/utils/constants';
 import { ReactNode } from 'react';
 
@@ -63,3 +64,17 @@ export type Workspace = BaseModel &
 	};
 
 export type ExportableTable = (typeof exportableTables)[number];
+
+export type Form = BaseModel &
+	WorkspaceScope &
+	CreatedBy & {
+		title: string;
+		description: string;
+		form_body: FormElementType[];
+		active: boolean;
+		submit_text: string;
+		cancel_text: string;
+		send_response_email: boolean;
+		allow_anonymous_responses: boolean;
+		allow_multiple_responses: boolean;
+	};

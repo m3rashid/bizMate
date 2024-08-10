@@ -25,7 +25,7 @@ export function CredentialsAuthForm(props: CredentialsAuthFormProps) {
 		setLoading(true);
 		try {
 			const formData = Object.fromEntries(new FormData(e.currentTarget).entries());
-			const res = await fetch(baseUrl + '/auth/login', {
+			const res = await fetch(baseUrl + (props.type === 'login' ? '/auth/login' : '/auth/register'), {
 				method: 'POST',
 				credentials: 'include',
 				body: JSON.stringify(formData),

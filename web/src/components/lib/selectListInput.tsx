@@ -100,7 +100,7 @@ export type SelectListInputProps = {
 	required?: boolean;
 };
 
-function SelectListInput(props: SelectListInputProps) {
+export function SelectListInput(props: SelectListInputProps) {
 	const { t } = useTranslation();
 	const { addMessagePopup } = usePopups();
 	const [open, setOpen] = useState(false);
