@@ -1,5 +1,5 @@
-import FormRenderer from './renderer';
-import { FormBuilder as FormBuilderType, SupportedWidgetName } from './types';
+import FormRenderer from '@/components/apps/forms/renderer/renderer';
+import { FormBuilder as FormBuilderType, SupportedWidgetName } from '@/components/apps/forms/renderer/types';
 import { Code, Heading, Image, Link, Paragraph } from '@/components/lib/extras';
 import { Input } from '@/components/lib/input';
 import { PhoneNumberInput } from '@/components/lib/phoneNumberInput';
@@ -31,7 +31,7 @@ export const widgetMap: Record<ExplicitAndAll<string, SupportedWidgetName>, { wi
 const FormBuilder: FormBuilderType = (props) => {
 	return (
 		<div className={props.className}>
-			<FormRenderer meta={props.meta} />
+			<FormRenderer formBody={props.formBody} />
 		</div>
 	);
 };

@@ -14,12 +14,12 @@ export type AddEditFormProps = { open: boolean; onClose: () => void; workspaceId
 	| { form: Form }
 );
 
-type EditFormMeta = Array<[keyof Form, string | boolean, string, SupportedWidgetName, boolean?, Record<string, any>?]>;
-function editFormMeta(form: EditFormMeta) {
+type EditFormBody = Array<[keyof Form, string | boolean, string, SupportedWidgetName, boolean?, Record<string, any>?]>;
+function editFormBody(form: EditFormBody) {
 	// Array<[name, value, descriptionText, type, required]>
-	const meta: FormElementInstance[] = [];
+	const formBody: FormElementInstance[] = [];
 	for (let i = 0; i < form.length; i++) {
-		meta.push({
+		formBody.push({
 			id: form[i][0],
 			name: form[i][3],
 			props: {
@@ -33,7 +33,7 @@ function editFormMeta(form: EditFormMeta) {
 		});
 	}
 
-	return meta;
+	return formBody;
 }
 
 function AddEditForm(props: AddEditFormProps) {
@@ -64,8 +64,8 @@ function AddEditForm(props: AddEditFormProps) {
 		},
 	});
 
-	const meta = useMemo(() => {
-		const _formMeta: EditFormMeta = [
+	const formBody = useMemo(() => {
+		const _formBody: EditFormBody = [
 			['title', props.form?.title || '', 'Form title', 'input', true],
 			['description', props.form?.description || '', 'Form description', 'textareaInput'],
 			['submit_text', props.form?.submit_text || 'Submit', 'Text on the submit button', 'input', false],
@@ -89,7 +89,7 @@ function AddEditForm(props: AddEditFormProps) {
 		];
 
 		if (props.form) {
-			_formMeta.push([
+			_formBody.push([
 				'active',
 				props.form.active ? 'on' : 'off',
 				'Is this form active',
@@ -99,7 +99,7 @@ function AddEditForm(props: AddEditFormProps) {
 			]);
 		}
 
-		return editFormMeta(_formMeta);
+		return editFormBody(_formBody);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.form?.id]);
 
@@ -124,7 +124,7 @@ function AddEditForm(props: AddEditFormProps) {
 	return (
 		<Modal open={props.open} setOpen={props.onClose} title={!!props.form ? `Edit Form (${props.form.title})` : 'Create new form'}>
 			<form className='h-full' onSubmit={handleAddEditForm}>
-				<FormRenderer meta={meta} className='flex h-full max-h-96 flex-grow flex-col gap-4 overflow-y-auto p-4' />
+				<FormRenderer formBody={formBody} className='flex h-full max-h-96 flex-grow flex-col gap-4 overflow-y-auto p-4' />
 
 				<div className='flex flex-grow-0 items-center justify-between border-t border-borderColor px-3 py-2'>
 					<Button variant='simple' type='reset'>

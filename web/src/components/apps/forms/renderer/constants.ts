@@ -11,8 +11,8 @@ import {
 	textAreaInputProps,
 	richTextInputProps,
 	phoneNumberInputProps,
-} from './exposedProps';
-import { SupportedWidgetsArray } from './types';
+} from '@/components/apps/forms/renderer/exposedProps';
+import { SupportedWidgetsArray } from '@/components/apps/forms/renderer/types';
 import AdjustmentsVerticalIcon from '@heroicons/react/24/outline/AdjustmentsVerticalIcon';
 import Bars2Icon from '@heroicons/react/24/outline/Bars2Icon';
 import Bars3CenterLeftIcon from '@heroicons/react/24/outline/Bars3CenterLeftIcon';

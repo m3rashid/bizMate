@@ -1,8 +1,5 @@
+import { Props } from '@/components/apps/forms/renderer/types';
 import { headingTypes } from '@/components/lib/extras';
-import { Option } from '@/utils/types';
-
-export type SupportedValues = 'string' | 'textarea' | 'number' | 'boolean' | 'richText' | Array<string | Option> | 'selectOptions' | 'children';
-export type Props = Record<string, [boolean, string, SupportedValues]>; // [required, description, supportedValues]
 
 export const phoneNumberInputProps: Props = {
 	name: [true, 'Name of the input element', 'string'],

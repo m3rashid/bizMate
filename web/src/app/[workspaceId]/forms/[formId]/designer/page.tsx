@@ -1,6 +1,8 @@
 import { getSessionCookie } from '@/actions/auth';
 import { apiClient } from '@/api/config';
+import { FormDesignerComponent } from '@/components/apps/forms/designer';
 import { PageNotFound } from '@/components/lib/notFound';
+import { PageContainer } from '@/components/pageContainer';
 import { isUuid } from '@/utils/helpers';
 import { ApiResponse, Form, NextjsPageProps } from '@/utils/types';
 import { redirect } from 'next/navigation';
@@ -17,7 +19,10 @@ export default async function FormDesigner(props: NextjsPageProps<{ workspaceId:
 	const result: ApiResponse<Form> = await apiClient(`/${props.params.workspaceId}/forms/one/${props.params.formId}`, {
 		headers: { Authorization: sessionCookie },
 	});
-	console.log(result);
 
-	return <div>Form Designer</div>;
+	return (
+		<PageContainer workspaceId={props.params.workspaceId} bodyClassName='p-0 sm:p-0'>
+			<FormDesignerComponent form={result.data} />
+		</PageContainer>
+	);
 }

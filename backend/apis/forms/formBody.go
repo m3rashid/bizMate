@@ -10,7 +10,7 @@ import (
 )
 
 type FormBodyReqBody struct {
-	FormBody repository.FormBody `json:"meta" validate:"required"`
+	FormBody repository.FormBody `json:"form_body" validate:"required"`
 }
 
 func updateFormBody(ctx *fiber.Ctx) error {

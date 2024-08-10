@@ -11,7 +11,8 @@ import {
 	textAreaInputProps,
 	richTextInputProps,
 	phoneNumberInputProps,
-} from './exposedProps';
+} from '@/components/apps/forms/renderer/exposedProps';
+import { Option } from '@/utils/types';
 import { FC, PropsWithChildren, SVGProps } from 'react';
 
 type GetProps<T> = Record<keyof T, any>;
@@ -41,7 +42,7 @@ export type FormElementType = SupportedWidget & {
 };
 
 export type FormRenderProps = {
-	meta: FormElementType[];
+	formBody: FormElementType[];
 	className?: string;
 };
 
@@ -51,3 +52,6 @@ export type FormBuilder = FC<FormRenderProps> & {
 };
 
 export type SupportedWidgetsArray = Array<SupportedWidget & { label: string; icon?: FC<SVGProps<SVGSVGElement>> }>;
+
+export type SupportedValues = 'string' | 'textarea' | 'number' | 'boolean' | 'richText' | Array<string | Option> | 'selectOptions' | 'children';
+export type Props = Record<string, [boolean, string, SupportedValues]>; // [required, description, supportedValues]

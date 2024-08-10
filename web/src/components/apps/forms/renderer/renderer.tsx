@@ -1,11 +1,11 @@
-import { widgetMap } from './index';
-import { FormRenderProps } from './types';
+import { widgetMap } from '@/components/apps/forms/renderer';
+import { FormRenderProps } from '@/components/apps/forms/renderer/types';
 import { Fragment } from 'react';
 
 function FormRenderer(props: FormRenderProps) {
 	return (
 		<Fragment>
-			{props.meta.map((item) => {
+			{props.formBody.map((item) => {
 				const widgetItem = (widgetMap as any)[item.name];
 				if (!widgetItem) return null;
 
@@ -16,7 +16,7 @@ function FormRenderer(props: FormRenderProps) {
 				if (item.children && item.children.length > 0) {
 					return (
 						<WidgetField key={item.id} {...item.props}>
-							<FormRenderer meta={item.children} />
+							<FormRenderer formBody={item.children} />
 						</WidgetField>
 					);
 				}
