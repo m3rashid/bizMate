@@ -9,12 +9,14 @@ import (
 )
 
 type CreateFormReqBody struct {
-	Title                  string `json:"title" validate:"required,min=5,max=50"`
-	Description            string `json:"description" validate:"max=50"`
-	Active                 *bool  `json:"active"`
-	SendResponseEmail      *bool  `json:"send_response_email"`
-	AllowAnonymousResponse *bool  `json:"allow_anonymous_response"`
-	AllowMultipleResponse  *bool  `json:"allow_multiple_response"`
+	Title                   string `json:"title" validate:"required,min=5,max=50"`
+	Description             string `json:"description" validate:"max=50"`
+	Active                  *bool  `json:"active"`
+	SendResponseEmail       *bool  `json:"send_response_email"`
+	AllowAnonymousResponses *bool  `json:"allow_anonymous_responses"`
+	SubmitText              string `json:"submit_text" validate:"min=5,max=50"`
+	CancelText              string `json:"cancel_text" validate:"min=5,max=50"`
+	AllowMultipleResponses  *bool  `json:"allow_multiple_responses"`
 }
 
 type UpdateFormReqBody struct {
@@ -45,15 +47,17 @@ func createNewForm(ctx *fiber.Ctx) error {
 
 	queries := repository.New(pgConn)
 	if err = queries.CreateForm(ctx.Context(), repository.CreateFormParams{
-		ID:                     id,
-		WorkspaceID:            workspaceId,
-		CreatedByID:            userId,
-		Title:                  reqBody.Title,
-		Description:            reqBody.Description,
-		Active:                 reqBody.Active,
-		SendResponseEmail:      reqBody.SendResponseEmail,
-		AllowAnonymousResponse: reqBody.AllowAnonymousResponse,
-		AllowMultipleResponse:  reqBody.AllowMultipleResponse,
+		ID:                      id,
+		WorkspaceID:             workspaceId,
+		CreatedByID:             userId,
+		Title:                   reqBody.Title,
+		Description:             reqBody.Description,
+		Active:                  reqBody.Active,
+		SendResponseEmail:       reqBody.SendResponseEmail,
+		AllowAnonymousResponses: reqBody.AllowAnonymousResponses,
+		AllowMultipleResponses:  reqBody.AllowMultipleResponses,
+		SubmitText:              &reqBody.SubmitText,
+		CancelText:              &reqBody.CancelText,
 	}); err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
@@ -148,13 +152,15 @@ func updateFormById(ctx *fiber.Ctx) error {
 
 	queries := repository.New(pgConn)
 	if err = queries.UpdateForm(ctx.Context(), repository.UpdateFormParams{
-		ID:                     reqBody.ID,
-		Title:                  reqBody.Title,
-		Description:            reqBody.Description,
-		Active:                 reqBody.Active,
-		SendResponseEmail:      reqBody.SendResponseEmail,
-		AllowAnonymousResponse: reqBody.AllowAnonymousResponse,
-		AllowMultipleResponse:  reqBody.AllowMultipleResponse,
+		ID:                      reqBody.ID,
+		Title:                   reqBody.Title,
+		Description:             reqBody.Description,
+		Active:                  reqBody.Active,
+		SendResponseEmail:       reqBody.SendResponseEmail,
+		AllowAnonymousResponses: reqBody.AllowAnonymousResponses,
+		AllowMultipleResponses:  reqBody.AllowMultipleResponses,
+		SubmitText:              &reqBody.SubmitText,
+		CancelText:              &reqBody.CancelText,
 	}); err != nil {
 		return fiber.NewError(fiber.StatusBadRequest)
 	}

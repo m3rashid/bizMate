@@ -53,6 +53,44 @@ func (q *Queries) DeleteFormResponse(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
+const getFormResponseByFormId = `-- name: GetFormResponseByFormId :many
+select id, form_id, deleted, workspace_id, created_at, created_by_id, device_ip, response from form_responses where form_id = $1 and workspace_id = $2 and deleted = false
+`
+
+type GetFormResponseByFormIdParams struct {
+	FormID      uuid.UUID `json:"form_id"`
+	WorkspaceID uuid.UUID `json:"workspace_id"`
+}
+
+func (q *Queries) GetFormResponseByFormId(ctx context.Context, arg GetFormResponseByFormIdParams) ([]FormResponse, error) {
+	rows, err := q.db.Query(ctx, getFormResponseByFormId, arg.FormID, arg.WorkspaceID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []FormResponse
+	for rows.Next() {
+		var i FormResponse
+		if err := rows.Scan(
+			&i.ID,
+			&i.FormID,
+			&i.Deleted,
+			&i.WorkspaceID,
+			&i.CreatedAt,
+			&i.CreatedByID,
+			&i.DeviceIp,
+			&i.Response,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getFormResponseById = `-- name: GetFormResponseById :one
 select id, form_id, deleted, workspace_id, created_at, created_by_id, device_ip, response from form_responses where id = $1 and workspace_id = $2 and deleted = false
 `

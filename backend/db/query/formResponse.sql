@@ -11,6 +11,9 @@ insert into form_responses (
 -- name: GetFormResponseById :one
 select * from form_responses where id = $1 and workspace_id = $2 and deleted = false;
 
+-- name: GetFormResponseByFormId :many
+select * from form_responses where form_id = $1 and workspace_id = $2 and deleted = false;
+
 -- name: PaginateFormResponses :many
 select
 	id,

@@ -11,7 +11,7 @@ func Setup(initialRoute string, app *fiber.App) {
 
 	app.Post(initialRoute+"/create", utils.CheckAuthMiddlewareWithWorkspace, createNewForm)
 
-	app.Post(initialRoute+"/:formId/create-new-form-innerbody", utils.CheckAuthMiddlewareWithWorkspace, createNewFormInnerBody)
+	app.Post(initialRoute+"/:formId/update-form-body", utils.CheckAuthMiddlewareWithWorkspace, updateFormBody)
 
 	app.Post(initialRoute+"/update", utils.CheckAuthMiddlewareWithWorkspace, updateFormById)
 
@@ -24,8 +24,4 @@ func Setup(initialRoute string, app *fiber.App) {
 	app.Post(initialRoute+"/response/:formId/edit", utils.CheckAuthMiddlewareWithWorkspace, editFormResponse)
 
 	app.Get(initialRoute+"/response/:formId/count", utils.CheckAuthMiddlewareWithWorkspace, getFormResponseCount)
-
-	// app.Get(initialRoute+"/response/:formId/all", utils.CheckAuthMiddlewareWithWorkspace, controllers.Paginate[models.FormResponse](controllers.PaginateOptions{
-	// 	ParamKeys: []string{"formId"},
-	// }))
 }

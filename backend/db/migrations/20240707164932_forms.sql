@@ -10,9 +10,11 @@ CREATE TABLE IF NOT EXISTS forms (
   description VARCHAR(500) NOT NULL,
 	form_body jsonb NOT NULL DEFAULT '[]'::jsonb,
   active boolean DEFAULT false,
+	submit_text VARCHAR(50) DEFAULT 'Submit',
+	cancel_text VARCHAR(50) DEFAULT 'Cancel',
   send_response_email boolean DEFAULT false,
-  allow_anonymous_response boolean DEFAULT true,
-  allow_multiple_response boolean DEFAULT false
+  allow_anonymous_responses boolean DEFAULT true,
+  allow_multiple_responses boolean DEFAULT false
 );
 
 CREATE TABLE IF NOT EXISTS form_responses (
@@ -23,7 +25,7 @@ CREATE TABLE IF NOT EXISTS form_responses (
 	created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
 	created_by_id uuid,
 	device_ip VARCHAR(50),
-	response jsonb NOT NULL DEFAULT '[]'::jsonb
+	response jsonb NOT NULL DEFAULT '{}'::jsonb
 );
 
 ALTER TABLE ONLY forms ADD CONSTRAINT fk_forms_workspace FOREIGN KEY (workspace_id) REFERENCES workspaces(id) ON UPDATE CASCADE ON DELETE CASCADE;

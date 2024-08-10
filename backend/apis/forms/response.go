@@ -3,6 +3,7 @@ package forms
 import (
 	"bizMate/repository"
 	"bizMate/utils"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -44,7 +45,7 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusTooEarly, "form is not active")
 	}
 
-	if !*form.AllowAnonymousResponse && userId == uuid.Nil {
+	if !*form.AllowAnonymousResponses && userId == uuid.Nil {
 		return fiber.NewError(fiber.StatusUnauthorized, "unauthorized")
 	}
 
@@ -193,34 +194,45 @@ func getFormResponseCount(ctx *fiber.Ctx) error {
 }
 
 func getFormResponseAnalysis(ctx *fiber.Ctx) error {
-	// formId := ctx.Params("formId")
+	_formId := ctx.Params("formId")
+	if _formId == "" {
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid form id")
+	}
 
-	// db, err := utils.GetPostgresDB()
-	// if err != nil {
-	// 	return fiber.NewError(fiber.StatusInternalServerError)
-	// }
+	formId, err := utils.StringToUuid(_formId)
+	if err != nil || formId == uuid.Nil {
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid form id")
+	}
+	_, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 
-	// form := models.Form{}
-	// if err := db.Where("id = ?", formId).First(&form).Error; err != nil {
-	// 	return fiber.NewError(fiber.StatusInternalServerError)
-	// }
+	pgConn, err := utils.GetPostgresDB()
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
 
-	// if form.Active {
-	// 	return fiber.NewError(fiber.StatusTooEarly, "Form is active now, analysis is available once the form is inactive/complete its duration")
-	// }
+	query := repository.New(pgConn)
+	form, err := query.GetFormById(ctx.Context(), repository.GetFormByIdParams{ID: formId, WorkspaceID: workspaceId})
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
 
-	// formResponseRes := []models.FormResponse{}
-	// if err := db.Where("\"formId\" = ?", formId).Find(&formResponseRes).Error; err != nil {
-	// 	return fiber.NewError(fiber.StatusInternalServerError)
-	// }
+	if *form.Active {
+		return fiber.NewError(fiber.StatusTooEarly, "Form is active now, analysis is available once the form is inactive/complete its duration")
+	}
 
-	// formAnalysis, err := analyzeForm(&form, &formResponseRes)
-	// if err != nil {
-	// 	return fiber.NewError(fiber.StatusInternalServerError)
-	// }
+	formResponses, err := query.GetFormResponseByFormId(ctx.Context(), repository.GetFormResponseByFormIdParams{FormID: formId})
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
 
-	// return ctx.Status(fiber.StatusOK).JSON(
-	// 	utils.SendResponse(fiber.Map{"title": form.Title, "description": form.Description, "analysis": formAnalysis}, "Form analysis fetched successfully"),
-	// )
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(nil, ""))
+	fmt.Println("FORM", form)
+
+	formAnalysis, err := analyzeForm(&form, &formResponses)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(
+		utils.SendResponse(fiber.Map{"title": form.Title, "description": form.Description, "analysis": formAnalysis}, "Form analysis fetched successfully"),
+	)
 }
