@@ -18,8 +18,14 @@ export const FormFillup = (props: FormFillupProps) => {
 
 	const { mutate } = useMutation({
 		mutationKey: ['sumitFormResponse'],
-		onError: (error) => console.error(error),
-		onSuccess: () => formRef.current?.reset(),
+		onError: (error) => {
+			console.error(error);
+			addMessagePopup({ id: 'errorSubmittingResponse', message: 'Unable to submit response, please try again', type: 'error' });
+		},
+		onSuccess: () => {
+			formRef.current?.reset();
+			addMessagePopup({ id: 'responseSubmitted', message: 'Response submitted successfully', type: 'success' });
+		},
 		mutationFn: (data: { response: Record<string, any> }) => {
 			return apiClient(`/${props.workspaceId}/forms/response/${props.form.id}/submit`, { method: 'POST', body: JSON.stringify(data) });
 		},
@@ -29,17 +35,17 @@ export const FormFillup = (props: FormFillupProps) => {
 		e.preventDefault();
 		try {
 			const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any;
-			// const currentFormMeta = props.form.form_body;
-			const toggleInputNames = props.form.form_body.reduce<string[]>((acc, el) => (el.name === 'togglerInput' ? [...acc, el.props.name] : acc), []);
+			const currentFormMeta = props.form.form_body;
+			const toggleInputNames = currentFormMeta.reduce<string[]>((acc, el) => (el.name === 'togglerInput' ? [...acc, el.props.name] : acc), []);
 			for (let i = 0; i < toggleInputNames.length; i++)
 				formData[toggleInputNames[i]] = formData[toggleInputNames[i]] && formData[toggleInputNames[i]] === 'on' ? true : false;
 
-			for (let i = 0; i < props.form.form_body.length; i++) {
-				if (typeof formData[props.form.form_body[i].props.name] === 'boolean') continue;
-				if (props.form.form_body[i].props.required && !formData[props.form.form_body[i].props.name]) {
+			for (let i = 0; i < currentFormMeta.length; i++) {
+				if (typeof formData[currentFormMeta[i].props.name] === 'boolean') continue;
+				if (currentFormMeta[i].props.required && !formData[currentFormMeta[i].props.name]) {
 					addMessagePopup({
 						id: 'missingRequiredFields',
-						message: `"${props.form.form_body[i].props.label}" is a required field, it must have a value`,
+						message: `"${currentFormMeta[i].props.label}" is a required field, it must have a value`,
 						type: 'error',
 					});
 					return;

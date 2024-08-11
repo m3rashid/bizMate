@@ -63,7 +63,7 @@ var UserInviteJsonModel = DashboardIndexableJsonModel{
 }
 
 var FormResponseJsonModel = DashboardIndexableJsonModel{
-	ModelName: FORM_RESPONSES_MODEL_NAME,
+	ModelName: FORM_RESPONSES_COLLECTION_NAME,
 	Fields: map[string]JsonFieldType{
 		"id":            jsonString,
 		"created_at":    jsonDate,
@@ -91,17 +91,6 @@ var FormJsonModel = DashboardIndexableJsonModel{
 		"send_response_email":       jsonBool,
 		"allow_anonymous_responses": jsonBool,
 		"allow_multiple_responses":  jsonBool,
-	},
-}
-
-var FormBodyJsonModel = DashboardIndexableJsonModel{
-	ModelName: FORM_BODY_COLLECTION_NAME,
-	Fields: map[string]JsonFieldType{
-		"form_id":         jsonString,
-		"created_at":      jsonString,
-		"workspace_id":    jsonString,
-		"created_by_id":   jsonString,
-		"form_inner_body": jsonArray,
 	},
 }
 

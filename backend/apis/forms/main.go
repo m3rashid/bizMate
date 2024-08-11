@@ -19,9 +19,9 @@ func Setup(initialRoute string, app *fiber.App) {
 
 	app.Get(initialRoute+"/analysis/:formId", utils.CheckAuthMiddlewareWithWorkspace, getFormResponseAnalysis)
 
-	app.Post(initialRoute+"/response/:formId/submit", utils.CheckAuthMiddlewareButAllowUnauthorized, submitFormResponse)
+	app.Post(initialRoute+"/delete/:formId", utils.CheckAuthMiddlewareButAllowUnauthorized, deleteFormById)
 
-	app.Post(initialRoute+"/response/:formId/edit", utils.CheckAuthMiddlewareWithWorkspace, editFormResponse)
+	app.Post(initialRoute+"/response/:formId/submit", utils.CheckAuthMiddlewareButAllowUnauthorized, submitFormResponse)
 
 	app.Get(initialRoute+"/response/:formId/count", utils.CheckAuthMiddlewareWithWorkspace, getFormResponseCount)
 

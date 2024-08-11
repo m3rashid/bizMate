@@ -7,6 +7,7 @@ import { usePopups } from '@/hooks/popups';
 import { snakeCaseToSentenceCase } from '@/utils/helpers';
 import { Form, StringBoolean } from '@/utils/types';
 import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { FormEvent, useMemo } from 'react';
 
 export type AddEditFormProps = { open: boolean; onClose: () => void; workspaceId: string; refetch: () => void } & (
@@ -37,14 +38,16 @@ function editFormBody(form: EditFormBody) {
 }
 
 function AddEditForm(props: AddEditFormProps) {
+	const router = useRouter();
 	const { addMessagePopup } = usePopups();
+
 	const { mutate: createForm } = useMutation({
 		mutationKey: ['createForm'],
 		mutationFn: (form: Partial<Form>) => apiClient(`/${props.workspaceId}/forms/create`, { method: 'POST', body: JSON.stringify(form) }),
-		onSuccess: () => {
+		onSuccess: (data) => {
 			props.onClose();
 			addMessagePopup({ id: 'successCreatingForm', message: 'Form created successfully', type: 'success' });
-			props.refetch();
+			router.push(`/${props.workspaceId}/forms/${data.data}/designer`);
 		},
 		onError: () => {
 			addMessagePopup({ id: 'errorCreatingForm', message: 'An Error occured in creating form', type: 'error' });
@@ -117,7 +120,6 @@ function AddEditForm(props: AddEditFormProps) {
 			allow_multiple_responses: handleStringBoolean(formData.allow_multiple_responses),
 			active: handleStringBoolean(formData.active),
 		};
-		console.log(form);
 		if (!props.form) createForm(form);
 		else updateForm(form);
 	}

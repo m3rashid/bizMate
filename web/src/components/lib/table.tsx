@@ -42,6 +42,7 @@ export type TableProps<T> = {
 	tableHeadingClassName?: (columnIndex: number) => string;
 	onEdit?: (item: T) => void;
 	emptyState?: ReactNode;
+	useDefaultEmptyState?: boolean;
 	defaultEmptyStateName?: string;
 	otherActions?: ReactNode;
 };

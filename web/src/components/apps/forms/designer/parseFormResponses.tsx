@@ -32,7 +32,6 @@ export function parseFormResponses(
 ): { data: PaginationResponse<FormResponse>; tableData: Array<TableColumn<any>> } {
 	try {
 		if (!Array.isArray(form.form_body)) throw new Error('Invalid form body');
-
 		const formFields: Record<string, [string, boolean, boolean]> = {}; // Record<name, [label, required, isRichTextField]>
 		for (let i = 0; i < form.form_body.length; i++) {
 			if (!form.form_body[i].props || !form.form_body[i].props.name) continue;
@@ -47,7 +46,7 @@ export function parseFormResponses(
 		const responses: Array<FormResponse> = [];
 		for (let i = 0; i < data.docs.length; i++) {
 			try {
-				const formRes = JSON.parse(data.docs[i].response as string);
+				const formRes = data.docs[i].response as any;
 				for (let j = 0; j < formFieldKeys.length; j++) {
 					if (typeof formRes[formFieldKeys[j]] !== 'boolean' && !formRes[formFieldKeys[j]]) formRes[formFieldKeys[j]] = 'N/A';
 				}

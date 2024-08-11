@@ -5,8 +5,6 @@ import (
 	"reflect"
 )
 
-const FORM_BODY_COLLECTION_NAME = "forms_body"
-
 const (
 	formBoolean     bool   = false
 	formString      string = "string"

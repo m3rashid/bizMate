@@ -62,7 +62,7 @@ func createNewForm(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(nil, "Form Created Successfully"))
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(id, "Form Created Successfully"))
 }
 
 func paginateForms(ctx *fiber.Ctx) error {
@@ -160,5 +160,29 @@ func updateFormById(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest)
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(nil, "Form updated successfully"))
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(reqBody.ID, "Form updated successfully"))
+}
+
+func deleteFormById(ctx *fiber.Ctx) error {
+	_formId := ctx.Params("formId")
+	if _formId == "" {
+		return fiber.NewError(fiber.StatusBadRequest, "Unknown form")
+	}
+
+	formId, err := utils.StringToUuid(_formId)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	pgConn, err := utils.GetPostgresDB()
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	queries := repository.New(pgConn)
+	if err = queries.DeleteForm(ctx.Context(), formId); err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(formId, "Form deleted successfully"))
 }

@@ -39,7 +39,7 @@ export function SimpleTable<T extends DbRow>(props: SimpleTableProps<T>) {
 	const router = useTransitionRouter();
 
 	return (
-		<div className={cn('h-full w-full', props.rootClassName)}>
+		<div className={cn('w-full', props.rootClassName)}>
 			<div className={cn('sm:flex sm:items-center', props.title || props.description || props.addButtonLink ? 'mb-8' : '')}>
 				{props.title || props.description ? (
 					<div className='sm:flex-auto'>

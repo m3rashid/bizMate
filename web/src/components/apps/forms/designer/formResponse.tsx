@@ -14,13 +14,14 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 type FormResponseTableProps = { workspaceId: string; form: Form };
-function FormResponsesTable(props: FormResponseTableProps) {
+export function FormResponsesTable(props: FormResponseTableProps) {
 	const [page, setPage] = useState(1);
 
 	const { data: formResponses, isPending: isFormResponseFetchPending } = useQuery({
 		queryKey: ['getFormResponses', props.form.id, page, props.workspaceId],
 		select: (data) => parseFormResponses(props.form, data.data),
 		queryFn: () => apiClient(`/${props.workspaceId}/forms/response/${props.form.id}/all?page=${page}&limit=10`),
+		retryOnMount: true,
 	});
 
 	if (isFormResponseFetchPending) return <PageLoader />;
@@ -62,5 +63,3 @@ function FormResponsesTable(props: FormResponseTableProps) {
 		</>
 	);
 }
-
-export default FormResponsesTable;
