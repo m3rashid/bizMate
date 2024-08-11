@@ -17,3 +17,11 @@ func GetRedisClient() *redis.Client {
 
 	return redisClient
 }
+
+var LocalWorkspacesCache *LocalCache[string, string] = newCache[string, string](100)
+
+func InitLocalWorkspacesCache() {
+	LocalWorkspacesCache.activate(func() bool {
+		return true
+	})
+}
