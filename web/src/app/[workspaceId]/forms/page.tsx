@@ -1,8 +1,8 @@
 import { getSessionCookie } from '@/actions/auth';
 import { ListForms } from '@/components/apps/forms/listTable';
-import { PageNotFound } from '@/components/lib/notFound';
+import { PageNotFound, WorkspaceNotFound } from '@/components/lib/notFound';
 import { PageContainer } from '@/components/pageContainer';
-import { isUuid } from '@/utils/helpers';
+import { checkWorkspace, isUuid } from '@/utils/helpers';
 import { NextjsPageProps } from '@/utils/types';
 import { redirect } from 'next/navigation';
 
@@ -15,6 +15,9 @@ export default async function FormsPage(props: NextjsPageProps<{ workspaceId: st
 	}
 
 	if (!isUuid(props.params.workspaceId)) return <PageNotFound />;
+
+	const res = await checkWorkspace(props.params.workspaceId, sessionCookie);
+	if (!res) return <WorkspaceNotFound />;
 
 	return (
 		<PageContainer workspaceId={props.params.workspaceId} bodyClassName='bg-white'>

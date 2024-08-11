@@ -40,7 +40,7 @@ func updateFormBody(ctx *fiber.Ctx) error {
 	}
 
 	queries := repository.New(pgConn)
-	form, err := queries.GetFormById(ctx.Context(), repository.GetFormByIdParams{WorkspaceID: workspaceId, ID: formUuid})
+	form, err := queries.GetFormById(ctx.Context(), formUuid)
 	if err != nil || form.ID == uuid.Nil {
 		return fiber.NewError(fiber.StatusBadRequest, "Form not found")
 	}

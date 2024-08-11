@@ -3,10 +3,41 @@ package auth
 import (
 	"bizMate/repository"
 	"bizMate/utils"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
+
+func checkWorkspace(ctx *fiber.Ctx) error {
+	_workspaceId := ctx.Params("workspaceId")
+	fmt.Println("workspaceId: ", _workspaceId)
+	if _workspaceId == "" {
+		return fiber.NewError(fiber.StatusBadRequest)
+	}
+
+	workspaceUuid, err := utils.StringToUuid(_workspaceId)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	if workspaceUuid == uuid.Nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	pgConn, err := utils.GetPostgresDB()
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	queries := repository.New(pgConn)
+	workspaceId, err := queries.CheckWorkspaceExists(ctx.Context(), workspaceUuid)
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest)
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(workspaceId, "Valid Workspace"))
+}
 
 func getWorkspaces(ctx *fiber.Ctx) error {
 	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)

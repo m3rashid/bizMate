@@ -69,16 +69,11 @@ func (q *Queries) DeleteForm(ctx context.Context, id uuid.UUID) error {
 }
 
 const getFormById = `-- name: GetFormById :one
-select id, deleted, created_at, workspace_id, created_by_id, title, description, form_body, active, submit_text, cancel_text, send_response_email, allow_anonymous_responses, allow_multiple_responses from forms where id = $1 and workspace_id = $2 and deleted = false
+select id, deleted, created_at, workspace_id, created_by_id, title, description, form_body, active, submit_text, cancel_text, send_response_email, allow_anonymous_responses, allow_multiple_responses from forms where id = $1 and deleted = false
 `
 
-type GetFormByIdParams struct {
-	ID          uuid.UUID `json:"id"`
-	WorkspaceID uuid.UUID `json:"workspace_id"`
-}
-
-func (q *Queries) GetFormById(ctx context.Context, arg GetFormByIdParams) (Form, error) {
-	row := q.db.QueryRow(ctx, getFormById, arg.ID, arg.WorkspaceID)
+func (q *Queries) GetFormById(ctx context.Context, id uuid.UUID) (Form, error) {
+	row := q.db.QueryRow(ctx, getFormById, id)
 	var i Form
 	err := row.Scan(
 		&i.ID,

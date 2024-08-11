@@ -1,12 +1,11 @@
 -- name: CreateFormResponse :exec
 insert into form_responses (
-	id,
 	form_id,
 	workspace_id,
 	created_by_id,
 	device_ip,
 	response
-) values ($1, $2, $3, $4, $5, $6);
+) values ($1, $2, $3, $4, $5);
 
 -- name: GetFormResponseById :one
 select * from form_responses where id = $1 and workspace_id = $2 and deleted = false;

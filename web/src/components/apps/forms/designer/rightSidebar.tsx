@@ -141,9 +141,7 @@ export function RightSidebar() {
 					</div>
 				</div>
 
-				<div className='flex h-full max-h-[calc(100vh-100px)] flex-grow flex-col gap-4 overflow-y-auto p-4'>
-					<FormRenderer formBody={formBody} />
-				</div>
+				<FormRenderer formBody={formBody} className='flex h-full max-h-[calc(100vh-100px)] flex-grow flex-col gap-4 overflow-y-auto p-4' />
 			</form>
 		</div>
 	);

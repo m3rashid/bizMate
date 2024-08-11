@@ -78,3 +78,11 @@ export type Form = BaseModel &
 		allow_anonymous_responses: boolean;
 		allow_multiple_responses: boolean;
 	};
+
+export type FormResponse = BaseModel &
+	CreatedBy &
+	UpdatedBy & {
+		formId: ID;
+		response: string | Record<string, string>;
+		deviceIp?: string;
+	};

@@ -1,4 +1,5 @@
 import tailwindConfig from '../../tailwind.config';
+import { apiClient } from '@/api/config';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -70,4 +71,9 @@ export function isUuid(id: string) {
 export function getTailwindColor(name: string) {
 	const colors: any = tailwindConfig.theme?.extend?.colors;
 	return colors[name];
+}
+
+export async function checkWorkspace(workspaceId: string, sessionCookie: any) {
+	const res = await apiClient(`/auth/${workspaceId}/check-workspace`, { headers: { Authorization: sessionCookie } });
+	return res;
 }

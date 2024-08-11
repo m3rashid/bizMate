@@ -39,6 +39,7 @@ func Setup(initialRoute string, app *fiber.App) {
 	app.Post(initialRoute+"/register", credentialsRegister)
 
 	app.Get(initialRoute+"/workspaces", utils.CheckAuthMiddlewareWithoutWorkspace, getWorkspaces)
+	app.Get(initialRoute+"/:workspaceId/check-workspace", utils.CheckAuthMiddlewareWithoutWorkspace, checkWorkspace)
 	app.Post(initialRoute+"/workspaces/create", utils.CheckAuthMiddlewareWithoutWorkspace, createWorkspace)
 
 	app.Get(initialRoute+"/:provider", beginAuth)

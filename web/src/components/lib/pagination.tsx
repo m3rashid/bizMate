@@ -11,6 +11,8 @@ type PaginationProps = PaginationType & {
 export function Pagination(props: PaginationProps) {
 	const { t } = useTranslation();
 
+	if (!props.limit || !props.count) return null;
+
 	return (
 		<nav className='flex items-center justify-between border-b-2 border-pageBg bg-white p-2' aria-label='Pagination'>
 			<div className='hidden sm:block'>

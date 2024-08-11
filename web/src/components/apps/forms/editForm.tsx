@@ -113,10 +113,11 @@ function AddEditForm(props: AddEditFormProps) {
 		const form: Partial<Form> = {
 			...(props.form ? { ...props.form, id: props.form.id } : {}),
 			...formData,
-			allow_anonymous_response: handleStringBoolean(formData.allow_anonymous_response),
-			allow_multiple_response: handleStringBoolean(formData.allow_multiple_response),
+			allow_anonymous_responses: handleStringBoolean(formData.allow_anonymous_responses),
+			allow_multiple_responses: handleStringBoolean(formData.allow_multiple_responses),
 			active: handleStringBoolean(formData.active),
 		};
+		console.log(form);
 		if (!props.form) createForm(form);
 		else updateForm(form);
 	}

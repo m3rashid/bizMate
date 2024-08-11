@@ -26,6 +26,16 @@ func (q *Queries) AddUserToWorkspace(ctx context.Context, arg AddUserToWorkspace
 	return err
 }
 
+const checkWorkspaceExists = `-- name: CheckWorkspaceExists :one
+select id from workspaces where id = $1 and deleted = false
+`
+
+func (q *Queries) CheckWorkspaceExists(ctx context.Context, id uuid.UUID) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, checkWorkspaceExists, id)
+	err := row.Scan(&id)
+	return id, err
+}
+
 const createWorkspace = `-- name: CreateWorkspace :one
 insert into workspaces (id, name, description, created_by_id)
 	values ($1, $2, $3, $4) returning id, name, description, deleted, created_at, created_by_id

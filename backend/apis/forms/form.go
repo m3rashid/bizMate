@@ -105,11 +105,6 @@ func paginateForms(ctx *fiber.Ctx) error {
 }
 
 func getOneForm(ctx *fiber.Ctx) error {
-	_, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
-	if workspaceId == uuid.Nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Unknown workspace")
-	}
-
 	_formId := ctx.Params("formId")
 	if _formId == "" {
 		return fiber.NewError(fiber.StatusBadRequest, "Unknown form")
@@ -126,7 +121,7 @@ func getOneForm(ctx *fiber.Ctx) error {
 	}
 
 	queries := repository.New(pgConn)
-	form, err := queries.GetFormById(ctx.Context(), repository.GetFormByIdParams{ID: formId, WorkspaceID: workspaceId})
+	form, err := queries.GetFormById(ctx.Context(), formId)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}

@@ -14,27 +14,24 @@ import (
 
 const createFormResponse = `-- name: CreateFormResponse :exec
 insert into form_responses (
-	id,
 	form_id,
 	workspace_id,
 	created_by_id,
 	device_ip,
 	response
-) values ($1, $2, $3, $4, $5, $6)
+) values ($1, $2, $3, $4, $5)
 `
 
 type CreateFormResponseParams struct {
-	ID          uuid.UUID   `json:"id"`
-	FormID      uuid.UUID   `json:"form_id"`
-	WorkspaceID uuid.UUID   `json:"workspace_id"`
-	CreatedByID pgtype.UUID `json:"created_by_id"`
-	DeviceIp    *string     `json:"device_ip"`
-	Response    []byte      `json:"response"`
+	FormID      uuid.UUID              `json:"form_id"`
+	WorkspaceID uuid.UUID              `json:"workspace_id"`
+	CreatedByID pgtype.UUID            `json:"created_by_id"`
+	DeviceIp    *string                `json:"device_ip"`
+	Response    map[string]interface{} `json:"response"`
 }
 
 func (q *Queries) CreateFormResponse(ctx context.Context, arg CreateFormResponseParams) error {
 	_, err := q.db.Exec(ctx, createFormResponse,
-		arg.ID,
 		arg.FormID,
 		arg.WorkspaceID,
 		arg.CreatedByID,
@@ -48,7 +45,7 @@ const deleteFormResponse = `-- name: DeleteFormResponse :exec
 update form_responses set deleted = true where id = $1
 `
 
-func (q *Queries) DeleteFormResponse(ctx context.Context, id uuid.UUID) error {
+func (q *Queries) DeleteFormResponse(ctx context.Context, id int32) error {
 	_, err := q.db.Exec(ctx, deleteFormResponse, id)
 	return err
 }
@@ -96,7 +93,7 @@ select id, form_id, deleted, workspace_id, created_at, created_by_id, device_ip,
 `
 
 type GetFormResponseByIdParams struct {
-	ID          uuid.UUID `json:"id"`
+	ID          int32     `json:"id"`
 	WorkspaceID uuid.UUID `json:"workspace_id"`
 }
 
@@ -152,13 +149,13 @@ type PaginateFormResponsesParams struct {
 }
 
 type PaginateFormResponsesRow struct {
-	ID          uuid.UUID          `json:"id"`
-	CreatedAt   pgtype.Timestamptz `json:"created_at"`
-	FormID      uuid.UUID          `json:"form_id"`
-	WorkspaceID uuid.UUID          `json:"workspace_id"`
-	CreatedByID pgtype.UUID        `json:"created_by_id"`
-	DeviceIp    *string            `json:"device_ip"`
-	Response    []byte             `json:"response"`
+	ID          int32                  `json:"id"`
+	CreatedAt   pgtype.Timestamptz     `json:"created_at"`
+	FormID      uuid.UUID              `json:"form_id"`
+	WorkspaceID uuid.UUID              `json:"workspace_id"`
+	CreatedByID pgtype.UUID            `json:"created_by_id"`
+	DeviceIp    *string                `json:"device_ip"`
+	Response    map[string]interface{} `json:"response"`
 }
 
 func (q *Queries) PaginateFormResponses(ctx context.Context, arg PaginateFormResponsesParams) ([]PaginateFormResponsesRow, error) {
@@ -199,8 +196,8 @@ update form_responses set response = $2 where id = $1 and deleted = false
 `
 
 type UpdateFormResponseParams struct {
-	ID       uuid.UUID `json:"id"`
-	Response []byte    `json:"response"`
+	ID       int32                  `json:"id"`
+	Response map[string]interface{} `json:"response"`
 }
 
 func (q *Queries) UpdateFormResponse(ctx context.Context, arg UpdateFormResponseParams) error {

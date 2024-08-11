@@ -27,14 +27,14 @@ type Form struct {
 }
 
 type FormResponse struct {
-	ID          uuid.UUID          `json:"id"`
-	FormID      uuid.UUID          `json:"form_id"`
-	Deleted     *bool              `json:"deleted"`
-	WorkspaceID uuid.UUID          `json:"workspace_id"`
-	CreatedAt   pgtype.Timestamptz `json:"created_at"`
-	CreatedByID pgtype.UUID        `json:"created_by_id"`
-	DeviceIp    *string            `json:"device_ip"`
-	Response    []byte             `json:"response"`
+	ID          int32                  `json:"id"`
+	FormID      uuid.UUID              `json:"form_id"`
+	Deleted     *bool                  `json:"deleted"`
+	WorkspaceID uuid.UUID              `json:"workspace_id"`
+	CreatedAt   pgtype.Timestamptz     `json:"created_at"`
+	CreatedByID pgtype.UUID            `json:"created_by_id"`
+	DeviceIp    *string                `json:"device_ip"`
+	Response    map[string]interface{} `json:"response"`
 }
 
 type User struct {

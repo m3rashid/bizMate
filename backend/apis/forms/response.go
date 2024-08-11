@@ -10,7 +10,7 @@ import (
 )
 
 type formResponseReqBody struct {
-	Responses []map[string]interface{} `json:"response" validate:"required"`
+	Responses map[string]interface{} `json:"response" validate:"required"`
 }
 
 func submitFormResponse(ctx *fiber.Ctx) error {
@@ -25,14 +25,21 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
+	deviceIp := utils.GetDeviceIP(ctx)
+	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+
+	// formResponseJson, err := json.Marshal(reqBody.Responses)
+	// if err != nil {
+	// 	return fiber.NewError(fiber.StatusBadRequest, "Could not save form response")
+	// }
+
 	pgConn, err := utils.GetPostgresDB()
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
-
 	queries := repository.New(pgConn)
-	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
-	form, err := queries.GetFormById(ctx.Context(), repository.GetFormByIdParams{ID: formUid, WorkspaceID: workspaceId})
+
+	form, err := queries.GetFormById(ctx.Context(), formUid)
 	if err != nil {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
@@ -48,6 +55,18 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 	if !*form.AllowAnonymousResponses && userId == uuid.Nil {
 		return fiber.NewError(fiber.StatusUnauthorized, "unauthorized")
 	}
+
+	if err := queries.CreateFormResponse(ctx.Context(), repository.CreateFormResponseParams{
+		FormID:      form.ID,
+		WorkspaceID: form.WorkspaceID,
+		CreatedByID: utils.ToPgTypeUUID(userId),
+		DeviceIp:    &deviceIp,
+		Response:    reqBody.Responses,
+	}); err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, "Could not save response")
+	}
+
+	return ctx.Status(fiber.StatusCreated).JSON(utils.SendResponse(nil, "Response submitted successfully"))
 
 	// mongoDb, err := utils.GetMongoDB()
 	// if err != nil {
@@ -125,8 +144,6 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 	// }); err != nil {
 	// 	return fiber.NewError(fiber.StatusInternalServerError)
 	// }
-
-	return ctx.Status(fiber.StatusCreated).JSON(utils.SendResponse(nil, "Response submitted successfully"))
 }
 
 func editFormResponse(ctx *fiber.Ctx) error {
@@ -203,7 +220,6 @@ func getFormResponseAnalysis(ctx *fiber.Ctx) error {
 	if err != nil || formId == uuid.Nil {
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid form id")
 	}
-	_, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 
 	pgConn, err := utils.GetPostgresDB()
 	if err != nil {
@@ -211,7 +227,7 @@ func getFormResponseAnalysis(ctx *fiber.Ctx) error {
 	}
 
 	query := repository.New(pgConn)
-	form, err := query.GetFormById(ctx.Context(), repository.GetFormByIdParams{ID: formId, WorkspaceID: workspaceId})
+	form, err := query.GetFormById(ctx.Context(), formId)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
@@ -235,4 +251,53 @@ func getFormResponseAnalysis(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(
 		utils.SendResponse(fiber.Map{"title": form.Title, "description": form.Description, "analysis": formAnalysis}, "Form analysis fetched successfully"),
 	)
+}
+
+func paginateFormResponses(ctx *fiber.Ctx) error {
+	_formId := ctx.Params("formId")
+	formId, err := utils.StringToUuid(_formId)
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest)
+	}
+
+	_, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	if workspaceId == uuid.Nil {
+		return fiber.NewError(fiber.StatusBadRequest, "Unknown workspace")
+	}
+
+	paginationRes := utils.PaginationResponse[repository.PaginateFormResponsesRow]{}
+	if err := paginationRes.ParseQuery(ctx, 50); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "Incorrect Parameters")
+	}
+
+	pgConn, err := utils.GetPostgresDB()
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	queries := repository.New(pgConn)
+
+	formResponses, err := queries.PaginateFormResponses(ctx.Context(), repository.PaginateFormResponsesParams{
+		FormID:      formId,
+		WorkspaceID: workspaceId,
+		Limit:       paginationRes.Limit,
+		Offset:      (paginationRes.CurrentPage - 1) * paginationRes.Limit,
+	})
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+	paginationRes.Docs = formResponses
+
+	formResponsesCount, err := queries.GetFormResponsesCount(ctx.Context(), repository.GetFormResponsesCountParams{
+		FormID:      formId,
+		WorkspaceID: workspaceId,
+	})
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	paginationRes.TotalDocs = formResponsesCount
+	paginationRes.BuildPaginationResponse()
+
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(paginationRes, "Got form responses successfully"))
 }

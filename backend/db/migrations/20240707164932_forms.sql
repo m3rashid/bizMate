@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS forms (
 );
 
 CREATE TABLE IF NOT EXISTS form_responses (
-	id UUID PRIMARY KEY,
+	id serial PRIMARY KEY,
 	form_id uuid NOT NULL,
 	deleted boolean DEFAULT false,
 	workspace_id uuid NOT NULL,
@@ -38,6 +38,6 @@ ALTER TABLE ONLY form_responses ADD CONSTRAINT fk_form_responses_created_by_user
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE IF EXISTS forms;
-DROP TABLE IF EXISTS form_responses;
+DROP TABLE IF EXISTS forms CASCADE;
+DROP TABLE IF EXISTS form_responses CASCADE;
 -- +goose StatementEnd

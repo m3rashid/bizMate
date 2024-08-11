@@ -14,7 +14,7 @@ insert into forms (
 ) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);
 
 -- name: GetFormById :one
-select * from forms where id = $1 and workspace_id = $2 and deleted = false;
+select * from forms where id = $1 and deleted = false;
 
 -- name: PaginateForms :many
 select

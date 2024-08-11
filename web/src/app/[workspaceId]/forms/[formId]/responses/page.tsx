@@ -1,7 +1,10 @@
 import { getSessionCookie } from '@/actions/auth';
+import { apiClient } from '@/api/config';
+import FormResponsesTable from '@/components/apps/forms/designer/formResponse';
 import { PageNotFound } from '@/components/lib/notFound';
+import { PageContainer } from '@/components/pageContainer';
 import { isUuid } from '@/utils/helpers';
-import { NextjsPageProps } from '@/utils/types';
+import { ApiResponse, Form, NextjsPageProps } from '@/utils/types';
 import { redirect } from 'next/navigation';
 
 export default async function FormResponses(props: NextjsPageProps<{ workspaceId: string; formId: string }>) {
@@ -13,5 +16,13 @@ export default async function FormResponses(props: NextjsPageProps<{ workspaceId
 
 	if (!isUuid(props.params.workspaceId) || !isUuid(props.params.formId)) return <PageNotFound />;
 
-	return <div>Form Responses</div>;
+	const result: ApiResponse<Form> = await apiClient(`/${props.params.workspaceId}/forms/one/${props.params.formId}`, {
+		headers: { Authorization: sessionCookie },
+	});
+
+	return (
+		<PageContainer workspaceId={props.params.workspaceId} bodyClassName='bg-white'>
+			<FormResponsesTable form={result.data} workspaceId={props.params.workspaceId} />
+		</PageContainer>
+	);
 }

@@ -24,4 +24,6 @@ func Setup(initialRoute string, app *fiber.App) {
 	app.Post(initialRoute+"/response/:formId/edit", utils.CheckAuthMiddlewareWithWorkspace, editFormResponse)
 
 	app.Get(initialRoute+"/response/:formId/count", utils.CheckAuthMiddlewareWithWorkspace, getFormResponseCount)
+
+	app.Get(initialRoute+"/response/:formId/all", utils.CheckAuthMiddlewareWithWorkspace, paginateFormResponses)
 }
