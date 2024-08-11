@@ -13,6 +13,3 @@ insert into users_workspaces_relation (user_id, workspace_id)
 
 -- name: GetWorkspaceById :one
 select * from workspaces where id = $1 and deleted = false;
-
--- name: CheckWorkspaceExists :one
-select id from workspaces where id = $1 and deleted = false;

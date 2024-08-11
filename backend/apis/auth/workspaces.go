@@ -3,7 +3,6 @@ package auth
 import (
 	"bizMate/repository"
 	"bizMate/utils"
-	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -11,7 +10,6 @@ import (
 
 func checkWorkspace(ctx *fiber.Ctx) error {
 	_workspaceId := ctx.Params("workspaceId")
-	fmt.Println("workspaceId: ", _workspaceId)
 	if _workspaceId == "" {
 		return fiber.NewError(fiber.StatusBadRequest)
 	}
@@ -25,18 +23,26 @@ func checkWorkspace(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
+	var workspace repository.Workspace
+	workspaces, ok := getWorkSpaceFromCache(workspaceUuid)
+	if ok {
+		return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(workspaces, "Valid Workspace"))
+	}
+
 	pgConn, err := utils.GetPostgresDB()
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	queries := repository.New(pgConn)
-	workspaceId, err := queries.CheckWorkspaceExists(ctx.Context(), workspaceUuid)
+	workspace, err = queries.GetWorkspaceById(ctx.Context(), workspaceUuid)
 	if err != nil {
+		utils.LogError(uuid.Nil, workspace.ID, workspace_not_found_by_id, utils.LogDataType{"error": err.Error()})
 		return fiber.NewError(fiber.StatusBadRequest)
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(workspaceId, "Valid Workspace"))
+	addWorkSpaceToCache(workspace)
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(workspace, "Valid Workspace"))
 }
 
 func getWorkspaces(ctx *fiber.Ctx) error {
@@ -50,6 +56,10 @@ func getWorkspaces(ctx *fiber.Ctx) error {
 	workspaces, err := queries.GetCurrentUserWorkspaces(ctx.Context(), userId)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	for _, workspace := range workspaces {
+		addWorkSpaceToCache(workspace)
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(workspaces, "Workspaces retrieved successfully"))
@@ -109,6 +119,6 @@ func createWorkspace(ctx *fiber.Ctx) error {
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
-
+	addWorkSpaceToCache(workspace)
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(workspace, "Workspace created successfully"))
 }

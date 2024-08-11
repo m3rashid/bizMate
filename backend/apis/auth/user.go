@@ -3,22 +3,28 @@ package auth
 import (
 	"bizMate/repository"
 	"bizMate/utils"
-	"fmt"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 func checkAuth(ctx *fiber.Ctx) error {
 	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
-	pgConn, err := utils.GetPostgresDB()
-	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError)
-	}
 
-	queries := repository.New(pgConn)
-	user, err := queries.GetUserById(ctx.Context(), userId)
-	if err != nil {
-		return fiber.NewError(fiber.StatusInternalServerError)
+	var user repository.User
+	user, ok := getUserFromCache(userId)
+	if !ok {
+		pgConn, err := utils.GetPostgresDB()
+		if err != nil {
+			return fiber.NewError(fiber.StatusInternalServerError)
+		}
+
+		queries := repository.New(pgConn)
+		user, err = queries.GetUserById(ctx.Context(), userId)
+		if err != nil {
+			return fiber.NewError(fiber.StatusInternalServerError)
+		}
+		addUserToCache(user)
 	}
 
 	token, err := utils.GenerateJWT(user.ID, user.Email, user.Avatar)
@@ -33,24 +39,34 @@ func checkAuth(ctx *fiber.Ctx) error {
 }
 
 func getUser(ctx *fiber.Ctx) error {
-	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	var user repository.User
+
+	user, ok := getUserFromCache(userId)
+	if ok {
+		return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(toPartialUser(user), "User found successfully"))
+	}
+
 	pgConn, err := utils.GetPostgresDB()
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	queries := repository.New(pgConn)
-	user, err := queries.GetUserById(ctx.Context(), userId)
+	user, err = queries.GetUserById(ctx.Context(), userId)
 	if err != nil {
+		utils.LogError(userId, workspaceId, user_not_found_by_id, utils.LogDataType{"error": err.Error()})
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
+	addUserToCache(user)
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(toPartialUser(user), "User found successfully"))
 }
 
 func credentialsLogin(ctx *fiber.Ctx) error {
 	reqBody := loginBodyReq{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
+		utils.LogError(uuid.Nil, uuid.Nil, login_bad_request, utils.LogDataType{"error": err.Error()})
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
@@ -62,15 +78,18 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 	queries := repository.New(pgConn)
 	user, err := queries.GetUserByEmail(ctx.Context(), reqBody.Email)
 	if err != nil {
-		fmt.Println("error: ", err)
+		utils.LogError(uuid.Nil, uuid.Nil, user_not_found_by_email, utils.LogDataType{"error": err.Error(), "email": reqBody.Email})
 		return fiber.NewError(fiber.StatusNotFound, "User not found")
 	}
+
+	addUserToCache(user)
 
 	if user.Provider != repository.PROVIDER_CREDENTIALS {
 		return fiber.NewError(fiber.StatusUnauthorized, "User not found")
 	}
 
 	if !utils.ComparePasswords(user.Password, reqBody.Password) {
+		utils.LogError(user.ID, uuid.Nil, invalid_credentials_login)
 		return fiber.NewError(fiber.StatusUnauthorized, "Invalid credentials")
 	}
 
@@ -80,6 +99,7 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 	}
 
 	setTokenCookie(ctx, token)
+	utils.LogInfo(user.ID, uuid.Nil, user_login_success)
 	return ctx.Status(fiber.StatusOK).JSON(
 		utils.SendResponse(toPartialUser(user), "User logged in successfully"),
 	)
@@ -88,6 +108,7 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 func credentialsRegister(ctx *fiber.Ctx) error {
 	reqBody := redisterBodyReq{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
+		utils.LogError(uuid.Nil, uuid.Nil, register_bad_request, utils.LogDataType{"error": err.Error()})
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
@@ -120,8 +141,12 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 	queries := repository.New(pgConn)
 	user, err := queries.CreateUser(ctx.Context(), newUser)
 	if err != nil {
+		utils.LogError(id, uuid.Nil, user_creation_failed, utils.LogDataType{"error": err.Error()})
 		return fiber.NewError(fiber.StatusInternalServerError, "User account creation failed")
 	}
+
+	addUserToCache(user)
+	utils.LogInfo(user.ID, uuid.Nil, user_register_success)
 
 	token, err := utils.GenerateJWT(user.ID, newUser.Email, newUser.Avatar)
 	if err != nil {

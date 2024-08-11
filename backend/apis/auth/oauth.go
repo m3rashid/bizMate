@@ -71,11 +71,13 @@ func authCallback(ctx *fiber.Ctx) error {
 
 		newUser, err := queries.CreateUser(ctx.Context(), _newUser)
 		if err != nil {
+			utils.LogError(id, uuid.Nil, user_creation_failed, utils.LogDataType{"error": err.Error()})
 			return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
 		}
 		dbUser = newUser
 	}
 
+	addUserToCache(dbUser)
 	jwtToken, err := utils.GenerateJWT(dbUser.ID, dbUser.Email, dbUser.Avatar)
 	if err != nil {
 		ctx.Redirect(getRedirectUrl(false, "error=no_token"))
@@ -91,6 +93,7 @@ func authCallback(ctx *fiber.Ctx) error {
 
 func logout(ctx *fiber.Ctx) error {
 	if err := goth_fiber.Logout(ctx); err != nil {
+		utils.LogError(uuid.Nil, uuid.Nil, user_logout_failed, utils.LogDataType{"error": err.Error()})
 		log.Fatal(err)
 	}
 	removeCookie(ctx)

@@ -29,6 +29,7 @@ import (
 )
 
 func init() {
+	utils.InitLogLocalCache()
 	isTestEnvironment := strings.HasSuffix(os.Args[0], ".test")
 	if isTestEnvironment { // we are in a testing environment
 		return

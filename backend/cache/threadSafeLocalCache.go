@@ -1,22 +1,22 @@
-package utils
+package cache
 
 import (
 	"sync"
 )
 
-type LocalCache[KeyType comparable, ValueType any] struct {
+type LocalCacheType[KeyType comparable, ValueType any] struct {
 	mu      sync.RWMutex
 	items   map[KeyType]*ValueType
 	order   []KeyType
 	maxSize int
 	Active  *bool
-	evictFn func(k KeyType, v ValueType, items *(map[KeyType]*ValueType), order *[]KeyType)
+	evictFn func(k KeyType, items *(map[KeyType]*ValueType), order *[]KeyType)
 }
 
-func newCache[KeyType comparable, ValueType any](_maxSize int) *LocalCache[KeyType, ValueType] {
+func New[KeyType comparable, ValueType any](_maxSize int) *LocalCacheType[KeyType, ValueType] {
 	maxSize := min(_maxSize, 1000) // limit the hard limit to 1000 items
 	active := false
-	return &LocalCache[KeyType, ValueType]{
+	return &LocalCacheType[KeyType, ValueType]{
 		items:   make(map[KeyType]*ValueType),
 		order:   make([]KeyType, 0, maxSize),
 		maxSize: maxSize,
@@ -24,17 +24,17 @@ func newCache[KeyType comparable, ValueType any](_maxSize int) *LocalCache[KeyTy
 	}
 }
 
-func (c *LocalCache[KeyType, ValueType]) activate(checkActiveOnInit func() bool) {
+func (c *LocalCacheType[KeyType, ValueType]) Activate(checkActiveOnInit func() bool) {
 	*c.Active = checkActiveOnInit()
 }
 
-func (c *LocalCache[KeyType, ValueType]) withCustomEvictionStrategy(
-	evictFn func(oldestKey KeyType, oldestItemValue ValueType, items *(map[KeyType]*ValueType), order *[]KeyType),
+func (c *LocalCacheType[KeyType, ValueType]) WithCustomEvictionStrategy(
+	evictFn func(oldestKey KeyType, items *(map[KeyType]*ValueType), order *[]KeyType),
 ) {
 	c.evictFn = evictFn
 }
 
-func (c *LocalCache[KeyType, ValueType]) Get(key KeyType) (ValueType, bool) {
+func (c *LocalCacheType[KeyType, ValueType]) Get(key KeyType) (ValueType, bool) {
 	var zero ValueType
 
 	if !*c.Active {
@@ -51,7 +51,7 @@ func (c *LocalCache[KeyType, ValueType]) Get(key KeyType) (ValueType, bool) {
 	return zero, false
 }
 
-func (c *LocalCache[KeyType, ValueType]) Set(key KeyType, value ValueType) {
+func (c *LocalCacheType[KeyType, ValueType]) Add(key KeyType, value ValueType) {
 	if !*c.Active {
 		return
 	}
@@ -61,16 +61,14 @@ func (c *LocalCache[KeyType, ValueType]) Set(key KeyType, value ValueType) {
 
 	if _, found := c.items[key]; found {
 		c.items[key] = &value
-		c.refreshOrder(key)
+		c.RefreshOrder(key)
 		return
 	}
 
 	if len(c.items) >= c.maxSize {
 		oldestKey := c.order[0]
-		oldestItem := c.items[oldestKey]
-
 		if c.evictFn != nil {
-			c.evictFn(oldestKey, *oldestItem, &c.items, &c.order)
+			c.evictFn(oldestKey, &c.items, &c.order)
 		} else {
 			delete(c.items, oldestKey)
 		}
@@ -81,7 +79,7 @@ func (c *LocalCache[KeyType, ValueType]) Set(key KeyType, value ValueType) {
 	c.order = append(c.order, key)
 }
 
-func (c *LocalCache[KeyType, ValueType]) refreshOrder(key KeyType) {
+func (c *LocalCacheType[KeyType, ValueType]) RefreshOrder(key KeyType) {
 	var index int
 	for i, k := range c.order {
 		if k == key {
