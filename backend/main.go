@@ -29,7 +29,6 @@ import (
 )
 
 func init() {
-	utils.InitLogLocalCache()
 	isTestEnvironment := strings.HasSuffix(os.Args[0], ".test")
 	if isTestEnvironment { // we are in a testing environment
 		return
@@ -98,6 +97,11 @@ func main() {
 			AcceptLanguages:  []language.Tag{language.English, language.Hindi},
 		}),
 	)
+
+	// init local cache containers
+	utils.InitLogLocalCache()
+	auth.InitLocalUsersCache()
+	auth.InitLocalWorkspacesCache()
 
 	app.Get("/", func(ctx *fiber.Ctx) error {
 		return ctx.SendString(utils.TranslateToLocalLanguage(ctx, "Hello, World!"))

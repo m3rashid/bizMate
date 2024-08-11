@@ -8,22 +8,6 @@ import (
 	"github.com/google/uuid"
 )
 
-type CreateFormReqBody struct {
-	Title                   string `json:"title" validate:"required,min=5,max=50"`
-	Description             string `json:"description" validate:"max=50"`
-	Active                  *bool  `json:"active"`
-	SendResponseEmail       *bool  `json:"send_response_email"`
-	AllowAnonymousResponses *bool  `json:"allow_anonymous_responses"`
-	SubmitText              string `json:"submit_text" validate:"min=5,max=50"`
-	CancelText              string `json:"cancel_text" validate:"min=5,max=50"`
-	AllowMultipleResponses  *bool  `json:"allow_multiple_responses"`
-}
-
-type UpdateFormReqBody struct {
-	CreateFormReqBody
-	ID uuid.UUID `json:"id" validate:"required"`
-}
-
 func createNewForm(ctx *fiber.Ctx) error {
 	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	if userId == uuid.Nil || workspaceId == uuid.Nil {
@@ -32,6 +16,7 @@ func createNewForm(ctx *fiber.Ctx) error {
 
 	reqBody := CreateFormReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
+		utils.LogError(userId, workspaceId, create_form_bad_request, utils.LogDataType{"error": err.Error()})
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
@@ -59,14 +44,16 @@ func createNewForm(ctx *fiber.Ctx) error {
 		SubmitText:              &reqBody.SubmitText,
 		CancelText:              &reqBody.CancelText,
 	}); err != nil {
+		utils.LogError(userId, workspaceId, create_form_fail, utils.LogDataType{"error": err.Error()})
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
+	utils.LogInfo(userId, workspaceId, create_form_success, utils.LogDataType{"id": id, "title": reqBody.Title})
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(id, "Form Created Successfully"))
 }
 
 func paginateForms(ctx *fiber.Ctx) error {
-	_, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	if workspaceId == uuid.Nil {
 		return fiber.NewError(fiber.StatusBadRequest, "Unknown workspace")
 	}
@@ -89,18 +76,20 @@ func paginateForms(ctx *fiber.Ctx) error {
 	})
 
 	if err != nil {
+		utils.LogError(userId, workspaceId, paginate_forms_fail, utils.LogDataType{"error": err.Error()})
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	paginationRes.Docs = forms
 	formsCount, err := queries.GetFormsCount(ctx.Context(), workspaceId)
 	if err != nil {
+		utils.LogError(userId, workspaceId, paginate_forms_fail, utils.LogDataType{"error": err.Error()})
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	paginationRes.TotalDocs = formsCount
 	paginationRes.BuildPaginationResponse()
-
+	utils.LogInfo(userId, workspaceId, paginate_forms_success, utils.LogDataType{"count": formsCount})
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(paginationRes, "Got forms successfully"))
 }
 
@@ -123,6 +112,7 @@ func getOneForm(ctx *fiber.Ctx) error {
 	queries := repository.New(pgConn)
 	form, err := queries.GetFormById(ctx.Context(), formId)
 	if err != nil {
+		utils.LogError(uuid.Nil, uuid.Nil, form_not_found_by_id, utils.LogDataType{"error": err.Error()})
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
@@ -137,6 +127,7 @@ func updateFormById(ctx *fiber.Ctx) error {
 
 	reqBody := UpdateFormReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
+		utils.LogError(userId, workspaceId, update_form_bad_request, utils.LogDataType{"error": err.Error()})
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
@@ -157,13 +148,20 @@ func updateFormById(ctx *fiber.Ctx) error {
 		SubmitText:              &reqBody.SubmitText,
 		CancelText:              &reqBody.CancelText,
 	}); err != nil {
+		utils.LogError(userId, workspaceId, update_form_fail, utils.LogDataType{"error": err.Error()})
 		return fiber.NewError(fiber.StatusBadRequest)
 	}
 
+	utils.LogError(userId, workspaceId, update_form_success, utils.LogDataType{"id": reqBody.ID})
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(reqBody.ID, "Form updated successfully"))
 }
 
 func deleteFormById(ctx *fiber.Ctx) error {
+	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	if userId == uuid.Nil || workspaceId == uuid.Nil {
+		return fiber.NewError(fiber.StatusBadRequest, "User or Workspace not present")
+	}
+
 	_formId := ctx.Params("formId")
 	if _formId == "" {
 		return fiber.NewError(fiber.StatusBadRequest, "Unknown form")
@@ -181,8 +179,10 @@ func deleteFormById(ctx *fiber.Ctx) error {
 
 	queries := repository.New(pgConn)
 	if err = queries.DeleteForm(ctx.Context(), formId); err != nil {
+		utils.LogError(userId, workspaceId, delete_form_fail, utils.LogDataType{"error": err.Error(), "id": formId})
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
+	utils.LogInfo(userId, workspaceId, delete_form_success, utils.LogDataType{"id": formId})
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(formId, "Form deleted successfully"))
 }

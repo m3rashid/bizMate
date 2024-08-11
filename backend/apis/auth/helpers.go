@@ -8,24 +8,26 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const (
-	user_creation_failed  = "user_creation_failed"
-	user_logout_failed    = "user_logout_failed"
-	user_register_success = "user_register_success"
-	user_login_success    = "user_login_success"
+const register_fail = "register_fail"
+const register_success = "register_success"
+const register_bad_request = "register_bad_request"
 
-	user_not_found_by_id      = "user_not_found_by_id"
-	invalid_credentials_login = "invalid_credentials_login"
-	login_bad_request         = "login_bad_request"
-	register_bad_request      = "register_bad_request"
-	user_not_found_by_email   = "user_not_found_by_email"
+const login_fail = "login_fail"
+const login_success = "login_success"
+const login_bad_request = "login_bad_request"
 
-	workspace_creation_failed      = "workspace_creation_failed"
-	workspace_created_successfully = "workspace_created_successfully"
-	workspace_not_found_by_id      = "workspace_not_found_by_id"
-	workspace_not_found_by_user_id = "workspace_not_found_by_user_id"
-	create_workspace_bad_request   = "create_workspace_bad_request"
-)
+const create_jwt_fail = "create_jwt_fail"
+const user_logout_fail = "user_logout_fail"
+
+const hash_password_fail = "hash_password_fail"
+const provider_mismatch = "provider_mismatch"
+const user_not_found_by_id = "user_not_found_by_id"
+const user_not_found_by_email = "user_not_found_by_email"
+
+const create_workspace_fail = "create_workspace_fail"
+const create_workspace_success = "create_workspace_success"
+const workspace_not_found_by_id = "workspace_not_found_by_id"
+const create_workspace_bad_request = "create_workspace_bad_request"
 
 type redisterBodyReq struct {
 	Name     string `json:"name" validate:"required,min=3,max=50"`

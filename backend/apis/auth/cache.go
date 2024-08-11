@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-var LocalWorkspacesCache *cache.LocalCacheType[string, repository.Workspace] = cache.New[string, repository.Workspace](100)
+var LocalWorkspacesCache *cache.LocalCacheType[string, repository.Workspace] = cache.New[string, repository.Workspace]("workspaces", 100)
 
 func InitLocalWorkspacesCache() {
 	LocalWorkspacesCache.Activate(func() bool {
@@ -23,7 +23,7 @@ func getWorkSpaceFromCache(workspaceID uuid.UUID) (repository.Workspace, bool) {
 	return LocalWorkspacesCache.Get(workspaceID.String())
 }
 
-var LocalUsersCache *cache.LocalCacheType[string, repository.User] = cache.New[string, repository.User](1000)
+var LocalUsersCache *cache.LocalCacheType[string, repository.User] = cache.New[string, repository.User]("users", 1000)
 
 func InitLocalUsersCache() {
 	LocalUsersCache.Activate(func() bool {
