@@ -11,7 +11,7 @@ services:
       dockerfile: dev.Dockerfile
     restart: always
     env_file:
-      - .env
+      - .env.local
     volumes:
       - .:/app
     ports:

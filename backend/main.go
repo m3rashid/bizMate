@@ -13,6 +13,7 @@ import (
 	"bizMate/apis/seed"
 	"bizMate/repository"
 	"bizMate/utils"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -34,9 +35,10 @@ func init() {
 		return
 	}
 
-	err := godotenv.Load(".env")
+	err := godotenv.Load(".env.local") // this will fail in production because we set environment variables in the server directly
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		fmt.Println("Error loading .env file")
+		return
 	}
 
 	if err = repository.CreateMongoCollectionIndices(); err != nil {
@@ -67,7 +69,7 @@ func main() {
 	})
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     "http://localhost:3000",
+		AllowOrigins:     utils.Ternary(os.Getenv("SERVER_MODE") == "production", "https://bizmate.m3rashid.in,https://bizmate-ecru.vercel.app", "http://localhost:3000"),
 		AllowCredentials: true,
 	}))
 
@@ -126,6 +128,6 @@ func main() {
 		seed.Setup("/seed", app)
 	}
 
-	log.Println("Server is running in " + os.Getenv("SERVER_MODE") + " mode.")
-	app.Listen(":4000")
+	log.Println("Server is running in "+os.Getenv("SERVER_MODE")+" mode on port:", os.Getenv("PORT"))
+	app.Listen(":" + os.Getenv("PORT"))
 }

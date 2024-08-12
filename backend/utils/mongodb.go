@@ -2,7 +2,7 @@ package utils
 
 import (
 	"context"
-	"fmt"
+	"crypto/tls"
 	"os"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -24,22 +24,21 @@ func GetMongoDB() (*mongo.Database, error) {
 }
 
 func getMongoDbConnection() (*mongo.Database, error) {
-	mongoHost := os.Getenv("MONGO_HOST")
-	mongoUser := os.Getenv("MONGO_INITDB_ROOT_USERNAME")
-	mongoPass := os.Getenv("MONGO_INITDB_ROOT_PASSWORD")
-	mongoDb := os.Getenv("MONGO_INITDB_DATABASE")
-	mongoPort := os.Getenv("MONGO_PORT")
+	connectionStr := os.Getenv("MONGO_URI")
+	dbName := os.Getenv("MONGO_DATBASE_NAME")
 
-	connectionStr := fmt.Sprintf("mongodb://%s:%s@%s:%s/%s?ssl=false&authSource=admin", mongoUser, mongoPass, mongoHost, mongoPort, mongoDb)
 	loggerOptions := options.Logger().SetComponentLevel(options.LogComponentCommand, options.LogLevelDebug)
 	clientOptions := options.Client().ApplyURI(connectionStr).SetLoggerOptions(loggerOptions)
+	if os.Getenv("SERVER_MODE") == "production" {
+		clientOptions.SetTLSConfig(&tls.Config{InsecureSkipVerify: true}) // Skip certificate verification, not recommended for production
+	}
 
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
 		return nil, err
 	}
 
-	return client.Database(mongoDb), nil
+	return client.Database(dbName), nil
 }
 
 func PingMongoDb() error {

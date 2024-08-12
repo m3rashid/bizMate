@@ -3,6 +3,7 @@ package auth
 import (
 	"bizMate/repository"
 	"bizMate/utils"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -74,6 +75,7 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 
 	pgConn, err := utils.GetPostgresDB()
 	if err != nil {
+		fmt.Println("not getting db")
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 

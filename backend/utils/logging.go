@@ -30,7 +30,7 @@ type LogType struct {
 }
 
 const LOG_COLLECTION_NAME = "logs"
-const max_logs_cache_size = 20
+const max_logs_cache_size = 100
 
 var LogLocalCache *cache.LocalCacheType[string, LogType] = cache.New[string, LogType]("logs", max_logs_cache_size)
 

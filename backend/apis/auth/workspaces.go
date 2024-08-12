@@ -62,6 +62,10 @@ func getWorkspaces(ctx *fiber.Ctx) error {
 		go addWorkSpaceToCache(workspace)
 	}
 
+	if len(workspaces) == 0 {
+		workspaces = []repository.Workspace{}
+	}
+
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(workspaces, "Workspaces retrieved successfully"))
 }
 

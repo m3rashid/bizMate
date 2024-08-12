@@ -2,7 +2,6 @@ package utils
 
 import (
 	"context"
-	"fmt"
 	"os"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -24,13 +23,7 @@ func GetPostgresDB() (*pgxpool.Pool, error) {
 }
 
 func getPostgresDbConnection() (*pgxpool.Pool, error) {
-	pgHost := os.Getenv("POSTGRES_HOST")
-	pgUser := os.Getenv("POSTGRES_USER")
-	pgPass := os.Getenv("POSTGRES_PASSWORD")
-	pgDb := os.Getenv("POSTGRES_DB")
-	pgPort := os.Getenv("POSTGRES_PORT")
-
-	connectionStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", pgUser, pgPass, pgHost, pgPort, pgDb)
+	connectionStr := os.Getenv("POSTGRES_URI")
 	pool, err := pgxpool.New(context.Background(), connectionStr)
 	if err != nil {
 		return nil, err

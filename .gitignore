@@ -37,7 +37,8 @@ yarn-error.log
 backend/.data
 backend/tmp
 .data
-backend/.env
+backend/.env.local
+backend/.env.prod
 web-react
 .env*.local
 
@@ -54,7 +55,10 @@ next-env.d.ts
 !.yarn/versions
 
 mobile/.yarn
-web/.yarn
 web/.next
+web/.vercel
 
 .pnp.*
+
+backend/bin/*
+!backend/bin/.gitkeep

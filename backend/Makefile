@@ -1,4 +1,4 @@
-.PHONY: up down gen new-migration migrate-up migrate-down clean
+.PHONY: up down gen new-migration migrate-up migrate-down clean build
 
 up:
 	docker compose up -d
@@ -20,3 +20,6 @@ migrate-down:
 
 clean:
 	docker compose down && sudo rm -rf data tmp repository && sqlc generate
+
+build:
+	(rm -rf bin/backend || true) && go build -o bin/backend .
