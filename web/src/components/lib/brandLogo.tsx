@@ -1,16 +1,22 @@
-import { twMerge } from 'tailwind-merge'
+import { cn } from '@/utils/helpers';
+import Image from 'next/image';
 
 export type BrandLogoProps = {
-	className?: string
-	imgClassName?: string
-}
+	className?: string;
+	imgClassName?: string;
+};
 
-function BrandLogo(props: BrandLogoProps) {
+export function BrandLogo(props: BrandLogoProps) {
 	return (
-		<div className={twMerge('flex items-center justify-center', props.className)}>
-			<img src="/logo.png" className={twMerge('h-24 w-24 rounded-lg', props.imgClassName)} style={{ viewTransitionName: 'brandLogoImage' }} />
+		<div className={cn('flex items-center justify-center', props.className)}>
+			<Image
+				height={96}
+				width={96}
+				src='/logo.png'
+				alt='Brand Logo'
+				style={{ viewTransitionName: 'brandLogoImage' }}
+				className={cn('h-24 w-24 rounded-lg', props.imgClassName)}
+			/>
 		</div>
-	)
+	);
 }
-
-export default BrandLogo

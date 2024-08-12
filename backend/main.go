@@ -67,7 +67,7 @@ func main() {
 	})
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     "http://localhost:5173",
+		AllowOrigins:     "http://localhost:3000",
 		AllowCredentials: true,
 	}))
 
@@ -97,6 +97,12 @@ func main() {
 			AcceptLanguages:  []language.Tag{language.English, language.Hindi},
 		}),
 	)
+
+	// init local cache containers
+	utils.InitLogLocalCache()
+	auth.InitLocalUsersCache()
+	auth.InitLocalWorkspacesCache()
+	forms.InitLocalFormAnalyticsCache()
 
 	app.Get("/", func(ctx *fiber.Ctx) error {
 		return ctx.SendString(utils.TranslateToLocalLanguage(ctx, "Hello, World!"))

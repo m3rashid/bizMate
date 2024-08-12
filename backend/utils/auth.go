@@ -14,6 +14,7 @@ import (
 type Claims struct {
 	Email  string `json:"email"`
 	UserID string `json:"userId"`
+	Avatar string `json:"avatar"`
 	jwt.RegisteredClaims
 }
 
@@ -47,12 +48,19 @@ func setAuthLocals(ctx *fiber.Ctx, email string, userId uuid.UUID, workspaceId u
 }
 
 func getClaims(ctx *fiber.Ctx) *Claims {
-	clientToken := ctx.Get("Authorization")
-	if clientToken == "" {
+	token := ""
+	tokenFromCookie := ctx.Cookies("token", "")
+	tokenFromHeader := ctx.Get("Authorization", "")
+
+	if tokenFromCookie != "" {
+		token = tokenFromCookie
+	} else if tokenFromHeader != "" {
+		token = tokenFromHeader
+	} else {
 		return nil
 	}
 
-	claims, err := parseTokenToClaims(clientToken)
+	claims, err := parseTokenToClaims(token)
 	if err != nil {
 		return nil
 	}
@@ -123,10 +131,11 @@ func GetUserAndWorkspaceIdsOrZero(ctx *fiber.Ctx) (userId uuid.UUID, workspaceId
 	return getId("userId", ctx), getId("workspaceId", ctx)
 }
 
-func GenerateJWT(userId uuid.UUID, email string) (string, error) {
+func GenerateJWT(userId uuid.UUID, email string, avatar string) (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour)
 	claims := &Claims{
 		Email:            email,
+		Avatar:           avatar,
 		UserID:           userId.String(),
 		RegisteredClaims: jwt.RegisteredClaims{ExpiresAt: jwt.NewNumericDate(expirationTime)},
 	}
@@ -169,6 +178,8 @@ func parseTokenToClaims(tokenString string) (*Claims, error) {
 	if err != nil {
 		return &Claims{}, err
 	}
+
+	// check if the token has not expired
 
 	claims, ok := token.Claims.(*Claims)
 	if !ok {

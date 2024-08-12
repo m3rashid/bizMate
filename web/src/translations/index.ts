@@ -1,7 +1,7 @@
-import english from './english.json'
-import hindi from './hindi.json'
-import i18next from 'i18next'
-import { initReactI18next } from 'react-i18next'
+import english from './english.json';
+import hindi from './hindi.json';
+import i18next from 'i18next';
+import { initReactI18next } from 'react-i18next';
 
 i18next.use(initReactI18next).init({
 	lng: 'hi',
@@ -9,6 +9,6 @@ i18next.use(initReactI18next).init({
 		en: { translation: english },
 		hi: { translation: hindi },
 	},
-})
+});
 
-export default i18next
+export default i18next;

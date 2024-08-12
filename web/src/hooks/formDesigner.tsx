@@ -1,99 +1,113 @@
-import { FormElementInstance, supportedWidgets } from '@components/forms/constants'
-import { Props } from '@components/forms/exposedProps'
-import { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core'
-import { arrayMove } from '@dnd-kit/sortable'
-import { usePopups } from '@hooks/popups'
-import { generateRandomString, handleViewTransition } from '@utils/helpers'
-import { atom, useRecoilState } from 'recoil'
+import { supportedWidgets } from '@/components/apps/forms/renderer/constants';
+import { FormElementType, Props } from '@/components/apps/forms/renderer/types';
+import { usePopups } from '@/hooks/popups';
+import { generateRandomString } from '@/utils/helpers';
+import { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core';
+import { arrayMove } from '@dnd-kit/sortable';
+import { atom, useRecoilState } from 'recoil';
 
 const propsNodeNotSelected: Props = {
-	previousText: [true, 'Previous button text', 'string'],
-	nextText: [true, 'Next button text', 'string'],
-}
+	cancelText: [true, 'Text on cancel button', 'string'],
+	submitText: [true, 'Text on submit button', 'string'],
+};
 
-export type FormDesignerType = 'header' | 'body'
+export type FormDesignerType = 'header' | 'body';
 export type FormDesigner = {
 	rootProps: {
-		nextText: string
-		previousText: string
-	}
-	viewType: 'build' | 'preview'
-	meta: FormElementInstance[]
-	selectedNode: FormElementInstance | null
-}
+		submitText: string;
+		cancelText: string;
+	};
+	viewType: 'build' | 'preview';
+	formBody: FormElementType[];
+	selectedNode: FormElementType | null;
+};
 
 const formDesignerDefaultState: FormDesigner = {
-	meta: [
-		{
-			id: '$name$',
-			name: 'input',
-			props: { name: 'name', label: 'Name', descriptionText: 'Please enter your full name here' },
-		},
-	],
+	formBody: [],
 	viewType: 'build',
 	selectedNode: null,
 	rootProps: {
-		previousText: 'Back',
-		nextText: 'Next',
+		cancelText: 'Back',
+		submitText: 'Next',
 	},
-}
+};
+
+const defaultFormDesignerFormBody: FormElementType[] = [
+	{
+		id: '$name$',
+		name: 'input',
+		props: { name: 'name', label: 'Name', descriptionText: 'Please enter your full name here' },
+	},
+];
 
 const formDesignerAtom = atom<FormDesigner>({
 	key: 'formDesignerAtom',
 	default: formDesignerDefaultState,
-})
+});
 
 export function useFormDesigner() {
-	const { addMessagePopup } = usePopups()
-	const [{ meta, viewType, selectedNode, rootProps }, setFormDesigner] = useRecoilState(formDesignerAtom)
+	const { addMessagePopup } = usePopups();
+	const [{ formBody, viewType, selectedNode, rootProps }, setFormDesigner] = useRecoilState(formDesignerAtom);
 
-	function getTaskPosition(meta: FormElementInstance[], id: string | UniqueIdentifier): number {
-		return meta.findIndex((el) => el.id === id)
-	}
-
-	function handleDragEnd(e: DragEndEvent) {
-		if (!e.over || e.active.id === e.over.id) return
-		handleViewTransition(() =>
-			setFormDesigner((prev) => {
-				if (!e.over) return prev
-				const source = getTaskPosition(prev.meta, e.active.id)
-				const destination = getTaskPosition(prev.meta, e.over.id)
-				return { ...prev, meta: arrayMove(prev.meta, source, destination) }
-			}),
-		)
-	}
-
-	function changeViewType(viewType?: FormDesigner['viewType']) {
-		handleViewTransition(() => setFormDesigner((prev) => ({ ...prev, viewType: viewType || (prev.viewType === 'build' ? 'preview' : 'build') })))
-	}
-
-	function insertNewNode(newNode: Omit<FormElementInstance, 'id'>) {
-		const node: FormElementInstance = { ...newNode, props: {}, id: generateRandomString() }
-		if (newNode.name === 'singleSelectInput' || newNode.name === 'radioInput') node.props = { options: [] }
-		handleViewTransition(() => setFormDesigner((prev) => ({ ...prev, selectedNode: node, meta: [...prev.meta, node] })))
-	}
-
-	function getSelectedNodeProps(): { _props: Props; values: Record<string, any> } {
-		if (!selectedNode) return { values: rootProps, _props: propsNodeNotSelected }
-		return {
-			values: meta.find((node) => node.id === selectedNode.id)?.props || {},
-			_props: supportedWidgets.find((widget) => widget.name === selectedNode.name)?.props || {},
+	function __setInitialFormBody(formBody: FormElementType[], cancelText: string, submitText: string) {
+		if (formBody.length !== 0) {
+			setFormDesigner((prev) => ({
+				...prev,
+				formBody: prev.formBody.length === 0 ? formBody : prev.formBody,
+				rootProps: { cancelText, submitText },
+			}));
+		} else {
+			setFormDesigner((prev) => ({
+				...prev,
+				formBody: prev.formBody.length === 0 ? defaultFormDesignerFormBody : prev.formBody,
+				rootProps: { cancelText, submitText },
+			}));
 		}
 	}
 
+	function getTaskPosition(formBody: FormElementType[], id: string | UniqueIdentifier): number {
+		return formBody.findIndex((el) => el.id === id);
+	}
+
+	function handleDragEnd(e: DragEndEvent) {
+		if (!e.over || e.active.id === e.over.id) return;
+		setFormDesigner((prev) => {
+			if (!e.over) return prev;
+			const source = getTaskPosition(prev.formBody, e.active.id);
+			const destination = getTaskPosition(prev.formBody, e.over.id);
+			return { ...prev, formBody: arrayMove(prev.formBody, source, destination) };
+		});
+	}
+
+	function changeViewType(viewType?: FormDesigner['viewType']) {
+		setFormDesigner((prev) => ({ ...prev, viewType: viewType || (prev.viewType === 'build' ? 'preview' : 'build') }));
+	}
+
+	function insertNewNode(newNode: Omit<FormElementType, 'id'>) {
+		const node: FormElementType = { ...newNode, props: {}, id: generateRandomString() };
+		if (newNode.name === 'singleSelectInput' || newNode.name === 'radioInput') node.props = { options: [] };
+		setFormDesigner((prev) => ({ ...prev, selectedNode: node, formBody: [...prev.formBody, node] }));
+	}
+
+	function getSelectedNodeProps(): { _props: Props; values: Record<string, any> } {
+		if (!selectedNode) return { values: rootProps, _props: propsNodeNotSelected };
+		return {
+			values: formBody.find((node) => node.id === selectedNode.id)?.props || {},
+			_props: supportedWidgets.find((widget) => widget.name === selectedNode.name)?.props || {},
+		};
+	}
+
 	function updateNode(nodeKey: string, props: Props) {
-		addMessagePopup({ id: nodeKey, message: 'Updated Element', type: 'success' })
-		handleViewTransition(() =>
-			setFormDesigner((prev) => ({ ...prev, meta: prev.meta.map((node) => ({ ...node, props: node.id === nodeKey ? props : node.props })) })),
-		)
+		addMessagePopup({ id: nodeKey, message: 'Updated Element', type: 'success' });
+		setFormDesigner((prev) => ({ ...prev, formBody: prev.formBody.map((node) => ({ ...node, props: node.id === nodeKey ? props : node.props })) }));
 	}
 
 	function removeNode(nodeKey: string) {
-		handleViewTransition(() => setFormDesigner((prev) => ({ ...prev, selectedNode: null, meta: prev.meta.filter((node) => node.id !== nodeKey) })))
+		setFormDesigner((prev) => ({ ...prev, selectedNode: null, formBody: prev.formBody.filter((node) => node.id !== nodeKey) }));
 	}
 
 	return {
-		meta,
+		formBody,
 		viewType,
 		rootProps,
 		removeNode,
@@ -103,6 +117,7 @@ export function useFormDesigner() {
 		handleDragEnd,
 		changeViewType,
 		setFormDesigner,
+		__setInitialFormBody,
 		getSelectedNodeProps,
-	}
+	};
 }

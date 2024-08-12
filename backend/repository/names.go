@@ -6,7 +6,7 @@ const (
 	WORKSPACES_MODEL_NAME               = "workspaces"
 	USERS_WORKSPACE_RELATION_MODEL_NAME = "users_workspaces_relation"
 	USER_INVITES_MODEL_NAME             = "user_invites"
-	FORM_RESPONSES_MODEL_NAME           = "form_responses"
+	FORM_RESPONSES_COLLECTION_NAME      = "form_responses"
 )
 
 const (

@@ -21,21 +21,25 @@ insert into forms (
 	description,
 	active,
 	send_response_email,
-	allow_anonymous_response,
-	allow_multiple_response
-) values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+	allow_anonymous_responses,
+	allow_multiple_responses,
+	submit_text,
+	cancel_text
+) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
 `
 
 type CreateFormParams struct {
-	ID                     uuid.UUID `json:"id"`
-	WorkspaceID            uuid.UUID `json:"workspace_id"`
-	CreatedByID            uuid.UUID `json:"created_by_id"`
-	Title                  string    `json:"title"`
-	Description            string    `json:"description"`
-	Active                 *bool     `json:"active"`
-	SendResponseEmail      *bool     `json:"send_response_email"`
-	AllowAnonymousResponse *bool     `json:"allow_anonymous_response"`
-	AllowMultipleResponse  *bool     `json:"allow_multiple_response"`
+	ID                      uuid.UUID `json:"id"`
+	WorkspaceID             uuid.UUID `json:"workspace_id"`
+	CreatedByID             uuid.UUID `json:"created_by_id"`
+	Title                   string    `json:"title"`
+	Description             string    `json:"description"`
+	Active                  *bool     `json:"active"`
+	SendResponseEmail       *bool     `json:"send_response_email"`
+	AllowAnonymousResponses *bool     `json:"allow_anonymous_responses"`
+	AllowMultipleResponses  *bool     `json:"allow_multiple_responses"`
+	SubmitText              *string   `json:"submit_text"`
+	CancelText              *string   `json:"cancel_text"`
 }
 
 func (q *Queries) CreateForm(ctx context.Context, arg CreateFormParams) error {
@@ -47,8 +51,10 @@ func (q *Queries) CreateForm(ctx context.Context, arg CreateFormParams) error {
 		arg.Description,
 		arg.Active,
 		arg.SendResponseEmail,
-		arg.AllowAnonymousResponse,
-		arg.AllowMultipleResponse,
+		arg.AllowAnonymousResponses,
+		arg.AllowMultipleResponses,
+		arg.SubmitText,
+		arg.CancelText,
 	)
 	return err
 }
@@ -63,16 +69,11 @@ func (q *Queries) DeleteForm(ctx context.Context, id uuid.UUID) error {
 }
 
 const getFormById = `-- name: GetFormById :one
-select id, deleted, created_at, workspace_id, created_by_id, title, description, form_body, active, send_response_email, allow_anonymous_response, allow_multiple_response from forms where id = $1 and workspace_id = $2 and deleted = false
+select id, deleted, created_at, workspace_id, created_by_id, title, description, form_body, active, submit_text, cancel_text, send_response_email, allow_anonymous_responses, allow_multiple_responses from forms where id = $1 and deleted = false
 `
 
-type GetFormByIdParams struct {
-	ID          uuid.UUID `json:"id"`
-	WorkspaceID uuid.UUID `json:"workspace_id"`
-}
-
-func (q *Queries) GetFormById(ctx context.Context, arg GetFormByIdParams) (Form, error) {
-	row := q.db.QueryRow(ctx, getFormById, arg.ID, arg.WorkspaceID)
+func (q *Queries) GetFormById(ctx context.Context, id uuid.UUID) (Form, error) {
+	row := q.db.QueryRow(ctx, getFormById, id)
 	var i Form
 	err := row.Scan(
 		&i.ID,
@@ -84,9 +85,11 @@ func (q *Queries) GetFormById(ctx context.Context, arg GetFormByIdParams) (Form,
 		&i.Description,
 		&i.FormBody,
 		&i.Active,
+		&i.SubmitText,
+		&i.CancelText,
 		&i.SendResponseEmail,
-		&i.AllowAnonymousResponse,
-		&i.AllowMultipleResponse,
+		&i.AllowAnonymousResponses,
+		&i.AllowMultipleResponses,
 	)
 	return i, err
 }
@@ -112,8 +115,10 @@ select
 	active,
 	description,
 	send_response_email,
-	allow_anonymous_response,
-	allow_multiple_response
+	allow_anonymous_responses,
+	allow_multiple_responses,
+	submit_text,
+	cancel_text
 from forms where workspace_id = $1 and deleted = false order by id desc limit $2 offset $3
 `
 
@@ -124,16 +129,18 @@ type PaginateFormsParams struct {
 }
 
 type PaginateFormsRow struct {
-	ID                     uuid.UUID          `json:"id"`
-	CreatedAt              pgtype.Timestamptz `json:"created_at"`
-	WorkspaceID            uuid.UUID          `json:"workspace_id"`
-	CreatedByID            uuid.UUID          `json:"created_by_id"`
-	Title                  string             `json:"title"`
-	Active                 *bool              `json:"active"`
-	Description            string             `json:"description"`
-	SendResponseEmail      *bool              `json:"send_response_email"`
-	AllowAnonymousResponse *bool              `json:"allow_anonymous_response"`
-	AllowMultipleResponse  *bool              `json:"allow_multiple_response"`
+	ID                      uuid.UUID          `json:"id"`
+	CreatedAt               pgtype.Timestamptz `json:"created_at"`
+	WorkspaceID             uuid.UUID          `json:"workspace_id"`
+	CreatedByID             uuid.UUID          `json:"created_by_id"`
+	Title                   string             `json:"title"`
+	Active                  *bool              `json:"active"`
+	Description             string             `json:"description"`
+	SendResponseEmail       *bool              `json:"send_response_email"`
+	AllowAnonymousResponses *bool              `json:"allow_anonymous_responses"`
+	AllowMultipleResponses  *bool              `json:"allow_multiple_responses"`
+	SubmitText              *string            `json:"submit_text"`
+	CancelText              *string            `json:"cancel_text"`
 }
 
 func (q *Queries) PaginateForms(ctx context.Context, arg PaginateFormsParams) ([]PaginateFormsRow, error) {
@@ -154,8 +161,10 @@ func (q *Queries) PaginateForms(ctx context.Context, arg PaginateFormsParams) ([
 			&i.Active,
 			&i.Description,
 			&i.SendResponseEmail,
-			&i.AllowAnonymousResponse,
-			&i.AllowMultipleResponse,
+			&i.AllowAnonymousResponses,
+			&i.AllowMultipleResponses,
+			&i.SubmitText,
+			&i.CancelText,
 		); err != nil {
 			return nil, err
 		}
@@ -173,19 +182,23 @@ update forms set
 	description = $3,
 	active = $4,
 	send_response_email = $5,
-	allow_anonymous_response = $6,
-	allow_multiple_response = $7
+	allow_anonymous_responses = $6,
+	allow_multiple_responses = $7,
+	submit_text = $8,
+	cancel_text = $9
 where id = $1 and deleted = false
 `
 
 type UpdateFormParams struct {
-	ID                     uuid.UUID `json:"id"`
-	Title                  string    `json:"title"`
-	Description            string    `json:"description"`
-	Active                 *bool     `json:"active"`
-	SendResponseEmail      *bool     `json:"send_response_email"`
-	AllowAnonymousResponse *bool     `json:"allow_anonymous_response"`
-	AllowMultipleResponse  *bool     `json:"allow_multiple_response"`
+	ID                      uuid.UUID `json:"id"`
+	Title                   string    `json:"title"`
+	Description             string    `json:"description"`
+	Active                  *bool     `json:"active"`
+	SendResponseEmail       *bool     `json:"send_response_email"`
+	AllowAnonymousResponses *bool     `json:"allow_anonymous_responses"`
+	AllowMultipleResponses  *bool     `json:"allow_multiple_responses"`
+	SubmitText              *string   `json:"submit_text"`
+	CancelText              *string   `json:"cancel_text"`
 }
 
 func (q *Queries) UpdateForm(ctx context.Context, arg UpdateFormParams) error {
@@ -195,8 +208,10 @@ func (q *Queries) UpdateForm(ctx context.Context, arg UpdateFormParams) error {
 		arg.Description,
 		arg.Active,
 		arg.SendResponseEmail,
-		arg.AllowAnonymousResponse,
-		arg.AllowMultipleResponse,
+		arg.AllowAnonymousResponses,
+		arg.AllowMultipleResponses,
+		arg.SubmitText,
+		arg.CancelText,
 	)
 	return err
 }

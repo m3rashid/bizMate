@@ -1,65 +1,67 @@
-import SkeletonTable from '../skeletons/table'
-import Button, { ButtonProps } from './button'
-import DataListHeader from './dataListHeader'
-import { NotFound } from './notFound'
-import Pagination from './pagination'
-import { TableExportProps } from './tableExport'
-import apiClient from '@api/client'
-import PlusIcon from '@heroicons/react/24/outline/PlusIcon'
-import { DbRow, PageRoute, PageSearchParams, PaginationResponse } from '@mytypes'
-import { useQuery } from '@tanstack/react-query'
-import { useNavigate } from '@tanstack/react-router'
-import qs from 'query-string'
-import { FC, ReactNode } from 'react'
-import { useTranslation } from 'react-i18next'
-import { twMerge } from 'tailwind-merge'
+'use client';
+
+import { Button, ButtonProps } from './button';
+import { NotFound } from './notFound';
+import { Pagination } from './pagination';
+import { TableExportProps } from './tableExport';
+import { apiClient } from '@/api/config';
+import { DataListHeader } from '@/components/lib/dataListHeader';
+import { SkeletonTable } from '@/components/lib/loaders';
+import { cn } from '@/utils/helpers';
+import { DbRow, PageSearchParams, PaginationResponse } from '@/utils/types';
+import PlusIcon from '@heroicons/react/24/outline/PlusIcon';
+import { useQuery } from '@tanstack/react-query';
+import { useTransitionRouter } from 'next-view-transitions';
+import qs from 'query-string';
+import { FC, ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export type TableColumn<T> = {
-	title: string
-	dataKey: keyof T
-	className?: string
-	tableTdClassName?: string
-	render?: FC<{ row: T; rowIndex: number }>
-}
+	title: string;
+	dataKey: keyof T;
+	className?: string;
+	tableTdClassName?: string;
+	render?: FC<{ row: T; rowIndex: number }>;
+};
 
 export type TableProps<T> = {
-	pageSize?: number
-	tableExportprops?: TableExportProps
-	paginateUrl: string
-	queryKeys: string[]
-	columns: Array<TableColumn<T>>
-	workspaceId: string
-	title?: string
-	description?: string
-	addButtonLink?: PageRoute
-	addButtonProps?: ButtonProps
-	rootClassName?: string
-	tableRowClassName?: (data: T, rowIndex: number) => string
-	tableRootClassName?: string
-	tableHeadingRowClassName?: string
-	tableHeadingClassName?: (columnIndex: number) => string
-	onEdit?: (item: T) => void
-	emptyState?: ReactNode
-	defaultEmptyStateName?: string
-	otherActions?: ReactNode
-}
+	pageSize?: number;
+	tableExportprops?: TableExportProps;
+	paginateUrl: string;
+	queryKeys: string[];
+	columns: Array<TableColumn<T>>;
+	workspaceId: string;
+	title?: string;
+	description?: string;
+	addButtonLink?: string;
+	addButtonProps?: ButtonProps;
+	rootClassName?: string;
+	tableRowClassName?: (data: T, rowIndex: number) => string;
+	tableRootClassName?: string;
+	tableHeadingRowClassName?: string;
+	tableHeadingClassName?: (columnIndex: number) => string;
+	onEdit?: (item: T) => void;
+	emptyState?: ReactNode;
+	useDefaultEmptyState?: boolean;
+	defaultEmptyStateName?: string;
+	otherActions?: ReactNode;
+};
 
-function Table<T extends DbRow>(props: TableProps<T>) {
-	const { t } = useTranslation()
-	const navigate = useNavigate()
-	const locationSearch = qs.parse(location.search)
+export function Table<T extends DbRow>(props: TableProps<T>) {
+	const { t } = useTranslation();
+	const router = useTransitionRouter();
+	const locationSearch = qs.parse(location.search);
 
 	const { isPending, data, refetch, isFetching } = useQuery<PaginationResponse<T>>({
 		queryKey: [...props.queryKeys, props.pageSize || 15, locationSearch.page, props.workspaceId],
 		queryFn: () =>
 			apiClient(`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${locationSearch.page}&limit=${props.pageSize || 15}`),
-	})
+	});
 
-	if (isPending || isFetching) return <SkeletonTable contentLength={5} />
-	if (!data) return <NotFound />
-
+	if (isPending || isFetching) return <SkeletonTable contentLength={5} />;
+	if (!data) return <NotFound />;
 	return (
-		<div className={twMerge('h-full w-full', props.rootClassName)}>
+		<div className={cn('h-full w-full', props.rootClassName)}>
 			<DataListHeader
 				{...{
 					refetch,
@@ -75,18 +77,18 @@ function Table<T extends DbRow>(props: TableProps<T>) {
 				}}
 			/>
 
-			<div className={twMerge('flow-root min-h-72 overflow-x-auto overflow-y-hidden', props.tableRootClassName)}>
+			<div className={cn('flow-root min-h-72 overflow-x-auto overflow-y-hidden', props.tableRootClassName)}>
 				{data.docs.length === 0 ? (
 					props.defaultEmptyStateName ? (
-						<div className="flex h-72 flex-col items-center justify-center gap-4 rounded-md border-2 border-gray-200">
-							<div className="text-center">
-								<h3 className="text-lg font-semibold text-gray-800">{`${t('No')} ${props.defaultEmptyStateName} ${t('found')}`}</h3>
-								<p className="text-sm text-gray-500">{`${t('Get started by creating a new')} ${props.defaultEmptyStateName}`}</p>
+						<div className='flex h-72 flex-col items-center justify-center gap-4 rounded-md border-2 border-gray-200'>
+							<div className='text-center'>
+								<h3 className='text-lg font-semibold text-gray-800'>{`${t('No')} ${props.defaultEmptyStateName} ${t('found')}`}</h3>
+								<p className='text-sm text-gray-500'>{`${t('Get started by creating a new')} ${props.defaultEmptyStateName}`}</p>
 							</div>
 							{props.addButtonLink ? (
 								<Button
-									LeftIcon={<PlusIcon className="h-5 w-5" />}
-									onClick={() => navigate({ to: props.addButtonLink, params: { workspaceId: props.workspaceId } })}
+									LeftIcon={<PlusIcon className='h-5 w-5' />}
+									onClick={() => router.push(props.addButtonLink || '')}
 									label={`${t('Create')} ${props.title || props.defaultEmptyStateName}`}
 									{...props.addButtonProps}
 								/>
@@ -95,21 +97,21 @@ function Table<T extends DbRow>(props: TableProps<T>) {
 					) : props.emptyState ? (
 						props.emptyState
 					) : (
-						<div className="" />
+						<div className='' />
 					)
 				) : (
-					<div className="-my-2">
-						<div className="inline-block min-w-full py-2 align-middle">
-							<table className="w-full">
+					<div className='-my-2'>
+						<div className='inline-block min-w-full py-2 align-middle'>
+							<table className='w-full'>
 								<thead>
-									<tr className={twMerge('select-none bg-pageBg', props.tableHeadingRowClassName)}>
+									<tr className={cn('select-none bg-pageBg', props.tableHeadingRowClassName)}>
 										{props.columns.map((column, columnIndex) => (
 											<th
-												scope="col"
+												scope='col'
 												key={column.title + columnIndex}
-												className={twMerge(
-													' p-3 text-left text-sm font-semibold',
-													props.tableHeadingClassName ? props.tableHeadingClassName(columnIndex) : '',
+												className={cn(
+													'p-3 text-left text-sm font-semibold',
+													props.tableHeadingClassName ? props.tableHeadingClassName(columnIndex) : ''
 												)}
 											>
 												{column.title}
@@ -121,12 +123,12 @@ function Table<T extends DbRow>(props: TableProps<T>) {
 									{(data.docs || []).map((row, rowIndex) => (
 										<tr
 											key={row.id}
-											className={twMerge('border-t border-borderColor', props.tableRowClassName ? props.tableRowClassName(row, rowIndex) : '')}
+											className={cn('border-t border-borderColor', props.tableRowClassName ? props.tableRowClassName(row, rowIndex) : '')}
 										>
 											{props.columns.map((column, columnIndex) => (
 												<td
 													key={row[column.dataKey] + String(columnIndex)}
-													className={twMerge('whitespace-nowrap px-3 py-1 text-left text-sm', column.tableTdClassName)}
+													className={cn('whitespace-nowrap px-3 py-1 text-left text-sm', column.tableTdClassName)}
 												>
 													{column.render ? <column.render {...{ row, rowIndex }} /> : (String(row[column.dataKey]) satisfies ReactNode)}
 												</td>
@@ -148,12 +150,13 @@ function Table<T extends DbRow>(props: TableProps<T>) {
 					limit: data.limit,
 					page: data.page,
 					totalDocs: data.totalDocs,
-					onNextClick: () => navigate({ search: (prev: PageSearchParams) => ({ page: prev.page + 1 }) }),
-					onPreviousClick: () => navigate({ search: (prev: PageSearchParams) => ({ page: prev.page !== 1 ? prev.page - 1 : prev }) }),
+					// TODO
+					onNextClick: () => {},
+					onPreviousClick: () => {},
+					// onNextClick: () => navigate({ search: (prev: PageSearchParams) => ({ page: prev.page + 1 }) }),
+					// onPreviousClick: () => navigate({ search: (prev: PageSearchParams) => ({ page: prev.page !== 1 ? prev.page - 1 : prev }) }),
 				}}
 			/>
 		</div>
-	)
+	);
 }
-
-export default Table

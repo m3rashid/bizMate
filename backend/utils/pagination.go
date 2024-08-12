@@ -8,7 +8,7 @@ import (
 
 type PaginationRequestQuery struct {
 	Page  int32 `query:"page"`
-	Limit int32 `query:"limit,required"`
+	Limit int32 `query:"limit"`
 }
 
 type PaginationResponse[T any] struct {
@@ -25,7 +25,6 @@ func (pgRes *PaginationResponse[T]) ParseQuery(ctx *fiber.Ctx, maxLimit int32) e
 	reqQuery := PaginationRequestQuery{}
 	if err := ctx.QueryParser(&reqQuery); err != nil {
 		fmt.Println(err)
-		return err
 	}
 
 	pageNo := Ternary(reqQuery.Page == 0, 1, reqQuery.Page)

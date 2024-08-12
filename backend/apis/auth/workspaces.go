@@ -5,7 +5,45 @@ import (
 	"bizMate/utils"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
+
+func checkWorkspace(ctx *fiber.Ctx) error {
+	_workspaceId := ctx.Params("workspaceId")
+	if _workspaceId == "" {
+		return fiber.NewError(fiber.StatusBadRequest)
+	}
+
+	workspaceUuid, err := utils.StringToUuid(_workspaceId)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	if workspaceUuid == uuid.Nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	var workspace repository.Workspace
+	workspaces, ok := getWorkSpaceFromCache(workspaceUuid)
+	if ok {
+		return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(workspaces, "Valid Workspace"))
+	}
+
+	pgConn, err := utils.GetPostgresDB()
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	queries := repository.New(pgConn)
+	workspace, err = queries.GetWorkspaceById(ctx.Context(), workspaceUuid)
+	if err != nil {
+		go utils.LogError(uuid.Nil, workspace.ID, workspace_not_found_by_id, utils.LogDataType{"error": err.Error()})
+		return fiber.NewError(fiber.StatusBadRequest)
+	}
+
+	go addWorkSpaceToCache(workspace)
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(workspace, "Valid Workspace"))
+}
 
 func getWorkspaces(ctx *fiber.Ctx) error {
 	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
@@ -20,12 +58,21 @@ func getWorkspaces(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
+	for _, workspace := range workspaces {
+		go addWorkSpaceToCache(workspace)
+	}
+
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(workspaces, "Workspaces retrieved successfully"))
 }
 
 func createWorkspace(ctx *fiber.Ctx) error {
+	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	if userId == uuid.Nil {
+		return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized")
+	}
 	reqBody := createWorkspaceReq{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
+		go utils.LogError(userId, uuid.Nil, create_workspace_bad_request, utils.LogDataType{"error": err.Error()})
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
@@ -34,7 +81,6 @@ func createWorkspace(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	pgConn, err := utils.GetPostgresDB()
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
@@ -57,23 +103,25 @@ func createWorkspace(ctx *fiber.Ctx) error {
 
 	if err != nil {
 		tx.Rollback(ctx.Context())
+		go utils.LogError(userId, workspace.ID, create_workspace_fail, utils.LogDataType{"error": err.Error()})
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	err = txQueries.AddUserToWorkspace(ctx.Context(), repository.AddUserToWorkspaceParams{
+	if err = txQueries.AddUserToWorkspace(ctx.Context(), repository.AddUserToWorkspaceParams{
 		UserID:      userId,
 		WorkspaceID: workspace.ID,
-	})
-
-	if err != nil {
+	}); err != nil {
 		tx.Rollback(ctx.Context())
+		go utils.LogError(userId, workspace.ID, create_workspace_fail, utils.LogDataType{"error": err.Error()})
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	err = tx.Commit(ctx.Context())
 	if err != nil {
+		go utils.LogError(userId, workspace.ID, create_workspace_fail, utils.LogDataType{"error": err.Error()})
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
-
+	go addWorkSpaceToCache(workspace)
+	go utils.LogInfo(userId, workspace.ID, create_workspace_success, utils.LogDataType{"id": workspace.ID, "name": workspace.Name})
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(workspace, "Workspace created successfully"))
 }

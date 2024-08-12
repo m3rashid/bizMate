@@ -3,12 +3,7 @@ package repository
 import (
 	"fmt"
 	"reflect"
-	"time"
-
-	"github.com/google/uuid"
 )
-
-const FORM_BODY_COLLECTION_NAME = "forms_body"
 
 const (
 	formBoolean     bool   = false
@@ -137,11 +132,11 @@ var ElementPropsMap = map[FormElementName]Props{
 	RadioInput:        radioInputProps,
 }
 
-type FormElementInstanceType struct {
-	ID       string                    `json:"id" bson:"id"`
-	Name     FormElementName           `json:"name" bson:"name"`
-	Props    map[string]interface{}    `json:"props" bson:"props"`
-	Children []FormElementInstanceType `json:"children"`
+type FormElementType struct {
+	ID       string                 `json:"id" bson:"id"`
+	Name     FormElementName        `json:"name" bson:"name"`
+	Props    map[string]interface{} `json:"props" bson:"props"`
+	Children []FormElementType      `json:"children"`
 }
 
 var inputElements = []FormElementName{
@@ -166,7 +161,7 @@ func (elName FormElementName) GetSupportedProps() Props {
 	return val
 }
 
-func (el FormElementInstanceType) validateFormElementInstance() []string {
+func (el FormElementType) validateFormElementInstance() []string {
 	errorArr := []string{}
 	elementProps := el.Props
 	supportedProps := el.Name.GetSupportedProps()
@@ -203,7 +198,7 @@ func (el FormElementInstanceType) validateFormElementInstance() []string {
 	return errorArr
 }
 
-func ValidateFormBodyMeta(els []FormElementInstanceType) [][]string {
+func ValidateFormBodyMeta(els []FormElementType) [][]string {
 	validationErrors := [][]string{}
 	for _, elementInstance := range els {
 		validErr := elementInstance.validateFormElementInstance()
@@ -214,13 +209,4 @@ func ValidateFormBodyMeta(els []FormElementInstanceType) [][]string {
 	return validationErrors
 }
 
-type FormBodyMeta struct {
-	ID           uuid.UUID                 `json:"id"`
-	Meta         []FormElementInstanceType `json:"meta"`
-	NextText     string                    `json:"next_text"`
-	PreviousText string                    `json:"previous_text"`
-	CreatedAt    time.Time                 `json:"created_at"`
-	CreatedByID  uuid.UUID                 `json:"created_by_id"`
-}
-
-type FormBody []FormBodyMeta
+type FormBody []FormElementType
