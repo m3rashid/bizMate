@@ -1,6 +1,6 @@
+import { Text, View } from 'react-native-animatable';
 import { LoggedInStackParamsList } from '../types';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Text, View } from 'tamagui';
 
 export function Home({}: NativeStackScreenProps<LoggedInStackParamsList, 'home'>) {
   return (

@@ -14,6 +14,7 @@ class MainActivity : ReactActivity() {
    */
   override fun getMainComponentName(): String = "bizmate"
 
+  //react-native-screens override
 	override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(null)
   }
