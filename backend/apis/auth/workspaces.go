@@ -37,11 +37,11 @@ func checkWorkspace(ctx *fiber.Ctx) error {
 	queries := repository.New(pgConn)
 	workspace, err = queries.GetWorkspaceById(ctx.Context(), workspaceUuid)
 	if err != nil {
-		utils.LogError(uuid.Nil, workspace.ID, workspace_not_found_by_id, utils.LogDataType{"error": err.Error()})
+		go utils.LogError(uuid.Nil, workspace.ID, workspace_not_found_by_id, utils.LogDataType{"error": err.Error()})
 		return fiber.NewError(fiber.StatusBadRequest)
 	}
 
-	addWorkSpaceToCache(workspace)
+	go addWorkSpaceToCache(workspace)
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(workspace, "Valid Workspace"))
 }
 
@@ -59,7 +59,7 @@ func getWorkspaces(ctx *fiber.Ctx) error {
 	}
 
 	for _, workspace := range workspaces {
-		addWorkSpaceToCache(workspace)
+		go addWorkSpaceToCache(workspace)
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(workspaces, "Workspaces retrieved successfully"))
@@ -72,7 +72,7 @@ func createWorkspace(ctx *fiber.Ctx) error {
 	}
 	reqBody := createWorkspaceReq{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
-		utils.LogError(userId, uuid.Nil, create_workspace_bad_request, utils.LogDataType{"error": err.Error()})
+		go utils.LogError(userId, uuid.Nil, create_workspace_bad_request, utils.LogDataType{"error": err.Error()})
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
@@ -103,7 +103,7 @@ func createWorkspace(ctx *fiber.Ctx) error {
 
 	if err != nil {
 		tx.Rollback(ctx.Context())
-		utils.LogError(userId, workspace.ID, create_workspace_fail, utils.LogDataType{"error": err.Error()})
+		go utils.LogError(userId, workspace.ID, create_workspace_fail, utils.LogDataType{"error": err.Error()})
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
@@ -112,16 +112,16 @@ func createWorkspace(ctx *fiber.Ctx) error {
 		WorkspaceID: workspace.ID,
 	}); err != nil {
 		tx.Rollback(ctx.Context())
-		utils.LogError(userId, workspace.ID, create_workspace_fail, utils.LogDataType{"error": err.Error()})
+		go utils.LogError(userId, workspace.ID, create_workspace_fail, utils.LogDataType{"error": err.Error()})
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	err = tx.Commit(ctx.Context())
 	if err != nil {
-		utils.LogError(userId, workspace.ID, create_workspace_fail, utils.LogDataType{"error": err.Error()})
+		go utils.LogError(userId, workspace.ID, create_workspace_fail, utils.LogDataType{"error": err.Error()})
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
-	addWorkSpaceToCache(workspace)
-	utils.LogInfo(userId, workspace.ID, create_workspace_success, utils.LogDataType{"id": workspace.ID, "name": workspace.Name})
+	go addWorkSpaceToCache(workspace)
+	go utils.LogInfo(userId, workspace.ID, create_workspace_success, utils.LogDataType{"id": workspace.ID, "name": workspace.Name})
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(workspace, "Workspace created successfully"))
 }
