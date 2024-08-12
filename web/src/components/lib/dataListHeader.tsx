@@ -11,7 +11,7 @@ import { ReactNode } from 'react';
 type DataListHeaderProps = {
 	title?: string;
 	isFetching: boolean;
-	refetch: () => void;
+	refetch?: () => void;
 	workspaceId: string;
 	description?: string;
 	hideRefresh?: boolean;
@@ -39,7 +39,7 @@ export function DataListHeader(props: DataListHeaderProps) {
 					<Button
 						size='small'
 						variant='simple'
-						onClick={() => props.refetch()}
+						onClick={() => props.refetch?.()}
 						LeftIcon={<ArrowPathIcon className={cn('h-[18px] w-[18px]', props.isFetching ? 'animate-spin' : '')} />}
 					/>
 				) : null}

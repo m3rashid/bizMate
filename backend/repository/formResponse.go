@@ -108,9 +108,9 @@ type GetFormResponsesCountParams struct {
 }
 
 func GetFormResponsesCount(ctx context.Context, db *mongo.Database, params GetFormResponsesCountParams) (int64, error) {
-	count, err := db.Collection(FORM_RESPONSES_COLLECTION_NAME).CountDocuments(ctx, FormResponse{
-		FormID:      params.FormID.String(),
-		WorkspaceID: params.WorkspaceID.String(),
+	count, err := db.Collection(FORM_RESPONSES_COLLECTION_NAME).CountDocuments(ctx, bson.D{
+		{Key: "form_id", Value: params.FormID.String()},
+		{Key: "workspace_id", Value: params.WorkspaceID.String()},
 	})
 	if err != nil {
 		return 0, err
@@ -126,9 +126,9 @@ type GetAllFormResponsesParams struct {
 
 func GetAllFormResponses(ctx context.Context, db *mongo.Database, params GetAllFormResponsesParams) ([]FormResponse, error) {
 	formResponses := []FormResponse{}
-	cursor, err := db.Collection(FORM_RESPONSES_COLLECTION_NAME).Find(ctx, FormResponse{
-		WorkspaceID: params.WorkspaceID.String(),
-		FormID:      params.FormID.String(),
+	cursor, err := db.Collection(FORM_RESPONSES_COLLECTION_NAME).Find(ctx, bson.D{
+		{Key: "form_id", Value: params.FormID.String()},
+		{Key: "workspace_id", Value: params.WorkspaceID.String()},
 	})
 	if err != nil {
 		return nil, err

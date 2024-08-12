@@ -6,9 +6,8 @@ import (
 
 func analyzeForm(form *repository.Form, responses *[]repository.FormResponse) ([]Analysis, error) {
 	fields := []Analysis{}
-	formBody := []repository.FormElementType{}
 
-	for _, formElement := range formBody {
+	for _, formElement := range form.FormBody {
 		if formElement.Name == repository.TogglerInput || formElement.Name == repository.SingleSelectInput || formElement.Name == repository.RadioInput {
 			booleanFieldName, ok := formElement.Props["name"]
 			if !ok {
@@ -43,15 +42,6 @@ func analyzeForm(form *repository.Form, responses *[]repository.FormResponse) ([
 			}
 		}
 	}
-
-	// formResponses := []map[string]interface{}{}
-	// for _, rsp := range *responses {
-	// 	temp := map[string]interface{}{}
-	// 	if err := json.Unmarshal([]byte(rsp.Response), &temp); err != nil {
-	// 		return []Analysis{}, err
-	// 	}
-	// 	formResponses = append(formResponses, temp)
-	// }
 
 	analysisResults := []Analysis{}
 	for _, field := range fields {
