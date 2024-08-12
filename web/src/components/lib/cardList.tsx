@@ -7,7 +7,7 @@ import { SkeletonCardList } from '@/components/lib/loaders';
 import { Pagination } from '@/components/lib/pagination';
 import { TableExportProps } from '@/components/lib/tableExport';
 import { cn } from '@/utils/helpers';
-import { DbRow, PageSearchParams, PaginationResponse } from '@/utils/types';
+import { ApiResponse, DbRow, PaginationResponse } from '@/utils/types';
 import PlusIcon from '@heroicons/react/24/outline/PlusIcon';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
@@ -45,10 +45,12 @@ export function CardList<T extends DbRow>(props: CardListProps<T>) {
 		isPending,
 		isFetching,
 		data: result,
-	} = useQuery<{ data: PaginationResponse<T>; message: string; success: boolean }>({
-		queryKey: [...props.queryKeys, props.pageSize || 15, locationSearch.page, props.workspaceId],
+	} = useQuery({
+		queryKey: props.queryKeys,
 		queryFn: () =>
-			apiClient(`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${locationSearch.page}&limit=${props.pageSize || 15}`),
+			apiClient<ApiResponse<PaginationResponse<T>>>(
+				`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${locationSearch.page}&limit=${props.pageSize || 15}`
+			),
 	});
 
 	if (isPending) return <SkeletonCardList />;

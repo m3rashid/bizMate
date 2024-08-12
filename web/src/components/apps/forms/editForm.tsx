@@ -43,7 +43,7 @@ function AddEditForm(props: AddEditFormProps) {
 
 	const { mutate: createForm } = useMutation({
 		mutationKey: ['createForm'],
-		mutationFn: (form: Partial<Form>) => apiClient(`/${props.workspaceId}/forms/create`, { method: 'POST', body: JSON.stringify(form) }),
+		mutationFn: (form: Partial<Form>) => apiClient(`/${props.workspaceId}/forms/create`, { method: 'POST', data: form }),
 		onSuccess: (data) => {
 			props.onClose();
 			addMessagePopup({ id: 'successCreatingForm', message: 'Form created successfully', type: 'success' });
@@ -56,7 +56,7 @@ function AddEditForm(props: AddEditFormProps) {
 
 	const { mutate: updateForm } = useMutation({
 		mutationKey: ['editForm'],
-		mutationFn: (form: Partial<Form>) => apiClient(`/${props.workspaceId}/forms/update`, { method: 'POST', body: JSON.stringify(form) }),
+		mutationFn: (form: Partial<Form>) => apiClient(`/${props.workspaceId}/forms/update`, { method: 'POST', data: form }),
 		onSuccess: () => {
 			props.onClose();
 			addMessagePopup({ id: 'successUpdatingForm', message: 'Form updated successfully', type: 'success' });

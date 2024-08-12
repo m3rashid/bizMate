@@ -8,7 +8,7 @@ import { apiClient } from '@/api/config';
 import { DataListHeader } from '@/components/lib/dataListHeader';
 import { SkeletonTable } from '@/components/lib/loaders';
 import { cn } from '@/utils/helpers';
-import { DbRow, PageSearchParams, PaginationResponse } from '@/utils/types';
+import { ApiResponse, DbRow, PageSearchParams, PaginationResponse } from '@/utils/types';
 import PlusIcon from '@heroicons/react/24/outline/PlusIcon';
 import { useQuery } from '@tanstack/react-query';
 import { useTransitionRouter } from 'next-view-transitions';
@@ -52,14 +52,21 @@ export function Table<T extends DbRow>(props: TableProps<T>) {
 	const router = useTransitionRouter();
 	const locationSearch = qs.parse(location.search);
 
-	const { isPending, data, refetch, isFetching } = useQuery<PaginationResponse<T>>({
+	const {
+		isPending,
+		data: res,
+		refetch,
+		isFetching,
+	} = useQuery({
 		queryKey: [...props.queryKeys, props.pageSize || 15, locationSearch.page, props.workspaceId],
 		queryFn: () =>
-			apiClient(`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${locationSearch.page}&limit=${props.pageSize || 15}`),
+			apiClient<ApiResponse<PaginationResponse<T>>>(
+				`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${locationSearch.page}&limit=${props.pageSize || 15}`
+			),
 	});
 
 	if (isPending || isFetching) return <SkeletonTable contentLength={5} />;
-	if (!data) return <NotFound />;
+	if (!res) return <NotFound />;
 	return (
 		<div className={cn('h-full w-full', props.rootClassName)}>
 			<DataListHeader
@@ -78,7 +85,7 @@ export function Table<T extends DbRow>(props: TableProps<T>) {
 			/>
 
 			<div className={cn('flow-root min-h-72 overflow-x-auto overflow-y-hidden', props.tableRootClassName)}>
-				{data.docs.length === 0 ? (
+				{res.data.docs.length === 0 ? (
 					props.defaultEmptyStateName ? (
 						<div className='flex h-72 flex-col items-center justify-center gap-4 rounded-md border-2 border-gray-200'>
 							<div className='text-center'>
@@ -120,7 +127,7 @@ export function Table<T extends DbRow>(props: TableProps<T>) {
 									</tr>
 								</thead>
 								<tbody>
-									{(data.docs || []).map((row, rowIndex) => (
+									{(res.data.docs || []).map((row, rowIndex) => (
 										<tr
 											key={row.id}
 											className={cn('border-t border-borderColor', props.tableRowClassName ? props.tableRowClassName(row, rowIndex) : '')}
@@ -144,12 +151,12 @@ export function Table<T extends DbRow>(props: TableProps<T>) {
 
 			<Pagination
 				{...{
-					count: data.count,
-					hasNextPage: data.hasNextPage,
-					hasPreviousPage: data.hasPreviousPage,
-					limit: data.limit,
-					page: data.page,
-					totalDocs: data.totalDocs,
+					count: res.data.count,
+					hasNextPage: res.data.hasNextPage,
+					hasPreviousPage: res.data.hasPreviousPage,
+					limit: res.data.limit,
+					page: res.data.page,
+					totalDocs: res.data.totalDocs,
 					// TODO
 					onNextClick: () => {},
 					onPreviousClick: () => {},

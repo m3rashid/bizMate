@@ -56,9 +56,7 @@ export function RadioInput(props: SimpleRadioProps) {
 						key={option.value}
 						value={option.value}
 						defaultChecked={option.value === props.defaultValue}
-						className={({ focus }) =>
-							cn('relative flex cursor-pointer bg-white p-[2px] shadow-sm', props.radioClassname ? props.radioClassname({ focus }) : '')
-						}
+						className={({ focus }) => cn('relative flex cursor-pointer p-[2px]', props.radioClassname ? props.radioClassname({ focus }) : '')}
 					>
 						{({ checked }) => (
 							<div className='flex w-full gap-2'>

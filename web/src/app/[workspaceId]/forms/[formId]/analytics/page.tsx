@@ -1,15 +1,17 @@
+import { AnalyticsList } from './components/analyticsList';
 import { getSessionCookie } from '@/actions/auth';
-import { apiClient } from '@/api/config';
-import { FormAnalyticsGraphs } from '@/components/apps/forms/designer/analytics';
+import { apiClient, getQueryClientForServer } from '@/api/config';
+import { queryKeys } from '@/api/queryKeys';
 import { Analysis } from '@/components/apps/forms/designer/analyticsCard';
-import { DataListHeader } from '@/components/lib/dataListHeader';
 import { PageNotFound } from '@/components/lib/notFound';
 import { PageContainer } from '@/components/pageContainer';
 import { isUuid } from '@/utils/helpers';
 import { ApiResponse, NextjsPageProps } from '@/utils/types';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { redirect } from 'next/navigation';
 
 export default async function FormAnalytics(props: NextjsPageProps<{ workspaceId: string; formId: string }>) {
+	const queryClient = getQueryClientForServer();
 	const sessionCookie = await getSessionCookie();
 	if (!sessionCookie) {
 		// TODO: handle redirect
@@ -18,27 +20,20 @@ export default async function FormAnalytics(props: NextjsPageProps<{ workspaceId
 
 	if (!isUuid(props.params.workspaceId) || !isUuid(props.params.formId)) return <PageNotFound />;
 
-	const result: ApiResponse<{
-		title: string;
-		description: string;
-		analysis: Analysis[];
-	}> = await apiClient(`/${props.params.workspaceId}/forms/analysis/${props.params.formId}`, {
-		headers: { Authorization: sessionCookie },
+	await queryClient.prefetchQuery({
+		queryKey: [queryKeys.formAnalytics],
+		queryFn: () =>
+			apiClient<ApiResponse<{ title: string; description: string; analysis: Analysis[] }>>(
+				`/${props.params.workspaceId}/forms/analysis/${props.params.formId}`,
+				{ headers: { Authorization: sessionCookie } }
+			),
 	});
 
-	if (!result) return <PageNotFound />;
 	return (
-		<PageContainer workspaceId={props.params.workspaceId} bodyClassName='bg-white'>
-			<DataListHeader
-				hideRefresh
-				isFetching={false}
-				// refetch={() => {}}
-				workspaceId={props.params.workspaceId}
-				description={result.data.description}
-				title={`Form Analytics (${result.data.title})`}
-			/>
-
-			<FormAnalyticsGraphs analysis={result.data.analysis} />
-		</PageContainer>
+		<HydrationBoundary state={dehydrate(queryClient)}>
+			<PageContainer workspaceId={props.params.workspaceId} bodyClassName='bg-white'>
+				<AnalyticsList formId={props.params.formId} workspaceId={props.params.workspaceId} />
+			</PageContainer>
+		</HydrationBoundary>
 	);
 }

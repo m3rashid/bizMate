@@ -4,7 +4,7 @@ import { apiClient } from '@/api/config';
 import { Loader } from '@/components/lib/loaders';
 import { cn } from '@/utils/helpers';
 import { getUniqueObjectsByKey } from '@/utils/helpers';
-import { DbRow, PaginationResponse } from '@/utils/types';
+import { ApiResponse, DbRow, PaginationResponse } from '@/utils/types';
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react';
 import CheckIcon from '@heroicons/react/20/solid/CheckIcon';
 import ChevronUpDownIcon from '@heroicons/react/20/solid/ChevronUpDownIcon';
@@ -46,14 +46,17 @@ export function AsyncSingleSelect<T extends DbRow>(props: AsyncSingleSelectProps
 		if (hasNextPageRef.current) setPage((prev) => prev + 1);
 	}
 
-	const { isFetching } = useQuery<PaginationResponse<T>>({
-		select: (data) => {
-			optionsRef.current = getUniqueObjectsByKey([...optionsRef.current, ...data.docs], props.valueKey as string);
-			hasNextPageRef.current = data.hasNextPage;
-			return data;
+	const { isFetching } = useQuery({
+		select: (res) => {
+			optionsRef.current = getUniqueObjectsByKey([...optionsRef.current, ...(res?.data.docs || [])], props.valueKey as string);
+			hasNextPageRef.current = res?.data.hasNextPage || false;
+			return res;
 		},
 		queryKey: [...props.queryKeys, page, props.pageSize || 15, props.workspaceId],
-		queryFn: () => apiClient(`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${page}&limit=${props.pageSize || 15}`),
+		queryFn: () =>
+			apiClient<ApiResponse<PaginationResponse<T>>>(
+				`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${page}&limit=${props.pageSize || 15}`
+			),
 	});
 
 	return (

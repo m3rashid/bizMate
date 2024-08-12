@@ -55,5 +55,6 @@ next-env.d.ts
 
 mobile/.yarn
 web/.yarn
+web/.next
 
 .pnp.*

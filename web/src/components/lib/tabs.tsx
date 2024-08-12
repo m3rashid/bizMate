@@ -3,7 +3,7 @@
 import { NotFound } from '@/components/lib/notFound';
 import { SingleSelectInput } from '@/components/lib/singleSelectInput';
 import { cn } from '@/utils/helpers';
-import { FC, ReactNode, useState } from 'react';
+import { FC, ReactNode } from 'react';
 
 export type Tab<T> = {
 	id: string;

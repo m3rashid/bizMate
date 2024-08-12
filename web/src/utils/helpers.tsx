@@ -1,4 +1,5 @@
 import tailwindConfig from '../../tailwind.config';
+import { ApiResponse, Workspace } from './types';
 import { apiClient } from '@/api/config';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -52,7 +53,6 @@ export function safeJsonParse(content: string, defaultReturn: any, validations?:
 }
 
 export function shuffleArray(arr: Array<any>) {
-	console.log(arr);
 	const newArr = [...arr];
 	return newArr.sort(() => Math.random() - 0.5);
 }
@@ -73,6 +73,8 @@ export function getTailwindColor(name: string) {
 }
 
 export async function checkWorkspace(workspaceId: string, sessionCookie: any) {
-	const res = await apiClient(`/auth/${workspaceId}/check-workspace`, { headers: { Authorization: sessionCookie } });
+	const res = await apiClient<ApiResponse<Workspace>>(`/auth/${workspaceId}/check-workspace`, {
+		headers: { Authorization: sessionCookie },
+	});
 	return res;
 }

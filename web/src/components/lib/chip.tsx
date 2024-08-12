@@ -1,5 +1,4 @@
 import { cn } from '@/utils/helpers';
-import { UnionOfObject } from '@/utils/types';
 import { PropsWithChildren } from 'react';
 
 const chipVariants = {

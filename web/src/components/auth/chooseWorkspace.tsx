@@ -44,7 +44,7 @@ export function CreateWorkspace() {
 			addMessagePopup({ id: 'wsCreated', type: 'success', message: 'Workspace created successfully' });
 			setOpen(false);
 		},
-		mutationFn: (data: { name: string; description: string }) => apiClient('/auth/workspaces/create', { method: 'POST', body: JSON.stringify(data) }),
+		mutationFn: (data: { name: string; description: string }) => apiClient('/auth/workspaces/create', { method: 'POST', data: data }),
 	});
 
 	function handleSubmit(e: FormEvent<HTMLFormElement>) {

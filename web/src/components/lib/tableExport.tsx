@@ -31,13 +31,16 @@ export function TableExport(props: TableExportProps) {
 	const { addMessagePopup } = usePopups();
 	const [open, setOpen] = useState(false);
 
-	const { data: result, isPending } = useQuery<ApiResponse<{ fileNameWithoutExt: string; fields: Array<{ name: string; label: string }> }>>({
+	const { data: result, isPending } = useQuery({
 		queryKey: [props.tableName, props.workspaceId, ...(props.mutationKeys || []), ...(props.formId ? [props.formId] : [])],
 		queryFn: () =>
-			apiClient(`/${props.workspaceId}/export/table-fields`, {
-				method: 'POST',
-				body: JSON.stringify({ tableName: props.tableName, ...(props.formId ? { formId: props.formId } : {}) }),
-			}),
+			apiClient<ApiResponse<{ fileNameWithoutExt: string; fields: Array<{ name: string; label: string }> }>>(
+				`/${props.workspaceId}/export/table-fields`,
+				{
+					method: 'POST',
+					data: { tableName: props.tableName, ...(props.formId ? { formId: props.formId } : {}) },
+				}
+			),
 	});
 
 	const { mutate: exportTable } = useMutation({
@@ -54,7 +57,7 @@ export function TableExport(props: TableExportProps) {
 		mutationFn: (data: any) =>
 			apiClient(
 				`/${props.workspaceId}/export/table`,
-				{ method: 'POST', body: JSON.stringify(data) },
+				{ method: 'POST', data: data },
 				{
 					downloadableContent: {
 						fileName: `${result?.data.fileNameWithoutExt}.${data.format}` || `${props.tableName}.${data.format}`,

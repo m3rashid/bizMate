@@ -1,12 +1,15 @@
+import { WorkspaceList } from '../components/workspaceList';
 import { getSessionCookie } from '@/actions/auth';
-import { apiClient } from '@/api/config';
-import { CreateWorkspace, WorkspaceCard } from '@/components/auth/chooseWorkspace';
+import { apiClient, getQueryClientForServer } from '@/api/config';
+import { queryKeys } from '@/api/queryKeys';
+import { CreateWorkspace } from '@/components/auth/chooseWorkspace';
 import { PageContainer } from '@/components/pageContainer';
-import { ServerSideMessagePopup } from '@/components/serverSidePopup';
 import { ApiResponse, Workspace } from '@/utils/types';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { redirect } from 'next/navigation';
 
 export default async function ChooseWorkspace() {
+	const queryClient = getQueryClientForServer();
 	const sessionCookie = await getSessionCookie();
 
 	if (!sessionCookie) {
@@ -14,18 +17,19 @@ export default async function ChooseWorkspace() {
 		redirect('/auth/login');
 	}
 
-	const result: ApiResponse<Workspace[]> = await apiClient('/auth/workspaces', { headers: { Authorization: sessionCookie } });
+	await queryClient.prefetchQuery({
+		queryKey: [queryKeys.workspaces],
+		queryFn: () => apiClient<ApiResponse<Workspace[]>>('/auth/workspaces', { headers: { Authorization: sessionCookie } }),
+	});
 
 	return (
-		<PageContainer>
-			<div className='flex flex-wrap items-center gap-4'>
-				{result ? (
-					result.data?.map((workspace) => <WorkspaceCard key={workspace.id} {...workspace} />)
-				) : (
-					<ServerSideMessagePopup id='no-workspaces' message='Could not get workspaces' type='error' />
-				)}
-				<CreateWorkspace />
-			</div>
-		</PageContainer>
+		<HydrationBoundary state={dehydrate(queryClient)}>
+			<PageContainer>
+				<div className='flex flex-wrap items-center gap-4'>
+					<WorkspaceList />
+					<CreateWorkspace />
+				</div>
+			</PageContainer>
+		</HydrationBoundary>
 	);
 }

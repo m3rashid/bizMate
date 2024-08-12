@@ -1,4 +1,5 @@
 import './globals.css';
+import TanstackQueryProvider from '@/api/provider';
 import { RecoilProvider } from '@/atoms/provider';
 import { ActionPopupContainer, MessagePopupContainer } from '@/components/lib/popups';
 import { getTailwindColor } from '@/utils/helpers';
@@ -20,12 +21,14 @@ export default async function RootLayout({ children }: Readonly<PropsWithChildre
 		<ViewTransitions>
 			<html lang='en'>
 				<body className={font.className}>
-					<NextTopLoader color={getTailwindColor('primary')} />
-					<RecoilProvider>
-						{children}
-						<MessagePopupContainer />
-						<ActionPopupContainer />
-					</RecoilProvider>
+					<TanstackQueryProvider>
+						<NextTopLoader color={getTailwindColor('primary')} />
+						<RecoilProvider>
+							{children}
+							<MessagePopupContainer />
+							<ActionPopupContainer />
+						</RecoilProvider>
+					</TanstackQueryProvider>
 				</body>
 			</html>
 		</ViewTransitions>

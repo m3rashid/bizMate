@@ -11,6 +11,7 @@ export function Paragraph(props: ParagraphProps) {
 
 export type ImageProps = ImgHTMLAttributes<HTMLImageElement>;
 export function Image(props: ImageProps) {
+	// eslint-disable-next-line jsx-a11y/alt-text, @next/next/no-img-element
 	return <img {...props} className={cn('inline-block', props.className)} />;
 }
 

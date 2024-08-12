@@ -10,7 +10,7 @@ export const useCreateWorkspaceMutation = (token: string) => {
 		mutationFn: (data: { name: string; description: string }) =>
 			apiClient('/auth/workspaces/create', {
 				method: 'POST',
-				body: JSON.stringify(data),
+				data: data,
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},

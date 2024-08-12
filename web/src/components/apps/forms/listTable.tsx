@@ -2,6 +2,7 @@
 
 import { FormCard } from './card';
 import AddEditForm from './editForm';
+import { queryKeys } from '@/api/queryKeys';
 import { Button } from '@/components/lib/button';
 import { CardList } from '@/components/lib/cardList';
 import { Form } from '@/utils/types';
@@ -32,7 +33,7 @@ export function ListForms(props: ListFormsProps) {
 			<CardList<Form>
 				title='Forms'
 				paginateUrl={`/${props.workspaceId}/forms/all`}
-				queryKeys={['getForms']}
+				queryKeys={[queryKeys.forms]}
 				workspaceId={props.workspaceId}
 				defaultEmptyStateName='forms'
 				otherActions={
