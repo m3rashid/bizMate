@@ -1,7 +1,8 @@
 'use client';
 
 import { Button } from '@/components/lib/button';
-import { ArrowsPointingOutIcon } from '@heroicons/react/24/outline';
+import { Tooltip } from '@/components/lib/tooltip';
+import { ArrowsPointingOutIcon, ChartBarIcon, ChartPieIcon } from '@heroicons/react/24/outline';
 import 'chart.js/auto';
 import { useState } from 'react';
 import { Bar, Pie } from 'react-chartjs-2';
@@ -19,38 +20,33 @@ const borderColor = ['#FB7185', '#4ADE80', '#22D3EE', '#9CA3AF', '#A78BFA', '#93
 const backgroundColor = borderColor.map((t) => t + '80');
 
 export function AnalyticsCard(props: AnalyticsCardProps) {
-	const [showOptions, setShowOptions] = useState(false);
 	const [chartType, setChartType] = useState<ChartType>(props.defaultChartType || 'pie');
 	const scoreArr = Object.entries(props.analytics.counts).reduce<Array<[string, number]>>((acc, [key, value]) => [...acc, [key, value]], []);
 
 	return (
-		<div
-			className='relative flex h-full flex-col justify-between'
-			onMouseEnter={() => setShowOptions(true)}
-			onMouseLeave={() => setShowOptions(false)}
-		>
-			<h3 className='mb-4 font-semibold text-disabled'>{props.analytics.label}</h3>
+		<div className='relative flex h-full flex-col justify-between'>
+			<div className={props.position === 'card' ? 'flex w-full items-center justify-between' : 'relative'}>
+				{props.position === 'card' ? <h3 className='mb-1.5 mt-1.5 font-semibold text-disabled'>{props.analytics.label}</h3> : null}
 
-			{showOptions ? (
-				<div
-					className={twMerge(
-						'absolute right-0 flex w-full items-center justify-between gap-2',
-						props.position === 'card' ? 'top-8 flex-row' : 'top-0 flex-row-reverse'
-					)}
-				>
-					<Button variant='simple' size='small' onClick={() => setChartType((prev) => (prev === 'bar' ? 'pie' : 'bar'))}>
-						{chartType === 'pie' ? 'Show Bar Chart' : 'Show Pie Chart'}
-					</Button>
+				<div className={props.position === 'card' ? 'flex items-center gap-2' : 'absolute right-0'}>
+					<Tooltip label={chartType === 'pie' ? 'Switch to bar chart' : 'Switch to pie chart'}>
+						<Button variant='simple' size='small' onClick={() => setChartType((prev) => (prev === 'bar' ? 'pie' : 'bar'))}>
+							{chartType === 'pie' ? <ChartBarIcon className='h-5 w-5' /> : <ChartPieIcon className='h-5 w-5' />}
+						</Button>
+					</Tooltip>
+
 					{props.position === 'card' ? (
-						<Button
-							size='small'
-							variant='simple'
-							onClick={() => props.maximize(chartType)}
-							LeftIcon={<ArrowsPointingOutIcon className='h-6 w-6' />}
-						/>
+						<Tooltip label='Maximize'>
+							<Button
+								size='small'
+								variant='simple'
+								onClick={() => props.maximize(chartType)}
+								LeftIcon={<ArrowsPointingOutIcon className='h-5 w-5' />}
+							/>
+						</Tooltip>
 					) : null}
 				</div>
-			) : null}
+			</div>
 
 			<div className={twMerge('flex items-center justify-center p-4', props.position === 'card' ? 'h-96' : 'h-[500px]')}>
 				{chartType === 'pie' ? (

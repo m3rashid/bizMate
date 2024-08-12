@@ -2,7 +2,7 @@ import { getSessionCookie } from '@/actions/auth';
 import { AuthRoot } from '@/components/auth/root';
 import { redirect } from 'next/navigation';
 
-export default async function Login() {
+export default async function LoginPage() {
 	const sessionCookie = await getSessionCookie();
 
 	if (sessionCookie) {

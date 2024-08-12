@@ -41,6 +41,9 @@ importers:
       dayjs:
         specifier: ^1.11.12
         version: 1.11.12
+      i18next:
+        specifier: ^23.12.2
+        version: 23.12.2
       iron-session:
         specifier: ^8.0.2
         version: 8.0.2
