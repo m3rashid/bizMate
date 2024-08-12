@@ -16,13 +16,11 @@ import TrashIcon from '@heroicons/react/24/outline/TrashIcon';
 import { useMutation } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import Link from 'next/link';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { twMerge } from 'tailwind-merge';
 
 export function FormCard(props: Form & { onEdit: () => void; workspaceId: string }) {
 	const { t } = useTranslation();
-	const [showActions, setShowActions] = useState(false);
 	const { addMessagePopup, addActionPopup, removeActionPopup } = usePopups();
 
 	const { mutate: deleteForm } = useMutation({
@@ -59,11 +57,7 @@ export function FormCard(props: Form & { onEdit: () => void; workspaceId: string
 	}
 
 	return (
-		<div
-			onMouseEnter={() => setShowActions(true)}
-			onMouseLeave={() => setShowActions(false)}
-			className='relative h-min select-none rounded-lg border-2 border-white p-2.5 shadow-lg hover:border-primary'
-		>
+		<div className='relative h-min select-none rounded-lg border-2 border-white p-2.5 shadow-lg hover:border-primary'>
 			<div className='flex flex-grow gap-2'>
 				<Link
 					href={`/${props.workspaceId}/forms/${props.id}/preview`}
@@ -94,16 +88,14 @@ export function FormCard(props: Form & { onEdit: () => void; workspaceId: string
 			</div>
 			{props.description ? <div className='text-sm'>{props.description}</div> : null}
 
-			{showActions ? (
-				<div className='absolute right-1 top-1'>
-					<Tooltip label='Edit Form' position='left'>
-						<PencilSquareIcon onClick={props.onEdit} className='h-8 w-8 rounded-md p-1.5 text-disabled hover:bg-primaryLight' />
-					</Tooltip>
-					<Tooltip label='Delete Form' position='left'>
-						<TrashIcon className='h-8 w-8 rounded-md p-1.5 text-disabled hover:bg-dangerLight' onClick={handleDeleteForm} />
-					</Tooltip>
-				</div>
-			) : null}
+			<div className='absolute right-1 top-1'>
+				<Tooltip label='Edit Form' position='left'>
+					<PencilSquareIcon onClick={props.onEdit} className='h-8 w-8 rounded-md p-1.5 text-disabled hover:bg-primaryLight' />
+				</Tooltip>
+				<Tooltip label='Delete Form' position='left'>
+					<TrashIcon className='h-8 w-8 rounded-md p-1.5 text-disabled hover:bg-dangerLight' onClick={handleDeleteForm} />
+				</Tooltip>
+			</div>
 
 			<div className='mt-4 flex w-full flex-wrap gap-2'>
 				<Tooltip label='Copy Form URL' position='right'>

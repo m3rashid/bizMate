@@ -28,13 +28,16 @@ export type SingleSelectInputProps = {
 
 export function SingleSelectInput(props: SingleSelectInputProps) {
 	const { t } = useTranslation();
+
 	const options: Option[] = useMemo(() => {
 		if (props.options.length === 0) return [{ label: t('No options available'), value: '' }];
-		if (props.shuffle) shuffleArray(props.options);
-		if (typeof props.options[0] === 'string' || typeof props.options[0] === 'number') {
-			return props.options.map<Option>((op) => ({ label: op as string, value: op as string }));
+
+		let newOptions = props.options;
+		if (props.shuffle) newOptions = shuffleArray(props.options);
+		if (typeof newOptions[0] === 'string' || typeof newOptions[0] === 'number') {
+			return newOptions.map<Option>((op) => ({ label: op as string, value: op as string }));
 		}
-		return props.options as Option[];
+		return newOptions as Option[];
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.options]);
 

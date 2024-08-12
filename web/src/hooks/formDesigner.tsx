@@ -7,15 +7,15 @@ import { arrayMove } from '@dnd-kit/sortable';
 import { atom, useRecoilState } from 'recoil';
 
 const propsNodeNotSelected: Props = {
-	previousText: [true, 'Previous button text', 'string'],
-	nextText: [true, 'Next button text', 'string'],
+	cancelText: [true, 'Text on cancel button', 'string'],
+	submitText: [true, 'Text on submit button', 'string'],
 };
 
 export type FormDesignerType = 'header' | 'body';
 export type FormDesigner = {
 	rootProps: {
-		nextText: string;
-		previousText: string;
+		submitText: string;
+		cancelText: string;
 	};
 	viewType: 'build' | 'preview';
 	formBody: FormElementType[];
@@ -23,20 +23,22 @@ export type FormDesigner = {
 };
 
 const formDesignerDefaultState: FormDesigner = {
-	formBody: [
-		{
-			id: '$name$',
-			name: 'input',
-			props: { name: 'name', label: 'Name', descriptionText: 'Please enter your full name here' },
-		},
-	],
+	formBody: [],
 	viewType: 'build',
 	selectedNode: null,
 	rootProps: {
-		previousText: 'Back',
-		nextText: 'Next',
+		cancelText: 'Back',
+		submitText: 'Next',
 	},
 };
+
+const defaultFormDesignerFormBody: FormElementType[] = [
+	{
+		id: '$name$',
+		name: 'input',
+		props: { name: 'name', label: 'Name', descriptionText: 'Please enter your full name here' },
+	},
+];
 
 const formDesignerAtom = atom<FormDesigner>({
 	key: 'formDesignerAtom',
@@ -46,6 +48,22 @@ const formDesignerAtom = atom<FormDesigner>({
 export function useFormDesigner() {
 	const { addMessagePopup } = usePopups();
 	const [{ formBody, viewType, selectedNode, rootProps }, setFormDesigner] = useRecoilState(formDesignerAtom);
+
+	function __setInitialFormBody(formBody: FormElementType[], cancelText: string, submitText: string) {
+		if (formBody.length !== 0) {
+			setFormDesigner((prev) => ({
+				...prev,
+				formBody: prev.formBody.length === 0 ? formBody : prev.formBody,
+				rootProps: { cancelText, submitText },
+			}));
+		} else {
+			setFormDesigner((prev) => ({
+				...prev,
+				formBody: prev.formBody.length === 0 ? defaultFormDesignerFormBody : prev.formBody,
+				rootProps: { cancelText, submitText },
+			}));
+		}
+	}
 
 	function getTaskPosition(formBody: FormElementType[], id: string | UniqueIdentifier): number {
 		return formBody.findIndex((el) => el.id === id);
@@ -99,6 +117,7 @@ export function useFormDesigner() {
 		handleDragEnd,
 		changeViewType,
 		setFormDesigner,
+		__setInitialFormBody,
 		getSelectedNodeProps,
 	};
 }

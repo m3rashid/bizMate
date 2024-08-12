@@ -1,7 +1,6 @@
 package cache
 
 import (
-	"fmt"
 	"sync"
 )
 
@@ -31,7 +30,7 @@ func (c *LocalCacheType[KeyType, ValueType]) Reset() {
 	c.mu.Lock()
 	defer func() {
 		c.mu.Unlock()
-		fmt.Println("Cache reset for", c.Name)
+		// fmt.Println("Cache reset for", c.Name)
 	}()
 
 	c.items = make(map[KeyType]*ValueType)
@@ -46,7 +45,7 @@ func (c *LocalCacheType[KeyType, ValueType]) WithCustomEvictionStrategy(
 	evictFn func(oldestKey KeyType, items *(map[KeyType]*ValueType), order *[]KeyType),
 ) {
 	c.evictFn = evictFn
-	fmt.Println("Custom eviction strategy set for", c.Name)
+	// fmt.Println("Custom eviction strategy set for", c.Name)
 }
 
 func (c *LocalCacheType[KeyType, ValueType]) Get(key KeyType) (ValueType, bool) {
@@ -82,7 +81,7 @@ func (c *LocalCacheType[KeyType, ValueType]) Add(key KeyType, value ValueType) {
 		oldestKey := c.order[0]
 
 		if c.evictFn != nil {
-			fmt.Println("eviction function call for ", c.Name, len(c.order), c.maxSize)
+			// fmt.Println("eviction function call for ", c.Name, len(c.order), c.maxSize)
 			c.evictFn(oldestKey, &c.items, &c.order)
 		} else {
 			delete(c.items, oldestKey)
@@ -91,7 +90,7 @@ func (c *LocalCacheType[KeyType, ValueType]) Add(key KeyType, value ValueType) {
 			c.order = append(c.order, key)
 		}
 	}
-	fmt.Println("adding to cache", c.Name, key, c.maxSize, len(c.items))
+	// fmt.Println("adding to cache", c.Name, key, c.maxSize, len(c.items))
 }
 
 func (c *LocalCacheType[KeyType, ValueType]) RefreshOrder(key KeyType) {

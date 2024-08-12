@@ -34,8 +34,8 @@ export function FormDesignerCore() {
 					selectedNode ? 'bg-gray-100' : 'ring-2 ring-danger'
 				)}
 			>
-				<Button disabled className='select-none' label={rootProps.previousText} variant={viewType === 'build' ? 'disabled' : 'simple'} />
-				<Button disabled type='submit' className='select-none' label={rootProps.nextText} variant={viewType === 'build' ? 'disabled' : 'primary'} />
+				<Button disabled className='select-none' label={rootProps.cancelText} variant={viewType === 'build' ? 'disabled' : 'simple'} />
+				<Button disabled type='submit' className='select-none' label={rootProps.submitText} variant={viewType === 'build' ? 'disabled' : 'primary'} />
 			</div>
 		</form>
 	);

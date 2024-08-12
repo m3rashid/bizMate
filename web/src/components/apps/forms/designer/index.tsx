@@ -9,9 +9,15 @@ import { useFormDesigner } from '@/hooks/formDesigner';
 import { Form } from '@/utils/types';
 import { closestCorners, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import { useEffect } from 'react';
 
 export function FormDesignerComponent(props: { form: Form }) {
-	const { handleDragEnd } = useFormDesigner();
+	const { handleDragEnd, __setInitialFormBody } = useFormDesigner();
+
+	useEffect(() => {
+		__setInitialFormBody(props.form.form_body, props.form.cancel_text, props.form.submit_text);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	const sensors = useSensors(
 		useSensor(PointerSensor),

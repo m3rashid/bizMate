@@ -1,5 +1,4 @@
 import './globals.css';
-import { ApiProvider } from '@/api/provider';
 import { RecoilProvider } from '@/atoms/provider';
 import { ActionPopupContainer, MessagePopupContainer } from '@/components/lib/popups';
 import { getTailwindColor } from '@/utils/helpers';
@@ -22,13 +21,11 @@ export default async function RootLayout({ children }: Readonly<PropsWithChildre
 			<html lang='en'>
 				<body className={font.className}>
 					<NextTopLoader color={getTailwindColor('primary')} />
-					<ApiProvider>
-						<RecoilProvider>
-							{children}
-							<MessagePopupContainer />
-							<ActionPopupContainer />
-						</RecoilProvider>
-					</ApiProvider>
+					<RecoilProvider>
+						{children}
+						<MessagePopupContainer />
+						<ActionPopupContainer />
+					</RecoilProvider>
 				</body>
 			</html>
 		</ViewTransitions>

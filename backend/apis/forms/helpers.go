@@ -47,6 +47,12 @@ type CreateFormReqBody struct {
 	AllowMultipleResponses  *bool  `json:"allow_multiple_responses"`
 }
 
+type FormAnalysisResponse struct {
+	Title       string     `json:"title"`
+	Description string     `json:"description"`
+	Analysis    []Analysis `json:"analysis"`
+}
+
 type UpdateFormReqBody struct {
 	CreateFormReqBody
 	ID uuid.UUID `json:"id" validate:"required"`

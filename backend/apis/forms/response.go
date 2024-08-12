@@ -117,6 +117,12 @@ func getFormResponseAnalysis(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid form id")
 	}
 
+	if formAnalysisResponse, ok := getFormAnalyticsFromCache(formId); ok {
+		return ctx.Status(fiber.StatusOK).JSON(
+			utils.SendResponse(formAnalysisResponse, "Form analysis fetched successfully"),
+		)
+	}
+
 	pgConn, err := utils.GetPostgresDB()
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
@@ -154,8 +160,14 @@ func getFormResponseAnalysis(ctx *fiber.Ctx) error {
 	}
 
 	go utils.LogInfo(userId, workspaceId, get_form_analysis_success, utils.LogDataType{"form_id": formId.String()})
+	response := FormAnalysisResponse{
+		Title:       form.Title,
+		Description: form.Description,
+		Analysis:    formAnalysis,
+	}
+	go addFormAnalyticsToCache(formId, response)
 	return ctx.Status(fiber.StatusOK).JSON(
-		utils.SendResponse(fiber.Map{"title": form.Title, "description": form.Description, "analysis": formAnalysis}, "Form analysis fetched successfully"),
+		utils.SendResponse(response, "Form analysis fetched successfully"),
 	)
 }
 

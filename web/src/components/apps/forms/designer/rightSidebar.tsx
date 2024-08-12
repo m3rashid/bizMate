@@ -66,7 +66,7 @@ function propsToFormBody({ _props, values }: PropsToFormBodyProps): FormElementT
 				},
 			});
 		} else if (value === 'selectOptions') {
-			formBody.push({ id, name: 'selectListInput', props: { name: 'options', required: true } });
+			formBody.push({ id, name: 'selectListInput', props: { name: 'options', required: true, initialOptions: values.options } });
 		} else if (value === 'children') {
 		}
 	}
@@ -114,8 +114,8 @@ export function RightSidebar() {
 				...prev,
 				rootProps: {
 					title: formData.title,
-					previousText: formData.previousText,
-					nextText: formData.nextText,
+					cancelText: formData.previousText,
+					submitText: formData.nextText,
 					description: formData.description,
 					sendResponseEmail: formData.sendResponseEmail,
 					allowResponseUpdate: formData.allowResponseUpdate,

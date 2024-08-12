@@ -63,7 +63,7 @@ function SingleOption(props: { option: string; onRemove: () => void; onEdit: () 
 			onMouseEnter={() => setMouseOver(true)}
 			onMouseLeave={() => setMouseOver(false)}
 			className={cn(
-				'relative h-min rounded-lg border-2 border-borderColor bg-white px-2 py-1.5 hover:border-primary',
+				'relative h-min rounded-lg border-2 border-borderColor bg-white px-2 py-1.5 text-sm hover:border-primary',
 				isDragging ? 'cursor-grab' : ''
 			)}
 			style={{
@@ -98,13 +98,14 @@ function SingleOption(props: { option: string; onRemove: () => void; onEdit: () 
 export type SelectListInputProps = {
 	name?: string;
 	required?: boolean;
+	initialOptions?: string[];
 };
 
 export function SelectListInput(props: SelectListInputProps) {
 	const { t } = useTranslation();
 	const { addMessagePopup } = usePopups();
 	const [open, setOpen] = useState(false);
-	const [options, setOptions] = useState<string[]>([]);
+	const [options, setOptions] = useState<string[]>(props.initialOptions || []);
 	const [editData, setEditData] = useState<string | undefined>(undefined);
 
 	const sensors = useSensors(

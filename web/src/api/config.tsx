@@ -1,13 +1,32 @@
+import { QueryClient } from '@tanstack/react-query';
+import axios, { AxiosRequestConfig } from 'axios';
+import { cache } from 'react';
+
+export const getQueryClient = cache(() => {
+	return new QueryClient({
+		defaultOptions: {
+			queries: {
+				retry: false,
+				refetchOnMount: false,
+				refetchOnReconnect: false,
+				refetchOnWindowFocus: false,
+			},
+		},
+	});
+});
+
 type OtherRequestOptions = {
 	baseUrl?: string;
 	downloadableContent?: { fileName: string };
 };
 
 export const baseUrl = process.env.NEXT_PUBLIC_BACKEND_API;
-export async function apiClient(endpoint: string, requestOptions?: RequestInit, otherOptions?: OtherRequestOptions) {
+export async function apiClient(endpoint: string, requestOptions?: AxiosRequestConfig, otherOptions?: OtherRequestOptions) {
 	try {
-		const res = await fetch((otherOptions?.baseUrl ?? baseUrl) + endpoint, {
-			credentials: 'include',
+		const res = await axios({
+			baseURL: otherOptions?.baseUrl ?? baseUrl,
+			url: endpoint,
+			withCredentials: true,
 			...(requestOptions || {}),
 			headers: {
 				method: 'GET',
@@ -15,9 +34,7 @@ export async function apiClient(endpoint: string, requestOptions?: RequestInit, 
 				...(requestOptions?.headers || {}),
 			},
 		});
-		if (!res.ok) throw new Error('Failed to fetch');
-		const data = await res.json();
-		return data;
+		return res.data;
 	} catch (err: any) {
 		return null;
 	}

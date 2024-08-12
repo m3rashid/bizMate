@@ -102,6 +102,7 @@ func main() {
 	utils.InitLogLocalCache()
 	auth.InitLocalUsersCache()
 	auth.InitLocalWorkspacesCache()
+	forms.InitLocalFormAnalyticsCache()
 
 	app.Get("/", func(ctx *fiber.Ctx) error {
 		return ctx.SendString(utils.TranslateToLocalLanguage(ctx, "Hello, World!"))
