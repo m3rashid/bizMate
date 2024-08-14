@@ -3,7 +3,6 @@ package auth
 import (
 	"bizMate/repository"
 	"bizMate/utils"
-	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -71,8 +70,8 @@ func setTokenCookie(ctx *fiber.Ctx, token string) {
 		Name:     "token",
 		Value:    "Bearer " + token,
 		HTTPOnly: true,
-		Domain:   utils.Ternary(os.Getenv("SERVER_MODE") == "production", ".m3rashid.in", "localhost"),
-		Secure:   os.Getenv("SERVER_MODE") == "production",
+		Domain:   utils.Ternary(*utils.Env.IsProduction, ".m3rashid.in", "localhost"),
+		Secure:   *utils.Env.IsProduction,
 	})
 }
 

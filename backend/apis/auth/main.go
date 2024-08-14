@@ -2,7 +2,6 @@ package auth
 
 import (
 	"bizMate/utils"
-	"os"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -15,10 +14,6 @@ import (
 )
 
 func Setup(initialRoute string, app *fiber.App) {
-	googleOauthClientId := os.Getenv("GOOGLE_OAUTH_CLIENT_ID")
-	googleOauthClientSecret := os.Getenv("GOOGLE_OAUTH_CLIENT_SECRET")
-	googleOauthCallbackUrl := os.Getenv("GOOGLE_OAUTH_CALLBACK_URL")
-
 	goth_fiber.SessionStore = session.New(session.Config{
 		CookiePath:     "/",
 		CookieHTTPOnly: true,
@@ -26,10 +21,16 @@ func Setup(initialRoute string, app *fiber.App) {
 		Storage:        memory.New(),
 		Expiration:     30 * time.Minute,
 		KeyGenerator:   uuid.New().String,
-		CookieSecure:   os.Getenv("SERVER_MODE") == "production",
+		CookieSecure:   *utils.Env.IsProduction,
 	})
 
-	goth.UseProviders(google.New(googleOauthClientId, googleOauthClientSecret, googleOauthCallbackUrl))
+	goth.UseProviders(
+		google.New(
+			utils.Env.GoogleOauthClientId,
+			utils.Env.GoogleOauthClientSecret,
+			utils.Env.GoogleOauthCallbackUrl,
+		),
+	)
 
 	app.Get(initialRoute+"/user", utils.CheckAuthMiddlewareWithoutWorkspace, getUser)
 	app.Get(initialRoute+"/check", utils.CheckAuthMiddlewareWithWorkspace, checkAuth)

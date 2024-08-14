@@ -1,7 +1,7 @@
-package cache
+package async
 
 import (
-	"os"
+	"bizMate/utils"
 
 	"github.com/go-redis/redis/v8"
 )
@@ -9,10 +9,10 @@ import (
 var redisClient *redis.Client
 
 func GetRedisClient() *redis.Client {
-	redisUrl := os.Getenv("REDIS_URL")
 	if redisClient == nil {
-		newRedisClient := redis.NewClient(&redis.Options{Addr: redisUrl})
-		redisClient = newRedisClient
+		redisClient = redis.NewClient(&redis.Options{
+			Addr: utils.Env.RedisUrl,
+		})
 	}
 
 	return redisClient

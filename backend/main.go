@@ -13,7 +13,6 @@ import (
 	"bizMate/apis/seed"
 	"bizMate/repository"
 	"bizMate/utils"
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -25,7 +24,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/favicon"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/joho/godotenv"
 	"golang.org/x/text/language"
 )
 
@@ -35,13 +33,9 @@ func init() {
 		return
 	}
 
-	err := godotenv.Load(".env.local") // this will fail in production because we set environment variables in the server directly
-	if err != nil {
-		fmt.Println("Error loading .env file")
-		return
-	}
+	utils.SetupEnv()
 
-	if err = repository.CreateMongoCollectionIndices(); err != nil {
+	if err := repository.CreateMongoCollectionIndices(); err != nil {
 		log.Fatal("Error creating collection indices", err)
 	}
 }
@@ -50,10 +44,10 @@ func main() {
 	app := fiber.New(fiber.Config{
 		CaseSensitive:         true,
 		PassLocalsToViews:     true,
-		AppName:               os.Getenv("APP_NAME"),
+		AppName:               utils.Env.AppName,
 		RequestMethods:        []string{"GET", "POST", "HEAD", "OPTIONS"},
 		Concurrency:           256 * 1024 * 1024,
-		ServerHeader:          os.Getenv("APP_NAME"),
+		ServerHeader:          utils.Env.AppName,
 		DisableStartupMessage: true,
 		ErrorHandler: func(ctx *fiber.Ctx, err error) error {
 			code := fiber.StatusInternalServerError
@@ -69,8 +63,8 @@ func main() {
 	})
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     utils.Ternary(os.Getenv("SERVER_MODE") == "production", "https://bizmate.m3rashid.in,https://bizmate-ecru.vercel.app", "http://localhost:3000"),
 		AllowCredentials: true,
+		AllowOrigins:     utils.Ternary(*utils.Env.IsProduction, "https://bizmate.m3rashid.in", "http://localhost:3000"),
 	}))
 
 	app.Static("/public", "./public", fiber.Static{
@@ -79,11 +73,11 @@ func main() {
 	})
 
 	app.Use(favicon.New(favicon.Config{
-		File: "./public/icons/favicon.ico",
 		URL:  "/favicon.ico",
+		File: "./public/icons/favicon.ico",
 	}))
 
-	if os.Getenv("SERVER_MODE") == "production" {
+	if *utils.Env.IsProduction {
 		app.Use(limiter.New(limiter.Config{
 			Max:               100,
 			Expiration:        1 * time.Minute,
@@ -100,17 +94,13 @@ func main() {
 		}),
 	)
 
-	// init local cache containers
-	utils.InitLogLocalCache()
-	auth.InitLocalUsersCache()
-	auth.InitLocalWorkspacesCache()
-	forms.InitLocalFormAnalyticsCache()
+	utils.InitLogsLocalPubSub()
 
 	app.Get("/", func(ctx *fiber.Ctx) error {
 		return ctx.SendString(utils.TranslateToLocalLanguage(ctx, "Hello, World!"))
 	})
 
-	if os.Getenv("SERVER_MODE") == "development" {
+	if !*utils.Env.IsProduction {
 		app.Use(logger.New())
 	}
 
@@ -124,10 +114,10 @@ func main() {
 	payments.Setup("/:workspaceId/payments", app)
 	projects.Setup("/:workspaceId/projects", app)
 
-	if os.Getenv("SERVER_MODE") == "development" {
+	if !*utils.Env.IsProduction {
 		seed.Setup("/seed", app)
 	}
 
-	log.Println("Server is running in "+os.Getenv("SERVER_MODE")+" mode on port:", os.Getenv("PORT"))
-	app.Listen(":" + os.Getenv("PORT"))
+	log.Println("Server is running in "+utils.Env.ServerMode+" mode on port:", utils.Env.Port)
+	app.Listen(":" + utils.Env.Port)
 }

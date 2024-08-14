@@ -5,7 +5,6 @@ import (
 	"bizMate/utils"
 	"encoding/json"
 	"log"
-	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -17,7 +16,7 @@ func beginAuth(ctx *fiber.Ctx) error {
 }
 
 func getRedirectUrl(success bool, other ...string) string {
-	url := os.Getenv("AUTH_CLIENT_CALLBACK") + utils.Ternary(success, "?success=true", "?success=false")
+	url := utils.Env.AuthClientCallback + utils.Ternary(success, "?success=true", "?success=false")
 	for _, str := range other {
 		url = url + "&" + str
 	}
@@ -71,7 +70,7 @@ func authCallback(ctx *fiber.Ctx) error {
 
 		newUser, err := queries.CreateUser(ctx.Context(), _newUser)
 		if err != nil {
-			go utils.LogError(id, uuid.Nil, register_fail, utils.LogDataType{"provider": "google", "error": err.Error()})
+			go utils.LogError(id, uuid.Nil, register_fail, utils.LogData{"provider": "google", "error": err.Error()})
 			return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
 		}
 		dbUser = newUser
@@ -80,7 +79,7 @@ func authCallback(ctx *fiber.Ctx) error {
 	go addUserToCache(dbUser)
 	jwtToken, err := utils.GenerateJWT(dbUser.ID, dbUser.Email, dbUser.Avatar)
 	if err != nil {
-		go utils.LogError(dbUser.ID, uuid.Nil, create_jwt_fail, utils.LogDataType{"error": err.Error()})
+		go utils.LogError(dbUser.ID, uuid.Nil, create_jwt_fail, utils.LogData{"error": err.Error()})
 		ctx.Redirect(getRedirectUrl(false, "error=no_token"))
 	}
 
@@ -94,7 +93,7 @@ func authCallback(ctx *fiber.Ctx) error {
 
 func logout(ctx *fiber.Ctx) error {
 	if err := goth_fiber.Logout(ctx); err != nil {
-		go utils.LogError(uuid.Nil, uuid.Nil, user_logout_fail, utils.LogDataType{"error": err.Error()})
+		go utils.LogError(uuid.Nil, uuid.Nil, user_logout_fail, utils.LogData{"error": err.Error()})
 		log.Fatal(err)
 	}
 

@@ -1,0 +1,10 @@
+bizmateapi.m3rashid.in
+
+:80 {
+    root * /app/public
+    file_server
+
+    reverse_proxy /api/* {
+      	to localhost:4000
+    }
+}

@@ -1,40 +1,29 @@
 package auth
 
 import (
-	"bizMate/cache"
+	"bizMate/async"
 	"bizMate/repository"
+	"time"
 
 	"github.com/google/uuid"
 )
 
-var LocalWorkspacesCache *cache.LocalCacheType[string, repository.Workspace] = cache.New[string, repository.Workspace]("workspaces", 100)
-
-func InitLocalWorkspacesCache() {
-	LocalWorkspacesCache.Activate(func() bool {
-		return true
-	})
-}
+var localWorkspacesCache *async.LocalCache[string, repository.Workspace] = async.NewLocalCache[string, repository.Workspace]("workspaces", 100, 30*time.Minute, nil)
 
 func addWorkSpaceToCache(workspace repository.Workspace) {
-	LocalWorkspacesCache.Add(workspace.ID.String(), workspace)
+	localWorkspacesCache.Set(workspace.ID.String(), workspace)
 }
 
 func getWorkSpaceFromCache(workspaceID uuid.UUID) (repository.Workspace, bool) {
-	return LocalWorkspacesCache.Get(workspaceID.String())
+	return localWorkspacesCache.Get(workspaceID.String())
 }
 
-var LocalUsersCache *cache.LocalCacheType[string, repository.User] = cache.New[string, repository.User]("users", 1000)
-
-func InitLocalUsersCache() {
-	LocalUsersCache.Activate(func() bool {
-		return true
-	})
-}
+var localUsersCache *async.LocalCache[string, repository.User] = async.NewLocalCache[string, repository.User]("users", 1000, 30*time.Minute, nil)
 
 func addUserToCache(user repository.User) {
-	LocalUsersCache.Add(user.ID.String(), user)
+	localUsersCache.Set(user.ID.String(), user)
 }
 
 func getUserFromCache(userID uuid.UUID) (repository.User, bool) {
-	return LocalUsersCache.Get(userID.String())
+	return localUsersCache.Get(userID.String())
 }

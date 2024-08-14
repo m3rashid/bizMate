@@ -3,7 +3,6 @@ package seed
 import (
 	"bizMate/repository"
 	"bizMate/utils"
-	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/jaswdr/faker/v2"
@@ -14,7 +13,7 @@ type seedUserReqBody struct {
 }
 
 func seedUsers(ctx *fiber.Ctx) error {
-	defaultPassword := os.Getenv("SEED_DEFAULT_PASSWORD")
+	defaultPassword := utils.Env.SeedDefaultPassword
 	if defaultPassword == "" {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}

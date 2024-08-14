@@ -2,7 +2,6 @@ package utils
 
 import (
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -40,7 +39,13 @@ func parseAndGetAuthLocals(claims *Claims, ctx *fiber.Ctx) (uuid.UUID, uuid.UUID
 	return userId, workspaceId
 }
 
-func setAuthLocals(ctx *fiber.Ctx, email string, userId uuid.UUID, workspaceId uuid.UUID, authorized bool) {
+func setAuthLocals(
+	ctx *fiber.Ctx,
+	email string,
+	userId uuid.UUID,
+	workspaceId uuid.UUID,
+	authorized bool,
+) {
 	ctx.Locals("email", email)
 	ctx.Locals("userId", userId)
 	ctx.Locals("workspaceId", workspaceId)
@@ -134,14 +139,17 @@ func GetUserAndWorkspaceIdsOrZero(ctx *fiber.Ctx) (userId uuid.UUID, workspaceId
 func GenerateJWT(userId uuid.UUID, email string, avatar string) (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour)
 	claims := &Claims{
-		Email:            email,
-		Avatar:           avatar,
-		UserID:           userId.String(),
-		RegisteredClaims: jwt.RegisteredClaims{ExpiresAt: jwt.NewNumericDate(expirationTime)},
+		Email:  email,
+		Avatar: avatar,
+		UserID: userId.String(),
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(expirationTime),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+		},
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+	tokenString, err := token.SignedString([]byte(Env.SessionSecret))
 	if err != nil {
 		return "", err
 	}
@@ -173,7 +181,7 @@ func parseTokenToClaims(tokenString string) (*Claims, error) {
 
 	clientToken := tokenString[7:]
 	token, err := jwt.ParseWithClaims(clientToken, &Claims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(os.Getenv("JWT_SECRET")), nil
+		return []byte(Env.SessionSecret), nil
 	})
 	if err != nil {
 		return &Claims{}, err

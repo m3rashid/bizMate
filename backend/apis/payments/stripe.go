@@ -1,16 +1,15 @@
 package payments
 
 import (
-	"os"
+	"bizMate/utils"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 )
 
 func getStripeConfig(ctx *fiber.Ctx) error {
-	publicKey := os.Getenv("STRIPE_PUBLIC_KEY")
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-		"publicKey": publicKey,
+		"publicKey": utils.Env.StripePublicKey,
 	})
 }
 

@@ -3,7 +3,6 @@ package utils
 import (
 	"context"
 	"crypto/tls"
-	"os"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -24,12 +23,9 @@ func GetMongoDB() (*mongo.Database, error) {
 }
 
 func getMongoDbConnection() (*mongo.Database, error) {
-	connectionStr := os.Getenv("MONGO_URI")
-	dbName := os.Getenv("MONGO_DATBASE_NAME")
-
 	loggerOptions := options.Logger().SetComponentLevel(options.LogComponentCommand, options.LogLevelDebug)
-	clientOptions := options.Client().ApplyURI(connectionStr).SetLoggerOptions(loggerOptions)
-	if os.Getenv("SERVER_MODE") == "production" {
+	clientOptions := options.Client().ApplyURI(Env.MongoUrl).SetLoggerOptions(loggerOptions)
+	if *Env.IsProduction {
 		clientOptions.SetTLSConfig(&tls.Config{InsecureSkipVerify: true}) // Skip certificate verification, not recommended for production
 	}
 
@@ -38,7 +34,7 @@ func getMongoDbConnection() (*mongo.Database, error) {
 		return nil, err
 	}
 
-	return client.Database(dbName), nil
+	return client.Database(Env.MongoDatabaseName), nil
 }
 
 func PingMongoDb() error {

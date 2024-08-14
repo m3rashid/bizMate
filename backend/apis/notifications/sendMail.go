@@ -1,9 +1,9 @@
 package notifications
 
 import (
+	"bizMate/utils"
 	"fmt"
 	"net/smtp"
-	"os"
 	"strings"
 )
 
@@ -18,7 +18,7 @@ type Email struct {
 
 func (email *Email) getFormatBody() []byte {
 	return []byte(
-		"From: " + os.Getenv("GMAIL_ADDRESS") + "\n" +
+		"From: " + utils.Env.GmailAddress + "\n" +
 			"To: " + strings.Join(email.To, ",") + "\n" +
 			"Subject: " + email.Subject + "\n" +
 			"Content-Type: text/html;" + " \n\n" + string(email.Body),
@@ -30,11 +30,15 @@ func (email *Email) Send() {
 		return
 	}
 
-	senderEmail := os.Getenv("GMAIL_ADDRESS")
-	senderPassword := os.Getenv("GMAIL_PASSWORD")
+	smtpAuth := smtp.PlainAuth("", utils.Env.GmailAddress, utils.Env.GmailPassword, smtpHost)
 
-	smtpAuth := smtp.PlainAuth("", senderEmail, senderPassword, smtpHost)
-	if err := smtp.SendMail(smtpHost+":"+smtpPort, smtpAuth, senderEmail, email.To, email.getFormatBody()); err != nil {
+	if err := smtp.SendMail(
+		smtpHost+":"+smtpPort,
+		smtpAuth,
+		utils.Env.GmailAddress,
+		email.To,
+		email.getFormatBody(),
+	); err != nil {
 		fmt.Println("Error in sending email", err.Error())
 		return
 	}

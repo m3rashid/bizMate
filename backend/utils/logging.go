@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"bizMate/cache"
 	"context"
 	"fmt"
 	"time"
@@ -10,32 +9,76 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type LogLevelType int
+type LogLevel int
 
 const (
-	LogLevelInfo LogLevelType = iota
+	LogLevelInfo LogLevel = iota
 	LogLevelWarning
 	LogLevelError
 )
 
-type LogDataType map[string]interface{}
-type LogType struct {
+type LogData map[string]interface{}
+type Log struct {
 	ID          primitive.ObjectID `json:"_id" bson:"_id"`
 	Time        time.Time          `json:"time" bson:"time"`
-	LogLevel    LogLevelType       `json:"level" bson:"level"`
+	LogLevel    LogLevel           `json:"level" bson:"level"`
 	WorkspaceID string             `json:"wId" bson:"wId"`
 	UserID      string             `json:"uId" bson:"uId"`
 	Code        string             `json:"code" bson:"code"`
-	Data        LogDataType        `json:"data" bson:"data"`
+	Data        LogData            `json:"data" bson:"data"`
 }
 
 const LOG_COLLECTION_NAME = "logs"
 const max_logs_cache_size = 100
 
-var LogLocalCache *cache.LocalCacheType[string, LogType] = cache.New[string, LogType]("logs", max_logs_cache_size)
+type logPubSub struct {
+	logs chan Log
+}
 
-func createLog(level LogLevelType, userId uuid.UUID, workspaceId uuid.UUID, code string, data ...LogDataType) LogType {
-	log := LogType{
+var logsPs *logPubSub
+
+func InitLogsLocalPubSub() {
+	if _, err := GetMongoDB(); err != nil {
+		fmt.Println("Failed to initialize log-pubsub, mongo connection error", err)
+		return
+	}
+
+	logsPs = &logPubSub{
+		logs: make(chan Log, max_logs_cache_size),
+	}
+
+	for {
+		time.Sleep(1 * time.Second)
+		if len(logsPs.logs) >= max_logs_cache_size/2 {
+			insertLogsToDatabase()
+		}
+	}
+}
+
+func insertLogsToDatabase() {
+	logs := []interface{}{}
+	for len(logsPs.logs) > 0 {
+		logs = append(logs, <-logsPs.logs)
+	}
+
+	if len(logs) == 0 {
+		return
+	}
+
+	mongoConn, err := GetMongoDB()
+	if err != nil {
+		fmt.Println("Failed to insert logs to database", err)
+		return
+	}
+
+	if _, err := mongoConn.Collection(LOG_COLLECTION_NAME).InsertMany(context.Background(), logs); err != nil {
+		fmt.Println("Error while inserting logs to mongo", err)
+		return
+	}
+}
+
+func createLog(level LogLevel, userId uuid.UUID, workspaceId uuid.UUID, code string, data ...LogData) Log {
+	log := Log{
 		Code:     code,
 		LogLevel: level,
 		Time:     time.Now(),
@@ -56,46 +99,17 @@ func createLog(level LogLevelType, userId uuid.UUID, workspaceId uuid.UUID, code
 	return log
 }
 
-func LogInfo(userId uuid.UUID, workspaceId uuid.UUID, code string, data ...LogDataType) {
+func LogInfo(userId uuid.UUID, workspaceId uuid.UUID, code string, data ...LogData) {
 	log := createLog(LogLevelInfo, userId, workspaceId, code, data...)
-	LogLocalCache.Add(log.ID.String(), log)
+	logsPs.logs <- log
 }
 
-func LogWarning(userId uuid.UUID, workspaceId uuid.UUID, code string, data ...LogDataType) {
+func LogWarning(userId uuid.UUID, workspaceId uuid.UUID, code string, data ...LogData) {
 	log := createLog(LogLevelWarning, userId, workspaceId, code, data...)
-	LogLocalCache.Add(log.ID.String(), log)
+	logsPs.logs <- log
 }
 
-func LogError(userId uuid.UUID, workspaceId uuid.UUID, code string, data ...LogDataType) {
+func LogError(userId uuid.UUID, workspaceId uuid.UUID, code string, data ...LogData) {
 	log := createLog(LogLevelError, userId, workspaceId, code, data...)
-	LogLocalCache.Add(log.ID.String(), log)
-}
-
-func InitLogLocalCache() {
-	LogLocalCache.Activate(func() bool {
-		_, err := GetMongoDB()
-		return err == nil
-	})
-
-	LogLocalCache.WithCustomEvictionStrategy(
-		func(oldestKey string, items *map[string]*LogType, order *[]string) {
-			mongoConn, err := GetMongoDB()
-			if err != nil {
-				fmt.Println("Error while connecting to mongo", err)
-				*LogLocalCache.Active = false
-				return
-			}
-
-			logs := []interface{}{}
-			for _, log := range *items {
-				logs = append(logs, *log)
-			}
-
-			if _, err := mongoConn.Collection(LOG_COLLECTION_NAME).InsertMany(context.Background(), logs); err != nil {
-				fmt.Println("Error while inserting logs to mongo", err)
-				return
-			}
-			go LogLocalCache.Reset()
-		},
-	)
+	logsPs.logs <- log
 }

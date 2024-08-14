@@ -1,7 +1,4 @@
 FROM golang:1.22.2-alpine AS builder
-
-RUN go install github.com/cosmtrek/air@latest
-
 WORKDIR /app
 
 COPY go.mod .
@@ -14,12 +11,16 @@ COPY . .
 RUN (rm -rf /app/bin/backend || true) && go build -o /app/bin/backend .
 
 
-FROM scratch
+FROM caddy:latest
 WORKDIR /app
 
 COPY --from=builder /app/bin/backend /app/bin/backend
 COPY --from=builder /app/public /app/public
 COPY --from=builder /app/i18n /app/i18n
 
-ENTRYPOINT ["/app/bin/backend"]
-EXPOSE 4000
+COPY Caddyfile /etc/caddy/Caddyfile
+
+EXPOSE 80
+EXPOSE 443
+
+ENTRYPOINT ["caddy", "run", "--config", "/etc/caddy/Caddyfile"]

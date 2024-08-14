@@ -2,7 +2,6 @@ package utils
 
 import (
 	"context"
-	"os"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/lib/pq"
@@ -23,8 +22,7 @@ func GetPostgresDB() (*pgxpool.Pool, error) {
 }
 
 func getPostgresDbConnection() (*pgxpool.Pool, error) {
-	connectionStr := os.Getenv("POSTGRES_URI")
-	pool, err := pgxpool.New(context.Background(), connectionStr)
+	pool, err := pgxpool.New(context.Background(), Env.PostgresUrl)
 	if err != nil {
 		return nil, err
 	}
