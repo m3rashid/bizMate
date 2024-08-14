@@ -11,7 +11,6 @@ import (
 	"bizMate/apis/payments"
 	"bizMate/apis/projects"
 	"bizMate/apis/seed"
-	"bizMate/repository"
 	"bizMate/utils"
 	"log"
 	"os"
@@ -34,10 +33,6 @@ func init() {
 	}
 
 	utils.SetupEnv()
-
-	if err := repository.CreateMongoCollectionIndices(); err != nil {
-		log.Fatal("Error creating collection indices", err)
-	}
 }
 
 func main() {

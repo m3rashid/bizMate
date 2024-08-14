@@ -47,12 +47,14 @@ func InitLogsLocalPubSub() {
 		logs: make(chan Log, max_logs_cache_size),
 	}
 
-	for {
-		time.Sleep(1 * time.Second)
-		if len(logsPs.logs) >= max_logs_cache_size/2 {
-			insertLogsToDatabase()
+	go func() {
+		for {
+			time.Sleep(1 * time.Second)
+			if len(logsPs.logs) >= max_logs_cache_size/2 {
+				insertLogsToDatabase()
+			}
 		}
-	}
+	}()
 }
 
 func insertLogsToDatabase() {

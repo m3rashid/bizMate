@@ -32,6 +32,7 @@ export function Link(props: LinkProps) {
 
 export const headingTypes = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] as const;
 type HeadingType = (typeof headingTypes)[number];
+
 export const headingVariants: Record<HeadingType, string> = {
 	h1: 'my-2 text-4xl',
 	h2: 'my-2 text-3xl',
@@ -47,7 +48,7 @@ export const Heading: FC<HeadingProps> = (props) => {
 	return createElement(type, {
 		...filterBykeys(props, ['text', 'type', 'className']),
 		className: cn('mx-0 block font-bold', headingVariants[type], props.className),
-		...props,
+		...{ ...props, children: props.text },
 	});
 };
 

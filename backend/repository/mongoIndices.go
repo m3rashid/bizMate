@@ -1,9 +1,5 @@
 package repository
 
-import (
-	"fmt"
-)
-
 // func createFormBodyIndices(db *mongo.Database) error {
 // 	formsBodyIndexModel := mongo.IndexModel{
 // 		Keys:    bson.D{{Key: "form_id", Value: 1}},
@@ -16,16 +12,16 @@ import (
 // 	return nil
 // }
 
-func CreateMongoCollectionIndices() error {
-	// mongoDb, err := utils.GetMongoDB()
-	// if err != nil {
-	// 	return err
-	// }
+// func CreateMongoCollectionIndices() error {
+// mongoDb, err := utils.GetMongoDB()
+// if err != nil {
+// 	return err
+// }
 
-	// if err := createFormBodyIndices(mongoDb); err != nil {
-	// 	return err
-	// }
+// if err := createFormBodyIndices(mongoDb); err != nil {
+// 	return err
+// }
 
-	fmt.Println("CreateMongoCollectionIndices successful")
-	return nil
-}
+// fmt.Println("CreateMongoCollectionIndices successful")
+// 	return nil
+// }

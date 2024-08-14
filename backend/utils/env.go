@@ -58,7 +58,7 @@ func SetupEnv() {
 	serverMode := getEnv("SERVER_MODE", "development")
 	isProduction := serverMode == "production"
 
-	Env = Environment{
+	serverEnv := Environment{
 		Port:         getEnv("PORT", "4000"),
 		AppName:      getEnv("APP_NAME", "bizMate"),
 		ServerMode:   serverMode,
@@ -87,4 +87,5 @@ func SetupEnv() {
 		SeedDefaultPassword: getEnv("SEED_DEFAULT_PASSWORD"),
 		SessionSecret:       getEnv("SESSION_SECRET"),
 	}
+	Env = serverEnv
 }

@@ -53,6 +53,8 @@ export function CardList<T extends DbRow>(props: CardListProps<T>) {
 			),
 	});
 
+	console.log(result?.data.docs);
+
 	if (isPending) return <SkeletonCardList />;
 	return (
 		<div className={cn('h-full w-full', props.rootClassName)}>
