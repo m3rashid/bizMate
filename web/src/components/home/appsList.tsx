@@ -1,7 +1,7 @@
 import { workspaceKey } from '@/utils/constants';
 import CogIcon from '@heroicons/react/24/outline/CogIcon';
 import ListBulletIcon from '@heroicons/react/24/outline/ListBulletIcon';
-import UsersIcon from '@heroicons/react/24/outline/UsersIcon';
+import UserIcon from '@heroicons/react/24/outline/UserIcon';
 import { FC } from 'react';
 
 export type Route = {
@@ -26,23 +26,32 @@ export const apps: App[] = [
 			//
 		],
 	},
+	// {
+	// 	name: 'Communications',
+	// 	description: 'Handle your communications from here',
+	// 	routes: [
+	// 		{
+	// 			name: 'Contacts',
+	// 			icon: UsersIcon,
+	// 			link: `/${workspaceKey}/communications/contacts?page=1`,
+	// 			description: 'List all your contacts',
+	// 		},
+	// 	],
+	// },
+	// {
+	// 	name: 'Projects',
+	// 	description: 'Create and manage your projects',
+	// 	routes: [
+	// 		{ name: 'Projects', icon: ListBulletIcon, link: `/${workspaceKey}/projects?page=1`, description: 'List all projects' },
+	// 		//
+	// 	],
+	// },
 	{
-		name: 'Communications',
-		description: 'Handle your communications from here',
+		name: 'You',
+		description: 'Manage your account',
 		routes: [
-			{
-				name: 'Contacts',
-				icon: UsersIcon,
-				link: `/${workspaceKey}/communications/contacts?page=1`,
-				description: 'List all your contacts',
-			},
-		],
-	},
-	{
-		name: 'Projects',
-		description: 'Create and manage your projects',
-		routes: [
-			{ name: 'Projects', icon: ListBulletIcon, link: `/${workspaceKey}/projects?page=1`, description: 'List all projects' },
+			{ name: 'Settings', icon: CogIcon, link: `/${workspaceKey}/settings`, description: 'Manage your account settings' },
+			{ name: 'Profile', icon: UserIcon, link: `/${workspaceKey}/profile`, description: 'Manage your profile' },
 			//
 		],
 	},
@@ -52,18 +61,8 @@ export const sideApp: App = {
 	name: 'Platform',
 	description: 'About the platform',
 	routes: [
-		{
-			name: 'About',
-			description: 'About the platform',
-			icon: CogIcon,
-			link: '/about',
-		},
-		{
-			name: 'Changelogs',
-			description: "What's new on the platform",
-			icon: CogIcon,
-			link: '/changelogs',
-		},
+		{ name: 'About', description: 'About the platform', icon: CogIcon, link: '/about' },
+		{ name: 'Changelogs', description: "What's new on the platform", icon: CogIcon, link: '/changelogs' },
 	],
 };
 
