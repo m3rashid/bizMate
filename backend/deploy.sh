@@ -13,6 +13,7 @@ scp -i ~/Downloads/bizmateec2sshkey.pem -r ./backend/public ubuntu@ec2-13-201-73
 scp -i ~/Downloads/bizmateec2sshkey.pem -r ./backend/i18n ubuntu@ec2-13-201-73-93.ap-south-1.compute.amazonaws.com:/home/ubuntu/app/i18n
 scp -i ~/Downloads/bizmateec2sshkey.pem -r ./backend/Caddyfile ubuntu@ec2-13-201-73-93.ap-south-1.compute.amazonaws.com:/etc/caady
 scp -i ~/Downloads/bizmateec2sshkey.pem -r ./backend/bizmateapi.service ubuntu@ec2-13-201-73-93.ap-south-1.compute.amazonaws.com:/etc/systemd/system
+scp -i ~/Downloads/bizmateec2sshkey.pem -r ./backend/.env.prod ubuntu@ec2-13-201-73-93.ap-south-1.compute.amazonaws.com:/home/ubuntu/app/.env.local
 
 # Start the caddy server (Run on the server)
 sudo systemctl daemon-reload
