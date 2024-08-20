@@ -52,7 +52,6 @@ func SetupEnv() {
 	err := godotenv.Load(".env.local") // this will fail in production because we set environment variables in the server directly
 	if err != nil {
 		fmt.Println("Error loading .env file")
-		return
 	}
 
 	serverMode := getEnv("SERVER_MODE", "development")
@@ -66,7 +65,7 @@ func SetupEnv() {
 
 		RedisUrl:          getEnv("REDIS_URL", "redis::6379"),
 		PostgresUrl:       getEnv("POSTGRES_URI", "postgres://genos:genos@postgresdb:5432/bizmatedb"),
-		MongoUrl:          getEnv("MONGO_URL", "mongodb://genos:genos@mongodb:27017/bizmatedb?ssl=false&authSource=admin"),
+		MongoUrl:          getEnv("MONGO_URI", "mongodb://genos:genos@mongodb:27017/bizmatedb?ssl=false&authSource=admin"),
 		MongoDatabaseName: getEnv("MONGO_DATABASE_NAME", "bizmatedb"),
 
 		GmailPassword:           getEnv("GMAIL_PASSWORD"),

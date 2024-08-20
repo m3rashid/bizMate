@@ -11,7 +11,7 @@ COPY . .
 RUN (rm -rf /app/bin/backend || true) && go build -o /app/bin/backend .
 
 
-FROM caddy:latest
+FROM caddy:2.8.4-alpine
 WORKDIR /app
 
 COPY --from=builder /app/bin/backend /app/bin/backend

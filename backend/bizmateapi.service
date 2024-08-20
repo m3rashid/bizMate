@@ -1,0 +1,11 @@
+[Unit]
+Description=Demonize the bizmate backend
+
+[Service]
+Type=simple
+ExecStart=/home/ubuntu/app/backend
+Restart=always
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

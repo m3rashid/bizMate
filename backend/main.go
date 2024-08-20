@@ -14,6 +14,7 @@ import (
 	"bizMate/utils"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -62,14 +63,20 @@ func main() {
 		AllowOrigins:     utils.Ternary(*utils.Env.IsProduction, "https://bizmate.m3rashid.in", "http://localhost:3000"),
 	}))
 
-	app.Static("/public", "./public", fiber.Static{
+	exePath, err := os.Executable()
+	if err != nil {
+		log.Fatalf("Failed to get executable path: %v", err)
+	}
+	exeDir := filepath.Dir(exePath)
+
+	app.Static("/public", filepath.Join(exeDir, "public"), fiber.Static{
 		MaxAge:        3600,
 		CacheDuration: 10 * time.Second,
 	})
 
 	app.Use(favicon.New(favicon.Config{
 		URL:  "/favicon.ico",
-		File: "./public/icons/favicon.ico",
+		File: filepath.Join(exeDir, "public/icons/favicon.ico"),
 	}))
 
 	if *utils.Env.IsProduction {
@@ -83,7 +90,7 @@ func main() {
 	app.Use(
 		fiberi18n.New(&fiberi18n.Config{
 			FormatBundleFile: "json",
-			RootPath:         "./i18n",
+			RootPath:         filepath.Join(exeDir, "i18n"),
 			DefaultLanguage:  language.English,
 			AcceptLanguages:  []language.Tag{language.English, language.Hindi},
 		}),
@@ -91,23 +98,23 @@ func main() {
 
 	utils.InitLogsLocalPubSub()
 
-	app.Get("/", func(ctx *fiber.Ctx) error {
+	app.Get("/api", func(ctx *fiber.Ctx) error {
 		return ctx.SendString(utils.TranslateToLocalLanguage(ctx, "Hello, World!"))
 	})
 
-	if !*utils.Env.IsProduction {
-		app.Use(logger.New())
-	}
+	// if !*utils.Env.IsProduction {
+	app.Use(logger.New())
+	// }
 
-	auth.Setup("/auth", app)
-	contacts.Setup("/:workspaceId/contacts", app)
-	dashboards.Setup("/:workspaceId/dashboards", app)
-	drive.Setup("/:workspaceId/drive", app)
-	export.Setup("/:workspaceId/export", app)
-	forms.Setup("/:workspaceId/forms", app)
-	notifications.Setup("/:workspaceId/notifications", app)
-	payments.Setup("/:workspaceId/payments", app)
-	projects.Setup("/:workspaceId/projects", app)
+	auth.Setup("/api/auth", app)
+	contacts.Setup("/api/:workspaceId/contacts", app)
+	dashboards.Setup("/api/:workspaceId/dashboards", app)
+	drive.Setup("/api/:workspaceId/drive", app)
+	export.Setup("/api/:workspaceId/export", app)
+	forms.Setup("/api/:workspaceId/forms", app)
+	notifications.Setup("/api/:workspaceId/notifications", app)
+	payments.Setup("/api/:workspaceId/payments", app)
+	projects.Setup("/api/:workspaceId/projects", app)
 
 	if !*utils.Env.IsProduction {
 		seed.Setup("/seed", app)
