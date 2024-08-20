@@ -6,6 +6,7 @@ Type=simple
 ExecStart=/home/ubuntu/app/backend
 Restart=always
 RestartSec=5s
+EnvironmentFile=/home/ubuntu/app/.env.local
 
 [Install]
 WantedBy=multi-user.target
