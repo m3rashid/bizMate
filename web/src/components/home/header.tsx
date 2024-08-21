@@ -33,8 +33,6 @@ export async function Header(props: { workspaceId?: string }) {
 				</>
 			) : (
 				<div className='flex gap-2'>
-					<Link href='/about'>About</Link>
-					<Link href='/changelogs'>Changelogs</Link>
 					{user && user.userId ? <Link href='/auth/choose-workspace'>Goto App</Link> : <Link href='/auth/login'>Login</Link>}
 				</div>
 			)}

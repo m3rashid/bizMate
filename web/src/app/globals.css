@@ -14,6 +14,11 @@
 	border-radius: 20px;
 }
 
+.hide-scrollbar::-webkit-scrollbar {
+	height: 0;
+	width: 0;
+}
+
 @view-transition {
 	navigation: auto;
 }
