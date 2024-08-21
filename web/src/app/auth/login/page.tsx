@@ -1,5 +1,7 @@
 import { AuthRoot } from '../components/root';
 import { getSessionCookie } from '@/actions/auth';
+import { createDefaultMeta } from '@/utils/helpers';
+import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
 export default async function LoginPage() {
@@ -12,3 +14,5 @@ export default async function LoginPage() {
 
 	return <AuthRoot type='login' />;
 }
+
+export const metadata: Metadata = createDefaultMeta('Login', 'login to your account on Bizmate');

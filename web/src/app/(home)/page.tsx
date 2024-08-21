@@ -2,6 +2,8 @@ import { FeaturesShort } from './components/featuresShort';
 import { Hero } from './components/hero';
 import { Footer } from '@/components/home/footer';
 import { PageContainer } from '@/components/pageContainer';
+import { createDefaultMeta } from '@/utils/helpers';
+import { Metadata } from 'next';
 
 export default async function HomePage() {
 	return (
@@ -12,3 +14,5 @@ export default async function HomePage() {
 		</PageContainer>
 	);
 }
+
+export const metadata: Metadata = createDefaultMeta('Home');

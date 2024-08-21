@@ -4,8 +4,10 @@ import { getSessionCookie } from '@/actions/auth';
 import { apiClient, getQueryClientForServer } from '@/api/config';
 import { queryKeys } from '@/api/queryKeys';
 import { PageContainer } from '@/components/pageContainer';
+import { createDefaultMeta } from '@/utils/helpers';
 import { ApiResponse, Workspace } from '@/utils/types';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
 export default async function ChooseWorkspace() {
@@ -33,3 +35,5 @@ export default async function ChooseWorkspace() {
 		</HydrationBoundary>
 	);
 }
+
+export const metadata: Metadata = createDefaultMeta('Choose workspace');

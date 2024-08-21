@@ -1,8 +1,9 @@
 import { getSessionCookie } from '@/actions/auth';
 import { PageNotFound } from '@/components/lib/notFound';
 import { PageContainer } from '@/components/pageContainer';
-import { isUuid } from '@/utils/helpers';
+import { createDefaultMeta, isUuid } from '@/utils/helpers';
 import { NextjsPageProps } from '@/utils/types';
+import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
 export default async function WorkspaceHome(props: NextjsPageProps<{ workspaceId: string }>) {
@@ -22,3 +23,5 @@ export default async function WorkspaceHome(props: NextjsPageProps<{ workspaceId
 		</PageContainer>
 	);
 }
+
+export const metadata: Metadata = createDefaultMeta('Your Bizmate Workspace');

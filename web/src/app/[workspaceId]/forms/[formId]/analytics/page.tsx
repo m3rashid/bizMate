@@ -5,9 +5,10 @@ import { queryKeys } from '@/api/queryKeys';
 import { Analysis } from '@/components/apps/forms/designer/analyticsCard';
 import { PageNotFound } from '@/components/lib/notFound';
 import { PageContainer } from '@/components/pageContainer';
-import { isUuid } from '@/utils/helpers';
-import { ApiResponse, NextjsPageProps } from '@/utils/types';
+import { createDefaultMeta, isUuid } from '@/utils/helpers';
+import { ApiResponse, Form, NextjsPageProps } from '@/utils/types';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
 export default async function FormAnalytics(props: NextjsPageProps<{ workspaceId: string; formId: string }>) {
@@ -36,4 +37,10 @@ export default async function FormAnalytics(props: NextjsPageProps<{ workspaceId
 			</PageContainer>
 		</HydrationBoundary>
 	);
+}
+
+export async function generateMetadata(props: NextjsPageProps<{ workspaceId: string; formId: string }>): Promise<Metadata> {
+	const res = await apiClient<ApiResponse<Form>>(`/${props.params.workspaceId}/forms/one/${props.params.formId}`);
+	if (!res) return createDefaultMeta('404 - Form not found');
+	return createDefaultMeta(res.data.title, res.data.description);
 }

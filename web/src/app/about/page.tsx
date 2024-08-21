@@ -2,11 +2,13 @@ import { HeroSection } from './components/hero';
 import { VisionMissionSection } from './components/visionMission';
 import { Footer } from '@/components/home/footer';
 import { PageContainer } from '@/components/pageContainer';
+import { createDefaultMeta } from '@/utils/helpers';
+import { Metadata } from 'next';
 
 const teamImage =
 	'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2832&q=80';
 
-function AboutPage() {
+export default function AboutPage() {
 	return (
 		<PageContainer bodyClassName='bg-white p-0 sm:p-0 hide-scrollbar isolate'>
 			<HeroSection />
@@ -44,4 +46,4 @@ function AboutPage() {
 	);
 }
 
-export default AboutPage;
+export const metadata: Metadata = createDefaultMeta('About');

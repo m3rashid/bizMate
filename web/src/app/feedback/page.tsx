@@ -1,4 +1,6 @@
 import { PageContainer } from '@/components/pageContainer';
+import { createDefaultMeta } from '@/utils/helpers';
+import { Metadata } from 'next';
 
 export default async function Feedback() {
 	return (
@@ -7,3 +9,5 @@ export default async function Feedback() {
 		</PageContainer>
 	);
 }
+
+export const metadata: Metadata = createDefaultMeta('Feedback', 'Give your feedback for Bizmate');

@@ -2,6 +2,7 @@ import tailwindConfig from '../../tailwind.config';
 import { ApiResponse, Workspace } from './types';
 import { apiClient } from '@/api/config';
 import { type ClassValue, clsx } from 'clsx';
+import { Metadata } from 'next';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
@@ -77,4 +78,16 @@ export async function checkWorkspace(workspaceId: string, sessionCookie: any) {
 		headers: { Authorization: sessionCookie },
 	});
 	return res;
+}
+
+export function createDefaultMeta(_title: string, _description?: string): Metadata {
+	const title = `${_title} - Bizmate`;
+	const description = _description || 'Manage your organization with confidence';
+	return {
+		title,
+		description,
+		robots: 'index, follow',
+		openGraph: { title, description },
+		twitter: { title, description, creator: '@m3_rashid' },
+	};
 }

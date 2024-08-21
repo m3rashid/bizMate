@@ -2,8 +2,9 @@ import { getSessionCookie } from '@/actions/auth';
 import { ListForms } from '@/components/apps/forms/listTable';
 import { PageNotFound, WorkspaceNotFound } from '@/components/lib/notFound';
 import { PageContainer } from '@/components/pageContainer';
-import { checkWorkspace, isUuid } from '@/utils/helpers';
+import { checkWorkspace, createDefaultMeta, isUuid } from '@/utils/helpers';
 import { NextjsPageProps } from '@/utils/types';
+import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
 export default async function FormsPage(props: NextjsPageProps<{ workspaceId: string }>) {
@@ -25,3 +26,5 @@ export default async function FormsPage(props: NextjsPageProps<{ workspaceId: st
 		</PageContainer>
 	);
 }
+
+export const metadata: Metadata = createDefaultMeta('Forms', 'Manage your forms');

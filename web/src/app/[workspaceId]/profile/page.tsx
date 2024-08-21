@@ -1,8 +1,9 @@
 import { getSessionCookie } from '@/actions/auth';
 import { PageNotFound, WorkspaceNotFound } from '@/components/lib/notFound';
 import { PageContainer } from '@/components/pageContainer';
-import { checkWorkspace, isUuid } from '@/utils/helpers';
+import { checkWorkspace, createDefaultMeta, isUuid } from '@/utils/helpers';
 import { NextjsPageProps } from '@/utils/types';
+import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
 export default async function Profile(props: NextjsPageProps<{ workspaceId: string }>) {
@@ -24,3 +25,5 @@ export default async function Profile(props: NextjsPageProps<{ workspaceId: stri
 		</PageContainer>
 	);
 }
+
+export const metadata: Metadata = createDefaultMeta('Your Profile');
