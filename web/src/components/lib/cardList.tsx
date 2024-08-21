@@ -51,9 +51,10 @@ export function CardList<T extends DbRow>(props: CardListProps<T>) {
 			apiClient<ApiResponse<PaginationResponse<T>>>(
 				`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${locationSearch.page}&limit=${props.pageSize || 15}`
 			),
+		staleTime: 0,
+		refetchOnMount: 'always',
+		refetchOnWindowFocus: true,
 	});
-
-	console.log(result?.data.docs);
 
 	if (isPending) return <SkeletonCardList />;
 	return (

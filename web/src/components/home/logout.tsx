@@ -2,10 +2,8 @@
 
 import { apiClient } from '@/api/config';
 import { usePopups } from '@/hooks/popups';
-import { useRouter } from 'next/navigation';
 
 export function Logout(props: { handleClick: any }) {
-	const router = useRouter();
 	const { addMessagePopup } = usePopups();
 
 	async function handleLogout() {
@@ -18,7 +16,7 @@ export function Logout(props: { handleClick: any }) {
 		}
 	}
 	return (
-		<p onClick={handleLogout} className='m-0 cursor-pointer p-0 [&.active]:font-bold'>
+		<p onClick={handleLogout} className='m-0 cursor-pointer rounded-lg px-2 py-1 hover:bg-gray-100 hover:font-semibold'>
 			Logout
 		</p>
 	);

@@ -1,9 +1,9 @@
 'use client';
 
-import { Loader } from '../lib/loaders';
 import { baseUrl } from '@/api/config';
 import { Button } from '@/components/lib/button';
 import { Input } from '@/components/lib/input';
+import { Loader } from '@/components/lib/loaders';
 import { PhoneNumberInput } from '@/components/lib/phoneNumberInput';
 import { usePopups } from '@/hooks/popups';
 import LockClosedIcon from '@heroicons/react/20/solid/LockClosedIcon';

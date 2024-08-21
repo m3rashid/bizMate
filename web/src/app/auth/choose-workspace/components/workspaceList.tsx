@@ -1,8 +1,8 @@
 'use client';
 
+import { WorkspaceCard } from './chooseWorkspace';
 import { apiClient } from '@/api/config';
 import { queryKeys } from '@/api/queryKeys';
-import { WorkspaceCard } from '@/components/auth/chooseWorkspace';
 import { Loader } from '@/components/lib/loaders';
 import { usePopups } from '@/hooks/popups';
 import { ApiResponse, Workspace } from '@/utils/types';
@@ -14,6 +14,9 @@ export function WorkspaceList() {
 	const { data, isLoading } = useQuery({
 		queryKey: [queryKeys.workspaces],
 		queryFn: () => apiClient<ApiResponse<Workspace[]>>('/auth/workspaces'),
+		staleTime: 0,
+		refetchOnMount: 'always',
+		refetchOnWindowFocus: true,
 	});
 
 	if (isLoading) return <Loader />;

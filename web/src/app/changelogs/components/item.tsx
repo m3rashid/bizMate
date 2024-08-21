@@ -16,7 +16,7 @@ export const ChangelogItem = memo(function ChangelogItem(props: { item: ChangeLo
 				</div>
 			</div>
 
-			<ul className='list-disc'>
+			<ul className='mt-2 list-disc'>
 				{props.item.changes.map((change, index) => (
 					<li className='ml-16 text-gray-700' key={props.item.date + index}>
 						{change}

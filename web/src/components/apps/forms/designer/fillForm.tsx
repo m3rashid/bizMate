@@ -7,6 +7,7 @@ import { PageLoader } from '@/components/lib/loaders';
 import { usePopups } from '@/hooks/popups';
 import { ApiResponse, Form } from '@/utils/types';
 import FaceFrownIcon from '@heroicons/react/24/outline/FaceFrownIcon';
+import HandThumbUpIcon from '@heroicons/react/24/outline/HandThumbUpIcon';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { FormEvent, MouseEvent, useRef } from 'react';
 
@@ -25,7 +26,7 @@ export const FormFillup = (props: FormFillupProps) => {
 		queryFn: () => apiClient<ApiResponse<Form>>(`/${props.workspaceId}/forms/one/${props.formId}`),
 	});
 
-	const { mutate } = useMutation({
+	const { mutate, isSuccess: formResponseSubmitted } = useMutation({
 		mutationKey: ['sumitFormResponse'],
 		onError: (error) => {
 			console.error(error);
@@ -90,5 +91,14 @@ export const FormFillup = (props: FormFillupProps) => {
 		);
 	}
 
-	return <FormView formRef={formRef} type='fill' form={formRes.data} onSubmitClick={handleSubmit} onCancelClick={handleCancel} />;
+	return formResponseSubmitted ? (
+		<div className='flex h-[calc(100vh-48px)] items-center justify-center'>
+			<div className='flex items-center gap-4 rounded-lg bg-successLight p-4 px-16'>
+				<HandThumbUpIcon className='h-8 w-8 animate-bounce' />
+				<h1>Your response was recorded</h1>
+			</div>
+		</div>
+	) : (
+		<FormView formRef={formRef} type='fill' form={formRes.data} onSubmitClick={handleSubmit} onCancelClick={handleCancel} />
+	);
 };

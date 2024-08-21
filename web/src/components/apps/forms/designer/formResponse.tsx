@@ -28,7 +28,9 @@ export function FormResponsesTable(props: FormResponseTableProps) {
 		queryKey: [queryKeys.formResponses],
 		select: (data) => parseFormResponses(formRes?.data!, data.data),
 		queryFn: () => apiClient(`/${props.workspaceId}/forms/response/${props.formId}/all?page=${page}&limit=10`),
-		retryOnMount: true,
+		staleTime: 0,
+		refetchOnMount: 'always',
+		refetchOnWindowFocus: true,
 	});
 
 	if (isFormResponseFetchPending) return <PageLoader />;

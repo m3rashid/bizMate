@@ -1,3 +1,4 @@
+import { PopoverMenu } from '../lib/popoverMenu';
 import { getUserFromCookie, logout } from '@/actions/auth';
 import { AppDrawer } from '@/components/home/appDrawer';
 import { Logout } from '@/components/home/logout';
@@ -22,14 +23,17 @@ export async function Header(props: { workspaceId?: string }) {
 			{!!props.workspaceId && user?.userId ? (
 				<>
 					<Search />
-					<div className='flex gap-2'>
+					<PopoverMenu position='left' trigger='Actions' popoverPanelClassName='min-w-56 p-2'>
+						<div className='cursor-not-allowed p-2 text-disabled'>{user.email}</div>
+
 						<Logout handleClick={logout} />
-						<Link href='/auth/choose-workspace' className='m-0 cursor-pointer p-0 [&.active]:font-bold'>
+
+						<Link href='/auth/choose-workspace' className='m-0 block cursor-pointer rounded-lg px-2 py-1 hover:bg-gray-100 hover:font-semibold'>
 							Change Workspace
 						</Link>
 
 						<Profile user={user} />
-					</div>
+					</PopoverMenu>
 				</>
 			) : (
 				<div className='flex gap-2'>
