@@ -1,10 +1,12 @@
 'use client';
 
-import { Button } from '../lib/button';
-import { Input } from '../lib/input';
-import { Modal } from '../lib/modal';
-import { TextAreaInput } from '../lib/textAreaInput';
 import { apiClient } from '@/api/config';
+import { getQueryClient } from '@/api/provider';
+import { queryKeys } from '@/api/queryKeys';
+import { Button } from '@/components/lib/button';
+import { Input } from '@/components/lib/input';
+import { Modal } from '@/components/lib/modal';
+import { TextAreaInput } from '@/components/lib/textAreaInput';
 import { usePopups } from '@/hooks/popups';
 import { isUuid } from '@/utils/helpers';
 import { Workspace } from '@/utils/types';
@@ -37,12 +39,13 @@ export function CreateWorkspace() {
 	const { addMessagePopup } = usePopups();
 	const [open, setOpen] = useState(false);
 
-	const { mutate: createWorkspace } = useMutation({
-		mutationKey: ['getUserWorkspaces'],
+	const { mutateAsync: createWorkspace } = useMutation({
+		mutationKey: [queryKeys.workspaces],
 		onError: () => addMessagePopup({ id: 'wsCreateFailed', type: 'error', message: 'Failed to create workspace' }),
 		onSuccess: () => {
 			addMessagePopup({ id: 'wsCreated', type: 'success', message: 'Workspace created successfully' });
 			setOpen(false);
+			getQueryClient().invalidateQueries({ queryKey: [queryKeys.workspaces] });
 		},
 		mutationFn: (data: { name: string; description: string }) => apiClient('/auth/workspaces/create', { method: 'POST', data: data }),
 	});

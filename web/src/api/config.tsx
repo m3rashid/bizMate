@@ -1,7 +1,6 @@
 import { QueryClient } from '@tanstack/react-query';
 import axios, { AxiosRequestConfig } from 'axios';
 
-
 type OtherRequestOptions = {
 	baseUrl?: string;
 	downloadableContent?: { fileName: string };

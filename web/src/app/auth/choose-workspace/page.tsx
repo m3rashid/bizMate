@@ -1,8 +1,8 @@
-import { WorkspaceList } from '../components/workspaceList';
+import { CreateWorkspace } from './components/chooseWorkspace';
+import { WorkspaceList } from './components/workspaceList';
 import { getSessionCookie } from '@/actions/auth';
 import { apiClient, getQueryClientForServer } from '@/api/config';
 import { queryKeys } from '@/api/queryKeys';
-import { CreateWorkspace } from '@/components/auth/chooseWorkspace';
 import { PageContainer } from '@/components/pageContainer';
 import { ApiResponse, Workspace } from '@/utils/types';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';

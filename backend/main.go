@@ -69,14 +69,16 @@ func main() {
 	}
 	exeDir := filepath.Dir(exePath)
 
-	app.Static("/public", filepath.Join(exeDir, "public"), fiber.Static{
+	publicPath := utils.Ternary(*utils.Env.IsProduction, filepath.Join(exeDir, "public"), "./public")
+	app.Static("/public", publicPath, fiber.Static{
 		MaxAge:        3600,
 		CacheDuration: 10 * time.Second,
 	})
 
+	faviconPath := utils.Ternary(*utils.Env.IsProduction, filepath.Join(exeDir, "public/icons/favicon.ico"), "./public/icons/favicon.ico")
 	app.Use(favicon.New(favicon.Config{
 		URL:  "/favicon.ico",
-		File: filepath.Join(exeDir, "public/icons/favicon.ico"),
+		File: faviconPath,
 	}))
 
 	if *utils.Env.IsProduction {
@@ -87,24 +89,22 @@ func main() {
 		}))
 	}
 
+	i18nPath := utils.Ternary(*utils.Env.IsProduction, filepath.Join(exeDir, "i18n"), "./i18n")
 	app.Use(
 		fiberi18n.New(&fiberi18n.Config{
 			FormatBundleFile: "json",
-			RootPath:         filepath.Join(exeDir, "i18n"),
+			RootPath:         i18nPath,
 			DefaultLanguage:  language.English,
 			AcceptLanguages:  []language.Tag{language.English, language.Hindi},
 		}),
 	)
 
+	app.Use(logger.New())
 	utils.InitLogsLocalPubSub()
 
 	app.Get("/api", func(ctx *fiber.Ctx) error {
 		return ctx.SendString(utils.TranslateToLocalLanguage(ctx, "Hello, World!"))
 	})
-
-	// if !*utils.Env.IsProduction {
-	app.Use(logger.New())
-	// }
 
 	auth.Setup("/api/auth", app)
 	contacts.Setup("/api/:workspaceId/contacts", app)

@@ -2,6 +2,7 @@
 
 import { getQueryClientForServer } from './config';
 import { isServer, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { PropsWithChildren } from 'react';
 
 let browserQueryClient: QueryClient | undefined = undefined;
@@ -38,5 +39,10 @@ export default function TanstackQueryProvider(props: PropsWithChildren) {
 	//       render if it suspends and there is no boundary
 	const queryClient = getQueryClient();
 
-	return <QueryClientProvider client={queryClient}>{props.children}</QueryClientProvider>;
+	return (
+		<QueryClientProvider client={queryClient}>
+			{props.children}
+			<ReactQueryDevtools initialIsOpen={false} />
+		</QueryClientProvider>
+	);
 }

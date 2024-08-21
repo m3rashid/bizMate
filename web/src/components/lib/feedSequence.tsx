@@ -5,11 +5,13 @@ export type FeedSequenceProps<T> = {
 	items: T[];
 	itemRender: (props: { item: T; itemIndex: number }) => ReactNode;
 	endNode?: ReactNode;
+	title?: ReactNode;
 };
 
 export function FeedSequence<T extends DbRow>(props: FeedSequenceProps<T>) {
 	return (
 		<div className='flow-root'>
+			{props.title ? props.title : null}
 			<ul role='list' className='-mb-8'>
 				{props.items.map((activityItem, activityItemIdx) => (
 					<li key={activityItem.id}>
