@@ -9,6 +9,15 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type BarePermission struct {
+	ID          int32     `json:"id"`
+	ObjectType  string    `json:"object_type"`
+	ObjectID    uuid.UUID `json:"object_id"`
+	UserID      uuid.UUID `json:"user_id"`
+	WorkspaceID uuid.UUID `json:"workspace_id"`
+	Permission  int32     `json:"permission"`
+}
+
 type Form struct {
 	ID                      uuid.UUID          `json:"id"`
 	Deleted                 *bool              `json:"deleted"`
@@ -24,6 +33,22 @@ type Form struct {
 	SendResponseEmail       *bool              `json:"send_response_email"`
 	AllowAnonymousResponses *bool              `json:"allow_anonymous_responses"`
 	AllowMultipleResponses  *bool              `json:"allow_multiple_responses"`
+}
+
+type Role struct {
+	ID          int32              `json:"id"`
+	Name        string             `json:"name"`
+	Description *string            `json:"description"`
+	Permissions RolePermissions    `json:"permissions"`
+	WorkspaceID uuid.UUID          `json:"workspace_id"`
+	CreatedAt   pgtype.Timestamptz `json:"created_at"`
+	CreatedByID uuid.UUID          `json:"created_by_id"`
+}
+
+type RolesUsersRelation struct {
+	RoleID      int32     `json:"role_id"`
+	UserID      uuid.UUID `json:"user_id"`
+	WorkspaceID uuid.UUID `json:"workspace_id"`
 }
 
 type User struct {
