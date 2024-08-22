@@ -26,6 +26,10 @@
               "go_type": { "type": "FormBody" }
             },
             {
+              "column": "roles.permissions",
+              "go_type": { "type": "RolePermissions" }
+            },
+            {
               "column": "form_responses.response",
               "go_type": { "type": "map[string]interface{}" }
             }

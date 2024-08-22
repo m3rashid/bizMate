@@ -27,7 +27,7 @@ export function WorkspaceCard(workspace: Workspace) {
 	return (
 		<div
 			onClick={handleSelectWorkspace}
-			className='flex h-52 w-52 cursor-pointer select-none items-center justify-center rounded-lg border-2 border-white bg-white p-2.5 shadow-lg hover:border-primary'
+			className='flex h-52 w-52 cursor-pointer select-none items-center justify-center rounded-lg bg-white p-2.5 shadow-lg ring-2 ring-gray-100 hover:ring-primary'
 		>
 			<h3 className='text-center'>{workspace.name}</h3>
 		</div>
@@ -47,21 +47,21 @@ export function CreateWorkspace() {
 			setOpen(false);
 			getQueryClient().invalidateQueries({ queryKey: [queryKeys.workspaces] });
 		},
-		mutationFn: (data: { name: string; description: string }) => apiClient('/auth/workspaces/create', { method: 'POST', data: data }),
+		mutationFn: (data: { name: string; description: string; color: string }) => apiClient('/auth/workspaces/create', { method: 'POST', data: data }),
 	});
 
 	function handleSubmit(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any;
-		if (!formData.name) return;
-		createWorkspace({ name: formData.name, description: formData.description });
+		if (!formData.name || !formData.color) return;
+		createWorkspace({ name: formData.name, description: formData.description, color: formData.color });
 	}
 
 	return (
 		<>
 			<div
 				onClick={() => setOpen(true)}
-				className='group flex h-52 w-52 cursor-pointer select-none items-center justify-center rounded-lg border-2 border-white bg-white p-2.5 shadow-lg hover:border-primary'
+				className='group flex h-52 w-52 cursor-pointer select-none items-center justify-center rounded-lg bg-white p-2.5 shadow-lg ring-2 ring-gray-100 hover:ring-primary'
 			>
 				<div className='flex flex-col items-center justify-center rounded-lg bg-skeletonLight p-4 group-hover:bg-skeletonDark'>
 					<PlusIcon className='h-20 w-20 text-disabled group-hover:text-black' />
@@ -73,6 +73,7 @@ export function CreateWorkspace() {
 				<form className='flex flex-col gap-4' onSubmit={handleSubmit}>
 					<div className='flex flex-col gap-4 p-4'>
 						<Input name='name' type='name' label='Name' placeholder='BizMate Hero' required />
+						<Input name='color' type='color' label='Color' defaultValue='#ffffff' required />
 						<TextAreaInput name='description' label='Description' />
 					</div>
 

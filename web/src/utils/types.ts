@@ -60,7 +60,8 @@ export type CookieUser = { userId: string; email: string; avatar: string };
 export type Workspace = BaseModel &
 	CreatedBy & {
 		name: string;
-		users: User[];
+		color: string;
+		description: string;
 	};
 
 export type ExportableTable = (typeof exportableTables)[number];
@@ -86,3 +87,12 @@ export type FormResponse = BaseModel &
 		response: string | Record<string, string>;
 		deviceIp?: string;
 	};
+
+export type WorkspaceInvite = {
+	workspace_id: ID;
+	invite_id: ID;
+	workspace_name: string;
+	email: string;
+	status: number;
+	created_by_id: ID;
+};

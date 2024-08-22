@@ -9,6 +9,7 @@ import (
 	"bizMate/apis/forms"
 	"bizMate/apis/notifications"
 	"bizMate/apis/payments"
+	"bizMate/apis/permissions"
 	"bizMate/apis/projects"
 	"bizMate/apis/seed"
 	"bizMate/utils"
@@ -107,6 +108,7 @@ func main() {
 	})
 
 	auth.Setup("/api/auth", app)
+	permissions.Setup("/api/:workspaceId/permissions", app)
 	contacts.Setup("/api/:workspaceId/contacts", app)
 	dashboards.Setup("/api/:workspaceId/dashboards", app)
 	drive.Setup("/api/:workspaceId/drive", app)

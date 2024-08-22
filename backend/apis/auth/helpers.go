@@ -30,6 +30,12 @@ const create_workspace_success = "create_workspace_success"
 const workspace_not_found_by_id = "workspace_not_found_by_id"
 const create_workspace_bad_request = "create_workspace_bad_request"
 
+const accept_workspace_invite_fail = "accept_workspace_invite_fail"
+const reject_workspace_invite_fail = "reject_workspace_invite_fail"
+const create_workspace_invite_fail = "create_workspace_invite_fail"
+const revoke_workspace_invite_fail = "revoke_workspace_invite_fail"
+const get_workspace_invite_fail = "get_workspace_invite_fail"
+
 type redisterBodyReq struct {
 	Name     string `json:"name" validate:"required,min=3,max=50"`
 	Email    string `json:"email" validate:"required,email,min=5,max=50"`
@@ -44,7 +50,21 @@ type loginBodyReq struct {
 
 type createWorkspaceReq struct {
 	Name        string `json:"name" validate:"required,min=3,max=50"`
+	Color       string `json:"color" validate:"required"`
 	Description string `json:"description" validate:"max=500"`
+}
+
+type acceptOrRejectWorkspaceInviteReq struct {
+	InviteID uuid.UUID `json:"inviteId" validate:"required"`
+	Accepted *bool     `json:"accepted" validate:"required"`
+}
+
+type sendWorkspaceInviteReq struct {
+	Email string `json:"email" validate:"required,email"`
+}
+
+type revokeWorkspaceInviteReq struct {
+	InviteID uuid.UUID `json:"inviteId" validate:"required"`
 }
 
 type partialUser struct {

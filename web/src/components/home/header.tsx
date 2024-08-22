@@ -2,7 +2,6 @@ import { PopoverMenu } from '../lib/popoverMenu';
 import { getUserFromCookie, logout } from '@/actions/auth';
 import { AppDrawer } from '@/components/home/appDrawer';
 import { Logout } from '@/components/home/logout';
-import { Profile } from '@/components/home/profile';
 import { Search } from '@/components/home/search';
 import { BrandLogo } from '@/components/lib/brandLogo';
 import { Link } from 'next-view-transitions';
@@ -31,8 +30,6 @@ export async function Header(props: { workspaceId?: string }) {
 						<Link href='/auth/choose-workspace' className='m-0 block cursor-pointer rounded-lg px-2 py-1 hover:bg-gray-100 hover:font-semibold'>
 							Change Workspace
 						</Link>
-
-						<Profile user={user} />
 					</PopoverMenu>
 				</>
 			) : (

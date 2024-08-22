@@ -27,13 +27,14 @@ func (q *Queries) AddUserToWorkspace(ctx context.Context, arg AddUserToWorkspace
 }
 
 const createWorkspace = `-- name: CreateWorkspace :one
-insert into workspaces (id, name, description, created_by_id)
-	values ($1, $2, $3, $4) returning id, name, description, deleted, created_at, created_by_id
+insert into workspaces (id, name, color, description, created_by_id)
+	values ($1, $2, $3, $4, $5) returning id, name, description, deleted, color, created_at, created_by_id
 `
 
 type CreateWorkspaceParams struct {
 	ID          uuid.UUID `json:"id"`
 	Name        string    `json:"name"`
+	Color       string    `json:"color"`
 	Description *string   `json:"description"`
 	CreatedByID uuid.UUID `json:"created_by_id"`
 }
@@ -42,6 +43,7 @@ func (q *Queries) CreateWorkspace(ctx context.Context, arg CreateWorkspaceParams
 	row := q.db.QueryRow(ctx, createWorkspace,
 		arg.ID,
 		arg.Name,
+		arg.Color,
 		arg.Description,
 		arg.CreatedByID,
 	)
@@ -51,6 +53,7 @@ func (q *Queries) CreateWorkspace(ctx context.Context, arg CreateWorkspaceParams
 		&i.Name,
 		&i.Description,
 		&i.Deleted,
+		&i.Color,
 		&i.CreatedAt,
 		&i.CreatedByID,
 	)
@@ -58,7 +61,7 @@ func (q *Queries) CreateWorkspace(ctx context.Context, arg CreateWorkspaceParams
 }
 
 const getCurrentUserWorkspaces = `-- name: GetCurrentUserWorkspaces :many
-select id, name, description, deleted, created_at, created_by_id from workspaces 
+select id, name, description, deleted, color, created_at, created_by_id from workspaces 
 	where deleted = false and 
 	id in (select workspace_id from users_workspaces_relation where user_id = $1)
 `
@@ -77,6 +80,7 @@ func (q *Queries) GetCurrentUserWorkspaces(ctx context.Context, userID uuid.UUID
 			&i.Name,
 			&i.Description,
 			&i.Deleted,
+			&i.Color,
 			&i.CreatedAt,
 			&i.CreatedByID,
 		); err != nil {
@@ -91,7 +95,7 @@ func (q *Queries) GetCurrentUserWorkspaces(ctx context.Context, userID uuid.UUID
 }
 
 const getWorkspaceById = `-- name: GetWorkspaceById :one
-select id, name, description, deleted, created_at, created_by_id from workspaces where id = $1 and deleted = false
+select id, name, description, deleted, color, created_at, created_by_id from workspaces where id = $1 and deleted = false
 `
 
 func (q *Queries) GetWorkspaceById(ctx context.Context, id uuid.UUID) (Workspace, error) {
@@ -102,6 +106,7 @@ func (q *Queries) GetWorkspaceById(ctx context.Context, id uuid.UUID) (Workspace
 		&i.Name,
 		&i.Description,
 		&i.Deleted,
+		&i.Color,
 		&i.CreatedAt,
 		&i.CreatedByID,
 	)

@@ -100,8 +100,9 @@ func createWorkspace(ctx *fiber.Ctx) error {
 
 	workspace, err := txQueries.CreateWorkspace(ctx.Context(), repository.CreateWorkspaceParams{
 		ID:          id,
-		Name:        reqBody.Name,
 		CreatedByID: userId,
+		Name:        reqBody.Name,
+		Color:       reqBody.Color,
 		Description: &reqBody.Description,
 	})
 

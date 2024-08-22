@@ -12,6 +12,8 @@ export function FeaturesShort() {
 				className='absolute inset-0 -z-10 h-full w-full object-cover object-right md:object-center'
 			/>
 			<div className='mx-auto max-w-7xl px-6 lg:px-8'>
+				<h2 className='mb-8 text-4xl font-bold tracking-tight text-white'>Features</h2>
+
 				<div className='mx-auto grid max-w-2xl grid-cols-1 gap-6 lg:mx-0 lg:max-w-none lg:grid-cols-3 lg:gap-8'>
 					{features.map((feature) => (
 						<div key={feature.title} className='flex gap-x-4 rounded-xl bg-white/5 p-6 ring-1 ring-inset ring-white/10'>

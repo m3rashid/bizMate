@@ -1,4 +1,5 @@
-import { getSessionCookie } from '@/actions/auth';
+import { SettingTabs } from './components';
+import { getSessionCookie, getUserFromCookie } from '@/actions/auth';
 import { PageNotFound, WorkspaceNotFound } from '@/components/lib/notFound';
 import { PageContainer } from '@/components/pageContainer';
 import { checkWorkspace, createDefaultMeta, isUuid } from '@/utils/helpers';
@@ -14,14 +15,15 @@ export default async function Settings(props: NextjsPageProps<{ workspaceId: str
 		redirect('/auth/login');
 	}
 
-	if (!isUuid(props.params.workspaceId)) return <PageNotFound />;
+	const user = await getUserFromCookie();
+	if (!user || !isUuid(props.params.workspaceId)) return <PageNotFound />;
 
 	const res = await checkWorkspace(props.params.workspaceId, sessionCookie);
 	if (!res) return <WorkspaceNotFound />;
 
 	return (
 		<PageContainer workspaceId={props.params.workspaceId} bodyClassName='bg-white'>
-			<h1>Settings</h1>
+			<SettingTabs currentUserId={user.userId} />
 		</PageContainer>
 	);
 }
