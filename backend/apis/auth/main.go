@@ -45,4 +45,9 @@ func Setup(initialRoute string, app *fiber.App) {
 
 	app.Get(initialRoute+"/:provider", beginAuth)
 	app.Get(initialRoute+"/:provider/callback", authCallback)
+
+	app.Post(initialRoute+"/invites/respond", utils.CheckAuthMiddlewareWithoutWorkspace, acceptOrRejectWorkspaceInvite)
+	app.Post(initialRoute+"/:workspaceId/invites/send", utils.CheckAuthMiddlewareWithWorkspace, sendWorkspaceInvite)
+	app.Post(initialRoute+"/:workspaceId/invites/revoke", utils.CheckAuthMiddlewareWithWorkspace, revokeWorkspaceInvite)
+	app.Get(initialRoute+"/invites/all", utils.CheckAuthMiddlewareWithoutWorkspace, getWorkspaceInvites)
 }

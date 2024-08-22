@@ -32,7 +32,7 @@ export function CredentialsAuthForm(props: CredentialsAuthFormProps) {
 				headers: { 'Content-Type': 'application/json' },
 			});
 			if (!res.ok) throw new Error('Failed to login');
-			const _data = await res.json();
+			await res.json();
 
 			addMessagePopup({
 				type: 'success',

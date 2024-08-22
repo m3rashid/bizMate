@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS workspaces (
   name VARCHAR(50) NOT NULL,
 	description VARCHAR(500),
   deleted boolean DEFAULT false,
+	color VARCHAR(9) NOT NULL,
   created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
   created_by_id uuid NOT NULL
 );
@@ -29,15 +30,13 @@ CREATE TABLE IF NOT EXISTS users_workspaces_relation (
 	PRIMARY KEY (user_id, workspace_id)
 );
 
-CREATE TABLE IF NOT EXISTS user_invites (
+CREATE TABLE IF NOT EXISTS workspace_invites (
   id uuid PRIMARY KEY,
-  deleted boolean DEFAULT false,
-  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
   workspace_id uuid NOT NULL,
-  name VARCHAR(50) NOT NULL,
-  email VARCHAR(50) NOT NULL UNIQUE,
+  email VARCHAR(50) NOT NULL,
   status int NOT NULL DEFAULT 0, -- 0=pending, 1=accepted, -1=rejected
-  plain_text_password VARCHAR(20)
+	created_by_id uuid NOT NULL,
+  created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE ONLY users_workspaces_relation ADD CONSTRAINT fk_users_workspace_relation_user FOREIGN KEY (user_id) REFERENCES users(id);
@@ -50,6 +49,6 @@ ALTER TABLE ONLY workspaces ADD CONSTRAINT fk_workspaces_created_by_user FOREIGN
 -- +goose StatementBegin
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS workspaces CASCADE;
-DROP TABLE IF EXISTS user_invites CASCADE;
+DROP TABLE IF EXISTS workspace_invites CASCADE;
 DROP TABLE IF EXISTS users_workspaces_relation CASCADE;
 -- +goose StatementEnd

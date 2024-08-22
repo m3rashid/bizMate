@@ -4,8 +4,8 @@ select * from workspaces
 	id in (select workspace_id from users_workspaces_relation where user_id = $1);
 
 -- name: CreateWorkspace :one
-insert into workspaces (id, name, description, created_by_id)
-	values ($1, $2, $3, $4) returning *;
+insert into workspaces (id, name, color, description, created_by_id)
+	values ($1, $2, $3, $4, $5) returning *;
 
 -- name: AddUserToWorkspace :exec
 insert into users_workspaces_relation (user_id, workspace_id) 

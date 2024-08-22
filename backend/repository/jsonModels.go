@@ -51,7 +51,7 @@ var usersWorkspacesRelation = DashboardIndexableJsonModel{
 }
 
 var UserInviteJsonModel = DashboardIndexableJsonModel{
-	ModelName: USER_INVITES_MODEL_NAME,
+	ModelName: WORKSPACE_INVITES_MODEL_NAME,
 	Fields: map[string]JsonFieldType{
 		"id":           jsonString,
 		"created_at":   jsonDate,

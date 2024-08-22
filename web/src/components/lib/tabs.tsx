@@ -41,10 +41,7 @@ export function Tabs<T = any>(props: TabProps<T>) {
 					default={props.selectedTab}
 					onChange={props.setSelectedTab}
 					options={props.tabs.map((tab) => ({ value: tab.id, label: tab.label || tab.id }))}
-					render={({ option }) => {
-						console.log(option);
-						return <SelectRender tab={props.tabs.find((tab) => tab.id === option?.value) || props.tabs[0]} />;
-					}}
+					render={({ option }) => <SelectRender tab={props.tabs.find((tab) => tab.id === option?.value) || props.tabs[0]} />}
 				/>
 			</div>
 

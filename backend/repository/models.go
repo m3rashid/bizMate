@@ -65,17 +65,6 @@ type User struct {
 	RefreshToken string             `json:"refresh_token"`
 }
 
-type UserInvite struct {
-	ID                uuid.UUID          `json:"id"`
-	Deleted           *bool              `json:"deleted"`
-	CreatedAt         pgtype.Timestamptz `json:"created_at"`
-	WorkspaceID       uuid.UUID          `json:"workspace_id"`
-	Name              string             `json:"name"`
-	Email             string             `json:"email"`
-	Status            int32              `json:"status"`
-	PlainTextPassword *string            `json:"plain_text_password"`
-}
-
 type UsersWorkspacesRelation struct {
 	UserID      uuid.UUID `json:"user_id"`
 	WorkspaceID uuid.UUID `json:"workspace_id"`
@@ -86,6 +75,16 @@ type Workspace struct {
 	Name        string             `json:"name"`
 	Description *string            `json:"description"`
 	Deleted     *bool              `json:"deleted"`
+	Color       string             `json:"color"`
 	CreatedAt   pgtype.Timestamptz `json:"created_at"`
 	CreatedByID uuid.UUID          `json:"created_by_id"`
+}
+
+type WorkspaceInvite struct {
+	ID          uuid.UUID          `json:"id"`
+	WorkspaceID uuid.UUID          `json:"workspace_id"`
+	Email       string             `json:"email"`
+	Status      int32              `json:"status"`
+	CreatedByID uuid.UUID          `json:"created_by_id"`
+	CreatedAt   pgtype.Timestamptz `json:"created_at"`
 }
