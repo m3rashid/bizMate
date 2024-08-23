@@ -1,23 +1,13 @@
 'use client';
 
 import { WorkspaceCard } from './chooseWorkspace';
-import { apiClient } from '@/api/config';
-import { queryKeys } from '@/api/queryKeys';
+import { useGetWorkspaceListQuery } from '@/api/workspaces/client';
 import { Loader } from '@/components/lib/loaders';
 import { usePopups } from '@/hooks/popups';
-import { ApiResponse, Workspace } from '@/utils/types';
-import { useQuery } from '@tanstack/react-query';
 
 export function WorkspaceList() {
 	const { addMessagePopup } = usePopups();
-
-	const { data, isLoading } = useQuery({
-		queryKey: [queryKeys.workspaces],
-		queryFn: () => apiClient<ApiResponse<Workspace[]>>('/auth/workspaces'),
-		staleTime: 0,
-		refetchOnMount: 'always',
-		refetchOnWindowFocus: true,
-	});
+	const { data, isLoading } = useGetWorkspaceListQuery();
 
 	if (isLoading) return <Loader />;
 	if (!data) {

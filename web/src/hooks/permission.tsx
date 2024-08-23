@@ -1,23 +1,14 @@
-import { apiClient } from '@/api/config';
-import { ApiResponse } from '@/utils/types';
-import { useQuery } from '@tanstack/react-query';
+'use client';
 
-export type Permission = {
-	object_type: string;
-	object_id: string;
-	user_id: string;
-	permission: number;
-};
+import { checkPermission } from './checkPermission';
+import { useGetUserPermissions } from '@/api/permissions/client';
 
-export function usePermission(userId: string, workspaceId: string) {
-	const { data: permissions } = useQuery({
-		queryKey: [`${userId}_permissions`],
-		queryFn: () => apiClient<ApiResponse<Permission[]>>(`/${workspaceId}/permissions/all`),
-	});
+export function usePermission(userId: string) {
+	const { data: permissions } = useGetUserPermissions();
 
 	function hasPermission(objectType: string, permission: number, objectId?: string) {
 		if (!permissions) return false;
-		return permissions.data.some((p) => p.object_type === objectType && p.permission === permission && (!objectId || p.object_id === objectId));
+		return checkPermission(permissions.data, { objectType, permission, objectId });
 	}
 
 	return {

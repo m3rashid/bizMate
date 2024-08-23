@@ -7,4 +7,6 @@ export const queryKeys = {
 	projects: 'projects',
 	formAnalytics: 'formAnalytics',
 	workspaceInvites: 'workspaceInvites',
+	permissions: 'permissions',
+	roles: 'roles',
 } as const;

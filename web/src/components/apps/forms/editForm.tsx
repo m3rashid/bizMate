@@ -1,12 +1,10 @@
-import { apiClient } from '@/api/config';
+import { useCreateFormMutation, useUpdateFormMutation } from '@/api/forms/client';
 import FormRenderer from '@/components/apps/forms/renderer';
 import { FormElementType as FormElementInstance, SupportedWidgetName } from '@/components/apps/forms/renderer/types';
 import { Button } from '@/components/lib/button';
 import { Modal } from '@/components/lib/modal';
-import { usePopups } from '@/hooks/popups';
 import { snakeCaseToSentenceCase } from '@/utils/helpers';
 import { Form, StringBoolean } from '@/utils/types';
-import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useMemo } from 'react';
 
@@ -39,31 +37,18 @@ function editFormBody(form: EditFormBody) {
 
 function AddEditForm(props: AddEditFormProps) {
 	const router = useRouter();
-	const { addMessagePopup } = usePopups();
 
-	const { mutate: createForm } = useMutation({
-		mutationKey: ['createForm'],
-		mutationFn: (form: Partial<Form>) => apiClient(`/${props.workspaceId}/forms/create`, { method: 'POST', data: form }),
+	const { mutate: createForm } = useCreateFormMutation(props.workspaceId, {
 		onSuccess: (data) => {
 			props.onClose();
-			addMessagePopup({ id: 'successCreatingForm', message: 'Form created successfully', type: 'success' });
 			router.push(`/${props.workspaceId}/forms/${data.data}/designer`);
-		},
-		onError: () => {
-			addMessagePopup({ id: 'errorCreatingForm', message: 'An Error occured in creating form', type: 'error' });
 		},
 	});
 
-	const { mutate: updateForm } = useMutation({
-		mutationKey: ['editForm'],
-		mutationFn: (form: Partial<Form>) => apiClient(`/${props.workspaceId}/forms/update`, { method: 'POST', data: form }),
+	const { mutate: updateForm } = useUpdateFormMutation(props.workspaceId, {
 		onSuccess: () => {
 			props.onClose();
-			addMessagePopup({ id: 'successUpdatingForm', message: 'Form updated successfully', type: 'success' });
 			props.refetch();
-		},
-		onError: () => {
-			addMessagePopup({ id: 'errorUpdatingForm', message: 'An Error occured in updating form', type: 'error' });
 		},
 	});
 

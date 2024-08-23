@@ -1,37 +1,20 @@
 'use client';
 
-import { apiClient } from '@/api/config';
-import { queryKeys } from '@/api/queryKeys';
-import { parseFormResponses } from '@/components/apps/forms/designer/parseFormResponses';
+import { useGetFormResponseQuery, useGetSingleFormById } from '@/api/forms/client';
 import { Button } from '@/components/lib/button';
 import { PageLoader } from '@/components/lib/loaders';
 import { NotFound } from '@/components/lib/notFound';
 import { Pagination } from '@/components/lib/pagination';
 import { SimpleTable } from '@/components/lib/simpleTable';
-import { ApiResponse, Form } from '@/utils/types';
 import { ChartBarIcon } from '@heroicons/react/24/outline';
-import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useState } from 'react';
 
 type FormResponseTableProps = { workspaceId: string; formId: string };
 export function FormResponsesTable(props: FormResponseTableProps) {
 	const [page, setPage] = useState(1);
-
-	const { data: formRes } = useQuery({
-		queryKey: [queryKeys.forms],
-		queryFn: () => apiClient<ApiResponse<Form>>(`/${props.workspaceId}/forms/one/${props.formId}`),
-	});
-
-	const { data: formResponses, isPending: isFormResponseFetchPending } = useQuery({
-		enabled: !!formRes,
-		queryKey: [queryKeys.formResponses],
-		select: (data) => parseFormResponses(formRes?.data!, data.data),
-		queryFn: () => apiClient(`/${props.workspaceId}/forms/response/${props.formId}/all?page=${page}&limit=10`),
-		staleTime: 0,
-		refetchOnMount: 'always',
-		refetchOnWindowFocus: true,
-	});
+	const { data: formRes } = useGetSingleFormById(props.workspaceId, props.formId);
+	const { data: formResponses, isPending: isFormResponseFetchPending } = useGetFormResponseQuery(props.workspaceId, props.formId, page, formRes);
 
 	if (isFormResponseFetchPending) return <PageLoader />;
 	if (!formRes || !formResponses) return <NotFound />;

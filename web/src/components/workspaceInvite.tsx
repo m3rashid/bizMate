@@ -1,16 +1,18 @@
 'use client';
 
-import { Button } from './lib/button';
-import { Input } from './lib/input';
-import { Loader } from './lib/loaders';
-import { Tooltip } from './lib/tooltip';
-import { apiClient } from '@/api/config';
-import { getQueryClient } from '@/api/provider';
-import { queryKeys } from '@/api/queryKeys';
+import {
+	useGetWorkspaceInviteListQuery,
+	useRespondToWorkspaceInviteMutation,
+	useRevokeWorkspaceInviteMutation,
+	useSendWorkspaceInviteMutation,
+} from '@/api/workspaces/client';
+import { Button } from '@/components/lib/button';
+import { Input } from '@/components/lib/input';
+import { Loader } from '@/components/lib/loaders';
+import { Tooltip } from '@/components/lib/tooltip';
 import { usePopups } from '@/hooks/popups';
-import { ApiResponse, WorkspaceInvite } from '@/utils/types';
+import { WorkspaceInvite } from '@/utils/types';
 import { UserPlusIcon } from '@heroicons/react/24/outline';
-import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { FormEvent, useRef } from 'react';
 import { twMerge } from 'tailwind-merge';
@@ -18,31 +20,8 @@ import { twMerge } from 'tailwind-merge';
 export type WorkspaceInviteItemProps = WorkspaceInvite & { currentUserId: string; currentWorkspaceId?: string };
 
 export function WorkspaceInviteItem(invite: WorkspaceInviteItemProps) {
-	const { addMessagePopup } = usePopups();
-
-	const { mutateAsync: acceptOrReject, isPending: acceptOrRejectPending } = useMutation({
-		mutationKey: [queryKeys.workspaceInvites],
-		mutationFn: (data: { inviteId: string; accepted: boolean }) => apiClient('/auth/invites/respond', { method: 'POST', data }),
-		onSuccess: (_, data) => {
-			getQueryClient().invalidateQueries({ queryKey: [queryKeys.workspaceInvites, queryKeys.workspaces] });
-			addMessagePopup({ id: 'inviteResponse', message: data.accepted ? 'You accepted the invite' : 'You rejected the invite', type: 'success' });
-		},
-		onError: () => {
-			addMessagePopup({ id: 'inviteResponseError', message: 'Error in responding to this invite', type: 'error' });
-		},
-	});
-
-	const { mutateAsync: revokeInvite, isPending: revokeInvitePending } = useMutation({
-		mutationKey: [queryKeys.workspaceInvites],
-		mutationFn: (data: { inviteId: string }) => apiClient(`/auth/${invite.currentWorkspaceId}/invites/revoke`, { method: 'POST', data }),
-		onSuccess: () => {
-			getQueryClient().invalidateQueries({ queryKey: [queryKeys.workspaceInvites, queryKeys.workspaces] });
-			addMessagePopup({ id: 'inviteRevoked', message: 'You revoked the invite', type: 'success' });
-		},
-		onError: () => {
-			addMessagePopup({ id: 'inviteRevokeError', message: 'Error in revoking this invite', type: 'error' });
-		},
-	});
+	const { mutateAsync: acceptOrReject, isPending: acceptOrRejectPending } = useRespondToWorkspaceInviteMutation();
+	const { mutateAsync: revokeInvite, isPending: revokeInvitePending } = useRevokeWorkspaceInviteMutation(invite.currentWorkspaceId);
 
 	return (
 		<div className='mb-6 rounded-lg shadow-lg ring-2 ring-gray-100'>
@@ -82,14 +61,7 @@ export function WorkspaceInviteItem(invite: WorkspaceInviteItemProps) {
 
 export function WorkspaceInvites(props: { currentUserId: string }) {
 	const params = useParams();
-
-	const { data: workspaceInvites } = useQuery({
-		queryKey: [queryKeys.workspaceInvites],
-		queryFn: () => apiClient<ApiResponse<WorkspaceInvite[]>>('/auth/invites/all'),
-		staleTime: 0,
-		refetchOnMount: 'always',
-		refetchOnWindowFocus: true,
-	});
+	const { data: workspaceInvites } = useGetWorkspaceInviteListQuery();
 
 	if (!workspaceInvites) return <Loader className='mt-8 h-12 w-12' />;
 	if (workspaceInvites.data.length === 0) {
@@ -123,19 +95,7 @@ export function SendWorkspaceInvite() {
 	const params = useParams();
 	const { addMessagePopup } = usePopups();
 	const formRef = useRef<HTMLFormElement>(null);
-
-	const { mutateAsync: sendWorkspaceInvite, isPending } = useMutation({
-		mutationKey: [queryKeys.workspaceInvites],
-		mutationFn: (data: { email: string }) => apiClient(`/auth/${params.workspaceId}/invites/send`, { method: 'POST', data }),
-		onSuccess: () => {
-			getQueryClient().invalidateQueries({ queryKey: [queryKeys.workspaceInvites] });
-			addMessagePopup({ id: 'inviteSuccess', message: 'Invite sent successfully', type: 'success' });
-			if (formRef.current) formRef.current.reset();
-		},
-		onError: () => {
-			addMessagePopup({ id: 'inviteError', message: 'Error in sending the invite', type: 'error' });
-		},
-	});
+	const { mutateAsync: sendWorkspaceInvite, isPending } = useSendWorkspaceInviteMutation(formRef, params.workspaceId);
 
 	async function onSubmit(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();
