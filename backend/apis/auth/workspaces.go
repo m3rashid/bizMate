@@ -107,18 +107,26 @@ func createWorkspace(ctx *fiber.Ctx) error {
 	})
 
 	if err != nil {
-		tx.Rollback(ctx.Context())
 		go utils.LogError(userId, workspace.ID, create_workspace_fail, utils.LogData{"error": err.Error()})
-		return fiber.NewError(fiber.StatusInternalServerError)
+		return tx.Rollback(ctx.Context())
 	}
 
 	if err = txQueries.AddUserToWorkspace(ctx.Context(), repository.AddUserToWorkspaceParams{
 		UserID:      userId,
 		WorkspaceID: workspace.ID,
 	}); err != nil {
-		tx.Rollback(ctx.Context())
 		go utils.LogError(userId, workspace.ID, create_workspace_fail, utils.LogData{"error": err.Error()})
-		return fiber.NewError(fiber.StatusInternalServerError)
+		return tx.Rollback(ctx.Context())
+	}
+
+	if err := txQueries.AddBarePermissionTouser(ctx.Context(), repository.AddBarePermissionTouserParams{
+		UserID:      userId,
+		WorkspaceID: workspace.ID,
+		ObjectType:  repository.WorkspaceObjectType,
+		Level:       repository.PermissionLevelAdmin,
+	}); err != nil {
+		go utils.LogError(userId, workspace.ID, create_workspace_fail, utils.LogData{"error": err.Error()})
+		return tx.Rollback(ctx.Context())
 	}
 
 	err = tx.Commit(ctx.Context())

@@ -19,7 +19,10 @@ func CheckPermissionMiddleware(
 	PermissionLevel repository.PermissionLevel,
 	_config ...CheckPermissionMiddlewareConfig,
 ) func(ctx *fiber.Ctx) error {
-	config := utils.Ternary(len(_config) > 0, _config[0], CheckPermissionMiddlewareConfig{})
+	config := CheckPermissionMiddlewareConfig{}
+	if len(_config) > 0 {
+		config = _config[0]
+	}
 
 	return func(ctx *fiber.Ctx) error {
 		userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
@@ -44,8 +47,9 @@ func CheckPermissionMiddleware(
 
 		permitted := false
 		for _, permission := range permissions {
-			if ObjectType != permission.ObjectType {
-				continue
+			if permission.ObjectType == repository.WorkspaceObjectType && permission.Level == repository.PermissionLevelAdmin {
+				permitted = true
+				break
 			}
 
 			// TODO: handle check for specific object id
@@ -53,7 +57,7 @@ func CheckPermissionMiddleware(
 			// 	continue
 			// }
 
-			if permission.Level&PermissionLevel == PermissionLevel {
+			if ObjectType == permission.ObjectType && permission.Level&PermissionLevel == PermissionLevel {
 				permitted = true
 				break
 			}
