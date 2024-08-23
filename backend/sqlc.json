@@ -26,6 +26,14 @@
               "go_type": { "type": "FormBody" }
             },
             {
+              "column": "bare_permissions.object_type",
+              "go_type": { "type": "ObjectType" }
+            },
+            {
+              "column": "bare_permissions.level",
+              "go_type": { "type": "PermissionLevel" }
+            },
+            {
               "column": "roles.permissions",
               "go_type": { "type": "RolePermissions" }
             },

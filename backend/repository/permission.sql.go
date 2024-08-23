@@ -9,29 +9,40 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const addBarePermissionTouser = `-- name: AddBarePermissionTouser :exec
 insert into bare_permissions (
 	user_id,
 	workspace_id,
-	permission
-) values ($1, $2, $3)
+	object_type,
+	object_id,
+	level
+) values ($1, $2, $3, $4, $5)
 `
 
 type AddBarePermissionTouserParams struct {
-	UserID      uuid.UUID `json:"user_id"`
-	WorkspaceID uuid.UUID `json:"workspace_id"`
-	Permission  int32     `json:"permission"`
+	UserID      uuid.UUID       `json:"user_id"`
+	WorkspaceID uuid.UUID       `json:"workspace_id"`
+	ObjectType  ObjectType      `json:"object_type"`
+	ObjectID    pgtype.UUID     `json:"object_id"`
+	Level       PermissionLevel `json:"level"`
 }
 
 func (q *Queries) AddBarePermissionTouser(ctx context.Context, arg AddBarePermissionTouserParams) error {
-	_, err := q.db.Exec(ctx, addBarePermissionTouser, arg.UserID, arg.WorkspaceID, arg.Permission)
+	_, err := q.db.Exec(ctx, addBarePermissionTouser,
+		arg.UserID,
+		arg.WorkspaceID,
+		arg.ObjectType,
+		arg.ObjectID,
+		arg.Level,
+	)
 	return err
 }
 
 const getUserBarePermissions = `-- name: GetUserBarePermissions :many
-select id, object_type, object_id, user_id, workspace_id, permission from bare_permissions where user_id = $1 and workspace_id = $2
+select id, object_type, object_id, user_id, workspace_id, level from bare_permissions where user_id = $1 and workspace_id = $2
 `
 
 type GetUserBarePermissionsParams struct {
@@ -54,7 +65,7 @@ func (q *Queries) GetUserBarePermissions(ctx context.Context, arg GetUserBarePer
 			&i.ObjectID,
 			&i.UserID,
 			&i.WorkspaceID,
-			&i.Permission,
+			&i.Level,
 		); err != nil {
 			return nil, err
 		}
@@ -67,16 +78,16 @@ func (q *Queries) GetUserBarePermissions(ctx context.Context, arg GetUserBarePer
 }
 
 const removeBarePermissionFromUser = `-- name: RemoveBarePermissionFromUser :exec
-delete from bare_permissions where user_id = $1 and workspace_id = $2 and permission = $3
+delete from bare_permissions where user_id = $1 and workspace_id = $2 and level = $3
 `
 
 type RemoveBarePermissionFromUserParams struct {
-	UserID      uuid.UUID `json:"user_id"`
-	WorkspaceID uuid.UUID `json:"workspace_id"`
-	Permission  int32     `json:"permission"`
+	UserID      uuid.UUID       `json:"user_id"`
+	WorkspaceID uuid.UUID       `json:"workspace_id"`
+	Level       PermissionLevel `json:"level"`
 }
 
 func (q *Queries) RemoveBarePermissionFromUser(ctx context.Context, arg RemoveBarePermissionFromUserParams) error {
-	_, err := q.db.Exec(ctx, removeBarePermissionFromUser, arg.UserID, arg.WorkspaceID, arg.Permission)
+	_, err := q.db.Exec(ctx, removeBarePermissionFromUser, arg.UserID, arg.WorkspaceID, arg.Level)
 	return err
 }

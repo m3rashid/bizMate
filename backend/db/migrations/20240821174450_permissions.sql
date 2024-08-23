@@ -3,10 +3,10 @@
 CREATE TABLE IF NOT EXISTS bare_permissions (
 	id SERIAL PRIMARY KEY,
 	object_type VARCHAR(50) NOT NULL,
-	object_id uuid NOT NULL,
+	object_id uuid,
 	user_id uuid NOT NULL,
 	workspace_id uuid NOT NULL,
-	permission int NOT NULL DEFAULT 0 -- 0=none, 1=read, 2=write, 3=delete
+	level int NOT NULL DEFAULT 1 -- 1=none, 2=read, 4=write, 8=delete, 16=admin
 );
 
 CREATE TABLE IF NOT EXISTS roles (

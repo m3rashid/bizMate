@@ -86,7 +86,10 @@ func acceptOrRejectWorkspaceInvite(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(
-		utils.SendResponse(nil, utils.Ternary(*reqBody.Accepted, "Invite accepted successfully", "Invite rejected successfully")),
+		utils.SendResponse(
+			nil,
+			utils.Ternary(*reqBody.Accepted, "Invite accepted successfully", "Invite rejected successfully"),
+		),
 	)
 }
 

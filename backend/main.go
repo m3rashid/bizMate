@@ -2,15 +2,10 @@ package main
 
 import (
 	"bizMate/apis/auth"
-	"bizMate/apis/contacts"
-	"bizMate/apis/dashboards"
-	"bizMate/apis/drive"
 	"bizMate/apis/export"
 	"bizMate/apis/forms"
-	"bizMate/apis/notifications"
 	"bizMate/apis/payments"
 	"bizMate/apis/permissions"
-	"bizMate/apis/projects"
 	"bizMate/apis/seed"
 	"bizMate/utils"
 	"log"
@@ -108,15 +103,10 @@ func main() {
 	})
 
 	auth.Setup("/api/auth", app)
-	permissions.Setup("/api/:workspaceId/permissions", app)
-	contacts.Setup("/api/:workspaceId/contacts", app)
-	dashboards.Setup("/api/:workspaceId/dashboards", app)
-	drive.Setup("/api/:workspaceId/drive", app)
 	export.Setup("/api/:workspaceId/export", app)
 	forms.Setup("/api/:workspaceId/forms", app)
-	notifications.Setup("/api/:workspaceId/notifications", app)
 	payments.Setup("/api/:workspaceId/payments", app)
-	projects.Setup("/api/:workspaceId/projects", app)
+	permissions.Setup("/api/:workspaceId/permissions", app)
 
 	if !*utils.Env.IsProduction {
 		seed.Setup("/seed", app)

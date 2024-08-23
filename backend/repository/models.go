@@ -10,12 +10,12 @@ import (
 )
 
 type BarePermission struct {
-	ID          int32     `json:"id"`
-	ObjectType  string    `json:"object_type"`
-	ObjectID    uuid.UUID `json:"object_id"`
-	UserID      uuid.UUID `json:"user_id"`
-	WorkspaceID uuid.UUID `json:"workspace_id"`
-	Permission  int32     `json:"permission"`
+	ID          int32           `json:"id"`
+	ObjectType  ObjectType      `json:"object_type"`
+	ObjectID    pgtype.UUID     `json:"object_id"`
+	UserID      uuid.UUID       `json:"user_id"`
+	WorkspaceID uuid.UUID       `json:"workspace_id"`
+	Level       PermissionLevel `json:"level"`
 }
 
 type Form struct {

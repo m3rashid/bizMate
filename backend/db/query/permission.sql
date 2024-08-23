@@ -5,8 +5,10 @@ select * from bare_permissions where user_id = $1 and workspace_id = $2;
 insert into bare_permissions (
 	user_id,
 	workspace_id,
-	permission
-) values ($1, $2, $3);
+	object_type,
+	object_id,
+	level
+) values ($1, $2, $3, $4, $5);
 
 -- name: RemoveBarePermissionFromUser :exec
-delete from bare_permissions where user_id = $1 and workspace_id = $2 and permission = $3;
+delete from bare_permissions where user_id = $1 and workspace_id = $2 and level = $3;

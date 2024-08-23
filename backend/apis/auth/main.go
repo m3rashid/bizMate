@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"bizMate/apis/permissions"
+	"bizMate/repository"
 	"bizMate/utils"
 	"time"
 
@@ -47,7 +49,20 @@ func Setup(initialRoute string, app *fiber.App) {
 	app.Get(initialRoute+"/:provider/callback", authCallback)
 
 	app.Post(initialRoute+"/invites/respond", utils.CheckAuthMiddlewareWithoutWorkspace, acceptOrRejectWorkspaceInvite)
-	app.Post(initialRoute+"/:workspaceId/invites/send", utils.CheckAuthMiddlewareWithWorkspace, sendWorkspaceInvite)
-	app.Post(initialRoute+"/:workspaceId/invites/revoke", utils.CheckAuthMiddlewareWithWorkspace, revokeWorkspaceInvite)
+
+	app.Post(
+		initialRoute+"/:workspaceId/invites/send",
+		utils.CheckAuthMiddlewareWithWorkspace,
+		permissions.CheckPermissionMiddleware(repository.WorkspaceInviteObjectType, repository.PermissionLevelCreate),
+		sendWorkspaceInvite,
+	)
+
+	app.Post(
+		initialRoute+"/:workspaceId/invites/revoke",
+		utils.CheckAuthMiddlewareWithWorkspace,
+		permissions.CheckPermissionMiddleware(repository.WorkspaceInviteObjectType, repository.PermissionLevelDelete),
+		revokeWorkspaceInvite,
+	)
+
 	app.Get(initialRoute+"/invites/all", utils.CheckAuthMiddlewareWithoutWorkspace, getWorkspaceInvites)
 }
