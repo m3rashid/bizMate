@@ -1,19 +1,27 @@
 'use client';
 
-import { WorkspaceInviteSettings } from './workspaceInviteSettings';
+import { Roles } from './roles';
+import { Users } from './users';
 import { Tab, Tabs } from '@/components/lib/tabs';
 import { useSearchParamsState } from '@/hooks/helpers';
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 
-export function SettingTabs(props: { currentUserId: string }) {
+export function HrTabs(props: { currentUserId: string }) {
 	const params = useSearchParams();
+
 	const tabList: Tab<{ currentUserId: string }>[] = useMemo(
 		() => [
 			{
-				id: 'workspace-invites',
-				label: 'Workspace Invites',
-				Component: WorkspaceInviteSettings,
+				id: 'users',
+				label: 'Users',
+				Component: Users,
+				componentProps: { currentUserId: props.currentUserId },
+			},
+			{
+				id: 'roles',
+				label: 'Roles',
+				Component: Roles,
 				componentProps: { currentUserId: props.currentUserId },
 			},
 		],
