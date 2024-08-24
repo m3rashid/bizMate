@@ -1,12 +1,11 @@
 import { CreateWorkspace } from './components/chooseWorkspace';
 import { WorkspaceList } from './components/workspaceList';
 import { getSessionCookie, getUserFromCookie } from '@/actions/auth';
-import { apiClient, getQueryClientForServer } from '@/api/config';
-import { queryKeys } from '@/api/queryKeys';
+import { getQueryClientForServer } from '@/api/config';
+import { prefetchWorkspaceInviteList, prefetchWorkspacesList } from '@/api/workspaces/server';
 import { PageContainer } from '@/components/pageContainer';
 import { WorkspaceInvites } from '@/components/workspaceInvite';
 import { createDefaultMeta } from '@/utils/helpers';
-import { ApiResponse, Workspace } from '@/utils/types';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
@@ -21,15 +20,8 @@ export default async function ChooseWorkspace() {
 		redirect('/auth/login');
 	}
 
-	await queryClient.prefetchQuery({
-		queryKey: [queryKeys.workspaces],
-		queryFn: () => apiClient<ApiResponse<Workspace[]>>('/auth/workspaces', { headers: { Authorization: sessionCookie } }),
-	});
-
-	await queryClient.prefetchQuery({
-		queryKey: [queryKeys.workspaceInvites],
-		queryFn: () => apiClient<ApiResponse<Workspace[]>>('/auth/invites/all', { headers: { Authorization: sessionCookie } }),
-	});
+	await prefetchWorkspacesList(queryClient, sessionCookie);
+	await prefetchWorkspaceInviteList(queryClient, sessionCookie);
 
 	return (
 		<HydrationBoundary state={dehydrate(queryClient)}>

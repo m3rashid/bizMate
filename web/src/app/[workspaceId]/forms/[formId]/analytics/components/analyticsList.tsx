@@ -1,25 +1,17 @@
 'use client';
 
-import { apiClient } from '@/api/config';
-import { queryKeys } from '@/api/queryKeys';
+import { useGetFormAnalyticsByFormId } from '@/api/forms/client';
 import { FormAnalyticsGraphs } from '@/components/apps/forms/designer/analytics';
-import { Analysis } from '@/components/apps/forms/designer/analyticsCard';
 import { DataListHeader } from '@/components/lib/dataListHeader';
 import { PageLoader } from '@/components/lib/loaders';
-import { ApiResponse } from '@/utils/types';
 import { FaceFrownIcon } from '@heroicons/react/24/outline';
-import { useQuery } from '@tanstack/react-query';
 
 export type AnalyticsListProps = {
 	formId: string;
 	workspaceId: string;
 };
 export function AnalyticsList(props: AnalyticsListProps) {
-	const { data: result, isPending } = useQuery({
-		queryKey: [queryKeys.formAnalytics],
-		queryFn: () =>
-			apiClient<ApiResponse<{ title: string; description: string; analysis: Analysis[] }>>(`/${props.workspaceId}/forms/analysis/${props.formId}`),
-	});
+	const { data: result, isPending } = useGetFormAnalyticsByFormId(props.workspaceId, props.formId);
 
 	if (isPending) return <PageLoader />;
 	if (!result) {

@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"bizMate/repository"
 	"context"
 	"fmt"
 	"time"
@@ -21,15 +22,15 @@ type LogData map[string]interface{}
 type Log struct {
 	ID          primitive.ObjectID `json:"_id" bson:"_id"`
 	Time        time.Time          `json:"time" bson:"time"`
-	LogLevel    LogLevel           `json:"level" bson:"level"`
-	WorkspaceID string             `json:"wId" bson:"wId"`
-	UserID      string             `json:"uId" bson:"uId"`
+	UserEmail   string             `json:"userEmail" bson:"uEmail"`
+	LogLevel    LogLevel           `json:"logLevel" bson:"level"`
+	WorkspaceID string             `json:"workspaceId" bson:"wId"`
+	ObjectType  string             `json:"objectType" bson:"oType"`
 	Code        string             `json:"code" bson:"code"`
 	Data        LogData            `json:"data" bson:"data"`
 }
 
 const LOG_COLLECTION_NAME = "logs"
-const max_logs_cache_size = 100
 
 type logPubSub struct {
 	logs chan Log
@@ -38,6 +39,8 @@ type logPubSub struct {
 var logsPs *logPubSub
 
 func InitLogsLocalPubSub() {
+	max_logs_cache_size := Ternary(*Env.IsProduction, 50, 10)
+
 	if _, err := GetMongoDB(); err != nil {
 		fmt.Println("Failed to initialize log-pubsub, mongo connection error", err)
 		return
@@ -79,19 +82,28 @@ func insertLogsToDatabase() {
 	}
 }
 
-func createLog(level LogLevel, userId uuid.UUID, workspaceId uuid.UUID, code string, data ...LogData) Log {
+func createLog(
+	level LogLevel,
+	userEmail string,
+	workspaceId uuid.UUID,
+	objectType repository.ObjectType,
+	code string,
+	data ...LogData,
+) Log {
 	log := Log{
-		Code:     code,
-		LogLevel: level,
-		Time:     time.Now(),
-		ID:       primitive.NewObjectID(),
+		Code:       code,
+		LogLevel:   level,
+		Time:       time.Now(),
+		ObjectType: string(objectType),
+		ID:         primitive.NewObjectID(),
 	}
+
 	if len(data) > 0 {
 		log.Data = data[0]
 	}
 
-	if userId != uuid.Nil {
-		log.UserID = userId.String()
+	if userEmail != "" {
+		log.UserEmail = userEmail
 	}
 
 	if workspaceId != uuid.Nil {
@@ -101,17 +113,35 @@ func createLog(level LogLevel, userId uuid.UUID, workspaceId uuid.UUID, code str
 	return log
 }
 
-func LogInfo(userId uuid.UUID, workspaceId uuid.UUID, code string, data ...LogData) {
-	log := createLog(LogLevelInfo, userId, workspaceId, code, data...)
+func LogInfo(
+	code string,
+	userEmail string,
+	workspaceId uuid.UUID,
+	objectType repository.ObjectType,
+	data ...LogData,
+) {
+	log := createLog(LogLevelInfo, userEmail, workspaceId, objectType, code, data...)
 	logsPs.logs <- log
 }
 
-func LogWarning(userId uuid.UUID, workspaceId uuid.UUID, code string, data ...LogData) {
-	log := createLog(LogLevelWarning, userId, workspaceId, code, data...)
+func LogWarning(
+	code string,
+	userEmail string,
+	workspaceId uuid.UUID,
+	objectType repository.ObjectType,
+	data ...LogData,
+) {
+	log := createLog(LogLevelWarning, userEmail, workspaceId, objectType, code, data...)
 	logsPs.logs <- log
 }
 
-func LogError(userId uuid.UUID, workspaceId uuid.UUID, code string, data ...LogData) {
-	log := createLog(LogLevelError, userId, workspaceId, code, data...)
+func LogError(
+	code string,
+	userEmail string,
+	workspaceId uuid.UUID,
+	objectType repository.ObjectType,
+	data ...LogData,
+) {
+	log := createLog(LogLevelError, userEmail, workspaceId, objectType, code, data...)
 	logsPs.logs <- log
 }

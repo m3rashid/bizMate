@@ -1,15 +1,13 @@
 'use client';
 
-import { apiClient } from '@/api/config';
+import { useExportTableMutation, useGetExportTableFieldsQuery } from '@/api/exports/client';
 import { Button, ButtonProps } from '@/components/lib/button';
 import { PageLoader } from '@/components/lib/loaders';
 import { Modal } from '@/components/lib/modal';
 import { SingleSelectInput } from '@/components/lib/singleSelectInput';
 import { TogglerInput } from '@/components/lib/toggle';
-import { usePopups } from '@/hooks/popups';
-import { ApiResponse, ExportableTable, Option } from '@/utils/types';
+import { ExportableTable, Option } from '@/utils/types';
 import TableCellsIcon from '@heroicons/react/24/outline/TableCellsIcon';
-import { useMutation, useQuery } from '@tanstack/react-query';
 import { FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -28,42 +26,12 @@ const selectOptions: Option[] = [
 
 export function TableExport(props: TableExportProps) {
 	const { t } = useTranslation();
-	const { addMessagePopup } = usePopups();
 	const [open, setOpen] = useState(false);
 
-	const { data: result, isPending } = useQuery({
-		queryKey: [props.tableName, props.workspaceId, ...(props.mutationKeys || []), ...(props.formId ? [props.formId] : [])],
-		queryFn: () =>
-			apiClient<ApiResponse<{ fileNameWithoutExt: string; fields: Array<{ name: string; label: string }> }>>(
-				`/${props.workspaceId}/export/table-fields`,
-				{
-					method: 'POST',
-					data: { tableName: props.tableName, ...(props.formId ? { formId: props.formId } : {}) },
-				}
-			),
-	});
-
-	const { mutate: exportTable } = useMutation({
+	const { data: result, isPending } = useGetExportTableFieldsQuery(props.tableName, props.workspaceId, props.formId);
+	const { mutate: exportTable } = useExportTableMutation(props.tableName, props.workspaceId, result, {
 		onSuccess: () => setOpen(false),
-		onError: (error, variables) => {
-			setOpen(false);
-			addMessagePopup({
-				type: 'error',
-				message: (error as any) || 'An error occurred',
-				id: `${result?.data.fileNameWithoutExt}.${variables.format}` || `${props.tableName}.${variables.format}`,
-			});
-		},
-		mutationKey: [props.tableName, ...(props.mutationKeys || [])],
-		mutationFn: (data: any) =>
-			apiClient(
-				`/${props.workspaceId}/export/table`,
-				{ method: 'POST', data: data },
-				{
-					downloadableContent: {
-						fileName: `${result?.data.fileNameWithoutExt}.${data.format}` || `${props.tableName}.${data.format}`,
-					},
-				}
-			),
+		onError: () => setOpen(false),
 	});
 
 	function handleSubmit(e: FormEvent<HTMLFormElement>) {

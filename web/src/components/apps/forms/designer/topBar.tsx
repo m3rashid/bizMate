@@ -1,4 +1,6 @@
-import { apiClient } from '@/api/config';
+'use client';
+
+import { useUpdateFormBodyMutation } from '@/api/forms/client';
 import { FormElementType } from '@/components/apps/forms/renderer/types';
 import { Button } from '@/components/lib/button';
 import { Tooltip } from '@/components/lib/tooltip';
@@ -6,7 +8,6 @@ import { useFormDesigner } from '@/hooks/formDesigner';
 import { usePopups } from '@/hooks/popups';
 import { StringBoolean } from '@/utils/types';
 import InformationCircleIcon from '@heroicons/react/24/outline/InformationCircleIcon';
-import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
@@ -21,12 +22,8 @@ export function FormDesignerTopBar(props: FormDesignerTopBarProps) {
 	const { addMessagePopup } = usePopups();
 	const { viewType, changeViewType, formBody, rootProps } = useFormDesigner();
 
-	const { isPending, mutate: saveForm } = useMutation({
-		mutationKey: ['saveForm', props.workspaceId],
-		onError: () => addMessagePopup({ id: 'errorCreateForm', message: 'Error in creating form', type: 'error' }),
-		mutationFn: async (data: any) => apiClient(`/${props.workspaceId}/forms/${props.formId}/update-form-body`, { method: 'POST', data: data }),
+	const { isPending, mutate: saveForm } = useUpdateFormBodyMutation(props.workspaceId, props.formId, {
 		onSuccess: () => {
-			addMessagePopup({ id: 'saveForm', message: 'Successfully created form', type: 'success' });
 			router.push(`/${props.workspaceId}/forms/${props.formId}/preview?page=1`);
 		},
 	});

@@ -1,7 +1,6 @@
 'use client';
 
-import { apiClient } from '@/api/config';
-import { queryKeys } from '@/api/queryKeys';
+import { useGetSingleFormById } from '@/api/forms/client';
 import { FormDesignerCore } from '@/components/apps/forms/designer/designerCore';
 import { FormWidgetItem } from '@/components/apps/forms/designer/formWidgetItem';
 import { RightSidebar } from '@/components/apps/forms/designer/rightSidebar';
@@ -9,11 +8,10 @@ import { FormDesignerTopBar } from '@/components/apps/forms/designer/topBar';
 import { supportedWidgets } from '@/components/apps/forms/renderer/constants';
 import { PageLoader } from '@/components/lib/loaders';
 import { useFormDesigner } from '@/hooks/formDesigner';
-import { ApiResponse, Form } from '@/utils/types';
+import { Form } from '@/utils/types';
 import { closestCorners, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import FaceFrownIcon from '@heroicons/react/24/outline/FaceFrownIcon';
-import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
 export type FormDesignerComponentProps = {
@@ -21,10 +19,7 @@ export type FormDesignerComponentProps = {
 	workspaceId: string;
 };
 export function FormDesignerComponent(props: FormDesignerComponentProps) {
-	const { data: formRes, isPending } = useQuery({
-		queryKey: [queryKeys.singleForm],
-		queryFn: () => apiClient<ApiResponse<Form>>(`/${props.workspaceId}/forms/one/${props.formId}`),
-	});
+	const { data: formRes, isPending } = useGetSingleFormById(props.workspaceId, props.formId);
 
 	if (isPending) return <PageLoader />;
 	if (!formRes) {

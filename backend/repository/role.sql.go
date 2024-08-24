@@ -20,7 +20,7 @@ insert into roles_users_relation (
 `
 
 type AddUserToRoleParams struct {
-	RoleID      int32     `json:"role_id"`
+	RoleID      uuid.UUID `json:"role_id"`
 	UserID      uuid.UUID `json:"user_id"`
 	WorkspaceID uuid.UUID `json:"workspace_id"`
 }
@@ -32,15 +32,17 @@ func (q *Queries) AddUserToRole(ctx context.Context, arg AddUserToRoleParams) er
 
 const createRole = `-- name: CreateRole :exec
 insert into roles (
+	id,
 	name,
 	description,
 	permissions,
 	workspace_id,
 	created_by_id
-) values ($1, $2, $3, $4, $5)
+) values ($1, $2, $3, $4, $5, $6)
 `
 
 type CreateRoleParams struct {
+	ID          uuid.UUID       `json:"id"`
 	Name        string          `json:"name"`
 	Description *string         `json:"description"`
 	Permissions RolePermissions `json:"permissions"`
@@ -50,6 +52,7 @@ type CreateRoleParams struct {
 
 func (q *Queries) CreateRole(ctx context.Context, arg CreateRoleParams) error {
 	_, err := q.db.Exec(ctx, createRole,
+		arg.ID,
 		arg.Name,
 		arg.Description,
 		arg.Permissions,
@@ -64,7 +67,7 @@ delete from roles where id = $1 and workspace_id = $2
 `
 
 type DeleteRoleParams struct {
-	ID          int32     `json:"id"`
+	ID          uuid.UUID `json:"id"`
 	WorkspaceID uuid.UUID `json:"workspace_id"`
 }
 
@@ -78,7 +81,7 @@ select id, name, description, permissions, workspace_id, created_at, created_by_
 `
 
 type GetRoleByIdParams struct {
-	ID          int32     `json:"id"`
+	ID          uuid.UUID `json:"id"`
 	WorkspaceID uuid.UUID `json:"workspace_id"`
 }
 
@@ -102,7 +105,7 @@ select role_id, user_id, workspace_id from roles_users_relation where role_id = 
 `
 
 type GetRoleUsersParams struct {
-	RoleID      int32     `json:"role_id"`
+	RoleID      uuid.UUID `json:"role_id"`
 	WorkspaceID uuid.UUID `json:"workspace_id"`
 }
 
@@ -163,12 +166,29 @@ func (q *Queries) GetRolesByUserId(ctx context.Context, arg GetRolesByUserIdPara
 	return items, nil
 }
 
-const getRolesByWorkspaceId = `-- name: GetRolesByWorkspaceId :many
-select id, name, description, permissions, workspace_id, created_at, created_by_id from roles where workspace_id = $1
+const getRolesByWorkspaceIdCount = `-- name: GetRolesByWorkspaceIdCount :one
+select count(id) from roles where workspace_id = $1
 `
 
-func (q *Queries) GetRolesByWorkspaceId(ctx context.Context, workspaceID uuid.UUID) ([]Role, error) {
-	rows, err := q.db.Query(ctx, getRolesByWorkspaceId, workspaceID)
+func (q *Queries) GetRolesByWorkspaceIdCount(ctx context.Context, workspaceID uuid.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, getRolesByWorkspaceIdCount, workspaceID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const paginateRolesByWorkspaceId = `-- name: PaginateRolesByWorkspaceId :many
+select id, name, description, permissions, workspace_id, created_at, created_by_id from roles where workspace_id = $1 order by id desc limit $2 offset $3
+`
+
+type PaginateRolesByWorkspaceIdParams struct {
+	WorkspaceID uuid.UUID `json:"workspace_id"`
+	Limit       int32     `json:"limit"`
+	Offset      int32     `json:"offset"`
+}
+
+func (q *Queries) PaginateRolesByWorkspaceId(ctx context.Context, arg PaginateRolesByWorkspaceIdParams) ([]Role, error) {
+	rows, err := q.db.Query(ctx, paginateRolesByWorkspaceId, arg.WorkspaceID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -200,7 +220,7 @@ delete from roles_users_relation where role_id = $1 and user_id = $2 and workspa
 `
 
 type RemoveUserFromRoleParams struct {
-	RoleID      int32     `json:"role_id"`
+	RoleID      uuid.UUID `json:"role_id"`
 	UserID      uuid.UUID `json:"user_id"`
 	WorkspaceID uuid.UUID `json:"workspace_id"`
 }
@@ -219,7 +239,7 @@ where id = $1 and workspace_id = $5
 `
 
 type UpdateRoleParams struct {
-	ID          int32           `json:"id"`
+	ID          uuid.UUID       `json:"id"`
 	Name        string          `json:"name"`
 	Description *string         `json:"description"`
 	Permissions RolePermissions `json:"permissions"`

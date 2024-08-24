@@ -1,5 +1,5 @@
 import { FormElementType } from '@/components/apps/forms/renderer/types';
-import { exportableTables } from '@/utils/constants';
+import { exportableTables, permissionLevelNumbers, permissionObjectTypes } from '@/utils/constants';
 import { ReactNode } from 'react';
 
 export type UnionOfObject<T> = T[keyof T];
@@ -53,6 +53,7 @@ export type User = BaseModel & {
 	name: string;
 	email: string;
 	phone?: string;
+	deactivated?: boolean;
 	avatar?: string;
 };
 export type CookieUser = { userId: string; email: string; avatar: string };
@@ -96,3 +97,20 @@ export type WorkspaceInvite = {
 	status: number;
 	created_by_id: ID;
 };
+
+type PermissionObjectType = (typeof permissionObjectTypes)[number];
+type PermissionLevel = (typeof permissionLevelNumbers)[number];
+
+export type RolePermission = {
+	object_type: PermissionObjectType;
+	object_id: ID;
+	user_id: ID;
+	level: PermissionLevel;
+};
+
+export type Role = BaseModel &
+	CreatedBy & {
+		name: string;
+		description: string;
+		permissions: string[];
+	};

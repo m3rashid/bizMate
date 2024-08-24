@@ -2,15 +2,18 @@
 
 import { WorkspaceInviteSettings } from './workspaceInviteSettings';
 import { Tab, Tabs } from '@/components/lib/tabs';
-import { useMemo, useState } from 'react';
+import { useSearchParamsState } from '@/hooks/helpers';
+import { useSearchParams } from 'next/navigation';
+import { useMemo } from 'react';
 
 export function SettingTabs(props: { currentUserId: string }) {
+	const params = useSearchParams();
 	const tabList: Tab<{ currentUserId: string }>[] = useMemo(
 		() => [
 			{
+				id: 'workspace-invites',
 				label: 'Workspace Invites',
 				Component: WorkspaceInviteSettings,
-				id: 'workspace-invites',
 				componentProps: { currentUserId: props.currentUserId },
 			},
 		],
@@ -18,7 +21,13 @@ export function SettingTabs(props: { currentUserId: string }) {
 		[]
 	);
 
-	const [selectedTab, setSelectedTab] = useState(tabList[0].id);
+	const getInitialTabId = () => {
+		const tabId = params.get('tab');
+		if (tabId && tabList.find((tab) => tab.id === tabId)) return tabId;
+		return tabList[0].id;
+	};
 
-	return <Tabs tabs={tabList} selectedTab={selectedTab} setSelectedTab={setSelectedTab} />;
+	const [currentTab, setCurrentTab] = useSearchParamsState('tab', getInitialTabId());
+
+	return <Tabs tabs={tabList} selectedTab={currentTab} setSelectedTab={setCurrentTab} />;
 }

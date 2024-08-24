@@ -1,17 +1,13 @@
 'use client';
 
-import { apiClient } from '@/api/config';
-import { getQueryClient } from '@/api/provider';
-import { queryKeys } from '@/api/queryKeys';
+import { useCreateWorkspaceMutation } from '@/api/workspaces/client';
 import { Button } from '@/components/lib/button';
 import { Input } from '@/components/lib/input';
 import { Modal } from '@/components/lib/modal';
 import { TextAreaInput } from '@/components/lib/textAreaInput';
-import { usePopups } from '@/hooks/popups';
 import { isUuid } from '@/utils/helpers';
 import { Workspace } from '@/utils/types';
 import PlusIcon from '@heroicons/react/24/outline/PlusIcon';
-import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -36,19 +32,9 @@ export function WorkspaceCard(workspace: Workspace) {
 
 export function CreateWorkspace() {
 	const { t } = useTranslation();
-	const { addMessagePopup } = usePopups();
 	const [open, setOpen] = useState(false);
 
-	const { mutateAsync: createWorkspace } = useMutation({
-		mutationKey: [queryKeys.workspaces],
-		onError: () => addMessagePopup({ id: 'wsCreateFailed', type: 'error', message: 'Failed to create workspace' }),
-		onSuccess: () => {
-			addMessagePopup({ id: 'wsCreated', type: 'success', message: 'Workspace created successfully' });
-			setOpen(false);
-			getQueryClient().invalidateQueries({ queryKey: [queryKeys.workspaces] });
-		},
-		mutationFn: (data: { name: string; description: string; color: string }) => apiClient('/auth/workspaces/create', { method: 'POST', data: data }),
-	});
+	const { mutateAsync: createWorkspace } = useCreateWorkspaceMutation({ onSuccess: () => setOpen(false) });
 
 	function handleSubmit(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();

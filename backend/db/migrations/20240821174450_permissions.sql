@@ -1,16 +1,16 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS bare_permissions (
-	id SERIAL PRIMARY KEY,
+	id uuid PRIMARY KEY,
 	object_type VARCHAR(50) NOT NULL,
-	object_id uuid NOT NULL,
+	object_id uuid,
 	user_id uuid NOT NULL,
 	workspace_id uuid NOT NULL,
-	permission int NOT NULL DEFAULT 0 -- 0=none, 1=read, 2=write, 3=delete
+	level int NOT NULL DEFAULT 1 -- 1=none, 2=read, 4=write, 8=delete, 16=admin
 );
 
 CREATE TABLE IF NOT EXISTS roles (
-	id SERIAL PRIMARY KEY,
+	id uuid PRIMARY KEY,
 	name VARCHAR(50) NOT NULL,
 	description VARCHAR(500),
 	permissions jsonb NOT NULL DEFAULT '[]'::jsonb,
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS roles (
 );
 
 CREATE TABLE IF NOT EXISTS roles_users_relation (
-	role_id int NOT NULL,
+	role_id uuid NOT NULL,
 	user_id uuid NOT NULL,
 	workspace_id uuid NOT NULL,
 	PRIMARY KEY (role_id, user_id, workspace_id)

@@ -1,14 +1,11 @@
 'use client';
 
 import { FormView } from './singleFormView';
-import { apiClient } from '@/api/config';
-import { queryKeys } from '@/api/queryKeys';
+import { useGetSingleFormById, useSubmitFormResponseMutation } from '@/api/forms/client';
 import { PageLoader } from '@/components/lib/loaders';
 import { usePopups } from '@/hooks/popups';
-import { ApiResponse, Form } from '@/utils/types';
 import FaceFrownIcon from '@heroicons/react/24/outline/FaceFrownIcon';
 import HandThumbUpIcon from '@heroicons/react/24/outline/HandThumbUpIcon';
-import { useMutation, useQuery } from '@tanstack/react-query';
 import { FormEvent, MouseEvent, useRef } from 'react';
 
 type FormFillupProps = {
@@ -21,25 +18,8 @@ export const FormFillup = (props: FormFillupProps) => {
 	const { addMessagePopup } = usePopups();
 	const formRef = useRef<HTMLFormElement>(null);
 
-	const { data: formRes, isLoading } = useQuery({
-		queryKey: [queryKeys.singleForm],
-		queryFn: () => apiClient<ApiResponse<Form>>(`/${props.workspaceId}/forms/one/${props.formId}`),
-	});
-
-	const { mutate, isSuccess: formResponseSubmitted } = useMutation({
-		mutationKey: ['sumitFormResponse'],
-		onError: (error) => {
-			console.error(error);
-			addMessagePopup({ id: 'errorSubmittingResponse', message: 'Unable to submit response, please try again', type: 'error' });
-		},
-		onSuccess: () => {
-			formRef.current?.reset();
-			addMessagePopup({ id: 'responseSubmitted', message: 'Response submitted successfully', type: 'success' });
-		},
-		mutationFn: (data: { response: Record<string, any> }) => {
-			return apiClient(`/${props.workspaceId}/forms/response/${props.formId}/submit`, { method: 'POST', data: data });
-		},
-	});
+	const { data: formRes, isLoading } = useGetSingleFormById(props.workspaceId, props.formId);
+	const { mutate, isSuccess: formResponseSubmitted } = useSubmitFormResponseMutation(props.workspaceId, props.formId, formRef);
 
 	function handleSubmit(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();

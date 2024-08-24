@@ -1,6 +1,6 @@
 'use client';
 
-import { apiClient } from '@/api/config';
+import { useDeleteFormMutation } from '@/api/forms/client';
 import { Button } from '@/components/lib/button';
 import { Chip } from '@/components/lib/chip';
 import { Tooltip } from '@/components/lib/tooltip';
@@ -13,7 +13,6 @@ import InformationCircleIcon from '@heroicons/react/24/outline/InformationCircle
 import LockOpenIcon from '@heroicons/react/24/outline/LockOpenIcon';
 import PencilSquareIcon from '@heroicons/react/24/outline/PencilSquareIcon';
 import TrashIcon from '@heroicons/react/24/outline/TrashIcon';
-import { useMutation } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
@@ -22,13 +21,7 @@ import { twMerge } from 'tailwind-merge';
 export function FormCard(props: Form & { onEdit: () => void; workspaceId: string }) {
 	const { t } = useTranslation();
 	const { addMessagePopup, addActionPopup, removeActionPopup } = usePopups();
-
-	const { mutate: deleteForm } = useMutation({
-		mutationKey: ['deleteForm', props.id],
-		mutationFn: () => apiClient(`/${props.workspaceId}/forms/delete/${props.id}`, { method: 'POST' }),
-		onError: () => addMessagePopup({ id: props.id, message: 'Failed to delete form', type: 'error' }),
-		onSuccess: () => addMessagePopup({ id: props.id, message: 'Form deleted successfully', type: 'success' }),
-	});
+	const { mutate: deleteForm } = useDeleteFormMutation(props.id, props.workspaceId);
 
 	function onDeleteConfirm() {
 		deleteForm();
@@ -57,7 +50,7 @@ export function FormCard(props: Form & { onEdit: () => void; workspaceId: string
 	}
 
 	return (
-		<div className='relative h-min select-none rounded-lg border-2 border-white p-2.5 shadow-lg hover:border-primary'>
+		<div className='relative h-min select-none rounded-lg p-2.5 shadow-lg ring-2 ring-gray-100 hover:ring-primary'>
 			<div className='flex flex-grow gap-2'>
 				<Link
 					href={`/${props.workspaceId}/forms/${props.id}/preview`}
