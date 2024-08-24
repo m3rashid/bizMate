@@ -15,14 +15,15 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
+	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+
 	reqBody := formResponseReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil || formId == "" {
-		go utils.LogError(uuid.Nil, uuid.Nil, create_form_response_bad_request, utils.LogData{"error": err.Error()})
+		go utils.LogError(create_form_response_fail, userId, uuid.Nil, repository.FormResponsesObjectType, utils.LogData{"error": err.Error()})
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	deviceIp := utils.GetDeviceIP(ctx)
-	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 
 	pgConn, err := utils.GetPostgresDB()
 	if err != nil {
@@ -32,7 +33,7 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 
 	form, err := queries.GetFormById(ctx.Context(), formUid)
 	if err != nil {
-		go utils.LogError(userId, uuid.Nil, form_not_found_by_id, utils.LogData{"error": err.Error()})
+		go utils.LogError(create_form_response_fail, userId, uuid.Nil, repository.FormResponsesObjectType, utils.LogData{"error": err.Error()})
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
@@ -65,14 +66,11 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 
 	createResponseRes, err := repository.CreateFormResponse(ctx.Context(), mongoDb, formResponse)
 	if err != nil {
-		go utils.LogError(userId, form.WorkspaceID, create_form_response_fail, utils.LogData{"error": err.Error(), "form_id": form.ID.String()})
+		go utils.LogError(create_form_response_fail, userId, form.WorkspaceID, repository.FormResponsesObjectType, utils.LogData{"error": err.Error(), "form_id": form.ID.String()})
 		return fiber.NewError(fiber.StatusInternalServerError, "Could not save response")
 	}
 
-	go utils.LogInfo(userId, form.WorkspaceID, create_form_response_success, utils.LogData{
-		"form_id":     form.ID.String(),
-		"response_id": createResponseRes.InsertedID,
-	})
+	go utils.LogInfo(create_form_response_success, userId, form.WorkspaceID, repository.FormResponsesObjectType, utils.LogData{"form_id": form.ID.String(), "response_id": createResponseRes.InsertedID})
 	return ctx.Status(fiber.StatusCreated).JSON(utils.SendResponse(createResponseRes.InsertedID, "Response submitted successfully"))
 }
 
@@ -83,7 +81,7 @@ func getFormResponseCount(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest)
 	}
 
-	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	_, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	mongoDb, err := utils.GetMongoDB()
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
@@ -94,7 +92,6 @@ func getFormResponseCount(ctx *fiber.Ctx) error {
 		WorkspaceID: workspaceId,
 	})
 	if err != nil {
-		go utils.LogError(userId, workspaceId, count_form_responses_fail, utils.LogData{"error": err.Error()})
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
@@ -131,7 +128,6 @@ func getFormResponseAnalysis(ctx *fiber.Ctx) error {
 	query := repository.New(pgConn)
 	form, err := query.GetFormById(ctx.Context(), formId)
 	if err != nil {
-		go utils.LogError(userId, workspaceId, form_not_found_by_id, utils.LogData{"error": err.Error()})
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
@@ -149,17 +145,14 @@ func getFormResponseAnalysis(ctx *fiber.Ctx) error {
 		WorkspaceID: form.WorkspaceID,
 	})
 	if err != nil {
-		go utils.LogError(userId, workspaceId, get_form_analysis_fail, utils.LogData{"error": err.Error()})
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	formAnalysis, err := analyzeForm(&form, &formResponses)
 	if err != nil {
-		go utils.LogError(userId, workspaceId, get_form_analysis_fail, utils.LogData{"error": err.Error()})
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	go utils.LogInfo(userId, workspaceId, get_form_analysis_success, utils.LogData{"form_id": formId.String()})
 	response := FormAnalysisResponse{
 		Title:       form.Title,
 		Description: form.Description,
@@ -178,7 +171,7 @@ func paginateFormResponses(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest)
 	}
 
-	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	_, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	if workspaceId == uuid.Nil {
 		return fiber.NewError(fiber.StatusBadRequest, "Unknown workspace")
 	}
@@ -200,7 +193,6 @@ func paginateFormResponses(ctx *fiber.Ctx) error {
 		Offset:      int64((paginationRes.CurrentPage - 1) * paginationRes.Limit),
 	})
 	if err != nil {
-		go utils.LogError(userId, workspaceId, paginate_form_responses_fail, utils.LogData{"error": err.Error(), "form_id": formId.String()})
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 	paginationRes.Docs = formResponses
@@ -210,13 +202,11 @@ func paginateFormResponses(ctx *fiber.Ctx) error {
 		WorkspaceID: workspaceId,
 	})
 	if err != nil {
-		go utils.LogError(userId, workspaceId, paginate_form_responses_fail, utils.LogData{"error": err.Error(), "form_id": formId.String()})
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	paginationRes.TotalDocs = formResponsesCount
 	paginationRes.BuildPaginationResponse()
 
-	go utils.LogInfo(userId, workspaceId, paginate_form_responses_success, utils.LogData{"count": formResponsesCount})
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(paginationRes, "Got form responses successfully"))
 }

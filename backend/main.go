@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bizMate/apis/activity"
 	"bizMate/apis/auth"
 	"bizMate/apis/export"
 	"bizMate/apis/forms"
@@ -107,6 +108,7 @@ func main() {
 	forms.Setup("/api/:workspaceId/forms", app)
 	payments.Setup("/api/:workspaceId/payments", app)
 	permissions.Setup("/api/:workspaceId/permissions", app)
+	activity.Setup("/api/:workspaceId/activity", app)
 
 	if !*utils.Env.IsProduction {
 		seed.Setup("/seed", app)

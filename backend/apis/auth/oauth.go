@@ -70,7 +70,7 @@ func authCallback(ctx *fiber.Ctx) error {
 
 		newUser, err := queries.CreateUser(ctx.Context(), _newUser)
 		if err != nil {
-			go utils.LogError(id, uuid.Nil, register_fail, utils.LogData{"provider": "google", "error": err.Error()})
+			go utils.LogError(user_register_fail, id, uuid.Nil, repository.UserObjectType, utils.LogData{"provider": "google", "error": err.Error()})
 			return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
 		}
 		dbUser = newUser
@@ -79,7 +79,7 @@ func authCallback(ctx *fiber.Ctx) error {
 	go addUserToCache(dbUser)
 	jwtToken, err := utils.GenerateJWT(dbUser.ID, dbUser.Email, dbUser.Avatar)
 	if err != nil {
-		go utils.LogError(dbUser.ID, uuid.Nil, create_jwt_fail, utils.LogData{"error": err.Error()})
+		go utils.LogError(user_register_fail, dbUser.ID, uuid.Nil, repository.UserObjectType, utils.LogData{"error": err.Error()})
 		ctx.Redirect(getRedirectUrl(false, "error=no_token"))
 	}
 
@@ -93,7 +93,7 @@ func authCallback(ctx *fiber.Ctx) error {
 
 func logout(ctx *fiber.Ctx) error {
 	if err := goth_fiber.Logout(ctx); err != nil {
-		go utils.LogError(uuid.Nil, uuid.Nil, user_logout_fail, utils.LogData{"error": err.Error()})
+		go utils.LogError(user_logout_fail, uuid.Nil, uuid.Nil, repository.UserObjectType, utils.LogData{"error": err.Error()})
 		log.Fatal(err)
 	}
 

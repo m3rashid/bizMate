@@ -25,6 +25,7 @@ const (
 	FormAnalysisObjectType    ObjectType = "form_analysis" // table not made yet
 	PermissionObjectType      ObjectType = "permission"
 	RoleObjectType            ObjectType = "role"
+	ActivityObjectType        ObjectType = "activity"
 )
 
 type SingleRolePermission struct {

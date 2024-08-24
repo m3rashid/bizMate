@@ -51,7 +51,7 @@ export type TableProps<T> = {
 export function Table<T extends DbRow>(props: TableProps<T>) {
 	const { t } = useTranslation();
 	const router = useTransitionRouter();
-	const locationSearch = qs.parse(window.location.search);
+	const locationSearch = qs.parse(typeof window !== 'undefined' ? window.location.search : '');
 	const [page, setPage] = useSearchParamsState('page', locationSearch.page?.toString() || '1');
 
 	const {

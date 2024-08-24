@@ -16,7 +16,7 @@ func getRoleById(ctx *fiber.Ctx) error {
 }
 
 func paginateRolesByWorkspaceId(ctx *fiber.Ctx) error {
-	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	_, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 
 	paginationRes := utils.PaginationResponse[repository.Role]{}
 	if err := paginationRes.ParseQuery(ctx, 50); err != nil {
@@ -35,20 +35,17 @@ func paginateRolesByWorkspaceId(ctx *fiber.Ctx) error {
 		Offset:      (paginationRes.CurrentPage - 1) * paginationRes.Limit,
 	})
 	if err != nil {
-		go utils.LogError(userId, workspaceId, paginate_roles_fail, utils.LogData{"error": err.Error()})
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	paginationRes.Docs = roles
 	rolesCount, err := queries.GetRolesByWorkspaceIdCount(ctx.Context(), workspaceId)
 	if err != nil {
-		go utils.LogError(userId, workspaceId, paginate_roles_fail, utils.LogData{"error": err.Error()})
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	paginationRes.TotalDocs = rolesCount
 	paginationRes.BuildPaginationResponse()
-	go utils.LogInfo(userId, workspaceId, paginate_roles_success, utils.LogData{"count": rolesCount})
 
 	return ctx.Status(fiber.StatusOK).JSON(
 		utils.SendResponse(paginationRes, "Got roles successfully"),

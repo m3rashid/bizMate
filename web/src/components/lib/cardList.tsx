@@ -39,7 +39,7 @@ export type CardListProps<T> = {
 export function CardList<T extends DbRow>(props: CardListProps<T>) {
 	const router = useRouter();
 	const { t } = useTranslation();
-	const locationSearch = qs.parse(window.location.search);
+	const locationSearch = qs.parse(typeof window !== 'undefined' ? window.location.search : '');
 	const [page, setPage] = useSearchParamsState('page', locationSearch.page?.toString() || '1');
 
 	const {
