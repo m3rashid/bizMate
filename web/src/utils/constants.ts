@@ -34,3 +34,5 @@ export const permissionLevelStringToNumberMap = {
 	export: 32,
 	admin: 64,
 } as const;
+
+export const nilUuid = '00000000-0000-0000-0000-000000000000';

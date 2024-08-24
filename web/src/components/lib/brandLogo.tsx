@@ -12,7 +12,7 @@ export function BrandLogo(props: BrandLogoProps) {
 			<Image
 				height={96}
 				width={96}
-				src='/logo.png'
+				src='/logo-nobg.png'
 				alt='Brand Logo'
 				style={{ viewTransitionName: 'brandLogoImage' }}
 				className={cn('h-24 w-24 rounded-lg', props.imgClassName)}

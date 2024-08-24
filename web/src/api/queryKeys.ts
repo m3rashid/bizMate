@@ -9,4 +9,7 @@ export const queryKeys = {
 	workspaceInvites: 'workspaceInvites',
 	permissions: 'permissions',
 	roles: 'roles',
+	barePermissions: 'barePermissions',
+	userActivity: 'userActivity',
+	workspaceActivity: 'workspaceActivity',
 } as const;

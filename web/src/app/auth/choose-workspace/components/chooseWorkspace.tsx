@@ -12,6 +12,21 @@ import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+function WorkspaceCardBg(props: { color: string }) {
+	if (!props.color || !props.color.startsWith('#')) return null;
+	return (
+		<svg width='100%' height='100%' viewBox='0 0 400 400' className='absolute rounded-lg'>
+			<rect fill='#fff' width='400' height='400' />
+			<g fillOpacity='1'>
+				<circle fill={props.color} opacity={0.1} cx='0' cy='400' r='400' />
+				<circle fill={props.color} opacity={0.2} cx='0' cy='400' r='300' />
+				<circle fill={props.color} opacity={0.3} cx='0' cy='400' r='200' />
+				<circle fill={props.color} opacity={0.4} cx='0' cy='400' r='100' />
+			</g>
+		</svg>
+	);
+}
+
 export function WorkspaceCard(workspace: Workspace) {
 	const router = useRouter();
 
@@ -23,9 +38,10 @@ export function WorkspaceCard(workspace: Workspace) {
 	return (
 		<div
 			onClick={handleSelectWorkspace}
-			className='flex h-52 w-52 cursor-pointer select-none items-center justify-center rounded-lg bg-white p-2.5 shadow-lg ring-2 ring-gray-100 hover:ring-primary'
+			className='relative flex h-52 w-52 cursor-pointer select-none items-center justify-center overflow-hidden rounded-lg bg-white p-2.5 shadow-lg ring-2 ring-gray-100 hover:ring-primary'
 		>
-			<h3 className='text-center'>{workspace.name}</h3>
+			<WorkspaceCardBg color={workspace.color} />
+			<h3 className='z-50 text-center font-semibold'>{workspace.name}</h3>
 		</div>
 	);
 }

@@ -10,6 +10,10 @@ import (
 func Setup(initialRoute string, app *fiber.App) {
 	app.Get(initialRoute+"/all", utils.CheckAuthMiddlewareWithWorkspace, getUserPermissions)
 
+	app.Get(initialRoute+"/user-roles/:userId/all", utils.CheckAuthMiddlewareWithWorkspace, getUserRoles)
+
+	app.Get(initialRoute+"/user-bare-permissions/:userId/all", utils.CheckAuthMiddlewareWithWorkspace, getUserBarePermissionsOnly)
+
 	app.Get(
 		initialRoute+"/roles/all",
 		utils.CheckAuthMiddlewareWithWorkspace,
@@ -57,7 +61,7 @@ func Setup(initialRoute string, app *fiber.App) {
 		initialRoute+"/roles/add-bare-permission",
 		utils.CheckAuthMiddlewareWithWorkspace,
 		CheckPermissionMiddleware(repository.PermissionObjectType, repository.PermissionLevelCreate),
-		addBarePermissionFromUser,
+		addBarePermissionToUser,
 	)
 
 	app.Post(

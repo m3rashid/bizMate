@@ -11,7 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
-const addBarePermissionTouser = `-- name: AddBarePermissionTouser :exec
+const addBarePermissionToUser = `-- name: AddBarePermissionToUser :exec
 insert into bare_permissions (
 	id,
 	user_id,
@@ -22,7 +22,7 @@ insert into bare_permissions (
 ) values ($1, $2, $3, $4, $5, $6)
 `
 
-type AddBarePermissionTouserParams struct {
+type AddBarePermissionToUserParams struct {
 	ID          uuid.UUID       `json:"id"`
 	UserID      uuid.UUID       `json:"user_id"`
 	WorkspaceID uuid.UUID       `json:"workspace_id"`
@@ -31,8 +31,8 @@ type AddBarePermissionTouserParams struct {
 	Level       PermissionLevel `json:"level"`
 }
 
-func (q *Queries) AddBarePermissionTouser(ctx context.Context, arg AddBarePermissionTouserParams) error {
-	_, err := q.db.Exec(ctx, addBarePermissionTouser,
+func (q *Queries) AddBarePermissionToUser(ctx context.Context, arg AddBarePermissionToUserParams) error {
+	_, err := q.db.Exec(ctx, addBarePermissionToUser,
 		arg.ID,
 		arg.UserID,
 		arg.WorkspaceID,

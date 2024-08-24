@@ -1,7 +1,7 @@
 -- name: GetUserBarePermissions :many
 select * from bare_permissions where user_id = $1 and workspace_id = $2;
 
--- name: AddBarePermissionTouser :exec
+-- name: AddBarePermissionToUser :exec
 insert into bare_permissions (
 	id,
 	user_id,

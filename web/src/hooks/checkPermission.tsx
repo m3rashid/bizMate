@@ -1,15 +1,16 @@
 export type Permission = {
+	id: string;
 	object_type: string;
 	object_id: string;
 	user_id: string;
-	permission: number;
+	level: number;
 };
 
 export function checkPermission(
 	permissions: Permission[],
 	checkFor: {
 		objectType: string;
-		permission: number;
+		level: number;
 		objectId?: string;
 	}
 ) {
@@ -17,7 +18,7 @@ export function checkPermission(
 	return permissions.some(
 		(permission) =>
 			permission.object_type === checkFor.objectType &&
-			permission.permission === checkFor.permission &&
+			permission.level === checkFor.level &&
 			(!checkFor.objectId || permission.object_id === checkFor.objectId)
 	);
 }

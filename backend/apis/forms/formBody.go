@@ -24,7 +24,7 @@ func updateFormBody(ctx *fiber.Ctx) error {
 
 	reqBody := FormBodyReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
-		go utils.LogError(update_form_body_fail, userEmail, workspaceId, repository.FormObjectType, utils.LogData{"error": err.Error()})
+		go utils.LogError(update_form_body_fail, userEmail, workspaceId, repository.FormObjectType, repository.LogData{"error": err.Error()})
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
@@ -40,14 +40,14 @@ func updateFormBody(ctx *fiber.Ctx) error {
 	queries := repository.New(pgConn)
 	form, err := queries.GetFormById(ctx.Context(), formUuid)
 	if err != nil || form.ID == uuid.Nil {
-		go utils.LogError(update_form_body_fail, userEmail, workspaceId, repository.FormObjectType, utils.LogData{"error": err.Error()})
+		go utils.LogError(update_form_body_fail, userEmail, workspaceId, repository.FormObjectType, repository.LogData{"error": err.Error()})
 		return fiber.NewError(fiber.StatusBadRequest, "Form not found")
 	}
 
 	validationErrors := repository.ValidateFormBodyMeta(reqBody.FormBody)
 	if len(validationErrors) > 0 {
 		jsonStr, err := json.Marshal(validationErrors)
-		go utils.LogError(update_form_body_fail, userEmail, workspaceId, repository.FormObjectType, utils.LogData{"error": string(jsonStr)})
+		go utils.LogError(update_form_body_fail, userEmail, workspaceId, repository.FormObjectType, repository.LogData{"error": string(jsonStr)})
 
 		if err != nil {
 			return fiber.NewError(fiber.StatusInternalServerError)
@@ -56,10 +56,10 @@ func updateFormBody(ctx *fiber.Ctx) error {
 	}
 
 	if err = queries.UpdateFormBody(ctx.Context(), repository.UpdateFormBodyParams{ID: form.ID, FormBody: reqBody.FormBody}); err != nil {
-		go utils.LogError(update_form_body_fail, userEmail, workspaceId, repository.FormObjectType, utils.LogData{"error": err.Error(), "form_id": form.ID.String()})
+		go utils.LogError(update_form_body_fail, userEmail, workspaceId, repository.FormObjectType, repository.LogData{"error": err.Error(), "form_id": form.ID.String()})
 		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 
-	go utils.LogError(update_form_body_success, userEmail, workspaceId, repository.FormObjectType, utils.LogData{"form_id": form.ID.String()})
+	go utils.LogError(update_form_body_success, userEmail, workspaceId, repository.FormObjectType, repository.LogData{"form_id": form.ID.String()})
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(nil, "Form Body created successfully"))
 }
