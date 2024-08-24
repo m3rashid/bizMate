@@ -1,11 +1,13 @@
 'use client';
 
 import { useAddBarePermissionToUserMutation, useGetUserBarePermissions, useRemovePermissionToUserMutation } from '@/api/permissions/client';
+import { Button } from '@/components/lib/button';
 import { PingLoader } from '@/components/lib/loaders';
 import { SimpleTable, SimpleTableColumn } from '@/components/lib/simpleTable';
 import { Permission } from '@/hooks/checkPermission';
 import { nilUuid, permissionLevelNumberToStringMap } from '@/utils/constants';
 import { PermissionLevel } from '@/utils/types';
+import { twMerge } from 'tailwind-merge';
 
 export function UserPermissions(props: { userId: string; workspaceId: string }) {
 	const { data } = useGetUserBarePermissions(props.workspaceId, props.userId);
@@ -22,7 +24,7 @@ export function UserPermissions(props: { userId: string; workspaceId: string }) 
 
 	if ((data.data || []).length === 0) return <div className='my-6 ml-2'>No permissions assigned</div>;
 
-	const tableColumns: SimpleTableColumn<Permission>[] = [
+	const tableColumns: SimpleTableColumn<Permission & { workspace_id: string }>[] = [
 		{ dataKey: 'object_type', title: 'Object Type' },
 		{
 			dataKey: 'level',
@@ -36,19 +38,16 @@ export function UserPermissions(props: { userId: string; workspaceId: string }) 
 		},
 		{
 			dataKey: 'id',
-			title: 'Actions',
-			render: ({ row }) => <div className='flex items-center gap-4'></div>,
+			title: '',
+			render: ({ row }) => (
+				<div className='flex items-center gap-4'>
+					<Button size='small' disabled={row.object_type === 'workspace' && row.level === 64}>
+						Revoke
+					</Button>
+				</div>
+			),
 		},
 	];
 
-	return (
-		<div>
-			<SimpleTable<Permission> columns={tableColumns} data={data.data} />
-			{data.data.map((permission) => {
-				return <div key={permission.id}></div>;
-			})}
-
-			{JSON.stringify(data.data, null, 2)}
-		</div>
-	);
+	return <SimpleTable<Permission & { workspace_id: string }> columns={tableColumns} data={data.data} />;
 }

@@ -104,7 +104,7 @@ export type PermissionLevel = (typeof permissionLevelNumbers)[number];
 export type RolePermission = {
 	object_type: PermissionObjectType;
 	object_id: ID;
-	user_id: ID;
+	user_id?: ID;
 	level: PermissionLevel;
 };
 
@@ -112,7 +112,7 @@ export type Role = BaseModel &
 	CreatedBy & {
 		name: string;
 		description: string;
-		permissions: string[];
+		permissions: RolePermission[];
 	};
 
 export type Activity = {

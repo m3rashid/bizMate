@@ -14,7 +14,7 @@ export function UserRoles(props: { userId: string; workspaceId: string }) {
 		);
 	}
 
-	if ((data.data || []).length === 0) return <div className='my-6 ml-2'>No roles assigned</div>;
+	if ((data.data || []).length === 0) return <div className='my-6 ml-2 px-2 pb-2 sm:px-4 sm:pb-4'>No roles assigned</div>;
 
-	return <div>{JSON.stringify(data.data, null, 2)}</div>;
+	return <div className='px-2 pb-2 sm:px-4 sm:pb-4'>{JSON.stringify(data.data, null, 2)}</div>;
 }

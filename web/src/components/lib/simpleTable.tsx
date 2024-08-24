@@ -102,9 +102,13 @@ export function SimpleTable<T extends DbRow>(props: SimpleTableProps<T>) {
 										))}
 									</tr>
 								</thead>
+
 								<tbody>
 									{(props.data || []).map((row, rowIndex) => (
-										<tr key={row.id} className={cn('border-t border-borderColor', props.tableRowClassName ? props.tableRowClassName(rowIndex) : '')}>
+										<tr
+											key={row.id + String(rowIndex)}
+											className={cn('border-t border-borderColor', props.tableRowClassName ? props.tableRowClassName(rowIndex) : '')}
+										>
 											{props.columns.map((column, columnIndex) => (
 												<td
 													key={row[column.dataKey] + String(columnIndex)}

@@ -41,8 +41,8 @@ export function UserDetailModal({ open, onClose, workspaceId, ...user }: User & 
 	);
 
 	return (
-		<Modal open={open} setOpen={onClose} className='p-2 sm:p-4'>
-			<Tabs tabs={tabs} {...{ selectedTab, setSelectedTab }} />
+		<Modal open={open} setOpen={onClose} className='p-2 sm:p-0'>
+			<Tabs tabClassName='p-2 pt-4 pl-4' tabs={tabs} {...{ selectedTab, setSelectedTab }} />
 		</Modal>
 	);
 }

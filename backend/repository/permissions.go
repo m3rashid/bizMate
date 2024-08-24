@@ -30,8 +30,8 @@ const (
 
 type SingleRolePermission struct {
 	ObjectType ObjectType      `json:"object_type" validate:"required"`
-	ObjectID   uuid.UUID       `json:"object_id" validate:"required"`
-	UserID     uuid.UUID       `json:"user_id" validate:"required"`
+	ObjectID   uuid.UUID       `json:"object_id"`
+	UserID     uuid.UUID       `json:"user_id"`
 	Level      PermissionLevel `json:"level" validate:"required"`
 }
 

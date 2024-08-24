@@ -20,7 +20,7 @@ func Setup(initialRoute string, app *fiber.App) {
 		paginateRolesByWorkspaceId,
 	)
 
-	app.Get(initialRoute+"/roles/:roleId", utils.CheckAuthMiddlewareWithWorkspace, getRoleById)
+	app.Get(initialRoute+"/roles/one/:roleId", utils.CheckAuthMiddlewareWithWorkspace, getRoleById)
 
 	app.Post(
 		initialRoute+"/roles/create",
@@ -58,14 +58,14 @@ func Setup(initialRoute string, app *fiber.App) {
 	)
 
 	app.Post(
-		initialRoute+"/roles/add-bare-permission",
+		initialRoute+"/add-bare-permission",
 		utils.CheckAuthMiddlewareWithWorkspace,
 		CheckPermissionMiddleware(repository.PermissionObjectType, repository.PermissionLevelCreate),
 		addBarePermissionToUser,
 	)
 
 	app.Post(
-		initialRoute+"/roles/remove-bare-permission",
+		initialRoute+"/remove-bare-permission",
 		utils.CheckAuthMiddlewareWithWorkspace,
 		CheckPermissionMiddleware(repository.PermissionObjectType, repository.PermissionLevelCreate),
 		removeBarePermissionFromUser,
