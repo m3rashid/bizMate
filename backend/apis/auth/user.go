@@ -69,7 +69,7 @@ func getUser(ctx *fiber.Ctx) error {
 func credentialsLogin(ctx *fiber.Ctx) error {
 	reqBody := loginBodyReq{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
-		go utils.LogError(user_login_fail, uuid.Nil, uuid.Nil, repository.UserObjectType, utils.LogData{"error": err.Error()})
+		go utils.LogError(user_login_fail, "", uuid.Nil, repository.UserObjectType, utils.LogData{"error": err.Error()})
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
@@ -82,30 +82,30 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 	queries := repository.New(pgConn)
 	user, err := queries.GetUserByEmail(ctx.Context(), reqBody.Email)
 	if err != nil {
-		go utils.LogError(user_login_fail, uuid.Nil, uuid.Nil, repository.UserObjectType, utils.LogData{"error": err.Error(), "email": reqBody.Email})
+		go utils.LogError(user_login_fail, reqBody.Email, uuid.Nil, repository.UserObjectType, utils.LogData{"error": err.Error(), "email": reqBody.Email})
 		return fiber.NewError(fiber.StatusNotFound, "User not found")
 	}
 
 	go addUserToCache(user)
 
 	if user.Provider != repository.PROVIDER_CREDENTIALS {
-		go utils.LogError(user_login_fail, user.ID, uuid.Nil, repository.UserObjectType)
+		go utils.LogError(user_login_fail, user.Email, uuid.Nil, repository.UserObjectType)
 		return fiber.NewError(fiber.StatusUnauthorized, "User not found")
 	}
 
 	if !utils.ComparePasswords(user.Password, reqBody.Password) {
-		go utils.LogError(user_login_fail, user.ID, uuid.Nil, repository.UserObjectType)
+		go utils.LogError(user_login_fail, user.Email, uuid.Nil, repository.UserObjectType)
 		return fiber.NewError(fiber.StatusUnauthorized, "Invalid credentials")
 	}
 
 	token, err := utils.GenerateJWT(user.ID, user.Email, user.Avatar)
 	if err != nil {
-		utils.LogError(user_login_fail, user.ID, uuid.Nil, repository.UserObjectType, utils.LogData{"error": err.Error()})
+		utils.LogError(user_login_fail, user.Email, uuid.Nil, repository.UserObjectType, utils.LogData{"error": err.Error()})
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	setTokenCookie(ctx, token)
-	go utils.LogInfo(user_login_success, user.ID, uuid.Nil, repository.UserObjectType)
+	go utils.LogInfo(user_login_success, user.Email, uuid.Nil, repository.UserObjectType)
 	return ctx.Status(fiber.StatusOK).JSON(
 		utils.SendResponse(toPartialUser(user), "User logged in successfully"),
 	)
@@ -114,13 +114,13 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 func credentialsRegister(ctx *fiber.Ctx) error {
 	reqBody := redisterBodyReq{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
-		go utils.LogError(user_register_fail, uuid.Nil, uuid.Nil, repository.UserObjectType, utils.LogData{"error": err.Error()})
+		go utils.LogError(user_register_fail, "", uuid.Nil, repository.UserObjectType, utils.LogData{"error": err.Error()})
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	password, err := utils.HashPassword(reqBody.Password)
 	if err != nil {
-		go utils.LogError(user_register_fail, uuid.Nil, uuid.Nil, repository.UserObjectType, utils.LogData{"error": err.Error()})
+		go utils.LogError(user_register_fail, reqBody.Email, uuid.Nil, repository.UserObjectType, utils.LogData{"error": err.Error()})
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
@@ -148,7 +148,7 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 	queries := repository.New(pgConn)
 	user, err := queries.CreateUser(ctx.Context(), newUser)
 	if err != nil {
-		go utils.LogError(user_register_fail, id, uuid.Nil, repository.UserObjectType, utils.LogData{"error": err.Error()})
+		go utils.LogError(user_register_fail, reqBody.Email, uuid.Nil, repository.UserObjectType, utils.LogData{"error": err.Error()})
 		return fiber.NewError(fiber.StatusInternalServerError, "User account creation failed")
 	}
 
@@ -156,11 +156,11 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 
 	token, err := utils.GenerateJWT(user.ID, newUser.Email, newUser.Avatar)
 	if err != nil {
-		go utils.LogError(user_register_fail, user.ID, uuid.Nil, repository.UserObjectType, utils.LogData{"error": err.Error()})
+		go utils.LogError(user_register_fail, user.Email, uuid.Nil, repository.UserObjectType, utils.LogData{"error": err.Error()})
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	go utils.LogInfo(user_register_success, user.ID, uuid.Nil, repository.UserObjectType)
+	go utils.LogInfo(user_register_success, user.Email, uuid.Nil, repository.UserObjectType)
 	setTokenCookie(ctx, token)
 	return ctx.Status(fiber.StatusOK).JSON(
 		utils.SendResponse(toPartialUser(user), "User account created successfully"),

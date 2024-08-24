@@ -18,17 +18,20 @@ const user_login_success = "user_login_success"
 const user_logout_fail = "user_logout_fail"
 const user_logout_success = "user_logout_success"
 
-const list_workspace_users_fail = "list_workspace_users_fail"
-const list_workspace_users_success = "list_workspace_users_success"
-
 const create_workspace_fail = "create_workspace_fail"
 const create_workspace_success = "create_workspace_success"
 
 const accept_workspace_invite_fail = "accept_workspace_invite_fail"
+const accept_workspace_invite_success = "accept_workspace_invite_success"
+
 const reject_workspace_invite_fail = "reject_workspace_invite_fail"
+const reject_workspace_invite_success = "reject_workspace_invite_success"
 
 const send_workspace_invite_fail = "send_workspace_invite_fail"
+const send_workspace_invite_success = "send_workspace_invite_success"
+
 const revoke_workspace_invite_fail = "revoke_workspace_invite_fail"
+const revoke_workspace_invite_success = "revoke_workspace_invite_success"
 
 type redisterBodyReq struct {
 	Name     string `json:"name" validate:"required,min=3,max=50"`

@@ -22,13 +22,12 @@ type LogData map[string]interface{}
 type Log struct {
 	ID          primitive.ObjectID `json:"_id" bson:"_id"`
 	Time        time.Time          `json:"time" bson:"time"`
-	UserID      string             `json:"userId" bson:"uId"`
+	UserEmail   string             `json:"userEmail" bson:"uEmail"`
 	LogLevel    LogLevel           `json:"logLevel" bson:"level"`
 	WorkspaceID string             `json:"workspaceId" bson:"wId"`
 	ObjectType  string             `json:"objectType" bson:"oType"`
-
-	Code string  `json:"code" bson:"code"`
-	Data LogData `json:"data" bson:"data"`
+	Code        string             `json:"code" bson:"code"`
+	Data        LogData            `json:"data" bson:"data"`
 }
 
 const LOG_COLLECTION_NAME = "logs"
@@ -85,24 +84,26 @@ func insertLogsToDatabase() {
 
 func createLog(
 	level LogLevel,
-	userId uuid.UUID,
+	userEmail string,
 	workspaceId uuid.UUID,
 	objectType repository.ObjectType,
 	code string,
 	data ...LogData,
 ) Log {
 	log := Log{
-		Code:     code,
-		LogLevel: level,
-		Time:     time.Now(),
-		ID:       primitive.NewObjectID(),
+		Code:       code,
+		LogLevel:   level,
+		Time:       time.Now(),
+		ObjectType: string(objectType),
+		ID:         primitive.NewObjectID(),
 	}
+
 	if len(data) > 0 {
 		log.Data = data[0]
 	}
 
-	if userId != uuid.Nil {
-		log.UserID = userId.String()
+	if userEmail != "" {
+		log.UserEmail = userEmail
 	}
 
 	if workspaceId != uuid.Nil {
@@ -114,33 +115,33 @@ func createLog(
 
 func LogInfo(
 	code string,
-	userId uuid.UUID,
+	userEmail string,
 	workspaceId uuid.UUID,
 	objectType repository.ObjectType,
 	data ...LogData,
 ) {
-	log := createLog(LogLevelInfo, userId, workspaceId, objectType, code, data...)
+	log := createLog(LogLevelInfo, userEmail, workspaceId, objectType, code, data...)
 	logsPs.logs <- log
 }
 
 func LogWarning(
 	code string,
-	userId uuid.UUID,
+	userEmail string,
 	workspaceId uuid.UUID,
 	objectType repository.ObjectType,
 	data ...LogData,
 ) {
-	log := createLog(LogLevelWarning, userId, workspaceId, objectType, code, data...)
+	log := createLog(LogLevelWarning, userEmail, workspaceId, objectType, code, data...)
 	logsPs.logs <- log
 }
 
 func LogError(
 	code string,
-	userId uuid.UUID,
+	userEmail string,
 	workspaceId uuid.UUID,
 	objectType repository.ObjectType,
 	data ...LogData,
 ) {
-	log := createLog(LogLevelError, userId, workspaceId, objectType, code, data...)
+	log := createLog(LogLevelError, userEmail, workspaceId, objectType, code, data...)
 	logsPs.logs <- log
 }

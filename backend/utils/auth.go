@@ -132,6 +132,14 @@ func getId(key string, ctx *fiber.Ctx) uuid.UUID {
 	return id
 }
 
+func GetUserEmailFromCtx(ctx *fiber.Ctx) string {
+	email := ctx.Locals("email")
+	if email == nil {
+		return ""
+	}
+	return email.(string)
+}
+
 func GetUserAndWorkspaceIdsOrZero(ctx *fiber.Ctx) (userId uuid.UUID, workspaceId uuid.UUID) {
 	return getId("userId", ctx), getId("workspaceId", ctx)
 }
