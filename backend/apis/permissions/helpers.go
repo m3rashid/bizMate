@@ -53,7 +53,7 @@ type deleteRoleReqBody struct {
 
 type addBarePermissionReqBody struct {
 	ObjectType repository.ObjectType      `json:"object_type" validate:"required"`
-	ObjectId   uuid.UUID                  `json:"object_id" validate:"required"`
+	ObjectId   uuid.UUID                  `json:"object_id"`
 	UserId     uuid.UUID                  `json:"user_id" validate:"required"`
 	Level      repository.PermissionLevel `json:"level" validate:"required"`
 }

@@ -10,36 +10,14 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type LogLevel int
-
-const (
-	LogLevelInfo LogLevel = iota
-	LogLevelWarning
-	LogLevelError
-)
-
-type LogData map[string]interface{}
-type Log struct {
-	ID          primitive.ObjectID `json:"_id" bson:"_id"`
-	Time        time.Time          `json:"time" bson:"time"`
-	UserEmail   string             `json:"userEmail" bson:"uEmail"`
-	LogLevel    LogLevel           `json:"logLevel" bson:"level"`
-	WorkspaceID string             `json:"workspaceId" bson:"wId"`
-	ObjectType  string             `json:"objectType" bson:"oType"`
-	Code        string             `json:"code" bson:"code"`
-	Data        LogData            `json:"data" bson:"data"`
-}
-
-const LOG_COLLECTION_NAME = "logs"
-
 type logPubSub struct {
-	logs chan Log
+	logs chan repository.Log
 }
 
 var logsPs *logPubSub
 
 func InitLogsLocalPubSub() {
-	max_logs_cache_size := Ternary(*Env.IsProduction, 50, 10)
+	max_logs_cache_size := Ternary(*Env.IsProduction, 20, 1)
 
 	if _, err := GetMongoDB(); err != nil {
 		fmt.Println("Failed to initialize log-pubsub, mongo connection error", err)
@@ -47,7 +25,7 @@ func InitLogsLocalPubSub() {
 	}
 
 	logsPs = &logPubSub{
-		logs: make(chan Log, max_logs_cache_size),
+		logs: make(chan repository.Log, max_logs_cache_size),
 	}
 
 	go func() {
@@ -72,25 +50,21 @@ func insertLogsToDatabase() {
 
 	mongoConn, err := GetMongoDB()
 	if err != nil {
-		fmt.Println("Failed to insert logs to database", err)
 		return
 	}
 
-	if _, err := mongoConn.Collection(LOG_COLLECTION_NAME).InsertMany(context.Background(), logs); err != nil {
-		fmt.Println("Error while inserting logs to mongo", err)
-		return
-	}
+	repository.InsertLogs(context.Background(), mongoConn, logs)
 }
 
 func createLog(
-	level LogLevel,
+	level repository.LogLevel,
 	userEmail string,
 	workspaceId uuid.UUID,
 	objectType repository.ObjectType,
 	code string,
-	data ...LogData,
-) Log {
-	log := Log{
+	data ...repository.LogData,
+) repository.Log {
+	log := repository.Log{
 		Code:       code,
 		LogLevel:   level,
 		Time:       time.Now(),
@@ -106,7 +80,7 @@ func createLog(
 		log.UserEmail = userEmail
 	}
 
-	if workspaceId != uuid.Nil {
+	if workspaceId != uuid.Nil && workspaceId.String() != "" {
 		log.WorkspaceID = workspaceId.String()
 	}
 
@@ -118,9 +92,9 @@ func LogInfo(
 	userEmail string,
 	workspaceId uuid.UUID,
 	objectType repository.ObjectType,
-	data ...LogData,
+	data ...repository.LogData,
 ) {
-	log := createLog(LogLevelInfo, userEmail, workspaceId, objectType, code, data...)
+	log := createLog(repository.LogLevelInfo, userEmail, workspaceId, objectType, code, data...)
 	logsPs.logs <- log
 }
 
@@ -129,9 +103,9 @@ func LogWarning(
 	userEmail string,
 	workspaceId uuid.UUID,
 	objectType repository.ObjectType,
-	data ...LogData,
+	data ...repository.LogData,
 ) {
-	log := createLog(LogLevelWarning, userEmail, workspaceId, objectType, code, data...)
+	log := createLog(repository.LogLevelWarning, userEmail, workspaceId, objectType, code, data...)
 	logsPs.logs <- log
 }
 
@@ -140,8 +114,8 @@ func LogError(
 	userEmail string,
 	workspaceId uuid.UUID,
 	objectType repository.ObjectType,
-	data ...LogData,
+	data ...repository.LogData,
 ) {
-	log := createLog(LogLevelError, userEmail, workspaceId, objectType, code, data...)
+	log := createLog(repository.LogLevelError, userEmail, workspaceId, objectType, code, data...)
 	logsPs.logs <- log
 }

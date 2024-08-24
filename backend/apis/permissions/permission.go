@@ -9,6 +9,44 @@ import (
 	"github.com/google/uuid"
 )
 
+func getUserBarePermissionsOnly(ctx *fiber.Ctx) error {
+	_, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+	if workspaceId == uuid.Nil {
+		return fiber.NewError(fiber.StatusUnauthorized)
+	}
+
+	userId := ctx.Params("userId")
+	if userId == "" {
+		return fiber.NewError(fiber.StatusBadRequest, "User ID is required")
+	}
+
+	userIdUuidV7, err := utils.StringToUuid(userId)
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid User ID")
+	}
+
+	pgConn, err := utils.GetPostgresDB()
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	queries := repository.New(pgConn)
+	barePermissions, err := queries.GetUserBarePermissions(
+		ctx.Context(),
+		repository.GetUserBarePermissionsParams{
+			UserID:      userIdUuidV7,
+			WorkspaceID: workspaceId,
+		},
+	)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(
+		utils.SendResponse(barePermissions, "Bare permissions found successfully"),
+	)
+}
+
 func getUserPermissionsHelper(ctx context.Context, userId uuid.UUID, workspaceId uuid.UUID) (repository.RolePermissions, error) {
 	pgConn, err := utils.GetPostgresDB()
 	if err != nil {

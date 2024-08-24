@@ -98,13 +98,13 @@ export type WorkspaceInvite = {
 	created_by_id: ID;
 };
 
-type PermissionObjectType = (typeof permissionObjectTypes)[number];
-type PermissionLevel = (typeof permissionLevelNumbers)[number];
+export type PermissionObjectType = (typeof permissionObjectTypes)[number];
+export type PermissionLevel = (typeof permissionLevelNumbers)[number];
 
 export type RolePermission = {
 	object_type: PermissionObjectType;
 	object_id: ID;
-	user_id: ID;
+	user_id?: ID;
 	level: PermissionLevel;
 };
 
@@ -112,5 +112,16 @@ export type Role = BaseModel &
 	CreatedBy & {
 		name: string;
 		description: string;
-		permissions: string[];
+		permissions: RolePermission[];
 	};
+
+export type Activity = {
+	id: string;
+	time: string;
+	userEmail?: string;
+	logLevel: number;
+	workspaceId: string;
+	objectType: string;
+	code: string;
+	data: Record<string, any>;
+};

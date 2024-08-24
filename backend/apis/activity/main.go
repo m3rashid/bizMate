@@ -17,7 +17,7 @@ func Setup(initialRoute string, app *fiber.App) {
 	)
 
 	app.Get(
-		initialRoute+"/user/:userId/all",
+		initialRoute+"/user/:email/all",
 		utils.CheckAuthMiddlewareWithWorkspace,
 		permissions.CheckPermissionMiddleware(repository.ActivityObjectType, repository.PermissionLevelRead),
 		paginateSingleUserActivity,

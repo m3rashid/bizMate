@@ -3,7 +3,7 @@
 import { baseUrl } from '@/api/config';
 import { Button } from '@/components/lib/button';
 import { Input } from '@/components/lib/input';
-import { Loader } from '@/components/lib/loaders';
+import { PingLoader } from '@/components/lib/loaders';
 import { PhoneNumberInput } from '@/components/lib/phoneNumberInput';
 import { usePopups } from '@/hooks/popups';
 import LockClosedIcon from '@heroicons/react/20/solid/LockClosedIcon';
@@ -62,7 +62,7 @@ export function CredentialsAuthForm(props: CredentialsAuthFormProps) {
 			<Button
 				type='submit'
 				className='mt-2'
-				{...(loading ? { RightIcon: <Loader /> } : {})}
+				{...(loading ? { RightIcon: <PingLoader /> } : {})}
 				LeftIcon={<LockClosedIcon className='h-5 w-5' />}
 				label={props.type === 'register' ? 'Register' : 'Login'}
 			/>

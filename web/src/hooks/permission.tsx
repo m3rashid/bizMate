@@ -8,7 +8,7 @@ export function usePermission(userId: string) {
 
 	function hasPermission(objectType: string, permission: number, objectId?: string) {
 		if (!permissions) return false;
-		return checkPermission(permissions.data, { objectType, permission, objectId });
+		return checkPermission(permissions.data, { objectType, level: permission, objectId });
 	}
 
 	return {

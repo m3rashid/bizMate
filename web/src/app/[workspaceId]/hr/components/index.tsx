@@ -1,5 +1,6 @@
 'use client';
 
+import { ActivityTab } from './activity';
 import { Roles } from './roles';
 import { Users } from './users';
 import { Tab, Tabs } from '@/components/lib/tabs';
@@ -10,19 +11,25 @@ import { useMemo } from 'react';
 export function HrTabs(props: { currentUserId: string; workspaceId: string }) {
 	const params = useSearchParams();
 
-	const tabList: Tab<{ currentUserId: string }>[] = useMemo(
+	const tabList: Tab<any>[] = useMemo(
 		() => [
 			{
 				id: 'users',
 				label: 'Users',
 				Component: Users,
-				componentProps: { currentUserId: props.currentUserId, workspaceId: props.workspaceId },
+				componentProps: { workspaceId: props.workspaceId },
 			},
 			{
 				id: 'roles',
 				label: 'Roles',
 				Component: Roles,
-				componentProps: { currentUserId: props.currentUserId, workspaceId: props.workspaceId },
+				componentProps: { workspaceId: props.workspaceId },
+			},
+			{
+				id: 'activity',
+				label: 'Activity',
+				Component: ActivityTab,
+				componentProps: { workspaceId: props.workspaceId },
 			},
 		],
 		// eslint-disable-next-line react-hooks/exhaustive-deps

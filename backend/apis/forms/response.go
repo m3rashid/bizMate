@@ -20,7 +20,7 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 
 	reqBody := formResponseReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil || formId == "" {
-		go utils.LogError(create_form_response_fail, userEmail, uuid.Nil, repository.FormResponsesObjectType, utils.LogData{"error": err.Error()})
+		go utils.LogError(create_form_response_fail, userEmail, uuid.Nil, repository.FormResponsesObjectType, repository.LogData{"error": err.Error()})
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
@@ -34,7 +34,7 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 
 	form, err := queries.GetFormById(ctx.Context(), formUid)
 	if err != nil {
-		go utils.LogError(create_form_response_fail, userEmail, uuid.Nil, repository.FormResponsesObjectType, utils.LogData{"error": err.Error()})
+		go utils.LogError(create_form_response_fail, userEmail, uuid.Nil, repository.FormResponsesObjectType, repository.LogData{"error": err.Error()})
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
@@ -67,11 +67,11 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 
 	createResponseRes, err := repository.CreateFormResponse(ctx.Context(), mongoDb, formResponse)
 	if err != nil {
-		go utils.LogError(create_form_response_fail, userEmail, form.WorkspaceID, repository.FormResponsesObjectType, utils.LogData{"error": err.Error(), "form_id": form.ID.String()})
+		go utils.LogError(create_form_response_fail, userEmail, form.WorkspaceID, repository.FormResponsesObjectType, repository.LogData{"error": err.Error(), "form_id": form.ID.String()})
 		return fiber.NewError(fiber.StatusInternalServerError, "Could not save response")
 	}
 
-	go utils.LogInfo(create_form_response_success, userEmail, form.WorkspaceID, repository.FormResponsesObjectType, utils.LogData{"form_id": form.ID.String(), "response_id": createResponseRes.InsertedID})
+	go utils.LogInfo(create_form_response_success, userEmail, form.WorkspaceID, repository.FormResponsesObjectType, repository.LogData{"form_id": form.ID.String(), "response_id": createResponseRes.InsertedID})
 	return ctx.Status(fiber.StatusCreated).JSON(utils.SendResponse(createResponseRes.InsertedID, "Response submitted successfully"))
 }
 

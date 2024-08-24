@@ -30,7 +30,11 @@ type CreateFormResponseParams struct {
 	Response    map[string]interface{}
 }
 
-func CreateFormResponse(ctx context.Context, db *mongo.Database, params CreateFormResponseParams) (*mongo.InsertOneResult, error) {
+func CreateFormResponse(
+	ctx context.Context,
+	db *mongo.Database,
+	params CreateFormResponseParams,
+) (*mongo.InsertOneResult, error) {
 	deleted := false
 	res, err := db.Collection(FORM_RESPONSES_COLLECTION_NAME).InsertOne(ctx, FormResponse{
 		ID:          primitive.NewObjectID(),
@@ -78,7 +82,11 @@ type PaginateFormResponsesParams struct {
 	WorkspaceID uuid.UUID
 }
 
-func PaginateFormResponses(ctx context.Context, db *mongo.Database, params PaginateFormResponsesParams) ([]FormResponse, error) {
+func PaginateFormResponses(
+	ctx context.Context,
+	db *mongo.Database,
+	params PaginateFormResponsesParams,
+) ([]FormResponse, error) {
 	cursor, err := db.Collection(FORM_RESPONSES_COLLECTION_NAME).Find(ctx,
 		bson.D{
 			{Key: "form_id", Value: params.FormID.String()},

@@ -1,7 +1,7 @@
 import { apiClient } from '../config';
 import { queryKeys } from '../queryKeys';
 import { Permission } from '@/hooks/checkPermission';
-import { ApiResponse } from '@/utils/types';
+import { ApiResponse, Role } from '@/utils/types';
 import { QueryClient } from '@tanstack/react-query';
 
 export function getAllUserPermissions(workspaceId: string, sessionCookie: string) {
@@ -13,5 +13,12 @@ export function prefetchUserPermissions(queryClient: QueryClient, sessionCookie:
 	return queryClient.prefetchQuery({
 		queryKey: [queryKeys.permissions],
 		queryFn: getAllUserPermissions(workspaceId, sessionCookie),
+	});
+}
+
+export function prefetchRoleById(queryClient: QueryClient, sessionCookie: string, workspaceId: string, roleId: string) {
+	return queryClient.prefetchQuery({
+		queryKey: [queryKeys.roles, roleId],
+		queryFn: () => apiClient<ApiResponse<Role>>(`/${workspaceId}/permissions/roles/one/${roleId}`, { headers: { Authorization: sessionCookie } }),
 	});
 }

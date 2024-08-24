@@ -37,7 +37,7 @@ export function Users(props: { workspaceId: string }) {
 
 	return (
 		<>
-			<UserDetailModal open={!!detailRow} onClose={() => setDetailRow(undefined)} {...detailRow!} />
+			<UserDetailModal workspaceId={props.workspaceId} open={!!detailRow} onClose={() => setDetailRow(undefined)} {...detailRow!} />
 
 			<CardList<User>
 				title='Users'

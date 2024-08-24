@@ -24,7 +24,7 @@ export function Input(props: InputProps) {
 			{props.label ? (
 				<label htmlFor={props.name} className={cn('block text-sm font-medium leading-6 text-gray-900', props.labelClassName)}>
 					{props.label}&nbsp;
-					<span className='text-red-500'>{props.required ? '*' : ''}</span>
+					<span className='text-danger'>{props.required ? '*' : ''}</span>
 				</label>
 			) : null}
 

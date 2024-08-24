@@ -1,20 +1,19 @@
 'use client';
 
-import { UserActivity } from './activityTab';
 import { UserDetails } from './detailsTab';
-import { UserRolesPermissions } from './permissionsTab';
+import { UserPermissions } from './permissionsTab';
+import { UserRoles } from './rolesTab';
 import { Modal } from '@/components/lib/modal';
 import { Tab, Tabs } from '@/components/lib/tabs';
 import { User } from '@/utils/types';
 import { useMemo, useState } from 'react';
 
-export function UserDetailModal({ open, onClose, ...user }: User & { open: boolean; onClose: () => void }) {
+export function UserDetailModal({ open, onClose, workspaceId, ...user }: User & { open: boolean; workspaceId: string; onClose: () => void }) {
 	const [selectedTab, setSelectedTab] = useState('details');
 	// -- List of actions --
 	// remove from workspace
 	// change role
 	// add/edit bare permissions
-	// view activity
 
 	const tabs: Tab<any>[] = useMemo(
 		() => [
@@ -22,24 +21,28 @@ export function UserDetailModal({ open, onClose, ...user }: User & { open: boole
 				id: 'details',
 				label: 'User Details',
 				Component: UserDetails,
+				componentProps: { workspaceId, user },
+			},
+			{
+				id: 'roles',
+				label: 'Roles',
+				Component: UserRoles,
+				componentProps: { workspaceId, userId: user.id },
 			},
 			{
 				id: 'permissions',
-				label: 'Roles and Permissions',
-				Component: UserRolesPermissions,
-			},
-			{
-				id: 'activity',
-				label: 'Activity',
-				Component: UserActivity,
+				label: 'Permissions',
+				Component: UserPermissions,
+				componentProps: { workspaceId, userId: user.id },
 			},
 		],
-		[]
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[user.id, workspaceId]
 	);
 
 	return (
-		<Modal open={open} setOpen={onClose} className='p-2 sm:p-4'>
-			<Tabs tabs={tabs} {...{ selectedTab, setSelectedTab }} />
+		<Modal open={open} setOpen={onClose} className='p-2 sm:p-0'>
+			<Tabs tabClassName='p-2 pt-4 pl-4' tabs={tabs} {...{ selectedTab, setSelectedTab }} />
 		</Modal>
 	);
 }

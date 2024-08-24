@@ -10,13 +10,17 @@ import (
 func Setup(initialRoute string, app *fiber.App) {
 	app.Get(initialRoute+"/all", utils.CheckAuthMiddlewareWithWorkspace, getUserPermissions)
 
+	app.Get(initialRoute+"/user-roles/:userId/all", utils.CheckAuthMiddlewareWithWorkspace, getUserRoles)
+
+	app.Get(initialRoute+"/user-bare-permissions/:userId/all", utils.CheckAuthMiddlewareWithWorkspace, getUserBarePermissionsOnly)
+
 	app.Get(
 		initialRoute+"/roles/all",
 		utils.CheckAuthMiddlewareWithWorkspace,
 		paginateRolesByWorkspaceId,
 	)
 
-	app.Get(initialRoute+"/roles/:roleId", utils.CheckAuthMiddlewareWithWorkspace, getRoleById)
+	app.Get(initialRoute+"/roles/one/:roleId", utils.CheckAuthMiddlewareWithWorkspace, getRoleById)
 
 	app.Post(
 		initialRoute+"/roles/create",
@@ -54,14 +58,14 @@ func Setup(initialRoute string, app *fiber.App) {
 	)
 
 	app.Post(
-		initialRoute+"/roles/add-bare-permission",
+		initialRoute+"/add-bare-permission",
 		utils.CheckAuthMiddlewareWithWorkspace,
 		CheckPermissionMiddleware(repository.PermissionObjectType, repository.PermissionLevelCreate),
-		addBarePermissionFromUser,
+		addBarePermissionToUser,
 	)
 
 	app.Post(
-		initialRoute+"/roles/remove-bare-permission",
+		initialRoute+"/remove-bare-permission",
 		utils.CheckAuthMiddlewareWithWorkspace,
 		CheckPermissionMiddleware(repository.PermissionObjectType, repository.PermissionLevelCreate),
 		removeBarePermissionFromUser,
