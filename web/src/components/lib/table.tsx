@@ -7,8 +7,9 @@ import { TableExportProps } from './tableExport';
 import { apiClient } from '@/api/config';
 import { DataListHeader } from '@/components/lib/dataListHeader';
 import { SkeletonTable } from '@/components/lib/loaders';
+import { useSearchParamsState } from '@/hooks/helpers';
 import { cn } from '@/utils/helpers';
-import { ApiResponse, DbRow, PageSearchParams, PaginationResponse } from '@/utils/types';
+import { ApiResponse, DbRow, PaginationResponse } from '@/utils/types';
 import PlusIcon from '@heroicons/react/24/outline/PlusIcon';
 import { useQuery } from '@tanstack/react-query';
 import { useTransitionRouter } from 'next-view-transitions';
@@ -50,7 +51,8 @@ export type TableProps<T> = {
 export function Table<T extends DbRow>(props: TableProps<T>) {
 	const { t } = useTranslation();
 	const router = useTransitionRouter();
-	const locationSearch = qs.parse(location.search);
+	const locationSearch = qs.parse(window.location.search);
+	const [page, setPage] = useSearchParamsState('page', locationSearch.page?.toString() || '1');
 
 	const {
 		isPending,
@@ -58,11 +60,14 @@ export function Table<T extends DbRow>(props: TableProps<T>) {
 		refetch,
 		isFetching,
 	} = useQuery({
-		queryKey: [...props.queryKeys, props.pageSize || 15, locationSearch.page, props.workspaceId],
+		queryKey: [...props.queryKeys, page],
 		queryFn: () =>
 			apiClient<ApiResponse<PaginationResponse<T>>>(
-				`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${locationSearch.page}&limit=${props.pageSize || 15}`
+				`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${page}&limit=${props.pageSize || 15}`
 			),
+		staleTime: 0,
+		refetchOnMount: 'always',
+		refetchOnWindowFocus: true,
 	});
 
 	if (isPending || isFetching) return <SkeletonTable contentLength={5} />;
@@ -157,11 +162,12 @@ export function Table<T extends DbRow>(props: TableProps<T>) {
 					limit: res.data.limit,
 					page: res.data.page,
 					totalDocs: res.data.totalDocs,
-					// TODO
-					onNextClick: () => {},
-					onPreviousClick: () => {},
-					// onNextClick: () => navigate({ search: (prev: PageSearchParams) => ({ page: prev.page + 1 }) }),
-					// onPreviousClick: () => navigate({ search: (prev: PageSearchParams) => ({ page: prev.page !== 1 ? prev.page - 1 : prev }) }),
+					onNextClick: () => setPage((prev) => (parseInt(prev) + 1).toString()),
+					onPreviousClick: () =>
+						setPage((prev) => {
+							if (parseInt(prev) === 1) return prev;
+							return (parseInt(prev) - 1).toString();
+						}),
 				}}
 			/>
 		</div>

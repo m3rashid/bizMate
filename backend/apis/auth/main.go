@@ -65,4 +65,11 @@ func Setup(initialRoute string, app *fiber.App) {
 	)
 
 	app.Get(initialRoute+"/invites/all", utils.CheckAuthMiddlewareWithoutWorkspace, getWorkspaceInvites)
+
+	app.Get(
+		initialRoute+"/:workspaceId/users/all",
+		utils.CheckAuthMiddlewareWithWorkspace,
+		permissions.CheckPermissionMiddleware(repository.UserObjectType, repository.PermissionLevelRead),
+		paginateWorkspaceUsers,
+	)
 }

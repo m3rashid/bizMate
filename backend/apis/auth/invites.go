@@ -135,10 +135,6 @@ func sendWorkspaceInvite(ctx *fiber.Ctx) error {
 
 func revokeWorkspaceInvite(ctx *fiber.Ctx) error {
 	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
-	if userId == uuid.Nil || workspaceId == uuid.Nil {
-		return fiber.NewError(fiber.StatusUnauthorized)
-	}
-
 	reqBody := revokeWorkspaceInviteReq{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		go utils.LogError(uuid.Nil, workspaceId, login_bad_request, utils.LogData{"error": err.Error()})

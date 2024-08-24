@@ -6,6 +6,7 @@ import { DataListHeader } from '@/components/lib/dataListHeader';
 import { SkeletonCardList } from '@/components/lib/loaders';
 import { Pagination } from '@/components/lib/pagination';
 import { TableExportProps } from '@/components/lib/tableExport';
+import { useSearchParamsState } from '@/hooks/helpers';
 import { cn } from '@/utils/helpers';
 import { ApiResponse, DbRow, PaginationResponse } from '@/utils/types';
 import PlusIcon from '@heroicons/react/24/outline/PlusIcon';
@@ -36,9 +37,10 @@ export type CardListProps<T> = {
 };
 
 export function CardList<T extends DbRow>(props: CardListProps<T>) {
-	const locationSearch = qs.parse(location.search);
-	const { t } = useTranslation();
 	const router = useRouter();
+	const { t } = useTranslation();
+	const locationSearch = qs.parse(window.location.search);
+	const [page, setPage] = useSearchParamsState('page', locationSearch.page?.toString() || '1');
 
 	const {
 		refetch,
@@ -46,10 +48,10 @@ export function CardList<T extends DbRow>(props: CardListProps<T>) {
 		isFetching,
 		data: result,
 	} = useQuery({
-		queryKey: props.queryKeys,
+		queryKey: [...props.queryKeys, page],
 		queryFn: () =>
 			apiClient<ApiResponse<PaginationResponse<T>>>(
-				`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${locationSearch.page}&limit=${props.pageSize || 15}`
+				`${props.paginateUrl}${props.paginateUrl.includes('?') ? '&' : '?'}page=${page}&limit=${props.pageSize || 15}`
 			),
 		staleTime: 0,
 		refetchOnMount: 'always',
@@ -116,11 +118,12 @@ export function CardList<T extends DbRow>(props: CardListProps<T>) {
 						totalDocs: result?.data.totalDocs,
 						hasNextPage: result?.data.hasNextPage,
 						hasPreviousPage: result?.data.hasPreviousPage,
-						// TODO
-						onNextClick: () => {},
-						onPreviousClick: () => {},
-						// onNextClick: () => navigate({ search: (prev: PageSearchParams) => ({ page: prev.page + 1 }) }),
-						// onPreviousClick: () => navigate({ search: (prev: PageSearchParams) => ({ page: prev.page !== 1 ? prev.page - 1 : prev }) }),
+						onNextClick: () => setPage((prev) => (parseInt(prev) + 1).toString()),
+						onPreviousClick: () =>
+							setPage((prev) => {
+								if (parseInt(prev) === 1) return prev;
+								return (parseInt(prev) - 1).toString();
+							}),
 					}}
 				/>
 			) : null}

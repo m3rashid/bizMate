@@ -37,7 +37,7 @@ func (pgRes *PaginationResponse[T]) ParseQuery(ctx *fiber.Ctx, maxLimit int32) e
 
 func (pgRes *PaginationResponse[T]) BuildPaginationResponse() {
 	pgRes.Count = len(pgRes.Docs)
-	pgRes.HasNextPage = pgRes.TotalDocs > int64(pgRes.Limit)
+	pgRes.HasNextPage = pgRes.TotalDocs > int64(pgRes.Limit*pgRes.CurrentPage)
 	pgRes.HasPreviousPage = pgRes.CurrentPage > 1
 	if pgRes.Docs == nil {
 		pgRes.Docs = []T{}

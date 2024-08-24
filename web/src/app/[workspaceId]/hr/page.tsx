@@ -22,7 +22,7 @@ export default async function HumanResources(props: NextjsPageProps<{ workspaceI
 
 	return (
 		<PageContainer workspaceId={props.params.workspaceId} bodyClassName='bg-white'>
-			<HrTabs currentUserId={user.userId} />
+			<HrTabs currentUserId={user.userId} workspaceId={props.params.workspaceId} />
 		</PageContainer>
 	);
 }

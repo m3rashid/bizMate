@@ -10,8 +10,11 @@ insert into roles (
 -- name: GetRoleById :one
 select * from roles where id = $1 and workspace_id = $2;
 
--- name: GetRolesByWorkspaceId :many
-select * from roles where workspace_id = $1;
+-- name: PaginateRolesByWorkspaceId :many
+select * from roles where workspace_id = $1 order by id desc limit $2 offset $3;
+
+-- name: GetRolesByWorkspaceIdCount :one
+select count(id) from roles where workspace_id = $1;
 
 -- name: UpdateRole :exec
 update roles set

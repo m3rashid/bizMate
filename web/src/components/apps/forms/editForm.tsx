@@ -8,10 +8,12 @@ import { Form, StringBoolean } from '@/utils/types';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useMemo } from 'react';
 
-export type AddEditFormProps = { open: boolean; onClose: () => void; workspaceId: string; refetch: () => void } & (
-	| { form: undefined }
-	| { form: Form }
-);
+export type AddEditFormProps = {
+	open: boolean;
+	onClose: () => void;
+	workspaceId: string;
+	form?: Form;
+};
 
 type EditFormBody = Array<[keyof Form, string | boolean, string, SupportedWidgetName, boolean?, Record<string, any>?]>;
 function editFormBody(form: EditFormBody) {
@@ -45,12 +47,7 @@ function AddEditForm(props: AddEditFormProps) {
 		},
 	});
 
-	const { mutate: updateForm } = useUpdateFormMutation(props.workspaceId, {
-		onSuccess: () => {
-			props.onClose();
-			props.refetch();
-		},
-	});
+	const { mutate: updateForm } = useUpdateFormMutation(props.workspaceId, { onSuccess: props.onClose });
 
 	const formBody = useMemo(() => {
 		const _formBody: EditFormBody = [

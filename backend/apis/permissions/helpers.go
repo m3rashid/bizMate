@@ -8,6 +8,8 @@ import (
 
 const get_role_by_user_id_fail = "get_role_by_user_id_fail"
 const user_not_found_by_id = "user_not_found_by_id"
+const paginate_roles_fail = "paginate_roles_fail"
+const paginate_roles_success = "paginate_roles_success"
 
 type createUpdateRoleReqBody struct {
 	Name        string                     `json:"name" validate:"required"`

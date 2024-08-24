@@ -90,7 +90,9 @@ func paginateForms(ctx *fiber.Ctx) error {
 	paginationRes.TotalDocs = formsCount
 	paginationRes.BuildPaginationResponse()
 	go utils.LogInfo(userId, workspaceId, paginate_forms_success, utils.LogData{"count": formsCount})
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(paginationRes, "Got forms successfully"))
+	return ctx.Status(fiber.StatusOK).JSON(
+		utils.SendResponse(paginationRes, "Got forms successfully"),
+	)
 }
 
 func getOneForm(ctx *fiber.Ctx) error {

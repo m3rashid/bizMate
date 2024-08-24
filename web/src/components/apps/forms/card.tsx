@@ -50,7 +50,7 @@ export function FormCard(props: Form & { onEdit: () => void; workspaceId: string
 	}
 
 	return (
-		<div className='relative h-min select-none rounded-lg border-2 border-white p-2.5 shadow-lg hover:border-primary'>
+		<div className='relative h-min select-none rounded-lg p-2.5 shadow-lg ring-2 ring-gray-100 hover:ring-primary'>
 			<div className='flex flex-grow gap-2'>
 				<Link
 					href={`/${props.workspaceId}/forms/${props.id}/preview`}

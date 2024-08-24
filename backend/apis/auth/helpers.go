@@ -24,6 +24,8 @@ const hash_password_fail = "hash_password_fail"
 const provider_mismatch = "provider_mismatch"
 const user_not_found_by_id = "user_not_found_by_id"
 const user_not_found_by_email = "user_not_found_by_email"
+const paginate_workspace_users_fail = "paginate_workspace_users_fail"
+const paginate_workspace_users_success = "paginate_workspace_users_success"
 
 const create_workspace_fail = "create_workspace_fail"
 const create_workspace_success = "create_workspace_success"

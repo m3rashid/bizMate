@@ -7,7 +7,7 @@ import { useSearchParamsState } from '@/hooks/helpers';
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 
-export function HrTabs(props: { currentUserId: string }) {
+export function HrTabs(props: { currentUserId: string; workspaceId: string }) {
 	const params = useSearchParams();
 
 	const tabList: Tab<{ currentUserId: string }>[] = useMemo(
@@ -16,13 +16,13 @@ export function HrTabs(props: { currentUserId: string }) {
 				id: 'users',
 				label: 'Users',
 				Component: Users,
-				componentProps: { currentUserId: props.currentUserId },
+				componentProps: { currentUserId: props.currentUserId, workspaceId: props.workspaceId },
 			},
 			{
 				id: 'roles',
 				label: 'Roles',
 				Component: Roles,
-				componentProps: { currentUserId: props.currentUserId },
+				componentProps: { currentUserId: props.currentUserId, workspaceId: props.workspaceId },
 			},
 		],
 		// eslint-disable-next-line react-hooks/exhaustive-deps

@@ -13,7 +13,7 @@ func Setup(initialRoute string, app *fiber.App) {
 	app.Get(
 		initialRoute+"/roles/all",
 		utils.CheckAuthMiddlewareWithWorkspace,
-		getRolesByWorkspaceId,
+		paginateRolesByWorkspaceId,
 	)
 
 	app.Get(initialRoute+"/roles/:roleId", utils.CheckAuthMiddlewareWithWorkspace, getRoleById)

@@ -169,3 +169,43 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 		utils.SendResponse(toPartialUser(user), "User account created successfully"),
 	)
 }
+
+func paginateWorkspaceUsers(ctx *fiber.Ctx) error {
+	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
+
+	paginationRes := utils.PaginationResponse[repository.PaginateUsersInWorkspaceRow]{}
+	if err := paginationRes.ParseQuery(ctx, 50); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "Incorrect Parameters")
+	}
+
+	pgConn, err := utils.GetPostgresDB()
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	queries := repository.New(pgConn)
+	users, err := queries.PaginateUsersInWorkspace(ctx.Context(), repository.PaginateUsersInWorkspaceParams{
+		WorkspaceID: workspaceId,
+		Limit:       paginationRes.Limit,
+		Offset:      (paginationRes.CurrentPage - 1) * paginationRes.Limit,
+	})
+	if err != nil {
+		go utils.LogError(userId, workspaceId, paginate_workspace_users_fail, utils.LogData{"error": err.Error()})
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	paginationRes.Docs = users
+	usersCount, err := queries.GetAllUsersInWorkspaceCount(ctx.Context(), workspaceId)
+	if err != nil {
+		go utils.LogError(userId, workspaceId, paginate_workspace_users_fail, utils.LogData{"error": err.Error()})
+		return fiber.NewError(fiber.StatusInternalServerError)
+	}
+
+	paginationRes.TotalDocs = usersCount
+	paginationRes.BuildPaginationResponse()
+	go utils.LogInfo(userId, workspaceId, paginate_workspace_users_success, utils.LogData{"count": usersCount})
+
+	return ctx.Status(fiber.StatusOK).JSON(
+		utils.SendResponse(paginationRes, "Got workspace users successfully"),
+	)
+}

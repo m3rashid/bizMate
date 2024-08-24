@@ -163,12 +163,29 @@ func (q *Queries) GetRolesByUserId(ctx context.Context, arg GetRolesByUserIdPara
 	return items, nil
 }
 
-const getRolesByWorkspaceId = `-- name: GetRolesByWorkspaceId :many
-select id, name, description, permissions, workspace_id, created_at, created_by_id from roles where workspace_id = $1
+const getRolesByWorkspaceIdCount = `-- name: GetRolesByWorkspaceIdCount :one
+select count(id) from roles where workspace_id = $1
 `
 
-func (q *Queries) GetRolesByWorkspaceId(ctx context.Context, workspaceID uuid.UUID) ([]Role, error) {
-	rows, err := q.db.Query(ctx, getRolesByWorkspaceId, workspaceID)
+func (q *Queries) GetRolesByWorkspaceIdCount(ctx context.Context, workspaceID uuid.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, getRolesByWorkspaceIdCount, workspaceID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const paginateRolesByWorkspaceId = `-- name: PaginateRolesByWorkspaceId :many
+select id, name, description, permissions, workspace_id, created_at, created_by_id from roles where workspace_id = $1 order by id desc limit $2 offset $3
+`
+
+type PaginateRolesByWorkspaceIdParams struct {
+	WorkspaceID uuid.UUID `json:"workspace_id"`
+	Limit       int32     `json:"limit"`
+	Offset      int32     `json:"offset"`
+}
+
+func (q *Queries) PaginateRolesByWorkspaceId(ctx context.Context, arg PaginateRolesByWorkspaceIdParams) ([]Role, error) {
+	rows, err := q.db.Query(ctx, paginateRolesByWorkspaceId, arg.WorkspaceID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

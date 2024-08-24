@@ -7,8 +7,9 @@ export function useSearchParamsState(queryKey: string, inititalState: string) {
 	const pathname = usePathname();
 	const params = useSearchParams();
 
-	function setState(newVal: string) {
+	function setState(_newVal: string | ((prevState: string) => string)) {
 		const current = new URLSearchParams(Array.from(params.entries()));
+		const newVal = typeof _newVal === 'function' ? _newVal(current.get(queryKey) || inititalState) : _newVal;
 		current.set(queryKey, newVal);
 		const search = current.toString();
 		const query = search ? `?${search}` : '';

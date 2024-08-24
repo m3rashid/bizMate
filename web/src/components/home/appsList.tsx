@@ -1,4 +1,5 @@
 import { workspaceKey } from '@/utils/constants';
+import { BriefcaseIcon, UsersIcon } from '@heroicons/react/24/outline';
 import CogIcon from '@heroicons/react/24/outline/CogIcon';
 import ListBulletIcon from '@heroicons/react/24/outline/ListBulletIcon';
 import UserIcon from '@heroicons/react/24/outline/UserIcon';
@@ -26,26 +27,14 @@ export const apps: App[] = [
 			//
 		],
 	},
-	// {
-	// 	name: 'Communications',
-	// 	description: 'Handle your communications from here',
-	// 	routes: [
-	// 		{
-	// 			name: 'Contacts',
-	// 			icon: UsersIcon,
-	// 			link: `/${workspaceKey}/communications/contacts?page=1`,
-	// 			description: 'List all your contacts',
-	// 		},
-	// 	],
-	// },
-	// {
-	// 	name: 'Projects',
-	// 	description: 'Create and manage your projects',
-	// 	routes: [
-	// 		{ name: 'Projects', icon: ListBulletIcon, link: `/${workspaceKey}/projects?page=1`, description: 'List all projects' },
-	// 		//
-	// 	],
-	// },
+	{
+		name: 'HR',
+		description: "Manage your users' data, roles and permissions",
+		routes: [
+			{ name: 'Users', icon: UsersIcon, link: `/${workspaceKey}/hr?tab=users&page=1`, description: 'Manage users' },
+			{ name: 'Roles', icon: BriefcaseIcon, link: `/${workspaceKey}/hr?tab=roles&page=1`, description: 'Manage roles' },
+		],
+	},
 	{
 		name: 'You',
 		description: 'Manage your account',
