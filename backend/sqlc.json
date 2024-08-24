@@ -26,6 +26,10 @@
               "go_type": { "type": "FormBody" }
             },
             {
+              "column": "bare_permissions.object_id",
+              "go_type": { "import": "github.com/google/uuid", "type": "UUID" }
+            },
+            {
               "column": "bare_permissions.object_type",
               "go_type": { "type": "ObjectType" }
             },

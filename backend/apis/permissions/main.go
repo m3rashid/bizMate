@@ -59,4 +59,11 @@ func Setup(initialRoute string, app *fiber.App) {
 		CheckPermissionMiddleware(repository.PermissionObjectType, repository.PermissionLevelCreate),
 		addBarePermissionFromUser,
 	)
+
+	app.Post(
+		initialRoute+"/roles/remove-bare-permission",
+		utils.CheckAuthMiddlewareWithWorkspace,
+		CheckPermissionMiddleware(repository.PermissionObjectType, repository.PermissionLevelCreate),
+		removeBarePermissionFromUser,
+	)
 }

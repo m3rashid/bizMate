@@ -155,7 +155,7 @@ type PaginateUsersInWorkspaceRow struct {
 	Deactivated *bool              `json:"deactivated"`
 	CreatedAt   pgtype.Timestamptz `json:"created_at"`
 	Provider    string             `json:"provider"`
-	RoleID      *int32             `json:"role_id"`
+	RoleID      pgtype.UUID        `json:"role_id"`
 	RoleName    *string            `json:"role_name"`
 }
 

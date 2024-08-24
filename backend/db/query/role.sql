@@ -1,11 +1,12 @@
 -- name: CreateRole :exec
 insert into roles (
+	id,
 	name,
 	description,
 	permissions,
 	workspace_id,
 	created_by_id
-) values ($1, $2, $3, $4, $5);
+) values ($1, $2, $3, $4, $5, $6);
 
 -- name: GetRoleById :one
 select * from roles where id = $1 and workspace_id = $2;

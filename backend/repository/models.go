@@ -10,9 +10,9 @@ import (
 )
 
 type BarePermission struct {
-	ID          int32           `json:"id"`
+	ID          uuid.UUID       `json:"id"`
 	ObjectType  ObjectType      `json:"object_type"`
-	ObjectID    pgtype.UUID     `json:"object_id"`
+	ObjectID    uuid.UUID       `json:"object_id"`
 	UserID      uuid.UUID       `json:"user_id"`
 	WorkspaceID uuid.UUID       `json:"workspace_id"`
 	Level       PermissionLevel `json:"level"`
@@ -36,7 +36,7 @@ type Form struct {
 }
 
 type Role struct {
-	ID          int32              `json:"id"`
+	ID          uuid.UUID          `json:"id"`
 	Name        string             `json:"name"`
 	Description *string            `json:"description"`
 	Permissions RolePermissions    `json:"permissions"`
@@ -46,7 +46,7 @@ type Role struct {
 }
 
 type RolesUsersRelation struct {
-	RoleID      int32     `json:"role_id"`
+	RoleID      uuid.UUID `json:"role_id"`
 	UserID      uuid.UUID `json:"user_id"`
 	WorkspaceID uuid.UUID `json:"workspace_id"`
 }
