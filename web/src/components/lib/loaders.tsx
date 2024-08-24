@@ -1,28 +1,30 @@
 import { cn } from '@/utils/helpers';
 import Image from 'next/image';
+import { twMerge } from 'tailwind-merge';
 
 export type LoaderProps = {
 	className?: string;
 };
 
-export function Loader(props: LoaderProps) {
+export function PingLoader(props: LoaderProps) {
 	return (
-		<div>
-			<Image
-				height={16}
-				width={16}
-				alt='Loading icon'
-				src='https://www.svgrepo.com/show/70469/loading.svg'
-				className={cn('h-4 w-4 animate-spin', props.className)}
-			/>
-		</div>
+		<div
+			className={twMerge(
+				'flex h-4 w-4 animate-ping items-center justify-center rounded-full border-4 border-primaryLight bg-primary',
+				props.className
+			)}
+		/>
 	);
+}
+
+export function LogoLoader(props: LoaderProps) {
+	return <Image height={80} width={80} alt='Loading icon' src='/logo-nobg.png' className={cn('h-20 w-20 animate-bounce', props.className)} />;
 }
 
 export function PageLoader(props: LoaderProps) {
 	return (
-		<div className='flex h-full min-h-96 items-center justify-center'>
-			<Loader {...props} className={cn('h-20 w-20', props.className)} />
+		<div className='flex h-full min-h-[800px] items-center justify-center'>
+			<LogoLoader {...props} />
 		</div>
 	);
 }

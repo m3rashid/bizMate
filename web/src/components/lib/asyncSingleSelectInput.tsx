@@ -1,7 +1,7 @@
 'use client';
 
 import { apiClient } from '@/api/config';
-import { Loader } from '@/components/lib/loaders';
+import { PingLoader } from '@/components/lib/loaders';
 import { cn } from '@/utils/helpers';
 import { getUniqueObjectsByKey } from '@/utils/helpers';
 import { ApiResponse, DbRow, PaginationResponse } from '@/utils/types';
@@ -130,7 +130,7 @@ export function AsyncSingleSelect<T extends DbRow>(props: AsyncSingleSelectProps
 
 								{isFetching ? (
 									<div className='flex h-10 items-center justify-center'>
-										<Loader />
+										<PingLoader />
 									</div>
 								) : hasNextPageRef.current ? (
 									<div

@@ -8,7 +8,7 @@ import {
 } from '@/api/workspaces/client';
 import { Button } from '@/components/lib/button';
 import { Input } from '@/components/lib/input';
-import { Loader } from '@/components/lib/loaders';
+import { PingLoader } from '@/components/lib/loaders';
 import { Tooltip } from '@/components/lib/tooltip';
 import { usePopups } from '@/hooks/popups';
 import { WorkspaceInvite } from '@/utils/types';
@@ -63,7 +63,7 @@ export function WorkspaceInvites(props: { currentUserId: string }) {
 	const params = useParams();
 	const { data: workspaceInvites } = useGetWorkspaceInviteListQuery();
 
-	if (!workspaceInvites) return <Loader className='mt-8 h-12 w-12' />;
+	if (!workspaceInvites) return <PingLoader className='mt-8 h-12 w-12 border-8' />;
 	if (workspaceInvites.data.length === 0) {
 		return (
 			<div className='cursor-not-allowed rounded-lg border-2 border-dashed border-gray-300 p-12 text-center'>
@@ -114,7 +114,13 @@ export function SendWorkspaceInvite() {
 			<h2 className='my-4 font-semibold'>Invite user to your workspace</h2>
 			<form className='flex flex-col items-end justify-center gap-4 sm:max-w-xl sm:flex-row' onSubmit={onSubmit} ref={formRef}>
 				<Input name='email' type='email' label='Invitee Email' placeholder='rashid@bizmate.com' required className='w-full flex-grow' />
-				<Button type='submit' className='h-[35px] w-40' label='Send Invite' disabled={isPending} {...(isPending ? { RightIcon: <Loader /> } : {})} />
+				<Button
+					type='submit'
+					className='h-[35px] w-40'
+					label='Send Invite'
+					disabled={isPending}
+					{...(isPending ? { RightIcon: <PingLoader /> } : {})}
+				/>
 			</form>
 		</div>
 	);
