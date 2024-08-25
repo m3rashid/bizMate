@@ -68,6 +68,7 @@ type User struct {
 type UsersWorkspacesRelation struct {
 	UserID      uuid.UUID `json:"user_id"`
 	WorkspaceID uuid.UUID `json:"workspace_id"`
+	Deleted     *bool     `json:"deleted"`
 }
 
 type Workspace struct {

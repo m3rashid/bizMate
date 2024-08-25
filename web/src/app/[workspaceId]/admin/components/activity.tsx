@@ -8,8 +8,6 @@ import dayjs from 'dayjs';
 import { twMerge } from 'tailwind-merge';
 
 export function ActivityTab(props: { workspaceId: string }) {
-	// const { data } = useGetWorkspaceActivityQuery(props.workspaceId, 1, 10);
-
 	const colulmns: TableColumn<Activity>[] = [
 		{
 			dataKey: 'logLevel',
@@ -56,7 +54,7 @@ export function ActivityTab(props: { workspaceId: string }) {
 			title='Workspace Activity'
 			description='All the activities in the workspace'
 			defaultEmptyStateName='activity'
-			pageSize={20}
+			pageSize={15}
 			columns={colulmns}
 			paginateUrl={`/${props.workspaceId}/activity/all`}
 			queryKeys={[queryKeys.workspaceActivity]}

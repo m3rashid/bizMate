@@ -76,6 +76,38 @@ func (q *Queries) DeleteRole(ctx context.Context, arg DeleteRoleParams) error {
 	return err
 }
 
+const getAllRolesByWorkspaceId = `-- name: GetAllRolesByWorkspaceId :many
+select id, name, description, permissions, workspace_id, created_at, created_by_id from roles where workspace_id = $1 order by id desc
+`
+
+func (q *Queries) GetAllRolesByWorkspaceId(ctx context.Context, workspaceID uuid.UUID) ([]Role, error) {
+	rows, err := q.db.Query(ctx, getAllRolesByWorkspaceId, workspaceID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Role
+	for rows.Next() {
+		var i Role
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Description,
+			&i.Permissions,
+			&i.WorkspaceID,
+			&i.CreatedAt,
+			&i.CreatedByID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getRoleById = `-- name: GetRoleById :one
 select id, name, description, permissions, workspace_id, created_at, created_by_id from roles where id = $1 and workspace_id = $2
 `
@@ -175,44 +207,6 @@ func (q *Queries) GetRolesByWorkspaceIdCount(ctx context.Context, workspaceID uu
 	var count int64
 	err := row.Scan(&count)
 	return count, err
-}
-
-const paginateRolesByWorkspaceId = `-- name: PaginateRolesByWorkspaceId :many
-select id, name, description, permissions, workspace_id, created_at, created_by_id from roles where workspace_id = $1 order by id desc limit $2 offset $3
-`
-
-type PaginateRolesByWorkspaceIdParams struct {
-	WorkspaceID uuid.UUID `json:"workspace_id"`
-	Limit       int32     `json:"limit"`
-	Offset      int32     `json:"offset"`
-}
-
-func (q *Queries) PaginateRolesByWorkspaceId(ctx context.Context, arg PaginateRolesByWorkspaceIdParams) ([]Role, error) {
-	rows, err := q.db.Query(ctx, paginateRolesByWorkspaceId, arg.WorkspaceID, arg.Limit, arg.Offset)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Role
-	for rows.Next() {
-		var i Role
-		if err := rows.Scan(
-			&i.ID,
-			&i.Name,
-			&i.Description,
-			&i.Permissions,
-			&i.WorkspaceID,
-			&i.CreatedAt,
-			&i.CreatedByID,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
 }
 
 const removeUserFromRole = `-- name: RemoveUserFromRole :exec

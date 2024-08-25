@@ -33,6 +33,9 @@ const send_workspace_invite_success = "send_workspace_invite_success"
 const revoke_workspace_invite_fail = "revoke_workspace_invite_fail"
 const revoke_workspace_invite_success = "revoke_workspace_invite_success"
 
+const remove_user_from_workspace_fail = "remove_user_from_workspace_fail"
+const remove_user_from_workspace_success = "remove_user_from_workspace_success"
+
 type redisterBodyReq struct {
 	Name     string `json:"name" validate:"required,min=3,max=50"`
 	Email    string `json:"email" validate:"required,email,min=5,max=50"`
@@ -62,6 +65,10 @@ type sendWorkspaceInviteReq struct {
 
 type revokeWorkspaceInviteReq struct {
 	InviteID uuid.UUID `json:"inviteId" validate:"required"`
+}
+
+type removeUserFromWorkspaceReqBody struct {
+	UserID uuid.UUID `json:"userId" validate:"required"`
 }
 
 type partialUser struct {

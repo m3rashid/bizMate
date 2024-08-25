@@ -19,9 +19,9 @@ function RoleCard({ workspaceId, ...role }: Role & { workspaceId: string; onEdit
 				<p className='text-gray-500'>{role.description}</p>
 			</div>
 
-			<div className='mt-2 flex items-center gap-2'>
+			<div className='mt-2 flex flex-wrap items-center gap-2'>
 				{role.permissions.map((perm, index) => (
-					<Chip className='bg-primaryLight text-gray-600' key={index}>
+					<Chip className='bg-primaryLight text-gray-600' size='small' key={index}>
 						{perm.object_type} : {permissionLevelNumberToStringMap[perm.level]}
 					</Chip>
 				))}

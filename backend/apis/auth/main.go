@@ -51,6 +51,13 @@ func Setup(initialRoute string, app *fiber.App) {
 	app.Post(initialRoute+"/invites/respond", utils.CheckAuthMiddlewareWithoutWorkspace, acceptOrRejectWorkspaceInvite)
 
 	app.Post(
+		initialRoute+"/:workspaceId/remove-user",
+		utils.CheckAuthMiddlewareWithWorkspace,
+		permissions.CheckPermissionMiddleware(repository.UserObjectType, repository.PermissionLevelDelete),
+		removeUserFromWorkspace,
+	)
+
+	app.Post(
 		initialRoute+"/:workspaceId/invites/send",
 		utils.CheckAuthMiddlewareWithWorkspace,
 		permissions.CheckPermissionMiddleware(repository.WorkspaceInviteObjectType, repository.PermissionLevelCreate),
