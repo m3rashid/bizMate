@@ -1,6 +1,7 @@
 'use client';
 
 import { apiClient } from '@/api/config';
+import { getQueryClient } from '@/api/provider';
 import { usePopups } from '@/hooks/popups';
 
 export function Logout(props: { handleClick: any }) {
@@ -10,6 +11,7 @@ export function Logout(props: { handleClick: any }) {
 		try {
 			await apiClient('/auth/logout', {});
 			await props.handleClick();
+			getQueryClient().clear();
 			addMessagePopup({ message: 'You have been logged out', type: 'success', id: 'logout-success' });
 		} catch (err: any) {
 			addMessagePopup({ message: err.message, type: 'error', id: 'logout-error' });

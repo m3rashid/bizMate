@@ -40,6 +40,18 @@ export function PageNotFound(props: NotFoundProps) {
 	);
 }
 
+export function UnAuthorized(props: NotFoundProps) {
+	return <NotFound code={401} title='Unauthorized' {...props} />;
+}
+
+export function UnAuthorizedPage(props: NotFoundProps) {
+	return (
+		<div className='flex h-full min-h-96 items-center justify-center'>
+			<UnAuthorized description='Sorry, you are not authorized to view this page' {...props} />
+		</div>
+	);
+}
+
 export function WorkspaceNotFound(props: NotFoundProps) {
 	return (
 		<div className='flex h-full min-h-96 items-center justify-center'>

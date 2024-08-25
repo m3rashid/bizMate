@@ -7,6 +7,16 @@ export type ChangeLog = {
 
 export const changelogs: ChangeLog[] = [
 	{
+		id: 4,
+		date: 'Aug 25, 2024',
+		tldr: 'Roles, permissions and access controls',
+		changes: [
+			'Add roles and permissions to the app',
+			'Admin can watch all workspace activities',
+			'Admin can manage workspace members, workspace invites',
+		],
+	},
+	{
 		id: 3,
 		date: 'Aug 21, 2024',
 		tldr: 'Form updates and improvements',

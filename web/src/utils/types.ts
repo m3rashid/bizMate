@@ -103,7 +103,7 @@ export type PermissionLevel = (typeof permissionLevelNumbers)[number];
 
 export type RolePermission = {
 	object_type: PermissionObjectType;
-	object_id: ID;
+	object_id?: ID;
 	user_id?: ID;
 	level: PermissionLevel;
 };

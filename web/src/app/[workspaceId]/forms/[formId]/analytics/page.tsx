@@ -2,8 +2,11 @@ import { AnalyticsList } from './components/analyticsList';
 import { getSessionCookie } from '@/actions/auth';
 import { getQueryClientForServer } from '@/api/config';
 import { perfetchFormAnalytics } from '@/api/forms/server';
-import { PageNotFound } from '@/components/lib/notFound';
+import { getUserPermissionsOnServer } from '@/api/permissions/server';
+import { PageNotFound, UnAuthorizedPage } from '@/components/lib/notFound';
 import { PageContainer } from '@/components/pageContainer';
+import { checkPermission } from '@/hooks/checkPermission';
+import { PERMISSION_READ } from '@/utils/constants';
 import { isUuid } from '@/utils/helpers';
 import { NextjsPageProps } from '@/utils/types';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
@@ -18,6 +21,10 @@ export default async function FormAnalytics(props: NextjsPageProps<{ workspaceId
 	}
 
 	if (!isUuid(props.params.workspaceId) || !isUuid(props.params.formId)) return <PageNotFound />;
+
+	const permissions = await getUserPermissionsOnServer(queryClient, props.params.workspaceId, sessionCookie);
+	if (!permissions || permissions.data.length === 0) return <UnAuthorizedPage />;
+	if (!checkPermission(permissions.data, { object_type: 'form_analysis', level: PERMISSION_READ })) return <UnAuthorizedPage />;
 
 	await perfetchFormAnalytics(queryClient, props.params.workspaceId, props.params.formId, sessionCookie);
 

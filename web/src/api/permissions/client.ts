@@ -3,9 +3,8 @@
 import { apiClient } from '@/api/config';
 import { getQueryClient } from '@/api/provider';
 import { queryKeys } from '@/api/queryKeys';
-import { Permission } from '@/hooks/checkPermission';
 import { usePopups } from '@/hooks/popups';
-import { ApiResponse, PaginationResponse, Role } from '@/utils/types';
+import { ApiResponse, PaginationResponse, Role, RolePermission } from '@/utils/types';
 import { PermissionObjectType, PermissionLevel } from '@/utils/types';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
@@ -15,7 +14,7 @@ export function useGetUserPermissions() {
 	return useQuery({
 		queryKey: [queryKeys.permissions],
 		queryFn: () => {
-			if (params.workspaceId) return apiClient<ApiResponse<Permission[]>>(`/${params.workspaceId}/permissions/all`);
+			if (params.workspaceId) return apiClient<ApiResponse<RolePermission[]>>(`/${params.workspaceId}/permissions/all`);
 		},
 	});
 }
@@ -44,7 +43,7 @@ export function useGetUserBarePermissions(workspaceId: string, userId: string) {
 	return useQuery({
 		queryKey: [queryKeys.barePermissions, userId],
 		queryFn: () =>
-			apiClient<ApiResponse<Array<Permission & { workspace_id: string }>>>(`/${workspaceId}/permissions/user-bare-permissions/${userId}/all`),
+			apiClient<ApiResponse<Array<RolePermission & { workspace_id: string }>>>(`/${workspaceId}/permissions/user-bare-permissions/${userId}/all`),
 		staleTime: 0,
 		refetchOnMount: 'always',
 		refetchOnWindowFocus: true,

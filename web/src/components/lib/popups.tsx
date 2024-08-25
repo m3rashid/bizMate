@@ -64,6 +64,7 @@ const popupContainerClassName = 'absolute top-0 z-[99] max-h-full w-full max-w-8
 function MessagePopupContainer() {
 	const { messagePopups } = usePopups();
 
+	if (typeof window === 'undefined') return <div />;
 	return createPortal(
 		<div className={cn(popupContainerClassName, 'left-[calc(50vw-160px)]', messagePopups.length > 0 ? 'p-2' : '')}>
 			{messagePopups.map((messagePopup) => (
@@ -77,6 +78,7 @@ function MessagePopupContainer() {
 function ActionPopupContainer() {
 	const { actionPopups } = usePopups();
 
+	if (typeof window === 'undefined') return <div />;
 	return createPortal(
 		<div className={cn(popupContainerClassName, 'right-0', actionPopups.length > 0 ? 'p-2' : '')}>
 			{actionPopups.map((actionPopup) => (

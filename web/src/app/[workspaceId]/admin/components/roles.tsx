@@ -4,8 +4,10 @@ import { queryKeys } from '@/api/queryKeys';
 import { Button } from '@/components/lib/button';
 import { CardList } from '@/components/lib/cardList';
 import { Chip } from '@/components/lib/chip';
+import { UnAuthorizedPage } from '@/components/lib/notFound';
 import { Tooltip } from '@/components/lib/tooltip';
-import { permissionLevelNumberToStringMap } from '@/utils/constants';
+import { usePermission } from '@/hooks/permission';
+import { PERMISSION_READ, permissionLevelNumberToStringMap } from '@/utils/constants';
 import { Role } from '@/utils/types';
 import PencilSquareIcon from '@heroicons/react/24/outline/PencilSquareIcon';
 import PlusIcon from '@heroicons/react/24/outline/PlusIcon';
@@ -37,7 +39,9 @@ function RoleCard({ workspaceId, ...role }: Role & { workspaceId: string; onEdit
 
 export function Roles(props: { workspaceId: string }) {
 	const router = useRouter();
+	const { hasPermission } = usePermission();
 
+	if (!hasPermission('role', PERMISSION_READ)) return <UnAuthorizedPage />;
 	return (
 		<CardList<Role>
 			title='Roles'

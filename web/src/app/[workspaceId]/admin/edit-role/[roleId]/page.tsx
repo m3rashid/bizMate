@@ -1,9 +1,11 @@
 import { EditRoleComponent } from '../components/editRole';
 import { getSessionCookie, getUserFromCookie } from '@/actions/auth';
 import { getQueryClientForServer } from '@/api/config';
-import { prefetchRoleById } from '@/api/permissions/server';
-import { PageNotFound, WorkspaceNotFound } from '@/components/lib/notFound';
+import { getUserPermissionsOnServer, prefetchRoleById } from '@/api/permissions/server';
+import { PageNotFound, UnAuthorizedPage, WorkspaceNotFound } from '@/components/lib/notFound';
 import { PageContainer } from '@/components/pageContainer';
+import { checkPermission } from '@/hooks/checkPermission';
+import { PERMISSION_UPDATE } from '@/utils/constants';
 import { checkWorkspace, isUuid } from '@/utils/helpers';
 import { NextjsPageProps } from '@/utils/types';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
@@ -23,6 +25,10 @@ export default async function EditRole(props: NextjsPageProps<{ workspaceId: str
 
 	const res = await checkWorkspace(props.params.workspaceId, sessionCookie);
 	if (!res) return <WorkspaceNotFound />;
+
+	const permissions = await getUserPermissionsOnServer(queryClient, sessionCookie, props.params.workspaceId);
+	if (!permissions || permissions.data.length === 0) return <UnAuthorizedPage />;
+	if (!checkPermission(permissions.data, { object_type: 'role', level: PERMISSION_UPDATE })) return <UnAuthorizedPage />;
 
 	await prefetchRoleById(queryClient, sessionCookie, props.params.workspaceId, props.params.roleId);
 

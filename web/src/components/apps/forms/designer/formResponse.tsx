@@ -3,21 +3,24 @@
 import { useGetFormResponseQuery, useGetSingleFormById } from '@/api/forms/client';
 import { Button } from '@/components/lib/button';
 import { PageLoader } from '@/components/lib/loaders';
-import { NotFound } from '@/components/lib/notFound';
+import { UnAuthorizedPage } from '@/components/lib/notFound';
 import { Pagination } from '@/components/lib/pagination';
 import { SimpleTable } from '@/components/lib/simpleTable';
+import { usePermission } from '@/hooks/permission';
+import { PERMISSION_READ } from '@/utils/constants';
 import ChartBarIcon from '@heroicons/react/24/outline/ChartBarIcon';
 import Link from 'next/link';
 import { useState } from 'react';
 
 type FormResponseTableProps = { workspaceId: string; formId: string };
 export function FormResponsesTable(props: FormResponseTableProps) {
+	const { hasPermission } = usePermission();
 	const [page, setPage] = useState(1);
 	const { data: formRes } = useGetSingleFormById(props.workspaceId, props.formId);
 	const { data: formResponses, isPending: isFormResponseFetchPending } = useGetFormResponseQuery(props.workspaceId, props.formId, page, formRes);
 
+	if (!hasPermission('form_responses', PERMISSION_READ) || !formRes || !formResponses) return <UnAuthorizedPage />;
 	if (isFormResponseFetchPending) return <PageLoader />;
-	if (!formRes || !formResponses) return <NotFound />;
 
 	return (
 		<>

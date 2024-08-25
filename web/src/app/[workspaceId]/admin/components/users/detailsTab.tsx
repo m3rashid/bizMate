@@ -2,17 +2,25 @@
 
 import { useGetUserBarePermissions, useRemoveUserFromWorkspace } from '@/api/permissions/client';
 import { Button } from '@/components/lib/button';
+import { usePermission } from '@/hooks/permission';
 import { usePopups } from '@/hooks/popups';
+import { PERMISSION_DELETE } from '@/utils/constants';
 import { snakeCaseToSentenceCase } from '@/utils/helpers';
 import { User } from '@/utils/types';
 import dayjs from 'dayjs';
 
 export function UserDetails(props: { workspaceId: string; user: User }) {
-	const { addActionPopup, removeActionPopup } = usePopups();
+	const { addActionPopup, removeActionPopup, addMessagePopup } = usePopups();
+	const { hasPermission } = usePermission();
 	const { data: barePermissions } = useGetUserBarePermissions(props.workspaceId, props.user.id);
 	const { mutateAsync: removeUserFromWorkspace } = useRemoveUserFromWorkspace(props.workspaceId, props.user.id);
 
 	function handleRemoveUserFromWorkspace() {
+		if (!hasPermission('user', PERMISSION_DELETE)) {
+			addMessagePopup({ type: 'error', id: 'noPermission', message: 'You do not have permission to remove this user' });
+			return;
+		}
+
 		addActionPopup({
 			type: 'warning',
 			id: 'sureToRemoveUser',
@@ -41,7 +49,9 @@ export function UserDetails(props: { workspaceId: string; user: User }) {
 		});
 	}
 
-	const revokeButtonDisabled = (barePermissions?.data || []).some((permission) => permission.object_type === 'workspace' && permission.level === 64);
+	const revokeButtonDisabled =
+		!hasPermission('user', PERMISSION_DELETE) ||
+		(barePermissions?.data || []).some((permission) => permission.object_type === 'workspace' && permission.level === 64);
 
 	return (
 		<div className='px-2 pb-2 sm:px-4 sm:pb-4'>

@@ -6,15 +6,23 @@ import { Input } from '@/components/lib/input';
 import { PingLoader } from '@/components/lib/loaders';
 import { SimpleTable, SimpleTableColumn } from '@/components/lib/simpleTable';
 import { SingleSelectInput } from '@/components/lib/singleSelectInput';
-import { Permission } from '@/hooks/checkPermission';
+import { usePermission } from '@/hooks/permission';
 import { usePopups } from '@/hooks/popups';
-import { nilUuid, permissionLevelNumberToStringMap, permissionLevelStringToNumberMap, permissionObjectTypes } from '@/utils/constants';
+import {
+	nilUuid,
+	PERMISSION_CREATE,
+	PERMISSION_DELETE,
+	permissionLevelNumberToStringMap,
+	permissionLevelStringToNumberMap,
+	permissionObjectTypes,
+} from '@/utils/constants';
 import { isUuid } from '@/utils/helpers';
-import { PermissionLevel } from '@/utils/types';
+import { PermissionLevel, RolePermission } from '@/utils/types';
 import { FormEvent } from 'react';
 
 export function UserBarePermissions(props: { userId: string; workspaceId: string }) {
 	const { addMessagePopup } = usePopups();
+	const { hasPermission } = usePermission();
 	const { data } = useGetUserBarePermissions(props.workspaceId, props.userId);
 	const { mutateAsync: addBarePermissionToUser } = useAddBarePermissionToUserMutation(props.workspaceId, props.userId);
 	const { mutateAsync: removeBarePermissionFromUser } = useRemovePermissionToUserMutation(props.workspaceId, props.userId);
@@ -27,7 +35,12 @@ export function UserBarePermissions(props: { userId: string; workspaceId: string
 		);
 	}
 
-	function hanldeRevokePermission(permission: Permission) {
+	function hanldeRevokePermission(permission: RolePermission) {
+		if (!hasPermission('permission', PERMISSION_DELETE)) {
+			addMessagePopup({ type: 'error', id: 'noPermission', message: 'You do not have permission to revoke this permission' });
+			return;
+		}
+
 		removeBarePermissionFromUser({
 			level: permission.level as any,
 			object_type: permission.object_type as any,
@@ -37,6 +50,12 @@ export function UserBarePermissions(props: { userId: string; workspaceId: string
 
 	function handleAddBarePermission(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();
+
+		if (!hasPermission('permission', PERMISSION_CREATE)) {
+			addMessagePopup({ type: 'error', id: 'noPermission', message: 'You do not have permission to assign new permission' });
+			return;
+		}
+
 		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any;
 		if (!formData.object_type || !formData.level) {
 			addMessagePopup({ message: 'Please fill all required fields', type: 'error', id: 'req-field' });
@@ -50,7 +69,7 @@ export function UserBarePermissions(props: { userId: string; workspaceId: string
 		});
 	}
 
-	const tableColumns: SimpleTableColumn<Permission & { workspace_id: string }>[] = [
+	const tableColumns: SimpleTableColumn<any>[] = [
 		{ dataKey: 'object_type', title: 'Object Type' },
 		{
 			dataKey: 'level',
@@ -100,7 +119,7 @@ export function UserBarePermissions(props: { userId: string; workspaceId: string
 			</form>
 
 			<h2 className='mb-2 mt-4 px-4 font-semibold'>Existing bare permissions</h2>
-			<SimpleTable<Permission & { workspace_id: string }>
+			<SimpleTable<any>
 				columns={tableColumns}
 				data={data.data || []}
 				emptyState={

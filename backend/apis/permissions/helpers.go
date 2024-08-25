@@ -57,3 +57,12 @@ type addBarePermissionReqBody struct {
 	UserId     uuid.UUID                  `json:"user_id" validate:"required"`
 	Level      repository.PermissionLevel `json:"level" validate:"required"`
 }
+
+/*
+type SingleRolePermission struct {
+	ObjectType ObjectType      `json:"object_type" validate:"required"`
+	ObjectID   uuid.UUID       `json:"object_id"`
+	UserID     uuid.UUID       `json:"user_id"`
+	Level      PermissionLevel `json:"level" validate:"required"`
+}
+*/

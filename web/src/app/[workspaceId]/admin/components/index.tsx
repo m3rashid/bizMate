@@ -9,7 +9,7 @@ import { useSearchParamsState } from '@/hooks/helpers';
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 
-export function HrTabs(props: { currentUserId: string; workspaceId: string }) {
+export function AdminTabs(props: { currentUserId: string; workspaceId: string }) {
 	const params = useSearchParams();
 
 	const tabList: Tab<any>[] = useMemo(

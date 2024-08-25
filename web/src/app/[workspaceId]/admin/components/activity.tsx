@@ -1,13 +1,18 @@
 'use client';
 
 import { queryKeys } from '@/api/queryKeys';
+import { UnAuthorizedPage } from '@/components/lib/notFound';
 import { Table, TableColumn } from '@/components/lib/table';
 import { Tooltip } from '@/components/lib/tooltip';
+import { usePermission } from '@/hooks/permission';
+import { PERMISSION_READ } from '@/utils/constants';
 import { Activity } from '@/utils/types';
 import dayjs from 'dayjs';
 import { twMerge } from 'tailwind-merge';
 
 export function ActivityTab(props: { workspaceId: string }) {
+	const { hasPermission } = usePermission();
+
 	const colulmns: TableColumn<Activity>[] = [
 		{
 			dataKey: 'logLevel',
@@ -49,6 +54,7 @@ export function ActivityTab(props: { workspaceId: string }) {
 		},
 	];
 
+	if (!hasPermission('activity', PERMISSION_READ)) return <UnAuthorizedPage />;
 	return (
 		<Table<Activity>
 			title='Workspace Activity'

@@ -9,8 +9,11 @@ import {
 import { Button } from '@/components/lib/button';
 import { Input } from '@/components/lib/input';
 import { PingLoader } from '@/components/lib/loaders';
+import { UnAuthorized } from '@/components/lib/notFound';
 import { Tooltip } from '@/components/lib/tooltip';
+import { usePermission } from '@/hooks/permission';
 import { usePopups } from '@/hooks/popups';
+import { PERMISSION_CREATE, PERMISSION_DELETE } from '@/utils/constants';
 import { WorkspaceInvite } from '@/utils/types';
 import UserPlusIcon from '@heroicons/react/24/outline/UserPlusIcon';
 import { useParams } from 'next/navigation';
@@ -20,6 +23,7 @@ import { twMerge } from 'tailwind-merge';
 export type WorkspaceInviteItemProps = WorkspaceInvite & { currentUserId: string; currentWorkspaceId?: string };
 
 export function WorkspaceInviteItem(invite: WorkspaceInviteItemProps) {
+	const { hasPermission } = usePermission();
 	const { mutateAsync: acceptOrReject, isPending: acceptOrRejectPending } = useRespondToWorkspaceInviteMutation();
 	const { mutateAsync: revokeInvite, isPending: revokeInvitePending } = useRevokeWorkspaceInviteMutation(invite.currentWorkspaceId);
 
@@ -45,7 +49,7 @@ export function WorkspaceInviteItem(invite: WorkspaceInviteItemProps) {
 					Reject
 				</button>
 
-				{invite.currentWorkspaceId && invite.created_by_id === invite.currentUserId ? (
+				{hasPermission('workspace_invite', PERMISSION_DELETE) ? (
 					<button
 						disabled={revokeInvitePending}
 						onClick={() => revokeInvite({ inviteId: invite.invite_id })}
@@ -79,6 +83,7 @@ export function WorkspaceInvites(props: { currentUserId: string }) {
 				<h2 className='mb-4 font-semibold'>Your invites</h2>
 				<Tooltip label='Users' />
 			</div>
+
 			{workspaceInvites.data.map((invite) => (
 				<WorkspaceInviteItem
 					key={invite.invite_id}
@@ -95,6 +100,7 @@ export function SendWorkspaceInvite() {
 	const params = useParams();
 	const { addMessagePopup } = usePopups();
 	const formRef = useRef<HTMLFormElement>(null);
+	const { hasPermission } = usePermission();
 	const { mutateAsync: sendWorkspaceInvite, isPending } = useSendWorkspaceInviteMutation(formRef, params.workspaceId);
 
 	async function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -108,6 +114,7 @@ export function SendWorkspaceInvite() {
 		sendWorkspaceInvite({ email: formData.email as string });
 	}
 
+	if (!hasPermission('workspace_invite', PERMISSION_CREATE)) return <UnAuthorized />;
 	if (!params.workspaceId) return null;
 	return (
 		<div className='w-full flex-grow md:max-w-md'>

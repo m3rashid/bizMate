@@ -57,7 +57,7 @@ func CheckPermissionMiddleware(
 			// 	continue
 			// }
 
-			if ObjectType == permission.ObjectType && permission.Level&PermissionLevel == PermissionLevel {
+			if ObjectType == permission.ObjectType && permission.Level&PermissionLevel == 0 {
 				permitted = true
 				break
 			}

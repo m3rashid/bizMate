@@ -1,9 +1,12 @@
 import { getSessionCookie } from '@/actions/auth';
 import { apiClient, getQueryClientForServer } from '@/api/config';
+import { getUserPermissionsOnServer } from '@/api/permissions/server';
 import { queryKeys } from '@/api/queryKeys';
 import { FormDesignerComponent } from '@/components/apps/forms/designer';
-import { PageNotFound } from '@/components/lib/notFound';
+import { PageNotFound, UnAuthorizedPage } from '@/components/lib/notFound';
 import { PageContainer } from '@/components/pageContainer';
+import { checkPermission } from '@/hooks/checkPermission';
+import { PERMISSION_UPDATE } from '@/utils/constants';
 import { createDefaultMeta, isUuid } from '@/utils/helpers';
 import { ApiResponse, Form, NextjsPageProps } from '@/utils/types';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
@@ -20,12 +23,17 @@ export default async function FormDesigner(props: NextjsPageProps<{ workspaceId:
 
 	if (!isUuid(props.params.workspaceId) || !isUuid(props.params.formId)) return <PageNotFound />;
 
+	const permissions = await getUserPermissionsOnServer(queryClient, sessionCookie, props.params.workspaceId);
+	if (!permissions || permissions.data.length === 0) return <UnAuthorizedPage />;
+	if (!checkPermission(permissions.data, { object_type: 'form', level: PERMISSION_UPDATE })) return <UnAuthorizedPage />;
+
 	await queryClient.prefetchQuery({
 		queryKey: [queryKeys.singleForm],
-		queryFn: () =>
-			apiClient<ApiResponse<Form>>(`/${props.params.workspaceId}/forms/one/${props.params.formId}`, {
+		queryFn: () => {
+			return apiClient<ApiResponse<Form>>(`/${props.params.workspaceId}/forms/one/${props.params.formId}`, {
 				headers: { Authorization: sessionCookie },
-			}),
+			});
+		},
 	});
 
 	return (

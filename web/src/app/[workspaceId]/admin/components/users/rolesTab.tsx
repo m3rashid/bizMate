@@ -3,12 +3,17 @@
 import { useAssignRoleToUserMutation, useGetAllRolesQuery, useGetUserRolesQuery, useRemoveRoleFromUserMutation } from '@/api/permissions/client';
 import { Button } from '@/components/lib/button';
 import { PingLoader } from '@/components/lib/loaders';
+import { usePermission } from '@/hooks/permission';
+import { usePopups } from '@/hooks/popups';
+import { PERMISSION_CREATE, PERMISSION_UPDATE } from '@/utils/constants';
 import { Role } from '@/utils/types';
 import { twMerge } from 'tailwind-merge';
 
 export function UserRoles(props: { userId: string; workspaceId: string }) {
-	const { data: userRoles } = useGetUserRolesQuery(props.workspaceId, props.userId);
+	const { hasPermission } = usePermission();
+	const { addMessagePopup } = usePopups();
 	const { data: allRoles } = useGetAllRolesQuery(props.workspaceId);
+	const { data: userRoles } = useGetUserRolesQuery(props.workspaceId, props.userId);
 	const { mutateAsync: addUserToRole } = useAssignRoleToUserMutation(props.workspaceId, props.userId);
 	const { mutateAsync: removeUserFromRole } = useRemoveRoleFromUserMutation(props.workspaceId, props.userId);
 
@@ -28,8 +33,19 @@ export function UserRoles(props: { userId: string; workspaceId: string }) {
 	});
 
 	function handleAssignOrRevoke(roleId: string, owns: boolean) {
-		if (!owns) addUserToRole({ roleId });
-		else removeUserFromRole({ roleId });
+		if (!owns) {
+			if (!hasPermission('permission', PERMISSION_CREATE)) {
+				addMessagePopup({ type: 'error', id: 'noPermission', message: 'You do not have permission to assign this role' });
+				return;
+			}
+			addUserToRole({ roleId });
+		} else {
+			if (!hasPermission('permission', PERMISSION_UPDATE)) {
+				addMessagePopup({ type: 'error', id: 'noPermission', message: 'You do not have permission to revoke this role' });
+				return;
+			}
+			removeUserFromRole({ roleId });
+		}
 	}
 
 	return (

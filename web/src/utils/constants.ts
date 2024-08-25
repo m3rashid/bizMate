@@ -11,28 +11,45 @@ export const permissionObjectTypes = [
 	'form_analysis',
 	'permission',
 	'role',
+	'activity',
 ] as const;
 
-export const permissionLevelNumbers = [1, 2, 4, 6, 16, 32, 64] as const;
+export const PERMISSION_NONE = 1;
+export const PERMISSION_READ = 2;
+export const PERMISSION_CREATE = 4;
+export const PERMISSION_UPDATE = 8;
+export const PERMISSION_DELETE = 16;
+export const PERMISSION_EXPORT = 32;
+export const PERMISSION_ADMIN = 64;
+
+export const permissionLevelNumbers = [
+	PERMISSION_NONE,
+	PERMISSION_READ,
+	PERMISSION_CREATE,
+	PERMISSION_UPDATE,
+	PERMISSION_DELETE,
+	PERMISSION_EXPORT,
+	PERMISSION_ADMIN,
+] as const;
 
 export const permissionLevelNumberToStringMap = {
-	1: 'none',
-	2: 'read',
-	4: 'create',
-	6: 'update',
-	16: 'delete',
-	32: 'export',
-	64: 'admin',
+	[PERMISSION_NONE]: 'none',
+	[PERMISSION_READ]: 'read',
+	[PERMISSION_CREATE]: 'create',
+	[PERMISSION_UPDATE]: 'update',
+	[PERMISSION_DELETE]: 'delete',
+	[PERMISSION_EXPORT]: 'export',
+	[PERMISSION_ADMIN]: 'admin',
 } as const;
 
 export const permissionLevelStringToNumberMap = {
-	none: 1,
-	read: 2,
-	create: 4,
-	update: 6,
-	delete: 16,
-	export: 32,
-	admin: 64,
+	none: PERMISSION_NONE,
+	read: PERMISSION_READ,
+	create: PERMISSION_CREATE,
+	update: PERMISSION_UPDATE,
+	delete: PERMISSION_DELETE,
+	export: PERMISSION_EXPORT,
+	admin: PERMISSION_ADMIN,
 } as const;
 
 export const nilUuid = '00000000-0000-0000-0000-000000000000';
