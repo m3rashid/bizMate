@@ -35,7 +35,7 @@ export function FormCard(props: Form & { onEdit: () => void; workspaceId: string
 			title: 'Are you sure ?',
 			children: (
 				<>
-					<h3 className='text-sm text-disabled'>{t('delete_warning')}</h3>
+					<h3 className='text-sm text-disabled'>{t('Delete Warning')}</h3>
 					<div className='mt-2 flex items-center justify-between'>
 						<Button size='small' variant='simple' onClick={() => removeActionPopup('sureToDeleteForm')} className='py-1'>
 							{t('Cancel')}

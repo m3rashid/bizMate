@@ -1,6 +1,6 @@
 import { getSessionCookie } from '@/actions/auth';
 import { apiClient, getQueryClientForServer } from '@/api/config';
-import { queryKeys } from '@/api/queryKeys';
+import { perfetchSingleFormById } from '@/api/forms/server';
 import { PreviewForm } from '@/components/apps/forms/designer/previewForm';
 import { Button } from '@/components/lib/button';
 import { PageNotFound } from '@/components/lib/notFound';
@@ -22,13 +22,7 @@ export default async function FormPreview(props: NextjsPageProps<{ workspaceId: 
 
 	if (!isUuid(props.params.workspaceId) || !isUuid(props.params.formId)) return <PageNotFound />;
 
-	await queryClient.prefetchQuery({
-		queryKey: [queryKeys.singleForm],
-		queryFn: () =>
-			apiClient<ApiResponse<Form>>(`/${props.params.workspaceId}/forms/one/${props.params.formId}`, {
-				headers: { Authorization: sessionCookie },
-			}),
-	});
+	await perfetchSingleFormById(queryClient, props.params.workspaceId, props.params.formId);
 
 	return (
 		<HydrationBoundary state={dehydrate(queryClient)}>

@@ -1,24 +1,11 @@
-export type Permission = {
-	id: string;
-	object_type: string;
-	object_id: string;
-	user_id: string;
-	level: number;
-};
+import { PERMISSION_ADMIN } from '@/utils/constants';
+import { RolePermission } from '@/utils/types';
 
-export function checkPermission(
-	permissions: Permission[],
-	checkFor: {
-		objectType: string;
-		level: number;
-		objectId?: string;
-	}
-) {
+export function checkPermission(permissions: RolePermission[], checkFor: Omit<RolePermission, 'user_id'>) {
 	if (!permissions || permissions.length === 0) return false;
-	return permissions.some(
-		(permission) =>
-			permission.object_type === checkFor.objectType &&
-			permission.level === checkFor.level &&
-			(!checkFor.objectId || permission.object_id === checkFor.objectId)
-	);
+	for (let i = 0; i < permissions.length; i++) {
+		if (permissions[i].object_type === 'workspace' && permissions[i].level === PERMISSION_ADMIN) return true;
+		if (permissions[i].object_type === checkFor.object_type && (permissions[i].level & checkFor.level) === 0) return true;
+	}
+	return false;
 }

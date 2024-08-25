@@ -3,7 +3,10 @@
 import { UserDetailModal } from './userDetailTabs';
 import { queryKeys } from '@/api/queryKeys';
 import { CardList } from '@/components/lib/cardList';
+import { UnAuthorizedPage } from '@/components/lib/notFound';
 import { Tooltip } from '@/components/lib/tooltip';
+import { usePermission } from '@/hooks/permission';
+import { PERMISSION_READ } from '@/utils/constants';
 import { User } from '@/utils/types';
 import InformationCircleIcon from '@heroicons/react/24/outline/InformationCircleIcon';
 import { useState } from 'react';
@@ -33,8 +36,10 @@ function UserCard({ workspaceId, onShowDetail, ...user }: User & { workspaceId: 
 }
 
 export function Users(props: { workspaceId: string }) {
+	const { hasPermission } = usePermission();
 	const [detailRow, setDetailRow] = useState<User | undefined>(undefined);
 
+	if (!hasPermission('user', PERMISSION_READ)) return <UnAuthorizedPage />;
 	return (
 		<>
 			<UserDetailModal workspaceId={props.workspaceId} open={!!detailRow} onClose={() => setDetailRow(undefined)} {...detailRow!} />

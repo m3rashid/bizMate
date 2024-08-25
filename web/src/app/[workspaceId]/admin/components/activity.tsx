@@ -1,14 +1,17 @@
 'use client';
 
 import { queryKeys } from '@/api/queryKeys';
+import { UnAuthorizedPage } from '@/components/lib/notFound';
 import { Table, TableColumn } from '@/components/lib/table';
 import { Tooltip } from '@/components/lib/tooltip';
+import { usePermission } from '@/hooks/permission';
+import { PERMISSION_READ } from '@/utils/constants';
 import { Activity } from '@/utils/types';
 import dayjs from 'dayjs';
 import { twMerge } from 'tailwind-merge';
 
 export function ActivityTab(props: { workspaceId: string }) {
-	// const { data } = useGetWorkspaceActivityQuery(props.workspaceId, 1, 10);
+	const { hasPermission } = usePermission();
 
 	const colulmns: TableColumn<Activity>[] = [
 		{
@@ -36,12 +39,14 @@ export function ActivityTab(props: { workspaceId: string }) {
 			render: ({ row }) =>
 				row.data ? (
 					<table className='border-spacing-x-8'>
-						{Object.entries(row.data).map(([key, value]) => (
-							<tr key={key}>
-								<td className='pr-1 font-semibold'>{key}</td>
-								<td className='pl-1'>{value}</td>
-							</tr>
-						))}
+						<tbody>
+							{Object.entries(row.data).map(([key, value]) => (
+								<tr key={key}>
+									<td className='pr-1 font-semibold'>{key}</td>
+									<td className='pl-1'>{value}</td>
+								</tr>
+							))}
+						</tbody>
 					</table>
 				) : (
 					'-'
@@ -49,12 +54,13 @@ export function ActivityTab(props: { workspaceId: string }) {
 		},
 	];
 
+	if (!hasPermission('activity', PERMISSION_READ)) return <UnAuthorizedPage />;
 	return (
 		<Table<Activity>
 			title='Workspace Activity'
 			description='All the activities in the workspace'
 			defaultEmptyStateName='activity'
-			pageSize={20}
+			pageSize={15}
 			columns={colulmns}
 			paginateUrl={`/${props.workspaceId}/activity/all`}
 			queryKeys={[queryKeys.workspaceActivity]}

@@ -12,8 +12,12 @@ import (
 )
 
 const addUserToWorkspace = `-- name: AddUserToWorkspace :exec
-insert into users_workspaces_relation (user_id, workspace_id) 
-	values ($1, $2)
+insert into users_workspaces_relation (
+	user_id,
+	workspace_id,
+	deleted
+) values ($1, $2, false)
+on conflict (user_id, workspace_id) do update set deleted = false
 `
 
 type AddUserToWorkspaceParams struct {
@@ -27,8 +31,13 @@ func (q *Queries) AddUserToWorkspace(ctx context.Context, arg AddUserToWorkspace
 }
 
 const createWorkspace = `-- name: CreateWorkspace :one
-insert into workspaces (id, name, color, description, created_by_id)
-	values ($1, $2, $3, $4, $5) returning id, name, description, deleted, color, created_at, created_by_id
+insert into workspaces (
+	id,
+	name,
+	color,
+	description,
+	created_by_id
+) values ($1, $2, $3, $4, $5) returning id, name, description, deleted, color, created_at, created_by_id
 `
 
 type CreateWorkspaceParams struct {
@@ -63,7 +72,10 @@ func (q *Queries) CreateWorkspace(ctx context.Context, arg CreateWorkspaceParams
 const getCurrentUserWorkspaces = `-- name: GetCurrentUserWorkspaces :many
 select id, name, description, deleted, color, created_at, created_by_id from workspaces 
 	where deleted = false and 
-	id in (select workspace_id from users_workspaces_relation where user_id = $1)
+	id in (
+		select workspace_id from users_workspaces_relation 
+		where user_id = $1 and deleted = false
+	)
 `
 
 func (q *Queries) GetCurrentUserWorkspaces(ctx context.Context, userID uuid.UUID) ([]Workspace, error) {
@@ -111,4 +123,20 @@ func (q *Queries) GetWorkspaceById(ctx context.Context, id uuid.UUID) (Workspace
 		&i.CreatedByID,
 	)
 	return i, err
+}
+
+const removeUserFromWorkspace = `-- name: RemoveUserFromWorkspace :exec
+update users_workspaces_relation 
+	set deleted = true 
+	where user_id = $1 and workspace_id = $2
+`
+
+type RemoveUserFromWorkspaceParams struct {
+	UserID      uuid.UUID `json:"user_id"`
+	WorkspaceID uuid.UUID `json:"workspace_id"`
+}
+
+func (q *Queries) RemoveUserFromWorkspace(ctx context.Context, arg RemoveUserFromWorkspaceParams) error {
+	_, err := q.db.Exec(ctx, removeUserFromWorkspace, arg.UserID, arg.WorkspaceID)
+	return err
 }

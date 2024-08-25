@@ -2,7 +2,9 @@
 
 import { Button } from '@/components/lib/button';
 import { Tooltip } from '@/components/lib/tooltip';
-import { ArrowsPointingOutIcon, ChartBarIcon, ChartPieIcon } from '@heroicons/react/24/outline';
+import ArrowsPointingOutIcon from '@heroicons/react/24/outline/ArrowsPointingOutIcon';
+import ChartBarIcon from '@heroicons/react/24/outline/ChartBarIcon';
+import ChartPieIcon from '@heroicons/react/24/outline/ChartPieIcon';
 import 'chart.js/auto';
 import { useState } from 'react';
 import { Bar, Pie } from 'react-chartjs-2';

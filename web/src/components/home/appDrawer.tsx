@@ -6,7 +6,7 @@ import { Drawer } from '@/components/lib/drawer';
 import Squares2X2Icon from '@heroicons/react/24/outline/Squares2X2Icon';
 import { useState } from 'react';
 
-export function AppDrawer(props: { workspaceId: string }) {
+export function AppDrawer(props: { workspaceId: string; userId: string }) {
 	const [open, setOpen] = useState(false);
 	return (
 		<>

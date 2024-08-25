@@ -4,11 +4,20 @@ import { useCreateRoleMutation, useUpdateRoleMutation } from '@/api/permissions/
 import { Button } from '@/components/lib/button';
 import { Input } from '@/components/lib/input';
 import { Modal } from '@/components/lib/modal';
+import { UnAuthorizedPage } from '@/components/lib/notFound';
 import { SimpleTable } from '@/components/lib/simpleTable';
 import { SingleSelectInput } from '@/components/lib/singleSelectInput';
 import { TextAreaInput } from '@/components/lib/textAreaInput';
+import { usePermission } from '@/hooks/permission';
 import { usePopups } from '@/hooks/popups';
-import { nilUuid, permissionLevelNumberToStringMap, permissionLevelStringToNumberMap, permissionObjectTypes } from '@/utils/constants';
+import {
+	nilUuid,
+	PERMISSION_CREATE,
+	PERMISSION_UPDATE,
+	permissionLevelNumberToStringMap,
+	permissionLevelStringToNumberMap,
+	permissionObjectTypes,
+} from '@/utils/constants';
 import { Role, RolePermission } from '@/utils/types';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
@@ -21,18 +30,28 @@ type AddEditRoleProps = {
 export function AddEditRole(props: AddEditRoleProps) {
 	const router = useRouter();
 	const { addMessagePopup } = usePopups();
+	const { hasPermission } = usePermission();
 	const [addEditPermissionModalOpen, setAddEditPermissionModalOpen] = useState(false);
 	const [editPermissionRow, setEditPermissionRow] = useState<(RolePermission & { index: number }) | undefined>(undefined);
 	const [permissions, setPermissions] = useState(props.role ? props.role.permissions : []);
 	const { mutateAsync: createRole } = useCreateRoleMutation(props.workspaceId, {
-		onSuccess: () => router.push(`/${props.workspaceId}/hr?tab=roles&page=1`),
+		onSuccess: () => router.push(`/${props.workspaceId}/admin?tab=roles&page=1`),
 	});
 	const { mutateAsync: updateRole } = useUpdateRoleMutation(props.workspaceId, {
-		onSuccess: () => router.push(`/${props.workspaceId}/hr?tab=roles&page=1`),
+		onSuccess: () => router.push(`/${props.workspaceId}/admin?tab=roles&page=1`),
 	});
 
 	function handleAddEditRole(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();
+
+		if (!!props.role && !hasPermission('role', PERMISSION_UPDATE)) {
+			addMessagePopup({ message: 'You do not have permission to update this role', type: 'error', id: 'noPermission' });
+			return;
+		} else if (!hasPermission('role', PERMISSION_CREATE)) {
+			addMessagePopup({ message: 'You do not have permission to create a role', type: 'error', id: 'noPermission' });
+			return;
+		}
+
 		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any;
 		if (!formData.name) {
 			addMessagePopup({ message: 'Please fill all required fields', type: 'error', id: 'req-field' });
@@ -94,6 +113,7 @@ export function AddEditRole(props: AddEditRoleProps) {
 		setPermissions((prev) => prev.filter((_, i) => i !== index));
 	}
 
+	if (!hasPermission('role', props.role ? PERMISSION_UPDATE : PERMISSION_CREATE)) return <UnAuthorizedPage />;
 	return (
 		<>
 			<Modal

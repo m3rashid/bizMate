@@ -87,7 +87,8 @@ export function useRespondToWorkspaceInviteMutation() {
 		mutationKey: [queryKeys.workspaceInvites],
 		mutationFn: (data: { inviteId: string; accepted: boolean }) => apiClient('/auth/invites/respond', { method: 'POST', data }),
 		onSuccess: (_, data) => {
-			getQueryClient().invalidateQueries({ queryKey: [queryKeys.workspaceInvites, queryKeys.workspaces] });
+			getQueryClient().invalidateQueries({ queryKey: [queryKeys.workspaceInvites] });
+			getQueryClient().invalidateQueries({ queryKey: [queryKeys.workspaces] });
 			addMessagePopup({ id: 'inviteResponse', message: data.accepted ? 'You accepted the invite' : 'You rejected the invite', type: 'success' });
 		},
 		onError: () => {

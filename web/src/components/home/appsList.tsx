@@ -1,8 +1,10 @@
 import { workspaceKey } from '@/utils/constants';
-import { BriefcaseIcon, UsersIcon } from '@heroicons/react/24/outline';
+import { PermissionObjectType } from '@/utils/types';
 import CogIcon from '@heroicons/react/24/outline/CogIcon';
+import HandRaisedIcon from '@heroicons/react/24/outline/HandRaisedIcon';
 import ListBulletIcon from '@heroicons/react/24/outline/ListBulletIcon';
-import UserIcon from '@heroicons/react/24/outline/UserIcon';
+import PresentationChartLineIcon from '@heroicons/react/24/outline/PresentationChartLineIcon';
+import UsersIcon from '@heroicons/react/24/outline/UsersIcon';
 import { FC } from 'react';
 
 export type Route = {
@@ -10,12 +12,13 @@ export type Route = {
 	icon: FC<any>;
 	link: string;
 	description: string;
+	objectType?: PermissionObjectType;
 };
 
 export type App = {
 	name: string;
-	description: string;
 	routes: Route[];
+	description: string;
 };
 
 export const apps: App[] = [
@@ -23,25 +26,47 @@ export const apps: App[] = [
 		name: 'Forms',
 		description: 'Create, publish, and get analytics for your forms',
 		routes: [
-			{ name: 'Forms', icon: ListBulletIcon, link: `/${workspaceKey}/forms?page=1`, description: 'List all forms' },
-			//
+			{
+				name: 'Forms',
+				objectType: 'form',
+				icon: ListBulletIcon,
+				description: 'Manage all forms',
+				link: `/${workspaceKey}/forms?page=1`,
+			},
 		],
 	},
 	{
-		name: 'HR',
-		description: "Manage your users' data, roles and permissions",
+		name: 'Admin',
+		description: "Manage your workspace's settings",
 		routes: [
-			{ name: 'Users', icon: UsersIcon, link: `/${workspaceKey}/hr?tab=users&page=1`, description: 'Manage users' },
-			{ name: 'Roles', icon: BriefcaseIcon, link: `/${workspaceKey}/hr?tab=roles&page=1`, description: 'Manage roles' },
-		],
-	},
-	{
-		name: 'You',
-		description: 'Manage your account',
-		routes: [
-			{ name: 'Settings', icon: CogIcon, link: `/${workspaceKey}/settings`, description: 'Manage your account settings' },
-			{ name: 'Profile', icon: UserIcon, link: `/${workspaceKey}/profile`, description: 'Manage your profile' },
-			//
+			{
+				name: 'Users',
+				icon: UsersIcon,
+				objectType: 'user',
+				link: `/${workspaceKey}/admin?tab=users&page=1`,
+				description: "Manage users' details",
+			},
+			{
+				name: 'Roles',
+				objectType: 'role',
+				icon: HandRaisedIcon,
+				description: 'Manage roles and permissions',
+				link: `/${workspaceKey}/admin?tab=roles&page=1`,
+			},
+			{
+				name: 'Workspace Invitations',
+				objectType: 'workspace_invite',
+				icon: PresentationChartLineIcon,
+				description: 'Manage invites to workspace',
+				link: `/${workspaceKey}/admin?tab=invitations&page=1`,
+			},
+			{
+				name: 'Activity',
+				objectType: 'activity',
+				description: 'Manage roles',
+				icon: PresentationChartLineIcon,
+				link: `/${workspaceKey}/admin?tab=activity&page=1`,
+			},
 		],
 	},
 ];

@@ -1,20 +1,21 @@
 'use client';
 
 import { UserDetails } from './detailsTab';
-import { UserPermissions } from './permissionsTab';
+import { UserBarePermissions } from './permissionsTab';
 import { UserRoles } from './rolesTab';
 import { Modal } from '@/components/lib/modal';
 import { Tab, Tabs } from '@/components/lib/tabs';
 import { User } from '@/utils/types';
 import { useMemo, useState } from 'react';
 
-export function UserDetailModal({ open, onClose, workspaceId, ...user }: User & { open: boolean; workspaceId: string; onClose: () => void }) {
-	const [selectedTab, setSelectedTab] = useState('details');
-	// -- List of actions --
-	// remove from workspace
-	// change role
-	// add/edit bare permissions
+type UserDetailModalProps = User & {
+	open: boolean;
+	workspaceId: string;
+	onClose: () => void;
+};
 
+export function UserDetailModal({ open, onClose, workspaceId, ...user }: UserDetailModalProps) {
+	const [selectedTab, setSelectedTab] = useState('details');
 	const tabs: Tab<any>[] = useMemo(
 		() => [
 			{
@@ -31,8 +32,8 @@ export function UserDetailModal({ open, onClose, workspaceId, ...user }: User & 
 			},
 			{
 				id: 'permissions',
-				label: 'Permissions',
-				Component: UserPermissions,
+				label: 'Bare Permissions',
+				Component: UserBarePermissions,
 				componentProps: { workspaceId, userId: user.id },
 			},
 		],
@@ -41,7 +42,7 @@ export function UserDetailModal({ open, onClose, workspaceId, ...user }: User & 
 	);
 
 	return (
-		<Modal open={open} setOpen={onClose} className='p-2 sm:p-0'>
+		<Modal open={open} setOpen={onClose} className='min-h-96 p-2 sm:p-0'>
 			<Tabs tabClassName='p-2 pt-4 pl-4' tabs={tabs} {...{ selectedTab, setSelectedTab }} />
 		</Modal>
 	);

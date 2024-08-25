@@ -1,11 +1,10 @@
 import { apiClient } from '../config';
 import { queryKeys } from '../queryKeys';
-import { Permission } from '@/hooks/checkPermission';
-import { ApiResponse, Role } from '@/utils/types';
+import { ApiResponse, Role, RolePermission } from '@/utils/types';
 import { QueryClient } from '@tanstack/react-query';
 
 export function getAllUserPermissions(workspaceId: string, sessionCookie: string) {
-	return () => apiClient<ApiResponse<Permission[]>>(`/${workspaceId}/permissions/all`, { headers: { Authorization: sessionCookie } });
+	return () => apiClient<ApiResponse<RolePermission[]>>(`/${workspaceId}/permissions/all`, { headers: { Authorization: sessionCookie } });
 }
 
 export function prefetchUserPermissions(queryClient: QueryClient, sessionCookie: string, workspaceId?: string) {
@@ -21,4 +20,10 @@ export function prefetchRoleById(queryClient: QueryClient, sessionCookie: string
 		queryKey: [queryKeys.roles, roleId],
 		queryFn: () => apiClient<ApiResponse<Role>>(`/${workspaceId}/permissions/roles/one/${roleId}`, { headers: { Authorization: sessionCookie } }),
 	});
+}
+
+export async function getUserPermissionsOnServer(queryClient: QueryClient, sessionCookie: string, workspaceId: string) {
+	const res = await apiClient<ApiResponse<RolePermission[]>>(`/${workspaceId}/permissions/all`, { headers: { Authorization: sessionCookie } });
+	queryClient.setQueryData([queryKeys.permissions], res);
+	return res;
 }

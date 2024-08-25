@@ -17,7 +17,15 @@ func createNewForm(ctx *fiber.Ctx) error {
 
 	reqBody := CreateFormReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
-		go utils.LogError(create_form_fail, userEmail, workspaceId, repository.FormObjectType, repository.LogData{"error": err.Error()})
+		go utils.LogError(
+			create_form_fail,
+			userEmail,
+			workspaceId,
+			repository.FormObjectType,
+			repository.LogData{
+				"error": err.Error(),
+			},
+		)
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
@@ -45,11 +53,28 @@ func createNewForm(ctx *fiber.Ctx) error {
 		SubmitText:              &reqBody.SubmitText,
 		CancelText:              &reqBody.CancelText,
 	}); err != nil {
-		go utils.LogError(create_form_fail, userEmail, workspaceId, repository.FormObjectType, repository.LogData{"error": err.Error()})
+		go utils.LogError(
+			create_form_fail,
+			userEmail,
+			workspaceId,
+			repository.FormObjectType,
+			repository.LogData{
+				"error": err.Error(),
+			},
+		)
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	go utils.LogInfo(create_form_success, userEmail, workspaceId, repository.FormObjectType, repository.LogData{"id": id.String(), "title": reqBody.Title})
+	go utils.LogInfo(
+		create_form_success,
+		userEmail,
+		workspaceId,
+		repository.FormObjectType,
+		repository.LogData{
+			"id":    id.String(),
+			"title": reqBody.Title,
+		},
+	)
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(id, "Form Created Successfully"))
 }
 
@@ -127,7 +152,15 @@ func updateFormById(ctx *fiber.Ctx) error {
 
 	reqBody := UpdateFormReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
-		go utils.LogError(update_form_fail, userEmail, workspaceId, repository.FormObjectType, repository.LogData{"error": err.Error()})
+		go utils.LogError(
+			update_form_fail,
+			userEmail,
+			workspaceId,
+			repository.FormObjectType,
+			repository.LogData{
+				"error": err.Error(),
+			},
+		)
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
@@ -148,11 +181,27 @@ func updateFormById(ctx *fiber.Ctx) error {
 		SubmitText:              &reqBody.SubmitText,
 		CancelText:              &reqBody.CancelText,
 	}); err != nil {
-		go utils.LogError(update_form_fail, userEmail, workspaceId, repository.FormObjectType, repository.LogData{"error": err.Error()})
+		go utils.LogError(
+			update_form_fail,
+			userEmail,
+			workspaceId,
+			repository.FormObjectType,
+			repository.LogData{
+				"error": err.Error(),
+			},
+		)
 		return fiber.NewError(fiber.StatusBadRequest)
 	}
 
-	go utils.LogError(update_form_fail, userEmail, workspaceId, repository.FormObjectType, repository.LogData{"id": reqBody.ID.String()})
+	go utils.LogError(
+		update_form_fail,
+		userEmail,
+		workspaceId,
+		repository.FormObjectType,
+		repository.LogData{
+			"id": reqBody.ID.String(),
+		},
+	)
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(reqBody.ID, "Form updated successfully"))
 }
 
@@ -180,10 +229,26 @@ func deleteFormById(ctx *fiber.Ctx) error {
 
 	queries := repository.New(pgConn)
 	if err = queries.DeleteForm(ctx.Context(), formId); err != nil {
-		go utils.LogError(delete_form_fail, userEmail, workspaceId, repository.FormObjectType, repository.LogData{"error": err.Error(), "id": formId.String()})
+		go utils.LogError(
+			delete_form_fail,
+			userEmail,
+			workspaceId,
+			repository.FormObjectType,
+			repository.LogData{
+				"error":  err.Error(),
+				"formId": formId.String(),
+			},
+		)
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	go utils.LogInfo(delete_form_success, userEmail, workspaceId, repository.FormObjectType, repository.LogData{"id": formId.String()})
+	go utils.LogInfo(delete_form_success,
+		userEmail,
+		workspaceId,
+		repository.FormObjectType,
+		repository.LogData{
+			"formId": formId.String(),
+		},
+	)
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(formId, "Form deleted successfully"))
 }

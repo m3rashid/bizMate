@@ -5,7 +5,9 @@ import { FormElementType } from '@/components/apps/forms/renderer/types';
 import { Button } from '@/components/lib/button';
 import { Tooltip } from '@/components/lib/tooltip';
 import { useFormDesigner } from '@/hooks/formDesigner';
+import { usePermission } from '@/hooks/permission';
 import { usePopups } from '@/hooks/popups';
+import { PERMISSION_UPDATE } from '@/utils/constants';
 import { StringBoolean } from '@/utils/types';
 import InformationCircleIcon from '@heroicons/react/24/outline/InformationCircleIcon';
 import { useRouter } from 'next/navigation';
@@ -17,18 +19,22 @@ type FormDesignerTopBarProps = {
 };
 
 export function FormDesignerTopBar(props: FormDesignerTopBarProps) {
-	const { t } = useTranslation();
 	const router = useRouter();
+	const { t } = useTranslation();
 	const { addMessagePopup } = usePopups();
+	const { hasPermission } = usePermission();
 	const { viewType, changeViewType, formBody, rootProps } = useFormDesigner();
 
 	const { isPending, mutate: saveForm } = useUpdateFormBodyMutation(props.workspaceId, props.formId, {
-		onSuccess: () => {
-			router.push(`/${props.workspaceId}/forms/${props.formId}/preview?page=1`);
-		},
+		onSuccess: () => router.push(`/${props.workspaceId}/forms/${props.formId}/preview?page=1`),
 	});
 
 	function handleSaveForm() {
+		if (!hasPermission('form', PERMISSION_UPDATE)) {
+			addMessagePopup({ id: 'noPermission', type: 'error', message: 'You do not have permission to update this form' });
+			return;
+		}
+
 		if (formBody.length === 0) {
 			addMessagePopup({ id: 'zeroLength', type: 'error', message: 'No form elements to save in the form' });
 			return;
@@ -54,7 +60,7 @@ export function FormDesignerTopBar(props: FormDesignerTopBarProps) {
 			/>
 
 			<div className='flex items-center gap-4'>
-				<Button size='small' label='Save form' disabled={isPending} onClick={handleSaveForm} />
+				<Button size='small' label='Save form' disabled={!hasPermission('form', PERMISSION_UPDATE) || isPending} onClick={handleSaveForm} />
 				<Tooltip
 					label={
 						<ul className='block list-disc pl-4'>

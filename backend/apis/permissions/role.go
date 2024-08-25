@@ -14,13 +14,29 @@ func createRole(ctx *fiber.Ctx) error {
 
 	reqBody := createRoleReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
-		go utils.LogError(create_role_fail, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"error": err.Error()})
+		go utils.LogError(
+			create_role_fail,
+			userEmail,
+			workspaceId,
+			repository.RoleObjectType,
+			repository.LogData{
+				"error": err.Error(),
+			},
+		)
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	uuidv7, err := utils.GenerateUuidV7()
 	if err != nil {
-		go utils.LogError(create_role_fail, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"error": err.Error()})
+		go utils.LogError(
+			create_role_fail,
+			userEmail,
+			workspaceId,
+			repository.RoleObjectType,
+			repository.LogData{
+				"error": err.Error(),
+			},
+		)
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
@@ -38,11 +54,27 @@ func createRole(ctx *fiber.Ctx) error {
 		Permissions: reqBody.Permissions,
 		CreatedByID: userId,
 	}); err != nil {
-		go utils.LogError(create_role_fail, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"error": err.Error()})
+		go utils.LogError(
+			create_role_fail,
+			userEmail,
+			workspaceId,
+			repository.RoleObjectType,
+			repository.LogData{
+				"error": err.Error(),
+			},
+		)
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	go utils.LogInfo(create_role_success, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"role_name": reqBody.Name})
+	go utils.LogInfo(
+		create_role_success,
+		userEmail,
+		workspaceId,
+		repository.RoleObjectType,
+		repository.LogData{
+			"role_name": reqBody.Name,
+		},
+	)
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(nil, "Role created successfully"))
 }
 
@@ -75,7 +107,7 @@ func getRoleById(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(role, "Got role successfully"))
 }
 
-func paginateRolesByWorkspaceId(ctx *fiber.Ctx) error {
+func getAllRolesByWorkspaceId(ctx *fiber.Ctx) error {
 	_, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 
 	paginationRes := utils.PaginationResponse[repository.Role]{}
@@ -89,11 +121,7 @@ func paginateRolesByWorkspaceId(ctx *fiber.Ctx) error {
 	}
 
 	queries := repository.New(pgConn)
-	roles, err := queries.PaginateRolesByWorkspaceId(ctx.Context(), repository.PaginateRolesByWorkspaceIdParams{
-		WorkspaceID: workspaceId,
-		Limit:       paginationRes.Limit,
-		Offset:      (paginationRes.CurrentPage - 1) * paginationRes.Limit,
-	})
+	roles, err := queries.GetAllRolesByWorkspaceId(ctx.Context(), workspaceId)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
@@ -118,12 +146,28 @@ func updateRole(ctx *fiber.Ctx) error {
 
 	reqBody := updateRoleReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
-		go utils.LogError(update_role_fail, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"error": err.Error()})
+		go utils.LogError(
+			update_role_fail,
+			userEmail,
+			workspaceId,
+			repository.RoleObjectType,
+			repository.LogData{
+				"error": err.Error(),
+			},
+		)
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	if reqBody.RoleId == uuid.Nil {
-		go utils.LogError(update_role_fail, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"error": "Invalid Role ID"})
+		go utils.LogError(
+			update_role_fail,
+			userEmail,
+			workspaceId,
+			repository.RoleObjectType,
+			repository.LogData{
+				"error": "Invalid Role ID",
+			},
+		)
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid Role ID")
 	}
 
@@ -140,11 +184,27 @@ func updateRole(ctx *fiber.Ctx) error {
 		Permissions: reqBody.Permissions,
 		WorkspaceID: workspaceId,
 	}); err != nil {
-		go utils.LogError(update_role_fail, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"error": err.Error()})
+		go utils.LogError(
+			update_role_fail,
+			userEmail,
+			workspaceId,
+			repository.RoleObjectType,
+			repository.LogData{
+				"error": err.Error(),
+			},
+		)
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	go utils.LogInfo(update_role_success, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"role_id": reqBody.RoleId.String()})
+	go utils.LogInfo(
+		update_role_success,
+		userEmail,
+		workspaceId,
+		repository.RoleObjectType,
+		repository.LogData{
+			"role_id": reqBody.RoleId.String(),
+		},
+	)
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(nil, "Role updated successfully"))
 }
 
@@ -154,12 +214,28 @@ func deleteRole(ctx *fiber.Ctx) error {
 
 	reqBody := deleteRoleReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
-		go utils.LogError(delete_role_fail, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"error": err.Error()})
+		go utils.LogError(
+			delete_role_fail,
+			userEmail,
+			workspaceId,
+			repository.RoleObjectType,
+			repository.LogData{
+				"error": err.Error(),
+			},
+		)
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	if reqBody.RoleId == uuid.Nil {
-		go utils.LogError(delete_role_fail, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"error": "Invalid Role ID"})
+		go utils.LogError(
+			delete_role_fail,
+			userEmail,
+			workspaceId,
+			repository.RoleObjectType,
+			repository.LogData{
+				"error": "Invalid Role ID",
+			},
+		)
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid Role ID")
 	}
 
@@ -173,11 +249,27 @@ func deleteRole(ctx *fiber.Ctx) error {
 		WorkspaceID: workspaceId,
 		ID:          reqBody.RoleId,
 	}); err != nil {
-		go utils.LogError(delete_role_fail, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"error": err.Error()})
+		go utils.LogError(
+			delete_role_fail,
+			userEmail,
+			workspaceId,
+			repository.RoleObjectType,
+			repository.LogData{
+				"error": err.Error(),
+			},
+		)
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	go utils.LogInfo(delete_role_success, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"role_id": reqBody.RoleId.String()})
+	go utils.LogInfo(
+		delete_role_success,
+		userEmail,
+		workspaceId,
+		repository.RoleObjectType,
+		repository.LogData{
+			"role_id": reqBody.RoleId.String(),
+		},
+	)
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(nil, "Role deleted successfully"))
 }
 
@@ -187,12 +279,28 @@ func addUserToRole(ctx *fiber.Ctx) error {
 
 	reqBody := addRemoveUserToRoleReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
-		go utils.LogError(add_user_to_role_fail, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"error": err.Error()})
+		go utils.LogError(
+			add_user_to_role_fail,
+			userEmail,
+			workspaceId,
+			repository.RoleObjectType,
+			repository.LogData{
+				"error": err.Error(),
+			},
+		)
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	if reqBody.RoleId == uuid.Nil || reqBody.UserId == uuid.Nil {
-		go utils.LogError(add_user_to_role_fail, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"error": "Invalid Role ID or User ID"})
+		go utils.LogError(
+			add_user_to_role_fail,
+			userEmail,
+			workspaceId,
+			repository.RoleObjectType,
+			repository.LogData{
+				"error": "Invalid Role ID or User ID",
+			},
+		)
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid Role ID or User ID")
 	}
 
@@ -207,11 +315,28 @@ func addUserToRole(ctx *fiber.Ctx) error {
 		RoleID:      reqBody.RoleId,
 		WorkspaceID: workspaceId,
 	}); err != nil {
-		go utils.LogError(add_user_to_role_fail, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"error": err.Error()})
+		go utils.LogError(
+			add_user_to_role_fail,
+			userEmail,
+			workspaceId,
+			repository.RoleObjectType,
+			repository.LogData{
+				"error": err.Error(),
+			},
+		)
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	go utils.LogInfo(add_user_to_role_success, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"role_id": reqBody.RoleId.String(), "user_id": reqBody.UserId.String()})
+	go utils.LogInfo(
+		add_user_to_role_success,
+		userEmail,
+		workspaceId,
+		repository.RoleObjectType,
+		repository.LogData{
+			"role_id": reqBody.RoleId.String(),
+			"user_id": reqBody.UserId.String(),
+		},
+	)
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(nil, "User added to role successfully"))
 }
 
@@ -221,12 +346,28 @@ func removeUserFromRole(ctx *fiber.Ctx) error {
 
 	reqBody := addRemoveUserToRoleReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
-		go utils.LogError(remove_user_from_role_fail, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"error": err.Error()})
+		go utils.LogError(
+			remove_user_from_role_fail,
+			userEmail,
+			workspaceId,
+			repository.RoleObjectType,
+			repository.LogData{
+				"error": err.Error(),
+			},
+		)
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	if reqBody.RoleId == uuid.Nil || reqBody.UserId == uuid.Nil {
-		go utils.LogError(remove_user_from_role_fail, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"error": "Invalid Role ID or User ID"})
+		go utils.LogError(
+			remove_user_from_role_fail,
+			userEmail,
+			workspaceId,
+			repository.RoleObjectType,
+			repository.LogData{
+				"error": "Invalid Role ID or User ID",
+			},
+		)
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid Role ID or User ID")
 	}
 
@@ -241,11 +382,28 @@ func removeUserFromRole(ctx *fiber.Ctx) error {
 		RoleID:      reqBody.RoleId,
 		WorkspaceID: workspaceId,
 	}); err != nil {
-		go utils.LogError(remove_user_from_role_fail, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"error": err.Error()})
+		go utils.LogError(
+			remove_user_from_role_fail,
+			userEmail,
+			workspaceId,
+			repository.RoleObjectType,
+			repository.LogData{
+				"error": err.Error(),
+			},
+		)
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	go utils.LogInfo(remove_user_from_role_success, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"role_id": reqBody.RoleId.String(), "user_id": reqBody.UserId.String()})
+	go utils.LogInfo(
+		remove_user_from_role_success,
+		userEmail,
+		workspaceId,
+		repository.RoleObjectType,
+		repository.LogData{
+			"role_id": reqBody.RoleId.String(),
+			"user_id": reqBody.UserId.String(),
+		},
+	)
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(nil, "User removed from role successfully"))
 }
 
@@ -255,12 +413,28 @@ func addBarePermissionToUser(ctx *fiber.Ctx) error {
 
 	reqBody := addBarePermissionReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
-		go utils.LogError(add_bare_permission_to_user_fail, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"error": err.Error()})
+		go utils.LogError(
+			add_bare_permission_to_user_fail,
+			userEmail,
+			workspaceId,
+			repository.RoleObjectType,
+			repository.LogData{
+				"error": err.Error(),
+			},
+		)
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	if reqBody.UserId == uuid.Nil {
-		go utils.LogError(add_bare_permission_to_user_fail, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"error": "Invalid User ID"})
+		go utils.LogError(
+			add_bare_permission_to_user_fail,
+			userEmail,
+			workspaceId,
+			repository.RoleObjectType,
+			repository.LogData{
+				"error": "Invalid User ID",
+			},
+		)
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid User ID")
 	}
 
@@ -277,11 +451,30 @@ func addBarePermissionToUser(ctx *fiber.Ctx) error {
 		ObjectID:    reqBody.ObjectId,
 		Level:       reqBody.Level,
 	}); err != nil {
-		go utils.LogError(add_bare_permission_to_user_fail, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"error": err.Error()})
+		go utils.LogError(
+			add_bare_permission_to_user_fail,
+			userEmail,
+			workspaceId,
+			repository.RoleObjectType,
+			repository.LogData{
+				"error": err.Error(),
+			},
+		)
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	go utils.LogInfo(add_bare_permission_to_user_success, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"user_id": reqBody.UserId.String(), "object_id": reqBody.ObjectId.String(), "object_type": reqBody.ObjectType, "level": reqBody.Level})
+	go utils.LogInfo(
+		add_bare_permission_to_user_success,
+		userEmail,
+		workspaceId,
+		repository.RoleObjectType,
+		repository.LogData{
+			"user_id":     reqBody.UserId.String(),
+			"object_id":   reqBody.ObjectId.String(),
+			"object_type": reqBody.ObjectType,
+			"level":       reqBody.Level,
+		},
+	)
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(nil, "Permission added successfully"))
 }
 
@@ -291,12 +484,28 @@ func removeBarePermissionFromUser(ctx *fiber.Ctx) error {
 
 	reqBody := addBarePermissionReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
-		go utils.LogError(remove_bare_permission_from_user_fail, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"error": err.Error()})
+		go utils.LogError(
+			remove_bare_permission_from_user_fail,
+			userEmail,
+			workspaceId,
+			repository.RoleObjectType,
+			repository.LogData{
+				"error": err.Error(),
+			},
+		)
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	if reqBody.UserId == uuid.Nil {
-		go utils.LogError(add_bare_permission_to_user_fail, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"error": "Invalid User ID"})
+		go utils.LogError(
+			add_bare_permission_to_user_fail,
+			userEmail,
+			workspaceId,
+			repository.RoleObjectType,
+			repository.LogData{
+				"error": "Invalid User ID",
+			},
+		)
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid User ID")
 	}
 
@@ -313,11 +522,30 @@ func removeBarePermissionFromUser(ctx *fiber.Ctx) error {
 		ObjectType:  reqBody.ObjectType,
 		ObjectID:    reqBody.ObjectId,
 	}); err != nil {
-		go utils.LogError(remove_bare_permission_from_user_fail, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"error": err.Error()})
+		go utils.LogError(
+			remove_bare_permission_from_user_fail,
+			userEmail,
+			workspaceId,
+			repository.RoleObjectType,
+			repository.LogData{
+				"error": err.Error(),
+			},
+		)
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	go utils.LogInfo(remove_bare_permission_from_user_success, userEmail, workspaceId, repository.RoleObjectType, repository.LogData{"user_id": reqBody.UserId.String(), "object_id": reqBody.ObjectId.String(), "object_type": reqBody.ObjectType, "level": reqBody.Level})
+	go utils.LogInfo(
+		remove_bare_permission_from_user_success,
+		userEmail,
+		workspaceId,
+		repository.RoleObjectType,
+		repository.LogData{
+			"user_id":     reqBody.UserId.String(),
+			"object_id":   reqBody.ObjectId.String(),
+			"object_type": reqBody.ObjectType,
+			"level":       reqBody.Level,
+		},
+	)
 	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(nil, "Permission removed successfully"))
 }
 

@@ -7,7 +7,6 @@ import ExclamationTriangleIcon from '@heroicons/react/20/solid/ExclamationTriang
 import InformationCircleIcon from '@heroicons/react/20/solid/InformationCircleIcon';
 import XCircleIcon from '@heroicons/react/20/solid/XCircleIcon';
 import XMarkIcon from '@heroicons/react/20/solid/XMarkIcon';
-import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 export const popupVariants: Record<PopupType, string> = {
@@ -62,12 +61,10 @@ export function MessagePopup(props: MessagePopupType) {
 
 const popupContainerClassName = 'absolute top-0 z-[99] max-h-full w-full max-w-80 overflow-hidden flex flex-col gap-2 items-center';
 
-export function MessagePopupContainer() {
-	const [mounted, setMounted] = useState(false);
+function MessagePopupContainer() {
 	const { messagePopups } = usePopups();
-	useEffect(() => setMounted(true), []);
 
-	if (!mounted) return null;
+	if (typeof window === 'undefined') return <div />;
 	return createPortal(
 		<div className={cn(popupContainerClassName, 'left-[calc(50vw-160px)]', messagePopups.length > 0 ? 'p-2' : '')}>
 			{messagePopups.map((messagePopup) => (
@@ -78,12 +75,10 @@ export function MessagePopupContainer() {
 	);
 }
 
-export function ActionPopupContainer() {
-	const [mounted, setMounted] = useState(false);
+function ActionPopupContainer() {
 	const { actionPopups } = usePopups();
-	useEffect(() => setMounted(true), []);
 
-	if (!mounted) return null;
+	if (typeof window === 'undefined') return <div />;
 	return createPortal(
 		<div className={cn(popupContainerClassName, 'right-0', actionPopups.length > 0 ? 'p-2' : '')}>
 			{actionPopups.map((actionPopup) => (
@@ -91,5 +86,14 @@ export function ActionPopupContainer() {
 			))}
 		</div>,
 		document.body
+	);
+}
+
+export function PopupContainer() {
+	return (
+		<>
+			<MessagePopupContainer />
+			<ActionPopupContainer />
+		</>
 	);
 }

@@ -4,14 +4,20 @@ import { useGetFormAnalyticsByFormId } from '@/api/forms/client';
 import { FormAnalyticsGraphs } from '@/components/apps/forms/designer/analytics';
 import { DataListHeader } from '@/components/lib/dataListHeader';
 import { PageLoader } from '@/components/lib/loaders';
-import { FaceFrownIcon } from '@heroicons/react/24/outline';
+import { UnAuthorizedPage } from '@/components/lib/notFound';
+import { usePermission } from '@/hooks/permission';
+import { PERMISSION_READ } from '@/utils/constants';
+import FaceFrownIcon from '@heroicons/react/24/outline/FaceFrownIcon';
 
 export type AnalyticsListProps = {
 	formId: string;
 	workspaceId: string;
 };
 export function AnalyticsList(props: AnalyticsListProps) {
+	const { hasPermission } = usePermission();
 	const { data: result, isPending } = useGetFormAnalyticsByFormId(props.workspaceId, props.formId);
+
+	if (!hasPermission('form_analysis', PERMISSION_READ)) return <UnAuthorizedPage />;
 
 	if (isPending) return <PageLoader />;
 	if (!result) {
@@ -30,7 +36,6 @@ export function AnalyticsList(props: AnalyticsListProps) {
 			<DataListHeader
 				hideRefresh
 				isFetching={false}
-				// refetch={() => {}}
 				workspaceId={props.workspaceId}
 				description={result.data.description}
 				title={`Form Analytics (${result.data.title})`}

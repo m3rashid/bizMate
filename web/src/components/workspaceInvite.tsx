@@ -9,10 +9,13 @@ import {
 import { Button } from '@/components/lib/button';
 import { Input } from '@/components/lib/input';
 import { PingLoader } from '@/components/lib/loaders';
+import { UnAuthorized } from '@/components/lib/notFound';
 import { Tooltip } from '@/components/lib/tooltip';
+import { usePermission } from '@/hooks/permission';
 import { usePopups } from '@/hooks/popups';
+import { PERMISSION_CREATE, PERMISSION_DELETE } from '@/utils/constants';
 import { WorkspaceInvite } from '@/utils/types';
-import { UserPlusIcon } from '@heroicons/react/24/outline';
+import UserPlusIcon from '@heroicons/react/24/outline/UserPlusIcon';
 import { useParams } from 'next/navigation';
 import { FormEvent, useRef } from 'react';
 import { twMerge } from 'tailwind-merge';
@@ -20,6 +23,7 @@ import { twMerge } from 'tailwind-merge';
 export type WorkspaceInviteItemProps = WorkspaceInvite & { currentUserId: string; currentWorkspaceId?: string };
 
 export function WorkspaceInviteItem(invite: WorkspaceInviteItemProps) {
+	const { hasPermission } = usePermission();
 	const { mutateAsync: acceptOrReject, isPending: acceptOrRejectPending } = useRespondToWorkspaceInviteMutation();
 	const { mutateAsync: revokeInvite, isPending: revokeInvitePending } = useRevokeWorkspaceInviteMutation(invite.currentWorkspaceId);
 
@@ -45,7 +49,7 @@ export function WorkspaceInviteItem(invite: WorkspaceInviteItemProps) {
 					Reject
 				</button>
 
-				{invite.currentWorkspaceId && invite.created_by_id === invite.currentUserId ? (
+				{hasPermission('workspace_invite', PERMISSION_DELETE) ? (
 					<button
 						disabled={revokeInvitePending}
 						onClick={() => revokeInvite({ inviteId: invite.invite_id })}
@@ -66,7 +70,7 @@ export function WorkspaceInvites(props: { currentUserId: string }) {
 	if (!workspaceInvites) return <PingLoader className='mt-8 h-12 w-12 border-8' />;
 	if (workspaceInvites.data.length === 0) {
 		return (
-			<div className='cursor-not-allowed rounded-lg border-2 border-dashed border-gray-300 p-12 text-center'>
+			<div className='w-full flex-grow cursor-not-allowed rounded-lg border-2 border-dashed border-gray-300 p-12 text-center sm:min-w-96 md:max-w-lg'>
 				<UserPlusIcon className='mx-auto h-8 w-8 text-gray-400' />
 				<span className='mt-2 block text-sm font-semibold text-gray-900'>No pending invites</span>
 			</div>
@@ -74,11 +78,12 @@ export function WorkspaceInvites(props: { currentUserId: string }) {
 	}
 
 	return (
-		<div className='min-w-72'>
+		<div className='min-w-72 flex-grow md:max-w-lg'>
 			<div className='flex items-center justify-between'>
 				<h2 className='mb-4 font-semibold'>Your invites</h2>
 				<Tooltip label='Users' />
 			</div>
+
 			{workspaceInvites.data.map((invite) => (
 				<WorkspaceInviteItem
 					key={invite.invite_id}
@@ -95,6 +100,7 @@ export function SendWorkspaceInvite() {
 	const params = useParams();
 	const { addMessagePopup } = usePopups();
 	const formRef = useRef<HTMLFormElement>(null);
+	const { hasPermission } = usePermission();
 	const { mutateAsync: sendWorkspaceInvite, isPending } = useSendWorkspaceInviteMutation(formRef, params.workspaceId);
 
 	async function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -108,15 +114,16 @@ export function SendWorkspaceInvite() {
 		sendWorkspaceInvite({ email: formData.email as string });
 	}
 
+	if (!hasPermission('workspace_invite', PERMISSION_CREATE)) return <UnAuthorized />;
 	if (!params.workspaceId) return null;
 	return (
-		<div className=''>
+		<div className='w-full flex-grow md:max-w-md'>
 			<h2 className='my-4 font-semibold'>Invite user to your workspace</h2>
-			<form className='flex flex-col items-end justify-center gap-4 sm:max-w-xl sm:flex-row' onSubmit={onSubmit} ref={formRef}>
+			<form className='flex flex-col items-end justify-center gap-4 sm:max-w-xl lg:flex-row' onSubmit={onSubmit} ref={formRef}>
 				<Input name='email' type='email' label='Invitee Email' placeholder='rashid@bizmate.com' required className='w-full flex-grow' />
 				<Button
 					type='submit'
-					className='h-[35px] w-40'
+					className='h-[35px] w-44'
 					label='Send Invite'
 					disabled={isPending}
 					{...(isPending ? { RightIcon: <PingLoader /> } : {})}

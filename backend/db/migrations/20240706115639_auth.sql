@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS workspaces (
 CREATE TABLE IF NOT EXISTS users_workspaces_relation (
   user_id uuid NOT NULL,
   workspace_id uuid NOT NULL,
+  deleted boolean DEFAULT false,
 	PRIMARY KEY (user_id, workspace_id)
 );
 

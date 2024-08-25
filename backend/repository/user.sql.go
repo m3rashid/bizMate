@@ -13,9 +13,16 @@ import (
 )
 
 const createUser = `-- name: CreateUser :one
-insert into users (id, email, password, name, provider, refresh_token, phone, avatar) 
-	values ($1, $2, $3, $4, $5, $6, $7, $8) 
-	returning id, deleted, created_at, name, email, phone, avatar, deactivated, provider, password, refresh_token
+insert into users (
+	id,
+	email,
+	password,
+	name,
+	provider,
+	refresh_token,
+	phone,
+	avatar
+) values ($1, $2, $3, $4, $5, $6, $7, $8) returning id, deleted, created_at, name, email, phone, avatar, deactivated, provider, password, refresh_token
 `
 
 type CreateUserParams struct {
@@ -136,7 +143,7 @@ full outer join roles_users_relation
 	on users.id = roles_users_relation.user_id
 full outer join roles
 	on roles.id = roles_users_relation.role_id
-where users_workspaces_relation.workspace_id = $1 and users.deleted = false
+where users_workspaces_relation.workspace_id = $1 and users.deleted = false and users_workspaces_relation.deleted = false
 order by users.id desc limit $2 offset $3
 `
 

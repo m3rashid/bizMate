@@ -7,7 +7,10 @@ import { RightSidebar } from '@/components/apps/forms/designer/rightSidebar';
 import { FormDesignerTopBar } from '@/components/apps/forms/designer/topBar';
 import { supportedWidgets } from '@/components/apps/forms/renderer/constants';
 import { PageLoader } from '@/components/lib/loaders';
+import { UnAuthorizedPage } from '@/components/lib/notFound';
 import { useFormDesigner } from '@/hooks/formDesigner';
+import { usePermission } from '@/hooks/permission';
+import { PERMISSION_UPDATE } from '@/utils/constants';
 import { Form } from '@/utils/types';
 import { closestCorners, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
@@ -19,9 +22,13 @@ export type FormDesignerComponentProps = {
 	workspaceId: string;
 };
 export function FormDesignerComponent(props: FormDesignerComponentProps) {
+	const { hasPermission } = usePermission();
 	const { data: formRes, isPending } = useGetSingleFormById(props.workspaceId, props.formId);
 
+	if (!hasPermission('form', PERMISSION_UPDATE)) return <UnAuthorizedPage />;
+
 	if (isPending) return <PageLoader />;
+
 	if (!formRes) {
 		return (
 			<div className='flex h-full items-center justify-center'>
