@@ -1,8 +1,9 @@
 import { workspaceKey } from '@/utils/constants';
-import { BriefcaseIcon, UsersIcon } from '@heroicons/react/24/outline';
 import CogIcon from '@heroicons/react/24/outline/CogIcon';
+import HandRaisedIcon from '@heroicons/react/24/outline/HandRaisedIcon';
 import ListBulletIcon from '@heroicons/react/24/outline/ListBulletIcon';
-import UserIcon from '@heroicons/react/24/outline/UserIcon';
+import PresentationChartLineIcon from '@heroicons/react/24/outline/PresentationChartLineIcon';
+import UsersIcon from '@heroicons/react/24/outline/UsersIcon';
 import { FC } from 'react';
 
 export type Route = {
@@ -28,20 +29,18 @@ export const apps: App[] = [
 		],
 	},
 	{
-		name: 'HR',
-		description: "Manage your users' data, roles and permissions",
+		name: 'Admin',
+		description: "Manage your workspace's settings",
 		routes: [
-			{ name: 'Users', icon: UsersIcon, link: `/${workspaceKey}/hr?tab=users&page=1`, description: 'Manage users' },
-			{ name: 'Roles', icon: BriefcaseIcon, link: `/${workspaceKey}/hr?tab=roles&page=1`, description: 'Manage roles' },
-		],
-	},
-	{
-		name: 'You',
-		description: 'Manage your account',
-		routes: [
-			{ name: 'Settings', icon: CogIcon, link: `/${workspaceKey}/settings`, description: 'Manage your account settings' },
-			{ name: 'Profile', icon: UserIcon, link: `/${workspaceKey}/profile`, description: 'Manage your profile' },
-			//
+			{ name: 'Users', icon: UsersIcon, link: `/${workspaceKey}/admin?tab=users&page=1`, description: "Manage users' details" },
+			{ name: 'Roles', icon: HandRaisedIcon, link: `/${workspaceKey}/admin?tab=roles&page=1`, description: 'Manage roles and permissions' },
+			{
+				name: 'Workspace Invitations',
+				icon: PresentationChartLineIcon,
+				description: 'Manage invites to workspace',
+				link: `/${workspaceKey}/admin?tab=invitations&page=1`,
+			},
+			{ name: 'Activity', icon: PresentationChartLineIcon, link: `/${workspaceKey}/admin?tab=activity&page=1`, description: 'Manage roles' },
 		],
 	},
 ];

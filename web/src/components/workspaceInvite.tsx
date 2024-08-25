@@ -12,7 +12,7 @@ import { PingLoader } from '@/components/lib/loaders';
 import { Tooltip } from '@/components/lib/tooltip';
 import { usePopups } from '@/hooks/popups';
 import { WorkspaceInvite } from '@/utils/types';
-import { UserPlusIcon } from '@heroicons/react/24/outline';
+import UserPlusIcon from '@heroicons/react/24/outline/UserPlusIcon';
 import { useParams } from 'next/navigation';
 import { FormEvent, useRef } from 'react';
 import { twMerge } from 'tailwind-merge';
@@ -66,7 +66,7 @@ export function WorkspaceInvites(props: { currentUserId: string }) {
 	if (!workspaceInvites) return <PingLoader className='mt-8 h-12 w-12 border-8' />;
 	if (workspaceInvites.data.length === 0) {
 		return (
-			<div className='cursor-not-allowed rounded-lg border-2 border-dashed border-gray-300 p-12 text-center'>
+			<div className='w-full flex-grow cursor-not-allowed rounded-lg border-2 border-dashed border-gray-300 p-12 text-center sm:min-w-96 md:max-w-lg'>
 				<UserPlusIcon className='mx-auto h-8 w-8 text-gray-400' />
 				<span className='mt-2 block text-sm font-semibold text-gray-900'>No pending invites</span>
 			</div>
@@ -74,7 +74,7 @@ export function WorkspaceInvites(props: { currentUserId: string }) {
 	}
 
 	return (
-		<div className='min-w-72'>
+		<div className='min-w-72 flex-grow md:max-w-lg'>
 			<div className='flex items-center justify-between'>
 				<h2 className='mb-4 font-semibold'>Your invites</h2>
 				<Tooltip label='Users' />
@@ -110,13 +110,13 @@ export function SendWorkspaceInvite() {
 
 	if (!params.workspaceId) return null;
 	return (
-		<div className=''>
+		<div className='w-full flex-grow md:max-w-md'>
 			<h2 className='my-4 font-semibold'>Invite user to your workspace</h2>
-			<form className='flex flex-col items-end justify-center gap-4 sm:max-w-xl sm:flex-row' onSubmit={onSubmit} ref={formRef}>
+			<form className='flex flex-col items-end justify-center gap-4 sm:max-w-xl lg:flex-row' onSubmit={onSubmit} ref={formRef}>
 				<Input name='email' type='email' label='Invitee Email' placeholder='rashid@bizmate.com' required className='w-full flex-grow' />
 				<Button
 					type='submit'
-					className='h-[35px] w-40'
+					className='h-[35px] w-44'
 					label='Send Invite'
 					disabled={isPending}
 					{...(isPending ? { RightIcon: <PingLoader /> } : {})}

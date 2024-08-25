@@ -15,7 +15,7 @@ export async function Header(props: { workspaceId?: string }) {
 				{!!props.workspaceId ? <AppDrawer workspaceId={props.workspaceId} /> : null}
 				<Link className='flex cursor-pointer select-none items-center gap-1 hover:text-primary' href='/'>
 					<BrandLogo imgClassName='h-7 w-7' />
-					<h2 className='m-0 p-0 text-xl font-bold'>Bizmate</h2>
+					<h2 className='m-0 hidden p-0 text-xl font-bold sm:block'>Bizmate</h2>
 				</Link>
 			</div>
 

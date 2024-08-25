@@ -36,12 +36,14 @@ export function ActivityTab(props: { workspaceId: string }) {
 			render: ({ row }) =>
 				row.data ? (
 					<table className='border-spacing-x-8'>
-						{Object.entries(row.data).map(([key, value]) => (
-							<tr key={key}>
-								<td className='pr-1 font-semibold'>{key}</td>
-								<td className='pl-1'>{value}</td>
-							</tr>
-						))}
+						<tbody>
+							{Object.entries(row.data).map(([key, value]) => (
+								<tr key={key}>
+									<td className='pr-1 font-semibold'>{key}</td>
+									<td className='pl-1'>{value}</td>
+								</tr>
+							))}
+						</tbody>
 					</table>
 				) : (
 					'-'

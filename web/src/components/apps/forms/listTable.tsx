@@ -6,7 +6,7 @@ import { queryKeys } from '@/api/queryKeys';
 import { Button } from '@/components/lib/button';
 import { CardList } from '@/components/lib/cardList';
 import { Form } from '@/utils/types';
-import { PlusIcon } from '@heroicons/react/24/outline';
+import PlusIcon from '@heroicons/react/24/outline/PlusIcon';
 import { useState } from 'react';
 
 export function ListForms(props: { workspaceId: string }) {

@@ -1,6 +1,6 @@
 import { HomeBackgroundWithSvg } from '@/components/home/homeBgSvg';
 import { BrandLogo } from '@/components/lib/brandLogo';
-import { ArrowRightIcon } from '@heroicons/react/24/outline';
+import ArrowRightIcon from '@heroicons/react/24/outline/ArrowRightIcon';
 import Link from 'next/link';
 
 export function Hero() {

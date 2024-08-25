@@ -25,10 +25,10 @@ export function AddEditRole(props: AddEditRoleProps) {
 	const [editPermissionRow, setEditPermissionRow] = useState<(RolePermission & { index: number }) | undefined>(undefined);
 	const [permissions, setPermissions] = useState(props.role ? props.role.permissions : []);
 	const { mutateAsync: createRole } = useCreateRoleMutation(props.workspaceId, {
-		onSuccess: () => router.push(`/${props.workspaceId}/hr?tab=roles&page=1`),
+		onSuccess: () => router.push(`/${props.workspaceId}/admin?tab=roles&page=1`),
 	});
 	const { mutateAsync: updateRole } = useUpdateRoleMutation(props.workspaceId, {
-		onSuccess: () => router.push(`/${props.workspaceId}/hr?tab=roles&page=1`),
+		onSuccess: () => router.push(`/${props.workspaceId}/admin?tab=roles&page=1`),
 	});
 
 	function handleAddEditRole(e: FormEvent<HTMLFormElement>) {

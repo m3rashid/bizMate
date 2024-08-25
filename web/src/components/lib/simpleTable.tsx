@@ -4,7 +4,7 @@ import { Button, ButtonProps } from '@/components/lib/button';
 import { TableExport, TableExportProps } from '@/components/lib/tableExport';
 import { cn } from '@/utils/helpers';
 import { DbRow } from '@/utils/types';
-import { PlusIcon } from '@heroicons/react/24/outline';
+import PlusIcon from '@heroicons/react/24/outline/PlusIcon';
 import { useTransitionRouter } from 'next-view-transitions';
 import { FC, ReactNode } from 'react';
 

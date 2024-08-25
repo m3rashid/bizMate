@@ -6,7 +6,7 @@ import { PageLoader } from '@/components/lib/loaders';
 import { NotFound } from '@/components/lib/notFound';
 import { Pagination } from '@/components/lib/pagination';
 import { SimpleTable } from '@/components/lib/simpleTable';
-import { ChartBarIcon } from '@heroicons/react/24/outline';
+import ChartBarIcon from '@heroicons/react/24/outline/ChartBarIcon';
 import Link from 'next/link';
 import { useState } from 'react';
 

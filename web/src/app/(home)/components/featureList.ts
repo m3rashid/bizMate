@@ -1,4 +1,5 @@
 import BriefcaseIcon from '@heroicons/react/24/outline/BriefcaseIcon';
+import BuildingStorefrontIcon from '@heroicons/react/24/outline/BuildingStorefrontIcon';
 import ListBulletIcon from '@heroicons/react/24/outline/ListBulletIcon';
 
 export type Feature = {
@@ -30,6 +31,12 @@ export const features: Feature[] = [
 		title: 'Workspaces',
 		description: 'Create workspaces, invite team members and collaborate',
 		icon: BriefcaseIcon,
+		details: [],
+	},
+	{
+		title: 'Permissions',
+		description: 'Manage roles, permissions and overall platform access controls',
+		icon: BuildingStorefrontIcon,
 		details: [],
 	},
 ];

@@ -19,9 +19,9 @@ export function RenderApp(props: { app: App; workspaceId: string }) {
 					<Link
 						key={route.link}
 						href={route.link.replace(workspaceKey, props.workspaceId)}
-						className='group flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 hover:bg-primaryLight hover:shadow-md'
+						className='group flex cursor-pointer items-center gap-2 rounded-md px-2 py-0.5 hover:bg-primaryLight hover:shadow-md'
 					>
-						<route.icon className='h-10 w-10 rounded-md bg-skeletonLight p-2 shadow-md group-hover:bg-white' />
+						<route.icon className='h-9 w-9 rounded-md bg-skeletonLight p-2 shadow-md group-hover:bg-white' />
 
 						<div className='flex flex-col gap-1.5'>
 							<h4 className='-mb-1 mt-1 py-0 text-sm font-semibold'>{route.name}</h4>

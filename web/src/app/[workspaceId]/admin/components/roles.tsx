@@ -46,13 +46,13 @@ export function Roles(props: { workspaceId: string }) {
 			workspaceId={props.workspaceId}
 			defaultEmptyStateName='roles'
 			otherActions={
-				<Button size='small' onClick={() => router.push(`/${props.workspaceId}/hr/add-role`)} LeftIcon={<PlusIcon className='h-4 w-4' />}>
+				<Button size='small' onClick={() => router.push(`/${props.workspaceId}/admin/add-role`)} LeftIcon={<PlusIcon className='h-4 w-4' />}>
 					New Role
 				</Button>
 			}
 			description='Manage all roles'
 			cardRenderer={(role) => (
-				<RoleCard workspaceId={props.workspaceId} onEdit={() => router.push(`/${props.workspaceId}/hr/edit-role/${role.id}`)} {...role} />
+				<RoleCard workspaceId={props.workspaceId} onEdit={() => router.push(`/${props.workspaceId}/admin/edit-role/${role.id}`)} {...role} />
 			)}
 		/>
 	);

@@ -4,7 +4,7 @@ import { useGetFormAnalyticsByFormId } from '@/api/forms/client';
 import { FormAnalyticsGraphs } from '@/components/apps/forms/designer/analytics';
 import { DataListHeader } from '@/components/lib/dataListHeader';
 import { PageLoader } from '@/components/lib/loaders';
-import { FaceFrownIcon } from '@heroicons/react/24/outline';
+import FaceFrownIcon from '@heroicons/react/24/outline/FaceFrownIcon';
 
 export type AnalyticsListProps = {
 	formId: string;
