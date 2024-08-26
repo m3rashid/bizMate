@@ -19,8 +19,8 @@ function UserCard({ workspaceId, onShowDetail, ...user }: User & { workspaceId: 
 				<p onClick={onShowDetail} className={cn('cursor-pointer font-semibold hover:underline', user.deactivated ? 'text-danger' : 'text-gray-800')}>
 					{user.name}
 				</p>
-				<p className='text-gray-500'>{user.email}</p>
-				{user.phone && user.phone.split(' ')[1] ? <p className='text-gray-500'>{user.phone}</p> : null}
+				<p className='text-sm text-gray-500'>{user.email}</p>
+				{user.phone && user.phone.split(' ')[1] ? <p className='text-sm text-gray-500'>{user.phone}</p> : null}
 			</div>
 
 			<div className='absolute right-1 top-1'>

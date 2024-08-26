@@ -18,7 +18,7 @@ function RoleCard({ workspaceId, ...role }: Role & { workspaceId: string; onEdit
 		<div className='relative h-min select-none rounded-lg p-2.5 shadow-lg ring-2 ring-gray-100 hover:ring-primary'>
 			<div>
 				<p className='font-semibold text-gray-800'>{role.name}</p>
-				<p className='text-gray-500'>{role.description}</p>
+				<p className='text-sm text-gray-500'>{role.description}</p>
 			</div>
 
 			<div className='mt-2 flex flex-wrap items-center gap-2'>
