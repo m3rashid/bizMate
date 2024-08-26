@@ -34,7 +34,7 @@ export default async function EditRole(props: NextjsPageProps<{ workspaceId: str
 
 	return (
 		<HydrationBoundary state={dehydrate(queryClient)}>
-			<PageContainer bodyClassName='bg-white' workspaceId={props.params.workspaceId}>
+			<PageContainer workspaceId={props.params.workspaceId}>
 				<EditRoleComponent workspaceId={props.params.workspaceId} roleId={props.params.roleId} />
 			</PageContainer>
 		</HydrationBoundary>

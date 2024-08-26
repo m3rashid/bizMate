@@ -27,7 +27,7 @@ export default async function FormsPage(props: NextjsPageProps<{ workspaceId: st
 
 	return (
 		<HydrationBoundary state={dehydrate(queryClient)}>
-			<PageContainer workspaceId={props.params.workspaceId} bodyClassName='bg-white'>
+			<PageContainer workspaceId={props.params.workspaceId}>
 				<ListForms workspaceId={props.params.workspaceId} />
 			</PageContainer>
 		</HydrationBoundary>

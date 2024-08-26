@@ -1,10 +1,10 @@
-import { ElementWrapper } from './elementWrapper';
+import { ElementWrapper } from '@/components/apps/forms/designer/elementWrapper';
 import FormBuilder from '@/components/apps/forms/renderer';
 import { FormElementType } from '@/components/apps/forms/renderer/types';
 import { Button } from '@/components/lib/button';
 import { useFormDesigner } from '@/hooks/formDesigner';
+import { cn } from '@/utils/helpers';
 import { SortableContext } from '@dnd-kit/sortable';
-import { twMerge } from 'tailwind-merge';
 
 export function FormDesignerCore() {
 	const { formBody, viewType, rootProps, setFormDesigner, selectedNode } = useFormDesigner();
@@ -29,7 +29,7 @@ export function FormDesignerCore() {
 
 			<div
 				onClick={() => setFormDesigner((prev) => ({ ...prev, selectedNode: null }))}
-				className={twMerge(
+				className={cn(
 					'flex items-center justify-between rounded-md border border-gray-100 bg-white px-3 py-2 shadow-sm',
 					selectedNode ? 'bg-gray-100' : 'ring-2 ring-danger'
 				)}

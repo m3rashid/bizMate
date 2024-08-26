@@ -6,8 +6,8 @@ import { PingLoader } from '@/components/lib/loaders';
 import { usePermission } from '@/hooks/permission';
 import { usePopups } from '@/hooks/popups';
 import { PERMISSION_CREATE, PERMISSION_UPDATE } from '@/utils/constants';
+import { cn } from '@/utils/helpers';
 import { Role } from '@/utils/types';
-import { twMerge } from 'tailwind-merge';
 
 export function UserRoles(props: { userId: string; workspaceId: string }) {
 	const { hasPermission } = usePermission();
@@ -56,7 +56,7 @@ export function UserRoles(props: { userId: string; workspaceId: string }) {
 
 					<div className='flex items-center justify-center gap-4'>
 						<div
-							className={twMerge(
+							className={cn(
 								'cursor-not-allowed rounded-full bg-opacity-75 p-2 py-1 text-sm font-semibold text-white',
 								role.owns ? 'bg-success' : 'bg-danger'
 							)}

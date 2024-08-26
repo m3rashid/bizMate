@@ -23,13 +23,14 @@ export function useCreateWorkspaceMutation(props: { onSuccess: () => void }) {
 
 	return useMutation({
 		mutationKey: [queryKeys.workspaces],
-		onError: () => addMessagePopup({ id: 'wsCreateFailed', type: 'error', message: 'Failed to create workspace' }),
-		onSuccess: () => {
-			addMessagePopup({ id: 'wsCreated', type: 'success', message: 'Workspace created successfully' });
-			props.onSuccess();
-			getQueryClient().invalidateQueries({ queryKey: [queryKeys.workspaces] });
-		},
 		mutationFn: (data: { name: string; description: string; color: string }) => apiClient('/auth/workspaces/create', { method: 'POST', data: data }),
+		onSuccess: (data) => {
+			if (data && data.success) {
+				addMessagePopup({ id: 'wsCreate', type: 'success', message: data.message || 'Workspace created successfully' });
+				props.onSuccess();
+				getQueryClient().invalidateQueries({ queryKey: [queryKeys.workspaces] });
+			} else addMessagePopup({ id: 'wsCreate', type: 'error', message: 'Failed to create workspace' });
+		},
 	});
 }
 
@@ -53,13 +54,12 @@ export function useSendWorkspaceInviteMutation(formRef: RefObject<HTMLFormElemen
 	return useMutation({
 		mutationKey: [queryKeys.workspaceInvites],
 		mutationFn: (data: { email: string }) => apiClient(`/auth/${workspaceId}/invites/send`, { method: 'POST', data }),
-		onSuccess: () => {
-			getQueryClient().invalidateQueries({ queryKey: [queryKeys.workspaceInvites] });
-			addMessagePopup({ id: 'inviteSuccess', message: 'Invite sent successfully', type: 'success' });
-			if (formRef.current) formRef.current.reset();
-		},
-		onError: () => {
-			addMessagePopup({ id: 'inviteError', message: 'Error in sending the invite', type: 'error' });
+		onSuccess: (data) => {
+			if (data && data.success) {
+				addMessagePopup({ id: 'inviteSuccess', message: data.message || 'Invite sent successfully', type: 'success' });
+				getQueryClient().invalidateQueries({ queryKey: [queryKeys.workspaceInvites] });
+				if (formRef.current) formRef.current.reset();
+			} else addMessagePopup({ id: 'inviteError', message: 'Error in sending the invite', type: 'error' });
 		},
 	});
 }
@@ -70,12 +70,11 @@ export function useRevokeWorkspaceInviteMutation(currentWorkspaceId?: string) {
 	return useMutation({
 		mutationKey: [queryKeys.workspaceInvites],
 		mutationFn: (data: { inviteId: string }) => apiClient(`/auth/${currentWorkspaceId}/invites/revoke`, { method: 'POST', data }),
-		onSuccess: () => {
-			getQueryClient().invalidateQueries({ queryKey: [queryKeys.workspaceInvites, queryKeys.workspaces] });
-			addMessagePopup({ id: 'inviteRevoked', message: 'You revoked the invite', type: 'success' });
-		},
-		onError: () => {
-			addMessagePopup({ id: 'inviteRevokeError', message: 'Error in revoking this invite', type: 'error' });
+		onSuccess: (data) => {
+			if (data && data.success) {
+				addMessagePopup({ id: 'inviteRevoked', message: data.message || 'You revoked the invite', type: 'success' });
+				getQueryClient().invalidateQueries({ queryKey: [queryKeys.workspaceInvites, queryKeys.workspaces] });
+			} else addMessagePopup({ id: 'inviteRevokeError', message: 'Error in revoking this invite', type: 'error' });
 		},
 	});
 }
@@ -86,13 +85,17 @@ export function useRespondToWorkspaceInviteMutation() {
 	return useMutation({
 		mutationKey: [queryKeys.workspaceInvites],
 		mutationFn: (data: { inviteId: string; accepted: boolean }) => apiClient('/auth/invites/respond', { method: 'POST', data }),
-		onSuccess: (_, data) => {
-			getQueryClient().invalidateQueries({ queryKey: [queryKeys.workspaceInvites] });
-			getQueryClient().invalidateQueries({ queryKey: [queryKeys.workspaces] });
-			addMessagePopup({ id: 'inviteResponse', message: data.accepted ? 'You accepted the invite' : 'You rejected the invite', type: 'success' });
-		},
-		onError: () => {
-			addMessagePopup({ id: 'inviteResponseError', message: 'Error in responding to this invite', type: 'error' });
+		onSuccess: (res, data) => {
+			if (res && res.success) {
+				addMessagePopup({
+					type: 'success',
+					id: 'inviteResponse',
+					message: res.message || (data.accepted ? 'You accepted the invite' : 'You rejected the invite'),
+				});
+
+				getQueryClient().invalidateQueries({ queryKey: [queryKeys.workspaceInvites] });
+				getQueryClient().invalidateQueries({ queryKey: [queryKeys.workspaces] });
+			} else addMessagePopup({ id: 'inviteResponseError', message: 'Error in responding to this invite', type: 'error' });
 		},
 	});
 }

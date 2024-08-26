@@ -30,7 +30,7 @@ export default async function FormAnalytics(props: NextjsPageProps<{ workspaceId
 
 	return (
 		<HydrationBoundary state={dehydrate(queryClient)}>
-			<PageContainer workspaceId={props.params.workspaceId} bodyClassName='bg-white'>
+			<PageContainer workspaceId={props.params.workspaceId}>
 				<AnalyticsList formId={props.params.formId} workspaceId={props.params.workspaceId} />
 			</PageContainer>
 		</HydrationBoundary>

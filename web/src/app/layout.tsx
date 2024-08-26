@@ -24,8 +24,8 @@ export default async function RootLayout({ children }: Readonly<PropsWithChildre
 					<TanstackQueryProvider>
 						<NextTopLoader color={getTailwindColor('primary')} />
 						<RecoilProvider>
-							{children}
 							<PopupContainer />
+							{children}
 						</RecoilProvider>
 					</TanstackQueryProvider>
 				</body>

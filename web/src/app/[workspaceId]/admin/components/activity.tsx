@@ -6,9 +6,9 @@ import { Table, TableColumn } from '@/components/lib/table';
 import { Tooltip } from '@/components/lib/tooltip';
 import { usePermission } from '@/hooks/permission';
 import { PERMISSION_READ } from '@/utils/constants';
+import { cn } from '@/utils/helpers';
 import { Activity } from '@/utils/types';
 import dayjs from 'dayjs';
-import { twMerge } from 'tailwind-merge';
 
 export function ActivityTab(props: { workspaceId: string }) {
 	const { hasPermission } = usePermission();
@@ -19,9 +19,7 @@ export function ActivityTab(props: { workspaceId: string }) {
 			title: 'Level',
 			render: ({ row }) => (
 				<Tooltip position='right' label={row.logLevel === 0 ? 'Info' : row.logLevel === 1 ? 'Warning' : 'Error'}>
-					<div
-						className={twMerge('m-2 h-4 w-4 rounded-full', row.logLevel === 0 ? 'bg-cyan-500' : row.logLevel === 1 ? 'bg-orange-500' : 'bg-red-500')}
-					/>
+					<div className={cn('m-2 h-4 w-4 rounded-full', row.logLevel === 0 ? 'bg-cyan-500' : row.logLevel === 1 ? 'bg-orange-500' : 'bg-red-500')} />
 				</Tooltip>
 			),
 		},

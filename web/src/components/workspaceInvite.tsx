@@ -14,11 +14,11 @@ import { Tooltip } from '@/components/lib/tooltip';
 import { usePermission } from '@/hooks/permission';
 import { usePopups } from '@/hooks/popups';
 import { PERMISSION_CREATE, PERMISSION_DELETE } from '@/utils/constants';
+import { cn } from '@/utils/helpers';
 import { WorkspaceInvite } from '@/utils/types';
 import UserPlusIcon from '@heroicons/react/24/outline/UserPlusIcon';
 import { useParams } from 'next/navigation';
 import { FormEvent, useRef } from 'react';
-import { twMerge } from 'tailwind-merge';
 
 export type WorkspaceInviteItemProps = WorkspaceInvite & { currentUserId: string; currentWorkspaceId?: string };
 
@@ -41,7 +41,7 @@ export function WorkspaceInviteItem(invite: WorkspaceInviteItemProps) {
 				<button
 					disabled={acceptOrRejectPending}
 					onClick={() => acceptOrReject({ inviteId: invite.invite_id, accepted: false })}
-					className={twMerge(
+					className={cn(
 						'flex-grow cursor-pointer p-2.5 text-center hover:bg-gray-200',
 						invite.currentWorkspaceId && invite.created_by_id === invite.currentUserId ? '' : 'rounded-br-lg'
 					)}
@@ -70,7 +70,7 @@ export function WorkspaceInvites(props: { currentUserId: string }) {
 	if (!workspaceInvites) return <PingLoader className='mt-8 h-12 w-12 border-8' />;
 	if (workspaceInvites.data.length === 0) {
 		return (
-			<div className='w-full flex-grow cursor-not-allowed rounded-lg border-2 border-dashed border-gray-300 p-12 text-center sm:min-w-96 md:max-w-lg'>
+			<div className='w-full flex-grow cursor-not-allowed rounded-lg border-2 border-dashed border-gray-300 p-12 text-center sm:min-w-80 md:max-w-lg'>
 				<UserPlusIcon className='mx-auto h-8 w-8 text-gray-400' />
 				<span className='mt-2 block text-sm font-semibold text-gray-900'>No pending invites</span>
 			</div>

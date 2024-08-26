@@ -25,7 +25,7 @@ export default async function ChooseWorkspace() {
 
 	return (
 		<HydrationBoundary state={dehydrate(queryClient)}>
-			<PageContainer bodyClassName='bg-white'>
+			<PageContainer>
 				<h2 className='mb-8 text-2xl font-bold'>Choose Workspace</h2>
 				<div className='flex flex-col justify-between gap-8 md:flex-row'>
 					<div className='flex flex-wrap items-center gap-4'>
@@ -33,7 +33,7 @@ export default async function ChooseWorkspace() {
 						<CreateWorkspace />
 					</div>
 
-					<div className='m-1 flex h-full max-h-[500px] min-w-72 items-center justify-center overflow-auto rounded-lg bg-white p-4 shadow-lg ring-2 ring-gray-100 hover:ring-primary'>
+					<div className='m-1 flex h-full max-h-[500px] min-w-72 items-center justify-center overflow-auto overflow-x-hidden rounded-lg bg-white p-4 shadow-lg ring-2 ring-gray-100 hover:ring-primary sm:min-w-96 md:max-w-lg'>
 						<WorkspaceInvites currentUserId={user.userId} />
 					</div>
 				</div>

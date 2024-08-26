@@ -9,12 +9,14 @@ export function WorkspaceList() {
 	const { addMessagePopup } = usePopups();
 	const { data, isLoading } = useGetWorkspaceListQuery();
 
-	if (isLoading)
+	if (isLoading) {
 		return (
 			<div className='flex h-52 w-52 select-none items-center justify-center'>
 				<PingLoader className='mt-8 h-12 w-12 border-8' />
 			</div>
 		);
+	}
+
 	if (!data) {
 		addMessagePopup({ message: 'Could not get workspaces', type: 'error', id: 'no-workspaces' });
 		return null;

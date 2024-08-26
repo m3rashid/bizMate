@@ -9,7 +9,7 @@ export default async function Register() {
 
 	if (sessionCookie) {
 		// TODO: handle redirect
-		redirect('/');
+		redirect('/auth/choose-workspace');
 	}
 
 	return <AuthRoot type='register' />;

@@ -26,7 +26,7 @@ export default async function HumanResources(props: NextjsPageProps<{ workspaceI
 	await prefetchUserPermissions(queryClient, sessionCookie, props.params.workspaceId);
 
 	return (
-		<PageContainer workspaceId={props.params.workspaceId} bodyClassName='bg-white'>
+		<PageContainer workspaceId={props.params.workspaceId}>
 			<AdminTabs currentUserId={user.userId} workspaceId={props.params.workspaceId} />
 		</PageContainer>
 	);

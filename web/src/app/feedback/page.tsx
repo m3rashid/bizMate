@@ -4,7 +4,7 @@ import { Metadata } from 'next';
 
 export default async function Feedback() {
 	return (
-		<PageContainer bodyClassName='bg-white'>
+		<PageContainer>
 			<div>Feedback</div>
 		</PageContainer>
 	);

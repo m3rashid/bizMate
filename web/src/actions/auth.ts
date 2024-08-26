@@ -20,5 +20,5 @@ export async function getUserFromCookie(): Promise<CookieUser | null> {
 
 export async function logout() {
 	cookies().delete('token');
-	redirect('/');
+	redirect('/auth/login');
 }

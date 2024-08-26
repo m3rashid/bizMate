@@ -1,9 +1,9 @@
-import { PopoverMenu } from '../lib/popoverMenu';
 import { getUserFromCookie, logout } from '@/actions/auth';
 import { AppDrawer } from '@/components/home/appDrawer';
 import { Logout } from '@/components/home/logout';
 import { Search } from '@/components/home/search';
 import { BrandLogo } from '@/components/lib/brandLogo';
+import { PopoverMenu } from '@/components/lib/popoverMenu';
 import { Link } from 'next-view-transitions';
 
 export async function Header(props: { workspaceId?: string }) {

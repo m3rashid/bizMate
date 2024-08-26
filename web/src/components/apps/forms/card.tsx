@@ -1,10 +1,10 @@
 'use client';
 
 import { useDeleteFormMutation } from '@/api/forms/client';
-import { Button } from '@/components/lib/button';
 import { Chip } from '@/components/lib/chip';
 import { Tooltip } from '@/components/lib/tooltip';
 import { usePopups } from '@/hooks/popups';
+import { cn } from '@/utils/helpers';
 import { Form } from '@/utils/types';
 import EyeIcon from '@heroicons/react/20/solid/EyeIcon';
 import LockClosedIcon from '@heroicons/react/20/solid/LockClosedIcon';
@@ -16,36 +16,21 @@ import TrashIcon from '@heroicons/react/24/outline/TrashIcon';
 import dayjs from 'dayjs';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
-import { twMerge } from 'tailwind-merge';
 
 export function FormCard(props: Form & { onEdit: () => void; workspaceId: string }) {
 	const { t } = useTranslation();
-	const { addMessagePopup, addActionPopup, removeActionPopup } = usePopups();
+	const { addMessagePopup, addActionPopup } = usePopups();
 	const { mutate: deleteForm } = useDeleteFormMutation(props.id, props.workspaceId);
-
-	function onDeleteConfirm() {
-		deleteForm();
-		removeActionPopup('sureToDeleteForm');
-	}
 
 	function handleDeleteForm() {
 		addActionPopup({
+			simple: true,
 			type: 'warning',
 			id: 'sureToDeleteForm',
 			title: 'Are you sure ?',
-			children: (
-				<>
-					<h3 className='text-sm text-disabled'>{t('Delete Warning')}</h3>
-					<div className='mt-2 flex items-center justify-between'>
-						<Button size='small' variant='simple' onClick={() => removeActionPopup('sureToDeleteForm')} className='py-1'>
-							{t('Cancel')}
-						</Button>
-						<Button size='small' variant='danger' onClick={onDeleteConfirm} className='py-1'>
-							{t('Delete')}
-						</Button>
-					</div>
-				</>
-			),
+			onConfirm: deleteForm,
+			confirmButtonLabel: 'Delete',
+			description: 'Are you sure you want to delete this form?',
 		});
 	}
 
@@ -54,7 +39,7 @@ export function FormCard(props: Form & { onEdit: () => void; workspaceId: string
 			<div className='flex flex-grow gap-2'>
 				<Link
 					href={`/${props.workspaceId}/forms/${props.id}/preview`}
-					className={twMerge('font-semibold underline', props.active ? 'text-success' : 'text-danger')}
+					className={cn('font-semibold underline', props.active ? 'text-success' : 'text-danger')}
 				>
 					{props.title}
 				</Link>

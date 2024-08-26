@@ -53,7 +53,7 @@ export function DataListHeader(props: DataListHeaderProps) {
 						{...props.addButtonProps}
 					/>
 				) : null}
-				{props.tableExportprops ? <TableExport {...props.tableExportprops} /> : null}
+				{/* {props.tableExportprops ? <TableExport {...props.tableExportprops} /> : null} */}
 			</div>
 		</div>
 	);

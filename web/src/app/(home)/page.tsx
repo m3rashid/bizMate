@@ -7,7 +7,7 @@ import { Metadata } from 'next';
 
 export default async function HomePage() {
 	return (
-		<PageContainer bodyClassName='p-0 sm:p-0 bg-white hide-scrollbar'>
+		<PageContainer bodyClassName='p-0 sm:p-0 hide-scrollbar'>
 			<Hero />
 			<FeaturesShort />
 			<Footer currentRoute='/' />

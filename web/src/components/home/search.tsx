@@ -1,9 +1,9 @@
 'use client';
 
 import { Modal } from '@/components/lib/modal';
+import { cn } from '@/utils/helpers';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { twMerge } from 'tailwind-merge';
 
 export function Search() {
 	const { t } = useTranslation();
@@ -13,7 +13,7 @@ export function Search() {
 		<div>
 			<div
 				onClick={() => setOpen(true)}
-				className={twMerge(
+				className={cn(
 					'w-full cursor-pointer select-none overflow-hidden rounded-full border-[1px] px-3 py-[6px] text-sm text-disabledLight hover:border-primary hover:text-primary sm:w-80 md:rounded-md'
 				)}
 			>

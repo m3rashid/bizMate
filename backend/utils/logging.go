@@ -17,7 +17,7 @@ type logPubSub struct {
 var logsPs *logPubSub
 
 func InitLogsLocalPubSub() {
-	max_logs_cache_size := Ternary(*Env.IsProduction, 20, 1)
+	max_logs_cache_size := Ternary(*Env.IsProduction, 10, 1)
 
 	if _, err := GetMongoDB(); err != nil {
 		fmt.Println("Failed to initialize log-pubsub, mongo connection error", err)

@@ -1,6 +1,5 @@
 import { cn } from '@/utils/helpers';
 import Image from 'next/image';
-import { twMerge } from 'tailwind-merge';
 
 export type LoaderProps = {
 	className?: string;
@@ -9,10 +8,7 @@ export type LoaderProps = {
 export function PingLoader(props: LoaderProps) {
 	return (
 		<div
-			className={twMerge(
-				'flex h-4 w-4 animate-ping items-center justify-center rounded-full border-4 border-primaryLight bg-primary',
-				props.className
-			)}
+			className={cn('flex h-4 w-4 animate-ping items-center justify-center rounded-full border-4 border-primaryLight bg-primary', props.className)}
 		/>
 	);
 }

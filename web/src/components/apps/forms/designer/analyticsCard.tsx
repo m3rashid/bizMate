@@ -2,13 +2,13 @@
 
 import { Button } from '@/components/lib/button';
 import { Tooltip } from '@/components/lib/tooltip';
+import { cn } from '@/utils/helpers';
 import ArrowsPointingOutIcon from '@heroicons/react/24/outline/ArrowsPointingOutIcon';
 import ChartBarIcon from '@heroicons/react/24/outline/ChartBarIcon';
 import ChartPieIcon from '@heroicons/react/24/outline/ChartPieIcon';
 import 'chart.js/auto';
 import { useState } from 'react';
 import { Bar, Pie } from 'react-chartjs-2';
-import { twMerge } from 'tailwind-merge';
 
 export type ChartType = 'pie' | 'bar';
 export type Analysis = { name: string; label: string; counts: Record<string, number> };
@@ -50,7 +50,7 @@ export function AnalyticsCard(props: AnalyticsCardProps) {
 				</div>
 			</div>
 
-			<div className={twMerge('flex items-center justify-center p-4', props.position === 'card' ? 'h-96' : 'h-[500px]')}>
+			<div className={cn('flex items-center justify-center p-4', props.position === 'card' ? 'h-96' : 'h-[500px]')}>
 				{chartType === 'pie' ? (
 					<Pie
 						options={{ plugins: { legend: { display: false } }, cutout: '5%' }}

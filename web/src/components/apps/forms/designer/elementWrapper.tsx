@@ -1,12 +1,12 @@
 import { FormElementType } from '@/components/apps/forms/renderer/types';
 import { Tooltip } from '@/components/lib/tooltip';
 import { useFormDesigner } from '@/hooks/formDesigner';
+import { cn } from '@/utils/helpers';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import XMarkIcon from '@heroicons/react/20/solid/XMarkIcon';
 import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import { twMerge } from 'tailwind-merge';
 
 export type ElementWrapperProps = PropsWithChildren & {
 	item: FormElementType;
@@ -22,7 +22,7 @@ export function ElementWrapper(props: ElementWrapperProps) {
 			ref={setNodeRef}
 			{...attributes}
 			{...listeners}
-			className={twMerge(
+			className={cn(
 				'relative my-2 rounded-md border-2 border-gray-200 px-3 py-2',
 				selectedNode?.id === props.item.id ? 'ring-2 ring-danger' : 'bg-gray-100',
 				isDragging ? 'cursor-grab' : ''

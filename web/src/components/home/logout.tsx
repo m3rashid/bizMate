@@ -9,11 +9,13 @@ export function Logout(props: { handleClick: any }) {
 
 	async function handleLogout() {
 		try {
-			await apiClient('/auth/logout', {});
+			const res = await apiClient('/auth/logout');
+			if (!res) throw new Error('Failed to logout');
 			await props.handleClick();
 			getQueryClient().clear();
-			addMessagePopup({ message: 'You have been logged out', type: 'success', id: 'logout-success' });
+			addMessagePopup({ message: res.message || 'You have been logged out', type: 'success', id: 'logout-success' });
 		} catch (err: any) {
+			console.log(err);
 			addMessagePopup({ message: err.message, type: 'error', id: 'logout-error' });
 		}
 	}

@@ -18,9 +18,11 @@ const DEFAULT_MESSAGE_POPUP_TIMEOUT = 5000; // 5 seconds
 export type ActionPopupType = {
 	id: ID;
 	type: PopupType;
-	title?: string;
-	children?: ReactNode;
-};
+	title: string;
+} & (
+	| { simple: false; children: ReactNode }
+	| { simple: true; confirmButtonLabel: string; description: string; onConfirm: () => void; onCancel?: () => void }
+);
 
 export type PopupState = {
 	messagePopups: Array<MessagePopupType>;
@@ -29,7 +31,10 @@ export type PopupState = {
 
 const popupAtom = atom<PopupState>({
 	key: 'popupAtom',
-	default: { messagePopups: [], actionPopups: [] },
+	default: {
+		actionPopups: [],
+		messagePopups: [],
+	},
 });
 
 export function usePopups() {

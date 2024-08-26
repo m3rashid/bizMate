@@ -10,7 +10,7 @@ import { User } from '@/utils/types';
 import dayjs from 'dayjs';
 
 export function UserDetails(props: { workspaceId: string; user: User }) {
-	const { addActionPopup, removeActionPopup, addMessagePopup } = usePopups();
+	const { addActionPopup, addMessagePopup } = usePopups();
 	const { hasPermission } = usePermission();
 	const { data: barePermissions } = useGetUserBarePermissions(props.workspaceId, props.user.id);
 	const { mutateAsync: removeUserFromWorkspace } = useRemoveUserFromWorkspace(props.workspaceId, props.user.id);
@@ -22,30 +22,13 @@ export function UserDetails(props: { workspaceId: string; user: User }) {
 		}
 
 		addActionPopup({
+			simple: true,
 			type: 'warning',
 			id: 'sureToRemoveUser',
 			title: 'Are you sure ?',
-			children: (
-				<>
-					<h3 className='text-sm text-disabled'>Delete Warning</h3>
-					<div className='mt-2 flex items-center justify-between'>
-						<Button size='small' variant='simple' onClick={() => removeActionPopup('sureToRemoveUser')} className='py-1'>
-							Cancel
-						</Button>
-						<Button
-							size='small'
-							variant='danger'
-							onClick={() => {
-								removeUserFromWorkspace();
-								removeActionPopup('sureToRemoveUser');
-							}}
-							className='py-1'
-						>
-							Remove
-						</Button>
-					</div>
-				</>
-			),
+			confirmButtonLabel: 'Remove',
+			onConfirm: removeUserFromWorkspace,
+			description: 'Are you sure you want to remove this user from the workspace?',
 		});
 	}
 

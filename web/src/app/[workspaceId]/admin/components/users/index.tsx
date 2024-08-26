@@ -7,19 +7,16 @@ import { UnAuthorizedPage } from '@/components/lib/notFound';
 import { Tooltip } from '@/components/lib/tooltip';
 import { usePermission } from '@/hooks/permission';
 import { PERMISSION_READ } from '@/utils/constants';
+import { cn } from '@/utils/helpers';
 import { User } from '@/utils/types';
 import InformationCircleIcon from '@heroicons/react/24/outline/InformationCircleIcon';
 import { useState } from 'react';
-import { twMerge } from 'tailwind-merge';
 
 function UserCard({ workspaceId, onShowDetail, ...user }: User & { workspaceId: string; onShowDetail: () => void }) {
 	return (
 		<div className='relative h-min select-none rounded-lg p-2.5 shadow-lg ring-2 ring-gray-100 hover:ring-primary'>
 			<div>
-				<p
-					onClick={onShowDetail}
-					className={twMerge('cursor-pointer font-semibold hover:underline', user.deactivated ? 'text-danger' : 'text-gray-800')}
-				>
+				<p onClick={onShowDetail} className={cn('cursor-pointer font-semibold hover:underline', user.deactivated ? 'text-danger' : 'text-gray-800')}>
 					{user.name}
 				</p>
 				<p className='text-gray-500'>{user.email}</p>

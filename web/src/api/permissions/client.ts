@@ -57,12 +57,11 @@ export function useAddBarePermissionToUserMutation(workspaceId: string, userId: 
 		mutationKey: [queryKeys.barePermissions, userId],
 		mutationFn: (data: { object_type: PermissionObjectType; object_id?: string; level: PermissionLevel }) =>
 			apiClient(`/${workspaceId}/permissions/add-bare-permission`, { method: 'POST', data: { ...data, user_id: userId } }),
-		onSuccess: () => {
-			addMessagePopup({ message: 'Permission added successfully', type: 'success', id: 'add-permission' });
-			getQueryClient().invalidateQueries({ queryKey: [queryKeys.barePermissions, userId] });
-		},
-		onError: (error) => {
-			addMessagePopup({ message: error.message || 'Could not add permission', type: 'error', id: 'add-permission' });
+		onSuccess: (data) => {
+			if (data && data.success) {
+				addMessagePopup({ message: data.message || 'Permission added successfully', type: 'success', id: 'add-permission' });
+				getQueryClient().invalidateQueries({ queryKey: [queryKeys.barePermissions, userId] });
+			} else addMessagePopup({ message: 'Could not add permission', type: 'error', id: 'add-permission' });
 		},
 	});
 }
@@ -74,12 +73,11 @@ export function useRemovePermissionToUserMutation(workspaceId: string, userId: s
 		mutationKey: [queryKeys.barePermissions, userId],
 		mutationFn: (data: { object_type: PermissionObjectType; object_id?: string; level: PermissionLevel }) =>
 			apiClient(`/${workspaceId}/permissions/roles/remove-bare-permission`, { data: { ...data, user_id: userId } }),
-		onSuccess: () => {
-			addMessagePopup({ message: 'Permission removed successfully', type: 'success', id: 'remove-permission' + userId });
-			getQueryClient().invalidateQueries({ queryKey: [queryKeys.barePermissions, userId] });
-		},
-		onError: (error) => {
-			addMessagePopup({ message: error.message || 'Could not remove permission', type: 'error', id: 'remove-permission' + userId });
+		onSuccess: (data) => {
+			if (data && data.success) {
+				addMessagePopup({ message: data.message || 'Permission removed successfully', type: 'success', id: 'remove-permission' + userId });
+				getQueryClient().invalidateQueries({ queryKey: [queryKeys.barePermissions, userId] });
+			} else addMessagePopup({ message: 'Could not remove permission', type: 'error', id: 'remove-permission' + userId });
 		},
 	});
 }
@@ -91,13 +89,12 @@ export function useCreateRoleMutation(workspaceId: string, props: { onSuccess: (
 		mutationKey: [queryKeys.roles],
 		mutationFn: (data: Role & { workspaceId: string; roleId: string }) =>
 			apiClient(`/${workspaceId}/permissions/roles/create`, { method: 'POST', data }),
-		onSuccess: () => {
-			addMessagePopup({ message: 'Role created successfully', type: 'success', id: 'create-role' });
-			getQueryClient().invalidateQueries({ queryKey: [queryKeys.roles] });
-			props.onSuccess();
-		},
-		onError: (error) => {
-			addMessagePopup({ message: error.message || 'Could not create role', type: 'error', id: 'create-role' });
+		onSuccess: (data) => {
+			if (data && data.success) {
+				addMessagePopup({ message: data.message || 'Role created successfully', type: 'success', id: 'create-role' });
+				getQueryClient().invalidateQueries({ queryKey: [queryKeys.roles] });
+				props.onSuccess();
+			} else addMessagePopup({ message: 'Could not create role', type: 'error', id: 'create-role' });
 		},
 	});
 }
@@ -108,13 +105,12 @@ export function useUpdateRoleMutation(workspaceId: string, props: { onSuccess: (
 	return useMutation({
 		mutationKey: [queryKeys.roles],
 		mutationFn: (data: Role & { workspaceId: string }) => apiClient(`/${workspaceId}/permissions/roles/update`, { method: 'POST', data }),
-		onSuccess: () => {
-			addMessagePopup({ message: 'Role updated successfully', type: 'success', id: 'update-role' });
-			getQueryClient().invalidateQueries({ queryKey: [queryKeys.roles] });
-			props.onSuccess();
-		},
-		onError: (error) => {
-			addMessagePopup({ message: error.message || 'Could not update role', type: 'error', id: 'update-role' });
+		onSuccess: (data) => {
+			if (data && data.success) {
+				addMessagePopup({ message: data.message || 'Role updated successfully', type: 'success', id: 'update-role' });
+				getQueryClient().invalidateQueries({ queryKey: [queryKeys.roles] });
+				props.onSuccess();
+			} else addMessagePopup({ message: 'Could not update role', type: 'error', id: 'update-role' });
 		},
 	});
 }
@@ -135,12 +131,11 @@ export function useAssignRoleToUserMutation(workspaceId: string, userId: string)
 	return useMutation({
 		mutationKey: [queryKeys.roles],
 		mutationFn: (data: { roleId: string }) => apiClient(`/${workspaceId}/permissions/roles/add-user`, { method: 'POST', data: { ...data, userId } }),
-		onSuccess: () => {
-			addMessagePopup({ message: 'Role added to user', type: 'success', id: 'update-role' });
-			getQueryClient().invalidateQueries({ queryKey: [queryKeys.roles, userId] });
-		},
-		onError: (error) => {
-			addMessagePopup({ message: error.message || 'Could not add role to user', type: 'error', id: 'update-role' });
+		onSuccess: (data) => {
+			if (data && data.success) {
+				addMessagePopup({ message: data.message || 'Role added to user', type: 'success', id: 'update-role' });
+				getQueryClient().invalidateQueries({ queryKey: [queryKeys.roles, userId] });
+			} else addMessagePopup({ message: 'Could not add role to user', type: 'error', id: 'update-role' });
 		},
 	});
 }
@@ -152,12 +147,11 @@ export function useRemoveRoleFromUserMutation(workspaceId: string, userId: strin
 		mutationKey: [queryKeys.roles],
 		mutationFn: (data: { roleId: string }) =>
 			apiClient(`/${workspaceId}/permissions/roles/remove-user`, { method: 'POST', data: { ...data, userId } }),
-		onSuccess: () => {
-			addMessagePopup({ message: 'Role removed from user', type: 'success', id: 'update-role' });
-			getQueryClient().invalidateQueries({ queryKey: [queryKeys.roles, userId] });
-		},
-		onError: (error) => {
-			addMessagePopup({ message: error.message || 'Could not remove role from user', type: 'error', id: 'update-role' });
+		onSuccess: (data) => {
+			if (data && data.success) {
+				addMessagePopup({ message: data.message || 'Role removed from user', type: 'success', id: 'update-role' });
+				getQueryClient().invalidateQueries({ queryKey: [queryKeys.roles, userId] });
+			} else addMessagePopup({ message: 'Could not remove role from user', type: 'error', id: 'update-role' });
 		},
 	});
 }
@@ -168,12 +162,12 @@ export function useRemoveUserFromWorkspace(workspaceId: string, userId: string) 
 	return useMutation({
 		mutationKey: [queryKeys.roles, userId],
 		mutationFn: () => apiClient(`/auth/${workspaceId}/remove-user`, { method: 'POST', data: { userId } }),
-		onSuccess: () => {
-			addMessagePopup({ message: 'User removed from workspace', type: 'success', id: 'update-user' });
-			getQueryClient().invalidateQueries({ queryKey: [queryKeys.users] });
+		onSuccess: (data) => {
+			if (data && data.success) {
+				addMessagePopup({ message: data.message || 'User removed from workspace', type: 'success', id: 'update-user' });
+				getQueryClient().invalidateQueries({ queryKey: [queryKeys.users] });
+			} else addMessagePopup({ message: 'Could not remove user from workspace', type: 'error', id: 'update-user' });
 		},
-		onError: (error) => {
-			addMessagePopup({ message: error.message || 'Could not remove user from workspace', type: 'error', id: 'update-user' });
-		},
+		onError: (error) => {},
 	});
 }

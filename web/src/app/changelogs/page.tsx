@@ -8,7 +8,7 @@ import { Metadata } from 'next';
 
 export default function ChangelogsPage() {
 	return (
-		<PageContainer bodyClassName='bg-white flex items-center flex-col'>
+		<PageContainer bodyClassName='flex items-center flex-col'>
 			<FeedSequence items={changelogs} itemRender={ChangelogItem} title={<h1 className='mb-8 text-2xl font-semibold'>Changelogs</h1>} />
 			<Footer currentRoute='/changelogs' />
 		</PageContainer>

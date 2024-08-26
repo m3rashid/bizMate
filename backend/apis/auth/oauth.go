@@ -125,5 +125,7 @@ func logout(ctx *fiber.Ctx) error {
 
 	removeCookie(ctx)
 	go utils.LogInfo(user_logout_success, userEmail, uuid.Nil, repository.UserObjectType)
-	return ctx.SendStatus(fiber.StatusOK)
+	return ctx.Status(fiber.StatusOK).JSON(
+		utils.SendResponse(nil, "Logged out successfully"),
+	)
 }

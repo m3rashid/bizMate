@@ -11,6 +11,9 @@ const buttonVariants = {
 	simple: 'bg-white text-gray-700 hover:bg-gray-50 focus-visible:outline-gray-200 border border-gray-300',
 } as const;
 
+export type ButtonVariant = keyof typeof buttonVariants;
+export type ButtonSize = keyof typeof buttonSizes;
+
 const buttonSizes = {
 	small: 'px-3 py-1.5 text-sm',
 	medium: 'px-5 py-2 text-base',
@@ -20,9 +23,9 @@ const buttonSizes = {
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 	LeftIcon?: ReactNode;
 	RightIcon?: ReactNode;
-	variant?: keyof typeof buttonVariants;
+	variant?: ButtonVariant;
 	label?: string;
-	size?: keyof typeof buttonSizes;
+	size?: ButtonSize;
 };
 
 export function Button(props: ButtonProps) {

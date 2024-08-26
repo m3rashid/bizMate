@@ -75,7 +75,7 @@ export function CreateWorkspace() {
 				<form className='flex flex-col gap-4' onSubmit={handleSubmit}>
 					<div className='flex flex-col gap-4 p-4'>
 						<Input name='name' type='name' label='Name' placeholder='BizMate Hero' required />
-						<Input name='color' type='color' label='Color' defaultValue='#ffffff' required />
+						<Input name='color' type='color' label='Color' defaultValue='#f48a8a' required />
 						<TextAreaInput name='description' label='Description' />
 					</div>
 

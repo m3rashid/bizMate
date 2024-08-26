@@ -10,7 +10,7 @@ const teamImage =
 
 export default function AboutPage() {
 	return (
-		<PageContainer bodyClassName='bg-white p-0 sm:p-0 hide-scrollbar isolate'>
+		<PageContainer bodyClassName='p-0 sm:p-0 hide-scrollbar isolate'>
 			<HeroSection />
 			<VisionMissionSection />
 

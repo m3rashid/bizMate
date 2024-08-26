@@ -31,7 +31,7 @@ export default async function FormResponses(props: NextjsPageProps<{ workspaceId
 
 	return (
 		<HydrationBoundary state={dehydrate(queryClient)}>
-			<PageContainer workspaceId={props.params.workspaceId} bodyClassName='bg-white'>
+			<PageContainer workspaceId={props.params.workspaceId}>
 				<FormResponsesTable formId={props.params.formId} workspaceId={props.params.workspaceId} />
 			</PageContainer>
 		</HydrationBoundary>

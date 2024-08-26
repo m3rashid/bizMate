@@ -31,19 +31,25 @@ export function CredentialsAuthForm(props: CredentialsAuthFormProps) {
 				body: JSON.stringify(formData),
 				headers: { 'Content-Type': 'application/json' },
 			});
-			if (!res.ok) throw new Error('Failed to login');
-			await res.json();
 
-			addMessagePopup({
-				type: 'success',
-				id: 'loginSuccess',
-				message: props.type === 'login' ? 'Successfully Logged in' : 'Successfully Created account',
-			});
+			const data = await res.json();
+			console.log(data);
+			if (data && data.success) {
+				addMessagePopup({
+					id: 'login',
+					type: 'success',
+					message: props.type === 'login' ? 'Successfully Logged in' : 'Successfully Created account',
+				});
+				router.replace('/auth/choose-workspace');
+			} else throw new Error(data.message || ('Failed to ' + props.type === 'login' ? 'login' : 'create account'));
 			// TODO: handle redirects
-			router.replace('/auth/choose-workspace');
 		} catch (err: any) {
-			console.log(err);
-			addMessagePopup({ id: 'loginError', message: props.type === 'login' ? 'Login Failed' : 'Create account failed', type: 'error' });
+			console.log('catch err: ', err);
+			addMessagePopup({
+				id: 'login',
+				type: 'error',
+				message: err.message || props.type === 'login' ? ' Login failed' : 'Create account failed',
+			});
 		} finally {
 			setLoading(false);
 		}

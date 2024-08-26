@@ -91,11 +91,11 @@ func toPartialUser(user repository.User) partialUser {
 
 func setTokenCookie(ctx *fiber.Ctx, token string) {
 	ctx.Cookie(&fiber.Cookie{
+		HTTPOnly: true,
 		Name:     "token",
 		Value:    "Bearer " + token,
-		HTTPOnly: true,
-		Domain:   utils.Ternary(*utils.Env.IsProduction, ".m3rashid.in", "localhost"),
 		Secure:   *utils.Env.IsProduction,
+		Domain:   utils.Ternary(*utils.Env.IsProduction, ".m3rashid.in", "localhost"),
 	})
 }
 
