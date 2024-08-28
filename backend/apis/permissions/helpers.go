@@ -6,26 +6,13 @@ import (
 	"github.com/google/uuid"
 )
 
-const delete_role_fail = "delete_role_fail"
-const delete_role_success = "delete_role_success"
-
-const create_role_fail = "create_role_fail"
-const create_role_success = "create_role_success"
-
-const update_role_fail = "update_role_fail"
-const update_role_success = "update_role_success"
-
-const add_user_to_role_fail = "add_user_to_role_fail"
-const add_user_to_role_success = "add_user_to_role_success"
-
-const remove_user_from_role_fail = "remove_user_from_role_fail"
-const remove_user_from_role_success = "remove_user_from_role_success"
-
-const add_bare_permission_to_user_fail = "add_bare_permission_to_user_fail"
-const add_bare_permission_to_user_success = "add_bare_permission_to_user_success"
-
-const remove_bare_permission_from_user_fail = "remove_bare_permission_from_user_fail"
-const remove_bare_permission_from_user_success = "remove_bare_permission_from_user_success"
+const delete_role = "delete_role"
+const create_role = "create_role"
+const update_role = "update_role"
+const add_user_to_role = "add_user_to_role"
+const remove_user_from_role = "remove_user_from_role"
+const add_bare_permission_to_user = "add_bare_permission_to_user"
+const remove_bare_permission_from_user = "remove_bare_permission_from_user"
 
 type createRoleReqBody struct {
 	Name        string                     `json:"name" validate:"required"`

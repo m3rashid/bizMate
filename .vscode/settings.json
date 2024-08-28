@@ -1,0 +1,11 @@
+{
+  "files.associations": {
+    "*.mjml": "mjml"
+  },
+  "[mjml]": {
+    "editor.formatOnSave": false
+  },
+  "[html]": {
+    "editor.formatOnSave": false
+  }
+}

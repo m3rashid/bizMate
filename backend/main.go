@@ -7,7 +7,6 @@ import (
 	"bizMate/apis/forms"
 	"bizMate/apis/payments"
 	"bizMate/apis/permissions"
-	"bizMate/apis/seed"
 	"bizMate/utils"
 	"log"
 	"os"
@@ -109,10 +108,6 @@ func main() {
 	payments.Setup("/api/:workspaceId/payments", app)
 	permissions.Setup("/api/:workspaceId/permissions", app)
 	activity.Setup("/api/:workspaceId/activity", app)
-
-	if !*utils.Env.IsProduction {
-		seed.Setup("/seed", app)
-	}
 
 	log.Println("Server is running in "+utils.Env.ServerMode+" mode on port:", utils.Env.Port)
 	app.Listen(":" + utils.Env.Port)

@@ -25,7 +25,7 @@ func updateFormBody(ctx *fiber.Ctx) error {
 	reqBody := FormBodyReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		go utils.LogError(
-			update_form_body_fail,
+			update_form_body,
 			userEmail,
 			workspaceId,
 			repository.FormObjectType,
@@ -49,7 +49,7 @@ func updateFormBody(ctx *fiber.Ctx) error {
 	form, err := queries.GetFormById(ctx.Context(), formUuid)
 	if err != nil || form.ID == uuid.Nil {
 		go utils.LogError(
-			update_form_body_fail,
+			update_form_body,
 			userEmail,
 			workspaceId,
 			repository.FormObjectType,
@@ -64,7 +64,7 @@ func updateFormBody(ctx *fiber.Ctx) error {
 	if len(validationErrors) > 0 {
 		jsonStr, err := json.Marshal(validationErrors)
 		go utils.LogError(
-			update_form_body_fail,
+			update_form_body,
 			userEmail,
 			workspaceId,
 			repository.FormObjectType,
@@ -81,7 +81,7 @@ func updateFormBody(ctx *fiber.Ctx) error {
 
 	if err = queries.UpdateFormBody(ctx.Context(), repository.UpdateFormBodyParams{ID: form.ID, FormBody: reqBody.FormBody}); err != nil {
 		go utils.LogError(
-			update_form_body_fail,
+			update_form_body,
 			userEmail,
 			workspaceId,
 			repository.FormObjectType,
@@ -94,7 +94,7 @@ func updateFormBody(ctx *fiber.Ctx) error {
 	}
 
 	go utils.LogInfo(
-		update_form_body_success,
+		update_form_body,
 		userEmail,
 		workspaceId,
 		repository.FormObjectType,

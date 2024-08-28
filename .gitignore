@@ -62,3 +62,5 @@ web/.vercel
 
 backend/bin/*
 !backend/bin/.gitkeep
+
+node-mailer

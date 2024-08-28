@@ -14,7 +14,7 @@ export function PingLoader(props: LoaderProps) {
 }
 
 export function LogoLoader(props: LoaderProps) {
-	return <Image height={80} width={80} alt='Loading icon' src='/logo-nobg.png' className={cn('h-20 w-20 animate-bounce', props.className)} />;
+	return <Image height={80} width={80} alt='Loading icon' src='/logo.png' className={cn('h-20 w-20 animate-bounce', props.className)} />;
 }
 
 export function PageLoader(props: LoaderProps) {

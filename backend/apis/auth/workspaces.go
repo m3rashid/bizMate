@@ -77,7 +77,7 @@ func createWorkspace(ctx *fiber.Ctx) error {
 	reqBody := createWorkspaceReq{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		go utils.LogError(
-			create_workspace_fail,
+			create_workspace,
 			userEmail,
 			uuid.Nil,
 			repository.WorkspaceObjectType,
@@ -121,7 +121,7 @@ func createWorkspace(ctx *fiber.Ctx) error {
 
 	if err != nil {
 		go utils.LogError(
-			create_workspace_fail,
+			create_workspace,
 			userEmail,
 			newWorkspaceId,
 			repository.WorkspaceObjectType,
@@ -137,7 +137,7 @@ func createWorkspace(ctx *fiber.Ctx) error {
 		WorkspaceID: newWorkspaceId,
 	}); err != nil {
 		go utils.LogError(
-			create_workspace_fail,
+			create_workspace,
 			userEmail,
 			newWorkspaceId,
 			repository.WorkspaceObjectType,
@@ -156,7 +156,7 @@ func createWorkspace(ctx *fiber.Ctx) error {
 		Level:       repository.PermissionLevelAdmin,
 	}); err != nil {
 		go utils.LogError(
-			create_workspace_fail,
+			create_workspace,
 			userEmail,
 			newWorkspaceId,
 			repository.WorkspaceObjectType,
@@ -170,7 +170,7 @@ func createWorkspace(ctx *fiber.Ctx) error {
 	err = tx.Commit(ctx.Context())
 	if err != nil {
 		go utils.LogError(
-			create_workspace_fail,
+			create_workspace,
 			userEmail,
 			newWorkspaceId,
 			repository.WorkspaceObjectType,
@@ -182,7 +182,7 @@ func createWorkspace(ctx *fiber.Ctx) error {
 	}
 	go addWorkSpaceToCache(workspace)
 	go utils.LogInfo(
-		create_workspace_success,
+		create_workspace,
 		userEmail,
 		newWorkspaceId,
 		repository.WorkspaceObjectType,
@@ -202,7 +202,7 @@ func removeUserFromWorkspace(ctx *fiber.Ctx) error {
 	reqBody := removeUserFromWorkspaceReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		go utils.LogError(
-			remove_user_from_workspace_fail,
+			remove_user_from_workspace,
 			userEmail,
 			workspaceId,
 			repository.WorkspaceObjectType,
@@ -224,7 +224,7 @@ func removeUserFromWorkspace(ctx *fiber.Ctx) error {
 		WorkspaceID: workspaceId,
 	}); err != nil {
 		go utils.LogError(
-			remove_user_from_workspace_fail,
+			remove_user_from_workspace,
 			userEmail,
 			workspaceId,
 			repository.WorkspaceObjectType,
@@ -236,7 +236,7 @@ func removeUserFromWorkspace(ctx *fiber.Ctx) error {
 	}
 
 	go utils.LogInfo(
-		remove_user_from_workspace_success,
+		remove_user_from_workspace,
 		userEmail,
 		workspaceId,
 		repository.WorkspaceObjectType,

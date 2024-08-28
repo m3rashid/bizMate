@@ -71,7 +71,7 @@ func authCallback(ctx *fiber.Ctx) error {
 		newUser, err := queries.CreateUser(ctx.Context(), _newUser)
 		if err != nil {
 			go utils.LogError(
-				user_register_fail,
+				user_register,
 				authCallbackUser.Email,
 				uuid.Nil,
 				repository.UserObjectType,
@@ -83,7 +83,7 @@ func authCallback(ctx *fiber.Ctx) error {
 			return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
 		}
 		go utils.LogInfo(
-			user_register_success,
+			user_register,
 			authCallbackUser.Email,
 			newUser.ID,
 			repository.UserObjectType,
@@ -112,7 +112,7 @@ func logout(ctx *fiber.Ctx) error {
 	userEmail := utils.GetUserEmailFromCtx(ctx)
 	if err := goth_fiber.Logout(ctx); err != nil {
 		go utils.LogError(
-			user_logout_fail,
+			user_logout,
 			userEmail,
 			uuid.Nil,
 			repository.UserObjectType,
@@ -124,7 +124,7 @@ func logout(ctx *fiber.Ctx) error {
 	}
 
 	removeCookie(ctx)
-	go utils.LogInfo(user_logout_success, userEmail, uuid.Nil, repository.UserObjectType)
+	go utils.LogInfo(user_logout, userEmail, uuid.Nil, repository.UserObjectType)
 	return ctx.Status(fiber.StatusOK).JSON(
 		utils.SendResponse(nil, "Logged out successfully"),
 	)

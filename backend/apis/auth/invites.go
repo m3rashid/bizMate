@@ -19,7 +19,7 @@ func acceptOrRejectWorkspaceInvite(ctx *fiber.Ctx) error {
 	reqBody := acceptOrRejectWorkspaceInviteReq{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		go utils.LogError(
-			user_login_fail,
+			user_login,
 			userEmail,
 			uuid.Nil,
 			repository.UserObjectType,
@@ -45,7 +45,7 @@ func acceptOrRejectWorkspaceInvite(ctx *fiber.Ctx) error {
 	user, err := queries.GetUserById(ctx.Context(), userId)
 	if err != nil {
 		go utils.LogError(
-			user_login_fail,
+			user_login,
 			userEmail,
 			uuid.Nil,
 			repository.UserObjectType,
@@ -80,7 +80,7 @@ func acceptOrRejectWorkspaceInvite(ctx *fiber.Ctx) error {
 			fmt.Println("error adding user to workspace", err)
 
 			go utils.LogError(
-				accept_workspace_invite_fail,
+				accept_workspace_invite,
 				userEmail,
 				uuid.Nil,
 				repository.WorkspaceInviteObjectType,
@@ -94,7 +94,7 @@ func acceptOrRejectWorkspaceInvite(ctx *fiber.Ctx) error {
 
 		if err := txQueries.DeleteWorkspaceInvite(ctx.Context(), reqBody.InviteID); err != nil {
 			go utils.LogError(
-				accept_workspace_invite_fail,
+				accept_workspace_invite,
 				userEmail,
 				uuid.Nil,
 				repository.WorkspaceInviteObjectType,
@@ -108,7 +108,7 @@ func acceptOrRejectWorkspaceInvite(ctx *fiber.Ctx) error {
 
 		if err := tx.Commit(ctx.Context()); err != nil {
 			go utils.LogError(
-				accept_workspace_invite_fail,
+				accept_workspace_invite,
 				userEmail,
 				uuid.Nil,
 				repository.WorkspaceInviteObjectType,
@@ -121,7 +121,7 @@ func acceptOrRejectWorkspaceInvite(ctx *fiber.Ctx) error {
 		}
 
 		go utils.LogInfo(
-			accept_workspace_invite_success,
+			accept_workspace_invite,
 			userEmail, uuid.Nil,
 			repository.WorkspaceInviteObjectType,
 			repository.LogData{
@@ -131,7 +131,7 @@ func acceptOrRejectWorkspaceInvite(ctx *fiber.Ctx) error {
 	} else {
 		if err := queries.DeleteWorkspaceInvite(ctx.Context(), userId); err != nil {
 			go utils.LogError(
-				reject_workspace_invite_fail,
+				reject_workspace_invite,
 				userEmail,
 				uuid.Nil,
 				repository.WorkspaceInviteObjectType,
@@ -143,7 +143,7 @@ func acceptOrRejectWorkspaceInvite(ctx *fiber.Ctx) error {
 		}
 
 		go utils.LogInfo(
-			reject_workspace_invite_success,
+			reject_workspace_invite,
 			userEmail,
 			uuid.Nil,
 			repository.WorkspaceInviteObjectType,
@@ -172,7 +172,7 @@ func sendWorkspaceInvite(ctx *fiber.Ctx) error {
 	reqBody := sendWorkspaceInviteReq{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		go utils.LogError(
-			send_workspace_invite_fail,
+			send_workspace_invite,
 			userEmail,
 			workspaceId,
 			repository.WorkspaceInviteObjectType,
@@ -203,24 +203,25 @@ func sendWorkspaceInvite(ctx *fiber.Ctx) error {
 	}); err != nil {
 		fmt.Println("error creating invite", err)
 		go utils.LogError(
-			send_workspace_invite_fail,
+			send_workspace_invite,
 			userEmail,
 			uuid.Nil,
 			repository.WorkspaceInviteObjectType,
 			repository.LogData{
 				"error": err.Error(),
+				"email": reqBody.Email,
 			},
 		)
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	go utils.LogInfo(
-		send_workspace_invite_success,
+		send_workspace_invite,
 		userEmail,
 		workspaceId,
 		repository.WorkspaceInviteObjectType,
 		repository.LogData{
-			"invite_id": uuidv7.String(),
+			"email": reqBody.Email,
 		},
 	)
 	return ctx.Status(fiber.StatusOK).JSON(
@@ -234,7 +235,7 @@ func revokeWorkspaceInvite(ctx *fiber.Ctx) error {
 	reqBody := revokeWorkspaceInviteReq{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		go utils.LogError(
-			revoke_workspace_invite_fail,
+			revoke_workspace_invite,
 			userEmail,
 			workspaceId,
 			repository.WorkspaceInviteObjectType,
@@ -258,7 +259,7 @@ func revokeWorkspaceInvite(ctx *fiber.Ctx) error {
 	queries := repository.New(pgConn)
 	if err := queries.DeleteWorkspaceInvite(ctx.Context(), reqBody.InviteID); err != nil {
 		go utils.LogError(
-			revoke_workspace_invite_fail,
+			revoke_workspace_invite,
 			userEmail,
 			workspaceId,
 			repository.WorkspaceInviteObjectType,
@@ -270,7 +271,7 @@ func revokeWorkspaceInvite(ctx *fiber.Ctx) error {
 	}
 
 	go utils.LogInfo(
-		revoke_workspace_invite_success,
+		revoke_workspace_invite,
 		userEmail,
 		workspaceId,
 		repository.WorkspaceInviteObjectType,

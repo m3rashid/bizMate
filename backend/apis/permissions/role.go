@@ -15,7 +15,7 @@ func createRole(ctx *fiber.Ctx) error {
 	reqBody := createRoleReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		go utils.LogError(
-			create_role_fail,
+			create_role,
 			userEmail,
 			workspaceId,
 			repository.RoleObjectType,
@@ -29,7 +29,7 @@ func createRole(ctx *fiber.Ctx) error {
 	uuidv7, err := utils.GenerateUuidV7()
 	if err != nil {
 		go utils.LogError(
-			create_role_fail,
+			create_role,
 			userEmail,
 			workspaceId,
 			repository.RoleObjectType,
@@ -55,7 +55,7 @@ func createRole(ctx *fiber.Ctx) error {
 		CreatedByID: userId,
 	}); err != nil {
 		go utils.LogError(
-			create_role_fail,
+			create_role,
 			userEmail,
 			workspaceId,
 			repository.RoleObjectType,
@@ -67,7 +67,7 @@ func createRole(ctx *fiber.Ctx) error {
 	}
 
 	go utils.LogInfo(
-		create_role_success,
+		create_role,
 		userEmail,
 		workspaceId,
 		repository.RoleObjectType,
@@ -147,7 +147,7 @@ func updateRole(ctx *fiber.Ctx) error {
 	reqBody := updateRoleReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		go utils.LogError(
-			update_role_fail,
+			update_role,
 			userEmail,
 			workspaceId,
 			repository.RoleObjectType,
@@ -160,7 +160,7 @@ func updateRole(ctx *fiber.Ctx) error {
 
 	if reqBody.RoleId == uuid.Nil {
 		go utils.LogError(
-			update_role_fail,
+			update_role,
 			userEmail,
 			workspaceId,
 			repository.RoleObjectType,
@@ -185,7 +185,7 @@ func updateRole(ctx *fiber.Ctx) error {
 		WorkspaceID: workspaceId,
 	}); err != nil {
 		go utils.LogError(
-			update_role_fail,
+			update_role,
 			userEmail,
 			workspaceId,
 			repository.RoleObjectType,
@@ -197,7 +197,7 @@ func updateRole(ctx *fiber.Ctx) error {
 	}
 
 	go utils.LogInfo(
-		update_role_success,
+		update_role,
 		userEmail,
 		workspaceId,
 		repository.RoleObjectType,
@@ -215,7 +215,7 @@ func deleteRole(ctx *fiber.Ctx) error {
 	reqBody := deleteRoleReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		go utils.LogError(
-			delete_role_fail,
+			delete_role,
 			userEmail,
 			workspaceId,
 			repository.RoleObjectType,
@@ -228,7 +228,7 @@ func deleteRole(ctx *fiber.Ctx) error {
 
 	if reqBody.RoleId == uuid.Nil {
 		go utils.LogError(
-			delete_role_fail,
+			delete_role,
 			userEmail,
 			workspaceId,
 			repository.RoleObjectType,
@@ -250,7 +250,7 @@ func deleteRole(ctx *fiber.Ctx) error {
 		ID:          reqBody.RoleId,
 	}); err != nil {
 		go utils.LogError(
-			delete_role_fail,
+			delete_role,
 			userEmail,
 			workspaceId,
 			repository.RoleObjectType,
@@ -262,7 +262,7 @@ func deleteRole(ctx *fiber.Ctx) error {
 	}
 
 	go utils.LogInfo(
-		delete_role_success,
+		delete_role,
 		userEmail,
 		workspaceId,
 		repository.RoleObjectType,
@@ -280,7 +280,7 @@ func addUserToRole(ctx *fiber.Ctx) error {
 	reqBody := addRemoveUserToRoleReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		go utils.LogError(
-			add_user_to_role_fail,
+			add_user_to_role,
 			userEmail,
 			workspaceId,
 			repository.RoleObjectType,
@@ -293,7 +293,7 @@ func addUserToRole(ctx *fiber.Ctx) error {
 
 	if reqBody.RoleId == uuid.Nil || reqBody.UserId == uuid.Nil {
 		go utils.LogError(
-			add_user_to_role_fail,
+			add_user_to_role,
 			userEmail,
 			workspaceId,
 			repository.RoleObjectType,
@@ -316,7 +316,7 @@ func addUserToRole(ctx *fiber.Ctx) error {
 		WorkspaceID: workspaceId,
 	}); err != nil {
 		go utils.LogError(
-			add_user_to_role_fail,
+			add_user_to_role,
 			userEmail,
 			workspaceId,
 			repository.RoleObjectType,
@@ -328,7 +328,7 @@ func addUserToRole(ctx *fiber.Ctx) error {
 	}
 
 	go utils.LogInfo(
-		add_user_to_role_success,
+		add_user_to_role,
 		userEmail,
 		workspaceId,
 		repository.RoleObjectType,
@@ -347,7 +347,7 @@ func removeUserFromRole(ctx *fiber.Ctx) error {
 	reqBody := addRemoveUserToRoleReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		go utils.LogError(
-			remove_user_from_role_fail,
+			remove_user_from_role,
 			userEmail,
 			workspaceId,
 			repository.RoleObjectType,
@@ -360,7 +360,7 @@ func removeUserFromRole(ctx *fiber.Ctx) error {
 
 	if reqBody.RoleId == uuid.Nil || reqBody.UserId == uuid.Nil {
 		go utils.LogError(
-			remove_user_from_role_fail,
+			remove_user_from_role,
 			userEmail,
 			workspaceId,
 			repository.RoleObjectType,
@@ -383,7 +383,7 @@ func removeUserFromRole(ctx *fiber.Ctx) error {
 		WorkspaceID: workspaceId,
 	}); err != nil {
 		go utils.LogError(
-			remove_user_from_role_fail,
+			remove_user_from_role,
 			userEmail,
 			workspaceId,
 			repository.RoleObjectType,
@@ -395,7 +395,7 @@ func removeUserFromRole(ctx *fiber.Ctx) error {
 	}
 
 	go utils.LogInfo(
-		remove_user_from_role_success,
+		remove_user_from_role,
 		userEmail,
 		workspaceId,
 		repository.RoleObjectType,
@@ -414,7 +414,7 @@ func addBarePermissionToUser(ctx *fiber.Ctx) error {
 	reqBody := addBarePermissionReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		go utils.LogError(
-			add_bare_permission_to_user_fail,
+			add_bare_permission_to_user,
 			userEmail,
 			workspaceId,
 			repository.RoleObjectType,
@@ -427,7 +427,7 @@ func addBarePermissionToUser(ctx *fiber.Ctx) error {
 
 	if reqBody.UserId == uuid.Nil {
 		go utils.LogError(
-			add_bare_permission_to_user_fail,
+			add_bare_permission_to_user,
 			userEmail,
 			workspaceId,
 			repository.RoleObjectType,
@@ -452,7 +452,7 @@ func addBarePermissionToUser(ctx *fiber.Ctx) error {
 		Level:       reqBody.Level,
 	}); err != nil {
 		go utils.LogError(
-			add_bare_permission_to_user_fail,
+			add_bare_permission_to_user,
 			userEmail,
 			workspaceId,
 			repository.RoleObjectType,
@@ -464,7 +464,7 @@ func addBarePermissionToUser(ctx *fiber.Ctx) error {
 	}
 
 	go utils.LogInfo(
-		add_bare_permission_to_user_success,
+		add_bare_permission_to_user,
 		userEmail,
 		workspaceId,
 		repository.RoleObjectType,
@@ -485,7 +485,7 @@ func removeBarePermissionFromUser(ctx *fiber.Ctx) error {
 	reqBody := addBarePermissionReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		go utils.LogError(
-			remove_bare_permission_from_user_fail,
+			remove_bare_permission_from_user,
 			userEmail,
 			workspaceId,
 			repository.RoleObjectType,
@@ -498,7 +498,7 @@ func removeBarePermissionFromUser(ctx *fiber.Ctx) error {
 
 	if reqBody.UserId == uuid.Nil {
 		go utils.LogError(
-			add_bare_permission_to_user_fail,
+			add_bare_permission_to_user,
 			userEmail,
 			workspaceId,
 			repository.RoleObjectType,
@@ -523,7 +523,7 @@ func removeBarePermissionFromUser(ctx *fiber.Ctx) error {
 		ObjectID:    reqBody.ObjectId,
 	}); err != nil {
 		go utils.LogError(
-			remove_bare_permission_from_user_fail,
+			remove_bare_permission_from_user,
 			userEmail,
 			workspaceId,
 			repository.RoleObjectType,
@@ -535,7 +535,7 @@ func removeBarePermissionFromUser(ctx *fiber.Ctx) error {
 	}
 
 	go utils.LogInfo(
-		remove_bare_permission_from_user_success,
+		remove_bare_permission_from_user,
 		userEmail,
 		workspaceId,
 		repository.RoleObjectType,

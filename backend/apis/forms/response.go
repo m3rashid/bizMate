@@ -21,7 +21,7 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 	reqBody := formResponseReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil || formId == "" {
 		go utils.LogError(
-			create_form_response_fail,
+			create_form_response,
 			userEmail,
 			uuid.Nil,
 			repository.FormResponsesObjectType,
@@ -43,7 +43,7 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 	form, err := queries.GetFormById(ctx.Context(), formUid)
 	if err != nil {
 		go utils.LogError(
-			create_form_response_fail,
+			create_form_response,
 			userEmail,
 			uuid.Nil,
 			repository.FormResponsesObjectType,
@@ -84,7 +84,7 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 	createResponseRes, err := repository.CreateFormResponse(ctx.Context(), mongoDb, formResponse)
 	if err != nil {
 		go utils.LogError(
-			create_form_response_fail,
+			create_form_response,
 			userEmail,
 			form.WorkspaceID,
 			repository.FormResponsesObjectType,
@@ -97,7 +97,7 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 	}
 
 	go utils.LogInfo(
-		create_form_response_success,
+		create_form_response,
 		userEmail,
 		form.WorkspaceID,
 		repository.FormResponsesObjectType,

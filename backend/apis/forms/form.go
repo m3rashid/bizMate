@@ -18,7 +18,7 @@ func createNewForm(ctx *fiber.Ctx) error {
 	reqBody := CreateFormReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		go utils.LogError(
-			create_form_fail,
+			create_form,
 			userEmail,
 			workspaceId,
 			repository.FormObjectType,
@@ -54,7 +54,7 @@ func createNewForm(ctx *fiber.Ctx) error {
 		CancelText:              &reqBody.CancelText,
 	}); err != nil {
 		go utils.LogError(
-			create_form_fail,
+			create_form,
 			userEmail,
 			workspaceId,
 			repository.FormObjectType,
@@ -66,7 +66,7 @@ func createNewForm(ctx *fiber.Ctx) error {
 	}
 
 	go utils.LogInfo(
-		create_form_success,
+		create_form,
 		userEmail,
 		workspaceId,
 		repository.FormObjectType,
@@ -153,7 +153,7 @@ func updateFormById(ctx *fiber.Ctx) error {
 	reqBody := UpdateFormReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
 		go utils.LogError(
-			update_form_fail,
+			update_form,
 			userEmail,
 			workspaceId,
 			repository.FormObjectType,
@@ -182,7 +182,7 @@ func updateFormById(ctx *fiber.Ctx) error {
 		CancelText:              &reqBody.CancelText,
 	}); err != nil {
 		go utils.LogError(
-			update_form_fail,
+			update_form,
 			userEmail,
 			workspaceId,
 			repository.FormObjectType,
@@ -194,7 +194,7 @@ func updateFormById(ctx *fiber.Ctx) error {
 	}
 
 	go utils.LogError(
-		update_form_fail,
+		update_form,
 		userEmail,
 		workspaceId,
 		repository.FormObjectType,
@@ -230,7 +230,7 @@ func deleteFormById(ctx *fiber.Ctx) error {
 	queries := repository.New(pgConn)
 	if err = queries.DeleteForm(ctx.Context(), formId); err != nil {
 		go utils.LogError(
-			delete_form_fail,
+			delete_form,
 			userEmail,
 			workspaceId,
 			repository.FormObjectType,
@@ -242,7 +242,7 @@ func deleteFormById(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	go utils.LogInfo(delete_form_success,
+	go utils.LogInfo(delete_form,
 		userEmail,
 		workspaceId,
 		repository.FormObjectType,

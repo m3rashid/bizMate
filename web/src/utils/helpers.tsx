@@ -87,7 +87,20 @@ export function createDefaultMeta(_title: string, _description?: string): Metada
 		title,
 		description,
 		robots: 'index, follow',
-		openGraph: { title, description },
-		twitter: { title, description, creator: '@m3_rashid' },
+		icons: [
+			{ rel: 'icon', url: '/logo.png', type: 'image/png' },
+			{ rel: 'apple', url: '/logo.png', type: 'image/png' },
+		],
+		openGraph: {
+			title,
+			description,
+			images: [{ url: '/logo.png', alt: 'Bizmate Logo', width: 100, height: 100, type: 'image/png' }],
+		},
+		twitter: {
+			title,
+			description,
+			creator: '@m3_rashid',
+			images: [{ url: '/logo.png', alt: 'Bizmate Logo', width: 100, height: 100, type: 'image/png' }],
+		},
 	};
 }

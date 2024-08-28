@@ -9,32 +9,15 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const user_register_fail = "user_register_fail"
-const user_register_success = "user_register_success"
-
-const user_login_fail = "user_login_fail"
-const user_login_success = "user_login_success"
-
-const user_logout_fail = "user_logout_fail"
-const user_logout_success = "user_logout_success"
-
-const create_workspace_fail = "create_workspace_fail"
-const create_workspace_success = "create_workspace_success"
-
-const accept_workspace_invite_fail = "accept_workspace_invite_fail"
-const accept_workspace_invite_success = "accept_workspace_invite_success"
-
-const reject_workspace_invite_fail = "reject_workspace_invite_fail"
-const reject_workspace_invite_success = "reject_workspace_invite_success"
-
-const send_workspace_invite_fail = "send_workspace_invite_fail"
-const send_workspace_invite_success = "send_workspace_invite_success"
-
-const revoke_workspace_invite_fail = "revoke_workspace_invite_fail"
-const revoke_workspace_invite_success = "revoke_workspace_invite_success"
-
-const remove_user_from_workspace_fail = "remove_user_from_workspace_fail"
-const remove_user_from_workspace_success = "remove_user_from_workspace_success"
+const user_login = "user_login"
+const user_logout = "user_logout"
+const user_register = "user_register"
+const create_workspace = "create_workspace"
+const send_workspace_invite = "send_workspace_invite"
+const reject_workspace_invite = "reject_workspace_invite"
+const accept_workspace_invite = "accept_workspace_invite"
+const revoke_workspace_invite = "revoke_workspace_invite"
+const remove_user_from_workspace = "remove_user_from_workspace"
 
 type redisterBodyReq struct {
 	Name     string `json:"name" validate:"required,min=3,max=50"`
