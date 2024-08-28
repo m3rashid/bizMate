@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func generateTransactionalMailBody(title string, receiverEmail string, content string) string {
+func generateTransactionalMailBody(receiverEmail, content string) string {
 	return fmt.Sprintf(`<!doctype html>
 <html lang="und" dir="auto" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
@@ -36,9 +36,6 @@ func generateTransactionalMailBody(title string, receiverEmail string, content s
 								<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;">
 									<tbody><tr><td style="width:50px;"><img alt="Company Logo" src="https://bizmateapi.m3rashid.in/favicon.ico" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%%;font-size:13px;" width="50" height="auto" /></td></tr>
 								</tbody></table>
-							</td></tr>
-							<tr><td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-								<div style="font-family:Inter, Helvetica, sans-serif;font-size:20px;line-height:1;text-align:center;color:#000000;"><h3 style="margin-top:-10px">Bizmate</h3></div>
 							</td></tr></tbody>
 						</table>
 					</div>
@@ -48,25 +45,6 @@ func generateTransactionalMailBody(title string, receiverEmail string, content s
     </div>
     <!--[if mso | IE]></td></tr></table><![endif]-->
     <!-- TOP LOGO SECTION END -->
-		
-		<!-- TOP TITLE SECTION START -->
-    <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" bgcolor="#ffffff" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
-    <div style="background:#ffffff;background-color:#ffffff;margin:0px auto;max-width:600px;">
-      <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#ffffff;background-color:#ffffff;width:100%%;">
-        <tbody><tr><td style="direction:ltr;font-size:0px;padding:20px 0;padding-bottom:20px;padding-top:0;text-align:center;">
-					<!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:600px;" ><![endif]-->
-					<div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%%;">
-						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%%">
-							<tbody><tr><td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-							<div style="font-family:Inter, Helvetica, sans-serif;font-size:24px;line-height:1;text-align:center;color:#000000;">%s</div></td></tr></tbody>
-						</table>
-					</div>
-					<!--[if mso | IE]></td></tr></table><![endif]-->
-				</td></tr></tbody>
-      </table>
-    </div>
-    <!--[if mso | IE]></td></tr></table><![endif]-->
-    <!-- TOP TITLE SECTION END -->
 
 		<!-- MESSAGE SECTION START -->
     %s
@@ -80,7 +58,7 @@ func generateTransactionalMailBody(title string, receiverEmail string, content s
 					<!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:600px;" ><![endif]-->
 					<div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%%;">
 						<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%%"><tbody>
-							<tr><td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;"><div style="font-family:Inter, Helvetica, sans-serif;font-size:14px;line-height:1;text-align:left;color:#000000;">If you have any questions or didn't expect this email, please contact the support team. Your queries are always welcomed</div></td></tr>
+							<tr><td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;"><div style="font-family:Inter, Helvetica, sans-serif;font-size:14px;line-height:1;text-align:left;color:#000000;">If you have any questions or didn't expect this email, please contact the support team.</div></td></tr>
 							<tr><td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;"><div style="font-family:Inter, Helvetica, sans-serif;font-size:14px;line-height:1;text-align:left;color:#000000;">Best regards,<br />Bizmate</div></td></tr>
 						</tbody></table>
 					</div>
@@ -118,5 +96,5 @@ func generateTransactionalMailBody(title string, receiverEmail string, content s
     <!-- BOTTOM FOOTER SECTION END -->
   </div>
 </body>
-</html>`, title, content, receiverEmail, time.Now().Year())
+</html>`, content, receiverEmail, time.Now().Year())
 }

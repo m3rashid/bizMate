@@ -20,8 +20,7 @@ func emailVerificationWithOtpToUserPartial(recipientName, otp string) string {
 						<tr><td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;"><div style="font-family:Inter, Helvetica, sans-serif;font-size:16px;line-height:1;text-align:left;color:#000000;">Please enter this OTP to verify your email address.</div></td></tr>
 					</tbody>
 				</table>
-			</div>
-			<!--[if mso | IE]></td></tr></table><![endif]-->
+			</div><!--[if mso | IE]></td></tr></table><![endif]-->
 		</td></tr></tbody>
 	</table>
 </div>
@@ -40,8 +39,7 @@ func rolesUpdateToUserPartial(recipientName, workspaceName string, roles []strin
 					<tr><td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;"><div style="font-family:Inter, Helvetica, sans-serif;font-size:16px;line-height:1;text-align:left;color:#000000;">Your roles have been updated in the workspace "%s" on Bizmate</div></td></tr>
 					<tr><td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;"><div style="font-family:Inter, Helvetica, sans-serif;font-size:16px;line-height:1;text-align:left;color:#000000;">Your new roles are: %s</div></td></tr>
 				</tbody></table>
-			</div>
-			<!--[if mso | IE]></td></tr></table><![endif]-->
+			</div><!--[if mso | IE]></td></tr></table><![endif]-->
 		</td></tr></tbody>
 	</table>
 </div>
@@ -66,8 +64,7 @@ func permissionsUpdateToUserPartial(recipientName, workspaceName string, barePer
 					<tr><td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;"><div style="font-family:Inter, Helvetica, sans-serif;font-size:16px;line-height:1;text-align:left;color:#000000;">Your permissions have been updated in the workspace "%s" on Bizmate</div></td></tr>
 					<tr><td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;"><div style="font-family:Inter, Helvetica, sans-serif;font-size:16px;line-height:1;text-align:left;color:#000000;">Your new permissions are: %s</div></td></tr>
 				</tbody></table>
-			</div>
-			<!--[if mso | IE]></td></tr></table><![endif]-->
+			</div><!--[if mso | IE]></td></tr></table><![endif]-->
 		</td></tr></tbody>
 	</table>
 </div>
@@ -87,16 +84,14 @@ func workspaceInvitationRequestToUserPartial(recipientName, ownerName, workspace
 						<tr><td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;"><div style="font-family:Inter, Helvetica, sans-serif;font-size:16px;line-height:1;text-align:left;color:#000000;">Hope you are doing well.</div></td></tr>
 						<tr><td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;"><div style="font-family:Inter, Helvetica, sans-serif;font-size:16px;line-height:1;text-align:left;color:#000000;">%s has invited you to join their workspace "%s" on Bizmate</div></td></tr>
 						<tr><td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;"><div style="font-family:Inter, Helvetica, sans-serif;font-size:16px;line-height:1;text-align:left;color:#000000;">To accept this invitation and join the workspace, please click the button below:</div></td></tr>
-						<tr>
-							<td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-								<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:separate;line-height:100%%;"><tbody><tr>
-									<td align="center" bgcolor="#007bff" role="presentation" style="border:none;border-radius:3px;cursor:auto;mso-padding-alt:10px 25px;background:#007bff;" valign="middle">
-										<a href="%s" style="display:inline-block;background:#007bff;color:white;font-family:Inter, Helvetica, sans-serif;font-size:13px;font-weight:normal;line-height:120%%;margin:0;text-decoration:none;text-transform:none;padding:10px 25px;mso-padding-alt:0px;border-radius:3px;" target="_blank"> Accept Invitation </a>
-									</td></tr></tbody></table>
+						<tr><td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+							<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:separate;line-height:100%%;"><tbody><tr>
+								<td align="center" bgcolor="#007bff" role="presentation" style="border:none;border-radius:3px;cursor:auto;mso-padding-alt:10px 25px;background:#007bff;" valign="middle">
+									<a href="%s" style="display:inline-block;background:#007bff;color:white;font-family:Inter, Helvetica, sans-serif;font-size:13px;font-weight:normal;line-height:120%%;margin:0;text-decoration:none;text-transform:none;padding:10px 25px;mso-padding-alt:0px;border-radius:3px;" target="_blank"> Accept Invitation </a>
+								</td></tr></tbody></table>
 							</td></tr></tbody>
 						</table>
-					</div>
-					<!--[if mso | IE]></td></tr></table><![endif]-->
+					</div><!--[if mso | IE]></td></tr></table><![endif]-->
 				</td>
 			</tr>
 		</tbody>
@@ -147,7 +142,6 @@ func removedFromWorkspaceStatusUpdateToUserPartial(recipientName, workspaceName 
 			<div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%%;">
 				<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%%"><tbody>
 					<tr><td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;"><div style="font-family:Inter, Helvetica, sans-serif;font-size:16px;line-height:1;text-align:left;color:#000000;">Hello %s,</div></td></tr>
-					<tr><td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;"><div style="font-family:Inter, Helvetica, sans-serif;font-size:16px;line-height:1;text-align:left;color:#000000;">Hope you are doing well.</div></td></tr>
 					<tr><td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;"><div style="font-family:Inter, Helvetica, sans-serif;font-size:16px;line-height:1;text-align:left;color:#000000;">You have been removed from the workspace "%s" on Bizmate</div></td></tr>
 				</tbody></table>
 			</div>

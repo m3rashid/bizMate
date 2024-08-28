@@ -19,6 +19,7 @@ type Mail struct {
 }
 
 const charSet = "UTF-8"
+const mailerEmail = "bizmailer@m3rashid.in"
 
 func (mail Mail) Send() error {
 	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(utils.Env.AwsRegion), config.WithSharedConfigProfile(""))
@@ -30,8 +31,13 @@ func (mail Mail) Send() error {
 
 	input := &ses.SendEmailInput{
 		Destination: &types.Destination{ToAddresses: mail.To},
-		Message:     &types.Message{},
-		Source:      aws.String("bizmailer@m3rashid.in"),
+		Message: &types.Message{
+			Subject: &types.Content{
+				Data:    &mail.Subject,
+				Charset: aws.String(charSet),
+			},
+		},
+		Source: aws.String(mailerEmail),
 	}
 
 	if mail.BodyText != "" {
