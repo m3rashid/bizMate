@@ -4,14 +4,13 @@ import { useAssignRoleToUserMutation, useGetAllRolesQuery, useGetUserRolesQuery,
 import { Button } from '@/components/lib/button';
 import { PingLoader } from '@/components/lib/loaders';
 import { usePermission } from '@/hooks/permission';
-import { usePopups } from '@/hooks/popups';
 import { PERMISSION_CREATE, PERMISSION_UPDATE } from '@/utils/constants';
 import { cn } from '@/utils/helpers';
 import { Role } from '@/utils/types';
+import { toast } from 'sonner';
 
 export function UserRoles(props: { userId: string; workspaceId: string }) {
 	const { hasPermission } = usePermission();
-	const { addMessagePopup } = usePopups();
 	const { data: allRoles } = useGetAllRolesQuery(props.workspaceId);
 	const { data: userRoles } = useGetUserRolesQuery(props.workspaceId, props.userId);
 	const { mutateAsync: addUserToRole } = useAssignRoleToUserMutation(props.workspaceId, props.userId);
@@ -35,13 +34,13 @@ export function UserRoles(props: { userId: string; workspaceId: string }) {
 	function handleAssignOrRevoke(roleId: string, owns: boolean) {
 		if (!owns) {
 			if (!hasPermission('permission', PERMISSION_CREATE)) {
-				addMessagePopup({ type: 'error', id: 'noPermission', message: 'You do not have permission to assign this role' });
+				toast.error('You do not have permission to assign this role');
 				return;
 			}
 			addUserToRole({ roleId });
 		} else {
 			if (!hasPermission('permission', PERMISSION_UPDATE)) {
-				addMessagePopup({ type: 'error', id: 'noPermission', message: 'You do not have permission to revoke this role' });
+				toast.error('You do not have permission to revoke this role');
 				return;
 			}
 			removeUserFromRole({ roleId });

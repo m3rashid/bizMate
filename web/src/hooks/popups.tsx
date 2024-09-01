@@ -13,8 +13,6 @@ export type MessagePopupType = {
 	timeout?: number;
 };
 
-const DEFAULT_MESSAGE_POPUP_TIMEOUT = 5000; // 5 seconds
-
 export type ActionPopupType = {
 	id: ID;
 	type: PopupType;
@@ -38,30 +36,7 @@ const popupAtom = atom<PopupState>({
 });
 
 export function usePopups() {
-	const [{ actionPopups, messagePopups }, setPopups] = useRecoilState(popupAtom);
-
-	function addMessagePopup(messagepopup: MessagePopupType) {
-		const found = messagePopups.find((n) => n.id === messagepopup.id);
-		if (found) return;
-
-		const timeout = messagepopup.timeout || DEFAULT_MESSAGE_POPUP_TIMEOUT;
-
-		setPopups((prev) => ({
-			...prev,
-			messagePopups: getUniqueObjectsByKey<MessagePopupType>([...prev.messagePopups, messagepopup], 'id'),
-		}));
-
-		setTimeout(() => {
-			removeMessagePopup(messagepopup.id);
-		}, timeout);
-	}
-
-	function removeMessagePopup(id: ID) {
-		setPopups((prev) => ({
-			...prev,
-			messagePopups: prev.messagePopups.filter((n) => n.id !== id),
-		}));
-	}
+	const [{ actionPopups }, setPopups] = useRecoilState(popupAtom);
 
 	function addActionPopup(popup: ActionPopupType) {
 		const found = actionPopups.find((n) => n.id === popup.id);
@@ -82,10 +57,7 @@ export function usePopups() {
 
 	return {
 		actionPopups,
-		messagePopups,
 		addActionPopup,
-		addMessagePopup,
 		removeActionPopup,
-		removeMessagePopup,
 	};
 }

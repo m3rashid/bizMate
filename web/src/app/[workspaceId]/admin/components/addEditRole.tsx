@@ -9,7 +9,6 @@ import { SimpleTable } from '@/components/lib/simpleTable';
 import { SingleSelectInput } from '@/components/lib/singleSelectInput';
 import { TextAreaInput } from '@/components/lib/textAreaInput';
 import { usePermission } from '@/hooks/permission';
-import { usePopups } from '@/hooks/popups';
 import {
 	nilUuid,
 	PERMISSION_CREATE,
@@ -21,6 +20,7 @@ import {
 import { Role, RolePermission } from '@/utils/types';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
+import { toast } from 'sonner';
 
 type AddEditRoleProps = {
 	workspaceId: string;
@@ -29,7 +29,6 @@ type AddEditRoleProps = {
 
 export function AddEditRole(props: AddEditRoleProps) {
 	const router = useRouter();
-	const { addMessagePopup } = usePopups();
 	const { hasPermission } = usePermission();
 	const [addEditPermissionModalOpen, setAddEditPermissionModalOpen] = useState(false);
 	const [editPermissionRow, setEditPermissionRow] = useState<(RolePermission & { index: number }) | undefined>(undefined);
@@ -45,21 +44,21 @@ export function AddEditRole(props: AddEditRoleProps) {
 		e.preventDefault();
 
 		if (!!props.role && !hasPermission('role', PERMISSION_UPDATE)) {
-			addMessagePopup({ message: 'You do not have permission to update this role', type: 'error', id: 'noPermission' });
+			toast.error('You do not have permission to update this role');
 			return;
 		} else if (!hasPermission('role', PERMISSION_CREATE)) {
-			addMessagePopup({ message: 'You do not have permission to create a role', type: 'error', id: 'noPermission' });
+			toast.error('You do not have permission to create a role');
 			return;
 		}
 
 		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any;
 		if (!formData.name) {
-			addMessagePopup({ message: 'Please fill all required fields', type: 'error', id: 'req-field' });
+			toast.error('Please fill all required fields');
 			return;
 		}
 
 		if (permissions.length === 0) {
-			addMessagePopup({ message: 'Please add permissions', type: 'error', id: 'req-field' });
+			toast.error('Please add permissions');
 			return;
 		}
 
@@ -84,7 +83,7 @@ export function AddEditRole(props: AddEditRoleProps) {
 		e.preventDefault();
 		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any;
 		if (!formData.object_type || !formData.level) {
-			addMessagePopup({ message: 'Please fill all required fields', type: 'error', id: 'req-field' });
+			toast.error('Please fill all required fields');
 			return;
 		}
 

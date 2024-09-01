@@ -7,7 +7,6 @@ import { PingLoader } from '@/components/lib/loaders';
 import { SimpleTable, SimpleTableColumn } from '@/components/lib/simpleTable';
 import { SingleSelectInput } from '@/components/lib/singleSelectInput';
 import { usePermission } from '@/hooks/permission';
-import { usePopups } from '@/hooks/popups';
 import {
 	nilUuid,
 	PERMISSION_CREATE,
@@ -19,9 +18,9 @@ import {
 import { isUuid } from '@/utils/helpers';
 import { PermissionLevel, RolePermission } from '@/utils/types';
 import { FormEvent } from 'react';
+import { toast } from 'sonner';
 
 export function UserBarePermissions(props: { userId: string; workspaceId: string }) {
-	const { addMessagePopup } = usePopups();
 	const { hasPermission } = usePermission();
 	const { data } = useGetUserBarePermissions(props.workspaceId, props.userId);
 	const { mutateAsync: addBarePermissionToUser } = useAddBarePermissionToUserMutation(props.workspaceId, props.userId);
@@ -37,7 +36,7 @@ export function UserBarePermissions(props: { userId: string; workspaceId: string
 
 	function hanldeRevokePermission(permission: RolePermission) {
 		if (!hasPermission('permission', PERMISSION_DELETE)) {
-			addMessagePopup({ type: 'error', id: 'noPermission', message: 'You do not have permission to revoke this permission' });
+			toast.error('You do not have permission to revoke this permission');
 			return;
 		}
 
@@ -52,13 +51,13 @@ export function UserBarePermissions(props: { userId: string; workspaceId: string
 		e.preventDefault();
 
 		if (!hasPermission('permission', PERMISSION_CREATE)) {
-			addMessagePopup({ type: 'error', id: 'noPermission', message: 'You do not have permission to assign new permission' });
+			toast.error('You do not have permission to assign new permission');
 			return;
 		}
 
 		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any;
 		if (!formData.object_type || !formData.level) {
-			addMessagePopup({ message: 'Please fill all required fields', type: 'error', id: 'req-field' });
+			toast.error('Please fill all required fields');
 			return;
 		}
 

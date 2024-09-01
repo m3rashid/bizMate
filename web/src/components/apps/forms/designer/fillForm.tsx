@@ -3,10 +3,10 @@
 import { FormView } from './singleFormView';
 import { useGetSingleFormById, useSubmitFormResponseMutation } from '@/api/forms/client';
 import { PageLoader } from '@/components/lib/loaders';
-import { usePopups } from '@/hooks/popups';
 import FaceFrownIcon from '@heroicons/react/24/outline/FaceFrownIcon';
 import HandThumbUpIcon from '@heroicons/react/24/outline/HandThumbUpIcon';
 import { FormEvent, MouseEvent, useRef } from 'react';
+import { toast } from 'sonner';
 
 type FormFillupProps = {
 	formId: string;
@@ -15,7 +15,6 @@ type FormFillupProps = {
 };
 
 export const FormFillup = (props: FormFillupProps) => {
-	const { addMessagePopup } = usePopups();
 	const formRef = useRef<HTMLFormElement>(null);
 
 	const { data: formRes, isLoading } = useGetSingleFormById(props.workspaceId, props.formId);
@@ -33,17 +32,13 @@ export const FormFillup = (props: FormFillupProps) => {
 			for (let i = 0; i < currentFormMeta.length; i++) {
 				if (typeof formData[currentFormMeta[i].props.name] === 'boolean') continue;
 				if (currentFormMeta[i].props.required && !formData[currentFormMeta[i].props.name]) {
-					addMessagePopup({
-						id: 'missingRequiredFields',
-						message: `"${currentFormMeta[i].props.label}" is a required field, it must have a value`,
-						type: 'error',
-					});
+					toast.error(`"${currentFormMeta[i].props.label}" is a required field, it must have a value`);
 					return;
 				}
 			}
 			mutate({ response: formData });
 		} catch (err: any) {
-			addMessagePopup({ id: 'errorSubmittingResponse', message: 'Unable to submit response, please try again', type: 'error' });
+			toast.error(err.message || 'Unable to submit response, please try again');
 		}
 	}
 

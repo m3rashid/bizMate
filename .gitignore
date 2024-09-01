@@ -64,3 +64,5 @@ backend/bin/*
 !backend/bin/.gitkeep
 
 node-mailer
+web-tailwind
+web-shadcn

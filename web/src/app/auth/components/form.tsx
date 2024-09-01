@@ -5,17 +5,16 @@ import { Button } from '@/components/lib/button';
 import { Input } from '@/components/lib/input';
 import { PingLoader } from '@/components/lib/loaders';
 import { PhoneNumberInput } from '@/components/lib/phoneNumberInput';
-import { usePopups } from '@/hooks/popups';
 import LockClosedIcon from '@heroicons/react/20/solid/LockClosedIcon';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
+import { toast } from 'sonner';
 
 export type CredentialsAuthFormProps = {
 	type: 'login' | 'register';
 };
 
 export function CredentialsAuthForm(props: CredentialsAuthFormProps) {
-	const { addMessagePopup } = usePopups();
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 
@@ -35,21 +34,13 @@ export function CredentialsAuthForm(props: CredentialsAuthFormProps) {
 			const data = await res.json();
 			console.log(data);
 			if (data && data.success) {
-				addMessagePopup({
-					id: 'login',
-					type: 'success',
-					message: props.type === 'login' ? 'Successfully Logged in' : 'Successfully Created account',
-				});
+				toast.success(props.type === 'login' ? 'Successfully Logged in' : 'Successfully Created account');
 				router.replace('/auth/choose-workspace');
 			} else throw new Error(data.message || ('Failed to ' + props.type === 'login' ? 'login' : 'create account'));
 			// TODO: handle redirects
 		} catch (err: any) {
 			console.log('catch err: ', err);
-			addMessagePopup({
-				id: 'login',
-				type: 'error',
-				message: err.message || props.type === 'login' ? ' Login failed' : 'Create account failed',
-			});
+			toast.error(err.message || (props.type === 'login' ? 'Login failed' : 'Create account failed'));
 		} finally {
 			setLoading(false);
 		}

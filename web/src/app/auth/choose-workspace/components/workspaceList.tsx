@@ -3,10 +3,9 @@
 import { WorkspaceCard } from './chooseWorkspace';
 import { useGetWorkspaceListQuery } from '@/api/workspaces/client';
 import { PingLoader } from '@/components/lib/loaders';
-import { usePopups } from '@/hooks/popups';
+import { toast } from 'sonner';
 
 export function WorkspaceList() {
-	const { addMessagePopup } = usePopups();
 	const { data, isLoading } = useGetWorkspaceListQuery();
 
 	if (isLoading) {
@@ -18,7 +17,7 @@ export function WorkspaceList() {
 	}
 
 	if (!data) {
-		addMessagePopup({ message: 'Could not get workspaces', type: 'error', id: 'no-workspaces' });
+		toast.error('Could not get workspaces');
 		return null;
 	}
 

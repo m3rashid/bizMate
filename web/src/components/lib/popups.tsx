@@ -1,14 +1,14 @@
 'use client';
 
 import { Button } from '@/components/lib/button';
-import { ActionPopupType, MessagePopupType, PopupType, usePopups } from '@/hooks/popups';
+import { ActionPopupType, PopupType, usePopups } from '@/hooks/popups';
 import { cn } from '@/utils/helpers';
 import CheckCircleIcon from '@heroicons/react/20/solid/CheckCircleIcon';
 import ExclamationTriangleIcon from '@heroicons/react/20/solid/ExclamationTriangleIcon';
 import InformationCircleIcon from '@heroicons/react/20/solid/InformationCircleIcon';
 import XCircleIcon from '@heroicons/react/20/solid/XCircleIcon';
 import XMarkIcon from '@heroicons/react/20/solid/XMarkIcon';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 export const popupVariants: Record<PopupType, string> = {
@@ -70,37 +70,7 @@ export function ActionPopup(props: ActionPopupType) {
 	);
 }
 
-export function MessagePopup(props: MessagePopupType) {
-	const [Icon, color] = PopupIcons[props.type];
-
-	return (
-		<div className={cn('flex w-full gap-2 rounded-md border border-l-4 bg-white p-2 shadow-lg', popupVariants[props.type])}>
-			<Icon className={cn('h-6 w-6', color)} />
-			<div>{props.message}</div>
-		</div>
-	);
-}
-
 const popupContainerClassName = 'absolute top-0 z-[99] max-h-full w-full max-w-80 overflow-hidden flex flex-col gap-2 items-center';
-
-function MessagePopupContainer() {
-	const { messagePopups } = usePopups();
-	const [mounted, setMounted] = useState(false);
-
-	useEffect(() => {
-		setMounted(true);
-	}, []);
-
-	if (!mounted) return null;
-	return createPortal(
-		<div className={cn(popupContainerClassName, 'left-[calc(50vw-160px)] mt-4')}>
-			{messagePopups.map((messagePopup) => (
-				<MessagePopup key={messagePopup.id} {...messagePopup} />
-			))}
-		</div>,
-		document.body
-	);
-}
 
 function ActionPopupContainer() {
 	const { actionPopups } = usePopups();
@@ -122,10 +92,5 @@ function ActionPopupContainer() {
 }
 
 export function PopupContainer() {
-	return (
-		<>
-			<MessagePopupContainer />
-			<ActionPopupContainer />
-		</>
-	);
+	return <ActionPopupContainer />;
 }

@@ -4,7 +4,6 @@ import { Button } from '@/components/lib/button';
 import { Input } from '@/components/lib/input';
 import { Modal } from '@/components/lib/modal';
 import { Tooltip } from '@/components/lib/tooltip';
-import { usePopups } from '@/hooks/popups';
 import { cn } from '@/utils/helpers';
 import { DndContext, DragEndEvent, KeyboardSensor, PointerSensor, closestCorners, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, sortableKeyboardCoordinates, useSortable } from '@dnd-kit/sortable';
@@ -14,6 +13,7 @@ import PlusIcon from '@heroicons/react/24/outline/PlusIcon';
 import XMarkIcon from '@heroicons/react/24/outline/XMarkIcon';
 import { Dispatch, FormEvent, SetStateAction, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 
 export function AddEditModal(props: {
 	open: boolean;
@@ -22,14 +22,13 @@ export function AddEditModal(props: {
 	editData?: string;
 }) {
 	const { t } = useTranslation();
-	const { addMessagePopup } = usePopups();
 
 	function handleSubmit(e: FormEvent<HTMLFormElement>) {
 		e.stopPropagation();
 		e.preventDefault();
 		const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement).entries()) as any;
 		if (!formData.value) {
-			addMessagePopup({ id: 'emptyField', message: 'Option Value missing', type: 'error' });
+			toast.error('Option Value missing');
 			return;
 		}
 		props.onSubmit(formData.value, props.editData);
@@ -103,7 +102,6 @@ export type SelectListInputProps = {
 
 export function SelectListInput(props: SelectListInputProps) {
 	const { t } = useTranslation();
-	const { addMessagePopup } = usePopups();
 	const [open, setOpen] = useState(false);
 	const [options, setOptions] = useState<string[]>(props.initialOptions || []);
 	const [editData, setEditData] = useState<string | undefined>(undefined);
@@ -118,14 +116,14 @@ export function SelectListInput(props: SelectListInputProps) {
 	const validateOptions = useCallback((opts: string[]) => {
 		if (opts.length !== 0) {
 			if (opts[opts.length - 1] === '') {
-				addMessagePopup({ id: 'lastValueEmpty', message: 'Select option cannot have empty values', type: 'error' });
+				toast.error('Select option cannot have empty values');
 				return false;
 			}
 
 			const optionsValues = new Set();
 			for (let i = 0; i < opts.length; i++) optionsValues.add(opts[i]);
 			if (optionsValues.size !== opts.length) {
-				addMessagePopup({ id: 'optionValuesNotUnique', message: 'Option values need to be unique', type: 'error' });
+				toast.error('Option values need to be unique');
 				return false;
 			}
 		}
