@@ -8,16 +8,17 @@ import { PERMISSION_DELETE } from '@/utils/constants';
 import { snakeCaseToSentenceCase } from '@/utils/helpers';
 import { User } from '@/utils/types';
 import dayjs from 'dayjs';
+import { toast } from 'sonner';
 
 export function UserDetails(props: { workspaceId: string; user: User }) {
-	const { addActionPopup, addMessagePopup } = usePopups();
+	const { addActionPopup } = usePopups();
 	const { hasPermission } = usePermission();
 	const { data: barePermissions } = useGetUserBarePermissions(props.workspaceId, props.user.id);
 	const { mutateAsync: removeUserFromWorkspace } = useRemoveUserFromWorkspace(props.workspaceId, props.user.id);
 
 	function handleRemoveUserFromWorkspace() {
 		if (!hasPermission('user', PERMISSION_DELETE)) {
-			addMessagePopup({ type: 'error', id: 'noPermission', message: 'You do not have permission to remove this user' });
+			toast.error('You do not have permission to remove this user');
 			return;
 		}
 

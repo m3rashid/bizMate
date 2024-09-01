@@ -1,9 +1,9 @@
 'use client';
 
 import { apiClient } from '../config';
-import { usePopups } from '@/hooks/popups';
 import { ApiResponse } from '@/utils/types';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 type TableFieldsResponse = {
 	fileNameWithoutExt: string;
@@ -27,17 +27,11 @@ export function useExportTableMutation(
 	result: ApiResponse<TableFieldsResponse> | null | undefined,
 	props: { onSuccess: () => void; onError: () => void }
 ) {
-	const { addMessagePopup } = usePopups();
-
 	return useMutation({
 		onSuccess: props.onSuccess,
 		onError: (error, variables) => {
 			props.onError();
-			addMessagePopup({
-				type: 'error',
-				message: (error as any) || 'An error occurred',
-				id: `${result?.data.fileNameWithoutExt}.${variables.format}` || `${tableName}.${variables.format}`,
-			});
+			toast.error((error as any) || 'An error occurred');
 		},
 		mutationKey: [tableName],
 		mutationFn: (data: any) =>

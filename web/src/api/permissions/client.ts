@@ -3,11 +3,11 @@
 import { apiClient } from '@/api/config';
 import { getQueryClient } from '@/api/provider';
 import { queryKeys } from '@/api/queryKeys';
-import { usePopups } from '@/hooks/popups';
 import { ApiResponse, PaginationResponse, Role, RolePermission } from '@/utils/types';
 import { PermissionObjectType, PermissionLevel } from '@/utils/types';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
+import { toast } from 'sonner';
 
 export function useGetUserPermissions() {
 	const params = useParams();
@@ -51,66 +51,58 @@ export function useGetUserBarePermissions(workspaceId: string, userId: string) {
 }
 
 export function useAddBarePermissionToUserMutation(workspaceId: string, userId: string) {
-	const { addMessagePopup } = usePopups();
-
 	return useMutation({
 		mutationKey: [queryKeys.barePermissions, userId],
 		mutationFn: (data: { object_type: PermissionObjectType; object_id?: string; level: PermissionLevel }) =>
 			apiClient(`/${workspaceId}/permissions/add-bare-permission`, { method: 'POST', data: { ...data, user_id: userId } }),
 		onSuccess: (data) => {
 			if (data && data.success) {
-				addMessagePopup({ message: data.message || 'Permission added successfully', type: 'success', id: 'add-permission' });
+				toast.success(data.message || 'Permission added successfully');
 				getQueryClient().invalidateQueries({ queryKey: [queryKeys.barePermissions, userId] });
-			} else addMessagePopup({ message: 'Could not add permission', type: 'error', id: 'add-permission' });
+			} else toast.error('Could not add permission');
 		},
 	});
 }
 
 export function useRemovePermissionToUserMutation(workspaceId: string, userId: string) {
-	const { addMessagePopup } = usePopups();
-
 	return useMutation({
 		mutationKey: [queryKeys.barePermissions, userId],
 		mutationFn: (data: { object_type: PermissionObjectType; object_id?: string; level: PermissionLevel }) =>
 			apiClient(`/${workspaceId}/permissions/roles/remove-bare-permission`, { data: { ...data, user_id: userId } }),
 		onSuccess: (data) => {
 			if (data && data.success) {
-				addMessagePopup({ message: data.message || 'Permission removed successfully', type: 'success', id: 'remove-permission' + userId });
+				toast.success(data.message || 'Permission removed successfully');
 				getQueryClient().invalidateQueries({ queryKey: [queryKeys.barePermissions, userId] });
-			} else addMessagePopup({ message: 'Could not remove permission', type: 'error', id: 'remove-permission' + userId });
+			} else toast.error('Could not remove permission');
 		},
 	});
 }
 
 export function useCreateRoleMutation(workspaceId: string, props: { onSuccess: () => void }) {
-	const { addMessagePopup } = usePopups();
-
 	return useMutation({
 		mutationKey: [queryKeys.roles],
 		mutationFn: (data: Role & { workspaceId: string; roleId: string }) =>
 			apiClient(`/${workspaceId}/permissions/roles/create`, { method: 'POST', data }),
 		onSuccess: (data) => {
 			if (data && data.success) {
-				addMessagePopup({ message: data.message || 'Role created successfully', type: 'success', id: 'create-role' });
+				toast.success(data.message || 'Role created successfully');
 				getQueryClient().invalidateQueries({ queryKey: [queryKeys.roles] });
 				props.onSuccess();
-			} else addMessagePopup({ message: 'Could not create role', type: 'error', id: 'create-role' });
+			} else toast.error('Could not create role');
 		},
 	});
 }
 
 export function useUpdateRoleMutation(workspaceId: string, props: { onSuccess: () => void }) {
-	const { addMessagePopup } = usePopups();
-
 	return useMutation({
 		mutationKey: [queryKeys.roles],
 		mutationFn: (data: Role & { workspaceId: string }) => apiClient(`/${workspaceId}/permissions/roles/update`, { method: 'POST', data }),
 		onSuccess: (data) => {
 			if (data && data.success) {
-				addMessagePopup({ message: data.message || 'Role updated successfully', type: 'success', id: 'update-role' });
+				toast.success(data.message || 'Role updated successfully');
 				getQueryClient().invalidateQueries({ queryKey: [queryKeys.roles] });
 				props.onSuccess();
-			} else addMessagePopup({ message: 'Could not update role', type: 'error', id: 'update-role' });
+			} else toast.error('Could not update role');
 		},
 	});
 }
@@ -126,47 +118,41 @@ export function useGetRoleByRoleIdQuery(workspace_id: string, role_id: string) {
 }
 
 export function useAssignRoleToUserMutation(workspaceId: string, userId: string) {
-	const { addMessagePopup } = usePopups();
-
 	return useMutation({
 		mutationKey: [queryKeys.roles],
 		mutationFn: (data: { roleId: string }) => apiClient(`/${workspaceId}/permissions/roles/add-user`, { method: 'POST', data: { ...data, userId } }),
 		onSuccess: (data) => {
 			if (data && data.success) {
-				addMessagePopup({ message: data.message || 'Role added to user', type: 'success', id: 'update-role' });
+				toast.success(data.message || 'Role added to user');
 				getQueryClient().invalidateQueries({ queryKey: [queryKeys.roles, userId] });
-			} else addMessagePopup({ message: 'Could not add role to user', type: 'error', id: 'update-role' });
+			} else toast.error('Could not add role to user');
 		},
 	});
 }
 
 export function useRemoveRoleFromUserMutation(workspaceId: string, userId: string) {
-	const { addMessagePopup } = usePopups();
-
 	return useMutation({
 		mutationKey: [queryKeys.roles],
 		mutationFn: (data: { roleId: string }) =>
 			apiClient(`/${workspaceId}/permissions/roles/remove-user`, { method: 'POST', data: { ...data, userId } }),
 		onSuccess: (data) => {
 			if (data && data.success) {
-				addMessagePopup({ message: data.message || 'Role removed from user', type: 'success', id: 'update-role' });
+				toast.success(data.message || 'Role removed from user');
 				getQueryClient().invalidateQueries({ queryKey: [queryKeys.roles, userId] });
-			} else addMessagePopup({ message: 'Could not remove role from user', type: 'error', id: 'update-role' });
+			} else toast.error('Could not remove role from user');
 		},
 	});
 }
 
 export function useRemoveUserFromWorkspace(workspaceId: string, userId: string) {
-	const { addMessagePopup } = usePopups();
-
 	return useMutation({
 		mutationKey: [queryKeys.roles, userId],
 		mutationFn: () => apiClient(`/auth/${workspaceId}/remove-user`, { method: 'POST', data: { userId } }),
 		onSuccess: (data) => {
 			if (data && data.success) {
-				addMessagePopup({ message: data.message || 'User removed from workspace', type: 'success', id: 'update-user' });
+				toast.success(data.message || 'User removed from workspace');
 				getQueryClient().invalidateQueries({ queryKey: [queryKeys.users] });
-			} else addMessagePopup({ message: 'Could not remove user from workspace', type: 'error', id: 'update-user' });
+			} else toast.error('Could not remove user from workspace');
 		},
 		onError: (error) => {},
 	});

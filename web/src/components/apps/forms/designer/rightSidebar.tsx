@@ -2,10 +2,10 @@ import FormRenderer from '@/components/apps/forms/renderer';
 import { FormElementType, Props } from '@/components/apps/forms/renderer/types';
 import { Button } from '@/components/lib/button';
 import { useFormDesigner } from '@/hooks/formDesigner';
-import { usePopups } from '@/hooks/popups';
 import { camelCaseToSentenceCase, generateRandomString } from '@/utils/helpers';
 import { FormEvent, MouseEvent, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 
 type PropsToFormBodyProps = { _props: Props; values: Record<string, any> };
 function propsToFormBody({ _props, values }: PropsToFormBodyProps): FormElementType[] {
@@ -75,7 +75,6 @@ function propsToFormBody({ _props, values }: PropsToFormBodyProps): FormElementT
 
 export function RightSidebar() {
 	const { t } = useTranslation();
-	const { addMessagePopup } = usePopups();
 	const { selectedNode, getSelectedNodeProps, updateNode, setFormDesigner } = useFormDesigner();
 
 	const formRef = useRef<HTMLFormElement>(null);
@@ -109,7 +108,7 @@ export function RightSidebar() {
 
 			updateNode(selectedNode.id, { ...formData, ...(formData.shuffle ? { shuffle: formData.shuffle === 'on' } : {}) });
 		} else {
-			addMessagePopup({ id: 'formSettingsUpdated', message: 'Form Settings updated', type: 'success' });
+			toast.success('Form Settings updated');
 			setFormDesigner((prev) => ({
 				...prev,
 				rootProps: {

@@ -6,9 +6,10 @@ import { getSingleFormById } from '@/api/forms/server';
 import { queryKeys } from '@/api/queryKeys';
 import { Analysis } from '@/components/apps/forms/designer/analyticsCard';
 import { parseFormResponses } from '@/components/apps/forms/designer/parseFormResponses';
-import { usePopups } from '@/hooks/popups';
+// import { usePopups } from '@/hooks/popups';
 import { ApiResponse, Form } from '@/utils/types';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 export function useGetSingleFormById(workspaceId: string, formId: string) {
 	return useQuery({
@@ -18,17 +19,15 @@ export function useGetSingleFormById(workspaceId: string, formId: string) {
 }
 
 export function useSubmitFormResponseMutation(workspaceId: string, formId: string, formRef: React.RefObject<HTMLFormElement>) {
-	const { addMessagePopup } = usePopups();
-
 	return useMutation({
 		mutationKey: ['sumitFormResponse'],
 		mutationFn: (data: { response: Record<string, any> }) =>
 			apiClient(`/${workspaceId}/forms/response/${formId}/submit`, { method: 'POST', data: data }),
 		onSuccess: (data) => {
 			if (data && data.success) {
-				addMessagePopup({ id: 'responseSubmitted', message: data.message || 'Response submitted successfully', type: 'success' });
+				toast.success(data.message || 'Response submitted successfully');
 				formRef.current?.reset();
-			} else addMessagePopup({ id: 'responseSubmitted', message: 'Unable to submit response, please try again', type: 'error' });
+			} else toast.error(data.message || 'Unable to submit response, please try again');
 		},
 	});
 }
@@ -53,64 +52,56 @@ export function useGetFormResponseQuery(workspaceId: string, formId: string, pag
 }
 
 export function useDeleteFormMutation(formId: string, workspaceId: string) {
-	const { addMessagePopup } = usePopups();
-
 	return useMutation({
 		mutationKey: ['deleteForm', formId],
 		mutationFn: () => apiClient(`/${workspaceId}/forms/delete/${formId}`, { method: 'POST' }),
 		onSuccess: (data) => {
 			if (data && data.success) {
-				addMessagePopup({ id: formId, message: data.message || 'Form deleted successfully', type: 'success' });
+				toast.success(data.message || 'Form deleted successfully');
 				getQueryClient().invalidateQueries({ queryKey: [queryKeys.forms] });
-			} else addMessagePopup({ id: formId, message: 'Failed to delete form', type: 'error' });
+			} else toast.error(data.message || 'Failed to delete form');
 		},
 		onError: () => {},
 	});
 }
 
 export function useCreateFormMutation(workspaceId: string, props: { onSuccess: (data: any) => void }) {
-	const { addMessagePopup } = usePopups();
-
 	return useMutation({
 		mutationKey: [queryKeys.forms],
 		mutationFn: (form: Partial<Form>) => apiClient(`/${workspaceId}/forms/create`, { method: 'POST', data: form }),
 		onSuccess: (data) => {
 			if (data && data.success) {
-				addMessagePopup({ id: 'successCreatingForm', message: data.message || 'Form created successfully', type: 'success' });
+				toast.success(data.message || 'Form created successfully');
 				getQueryClient().invalidateQueries({ queryKey: [queryKeys.forms] });
 				props.onSuccess(data);
-			} else addMessagePopup({ id: 'errorCreatingForm', message: 'An Error occured in creating form', type: 'error' });
+			} else toast.error(data.message || 'An Error occured in creating form');
 		},
 	});
 }
 
 export function useUpdateFormMutation(workspaceId: string, props: { onSuccess: () => void }) {
-	const { addMessagePopup } = usePopups();
-
 	return useMutation({
 		mutationKey: [queryKeys.forms],
 		mutationFn: (form: Partial<Form>) => apiClient(`/${workspaceId}/forms/update`, { method: 'POST', data: form }),
 		onSuccess: (data) => {
 			if (data && data.success) {
-				addMessagePopup({ id: 'successUpdatingForm', message: data.message || 'Form updated successfully', type: 'success' });
+				toast.success(data.message || 'Form updated successfully');
 				getQueryClient().invalidateQueries({ queryKey: [queryKeys.forms] });
 				props.onSuccess();
-			} else addMessagePopup({ id: 'errorUpdatingForm', message: 'An Error occured in updating form', type: 'error' });
+			} else toast.error(data.message || 'An Error occured in updating form');
 		},
 	});
 }
 
 export function useUpdateFormBodyMutation(workspaceId: string, formId: string, props: { onSuccess: () => void }) {
-	const { addMessagePopup } = usePopups();
-
 	return useMutation({
 		mutationKey: [queryKeys.forms],
 		mutationFn: async (data: any) => apiClient(`/${workspaceId}/forms/${formId}/update-form-body`, { method: 'POST', data: data }),
 		onSuccess: (data) => {
 			if (data && data.success) {
-				addMessagePopup({ id: 'saveForm', message: data.message || 'Successfully created form', type: 'success' });
+				toast.success(data.message || 'Form updated successfully');
 				props.onSuccess();
-			} else addMessagePopup({ id: 'errorCreateForm', message: 'Error in creating form', type: 'error' });
+			} else toast.error(data.message || 'An Error occured in updating form');
 		},
 	});
 }

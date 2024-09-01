@@ -12,13 +12,13 @@ import { PingLoader } from '@/components/lib/loaders';
 import { UnAuthorized } from '@/components/lib/notFound';
 import { Tooltip } from '@/components/lib/tooltip';
 import { usePermission } from '@/hooks/permission';
-import { usePopups } from '@/hooks/popups';
 import { PERMISSION_CREATE, PERMISSION_DELETE } from '@/utils/constants';
 import { cn } from '@/utils/helpers';
 import { WorkspaceInvite } from '@/utils/types';
 import UserPlusIcon from '@heroicons/react/24/outline/UserPlusIcon';
 import { useParams } from 'next/navigation';
 import { FormEvent, useRef } from 'react';
+import { toast } from 'sonner';
 
 export type WorkspaceInviteItemProps = WorkspaceInvite & { currentUserId: string; currentWorkspaceId?: string };
 
@@ -98,7 +98,6 @@ export function WorkspaceInvites(props: { currentUserId: string }) {
 
 export function SendWorkspaceInvite() {
 	const params = useParams();
-	const { addMessagePopup } = usePopups();
 	const formRef = useRef<HTMLFormElement>(null);
 	const { hasPermission } = usePermission();
 	const { mutateAsync: sendWorkspaceInvite, isPending } = useSendWorkspaceInviteMutation(formRef, params.workspaceId);
@@ -108,7 +107,7 @@ export function SendWorkspaceInvite() {
 		e.stopPropagation();
 		const formData = Object.fromEntries(new FormData(e.currentTarget).entries());
 		if (!formData.email) {
-			addMessagePopup({ id: 'inviteError', message: 'Email is required', type: 'error' });
+			toast.error('Email is required');
 			return;
 		}
 		sendWorkspaceInvite({ email: formData.email as string });

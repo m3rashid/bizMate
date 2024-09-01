@@ -1,10 +1,10 @@
 import { supportedWidgets } from '@/components/apps/forms/renderer/constants';
 import { FormElementType, Props } from '@/components/apps/forms/renderer/types';
-import { usePopups } from '@/hooks/popups';
 import { generateRandomString } from '@/utils/helpers';
 import { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { atom, useRecoilState } from 'recoil';
+import { toast } from 'sonner';
 
 const propsNodeNotSelected: Props = {
 	cancelText: [true, 'Text on cancel button', 'string'],
@@ -46,7 +46,6 @@ const formDesignerAtom = atom<FormDesigner>({
 });
 
 export function useFormDesigner() {
-	const { addMessagePopup } = usePopups();
 	const [{ formBody, viewType, selectedNode, rootProps }, setFormDesigner] = useRecoilState(formDesignerAtom);
 
 	function __setInitialFormBody(formBody: FormElementType[], cancelText: string, submitText: string) {
@@ -98,7 +97,7 @@ export function useFormDesigner() {
 	}
 
 	function updateNode(nodeKey: string, props: Props) {
-		addMessagePopup({ id: nodeKey, message: 'Updated Element', type: 'success' });
+		toast.success('Updated Element');
 		setFormDesigner((prev) => ({ ...prev, formBody: prev.formBody.map((node) => ({ ...node, props: node.id === nodeKey ? props : node.props })) }));
 	}
 

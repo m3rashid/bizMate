@@ -16,10 +16,11 @@ import TrashIcon from '@heroicons/react/24/outline/TrashIcon';
 import dayjs from 'dayjs';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 
 export function FormCard(props: Form & { onEdit: () => void; workspaceId: string }) {
 	const { t } = useTranslation();
-	const { addMessagePopup, addActionPopup } = usePopups();
+	const { addActionPopup } = usePopups();
 	const { mutate: deleteForm } = useDeleteFormMutation(props.id, props.workspaceId);
 
 	function handleDeleteForm() {
@@ -81,7 +82,7 @@ export function FormCard(props: Form & { onEdit: () => void; workspaceId: string
 						className='h-7 w-7 cursor-pointer rounded-lg bg-secondary p-1.5 text-white'
 						onClick={() => {
 							navigator.clipboard.writeText(`${window.location.host}/${props.workspaceId}/forms/${props.id}/fill`);
-							addMessagePopup({ id: props.id, message: 'Copied Form URL to clipboard', type: 'success' });
+							toast.success('Copied Form URL to clipboard');
 						}}
 					/>
 				</Tooltip>
