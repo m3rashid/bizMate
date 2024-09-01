@@ -46,7 +46,7 @@ export default async function RootLayout({ children }: Readonly<PropsWithChildre
 										success: 'border-green-200 text-green-400',
 										warning: 'border-yellow-200 text-yellow-400',
 										icon: 'w-6 h-6',
-										title: 'text-black font-sans font-medium',
+										title: 'text-black font-sans font-medium text-sm',
 										toast: 'flex w-full gap-2 rounded-md border border-l-4 bg-white p-2 shadow-lg items-center',
 									},
 								}}

@@ -71,7 +71,7 @@ export function FormCard(props: Form & { onEdit: () => void; workspaceId: string
 					<ClipboardIcon
 						className='h-7 w-7 cursor-pointer rounded-lg bg-secondary p-1.5 text-white'
 						onClick={() => {
-							navigator.clipboard.writeText(`${window.location.host}/${props.workspaceId}/forms/${props.id}/fill`);
+							navigator.clipboard.writeText(`${window.location.host}/${props.workspaceId}/forms/${props.id}`);
 							toast.success('Copied Form URL to clipboard');
 						}}
 					/>
