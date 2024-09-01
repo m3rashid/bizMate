@@ -1,9 +1,9 @@
 'use client';
 
 import { useDeleteFormMutation } from '@/api/forms/client';
+import { AlertDialog } from '@/components/lib/alertDialog';
 import { Chip } from '@/components/lib/chip';
 import { Tooltip } from '@/components/lib/tooltip';
-import { usePopups } from '@/hooks/popups';
 import { cn } from '@/utils/helpers';
 import { Form } from '@/utils/types';
 import EyeIcon from '@heroicons/react/20/solid/EyeIcon';
@@ -20,20 +20,7 @@ import { toast } from 'sonner';
 
 export function FormCard(props: Form & { onEdit: () => void; workspaceId: string }) {
 	const { t } = useTranslation();
-	const { addActionPopup } = usePopups();
 	const { mutate: deleteForm } = useDeleteFormMutation(props.id, props.workspaceId);
-
-	function handleDeleteForm() {
-		addActionPopup({
-			simple: true,
-			type: 'warning',
-			id: 'sureToDeleteForm',
-			title: 'Are you sure ?',
-			onConfirm: deleteForm,
-			confirmButtonLabel: 'Delete',
-			description: 'Are you sure you want to delete this form?',
-		});
-	}
 
 	return (
 		<div className='relative h-min select-none rounded-lg p-2.5 shadow-lg ring-2 ring-gray-100 hover:ring-primary'>
@@ -71,8 +58,11 @@ export function FormCard(props: Form & { onEdit: () => void; workspaceId: string
 				<Tooltip label='Edit Form' position='left'>
 					<PencilSquareIcon onClick={props.onEdit} className='h-8 w-8 rounded-md p-1.5 text-disabled hover:bg-primaryLight' />
 				</Tooltip>
+
 				<Tooltip label='Delete Form' position='left'>
-					<TrashIcon className='h-8 w-8 rounded-md p-1.5 text-disabled hover:bg-dangerLight' onClick={handleDeleteForm} />
+					<AlertDialog title='Are you sure?' confirmAction={deleteForm} description='Are you sure you want to delete this form?'>
+						<TrashIcon className='h-8 w-8 rounded-md p-1.5 text-disabled hover:bg-dangerLight' />
+					</AlertDialog>
 				</Tooltip>
 			</div>
 

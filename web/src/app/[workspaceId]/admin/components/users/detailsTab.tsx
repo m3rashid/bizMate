@@ -1,9 +1,9 @@
 'use client';
 
 import { useGetUserBarePermissions, useRemoveUserFromWorkspace } from '@/api/permissions/client';
+import { AlertDialog } from '@/components/lib/alertDialog';
 import { Button } from '@/components/lib/button';
 import { usePermission } from '@/hooks/permission';
-import { usePopups } from '@/hooks/popups';
 import { PERMISSION_DELETE } from '@/utils/constants';
 import { snakeCaseToSentenceCase } from '@/utils/helpers';
 import { User } from '@/utils/types';
@@ -11,7 +11,6 @@ import dayjs from 'dayjs';
 import { toast } from 'sonner';
 
 export function UserDetails(props: { workspaceId: string; user: User }) {
-	const { addActionPopup } = usePopups();
 	const { hasPermission } = usePermission();
 	const { data: barePermissions } = useGetUserBarePermissions(props.workspaceId, props.user.id);
 	const { mutateAsync: removeUserFromWorkspace } = useRemoveUserFromWorkspace(props.workspaceId, props.user.id);
@@ -21,16 +20,7 @@ export function UserDetails(props: { workspaceId: string; user: User }) {
 			toast.error('You do not have permission to remove this user');
 			return;
 		}
-
-		addActionPopup({
-			simple: true,
-			type: 'warning',
-			id: 'sureToRemoveUser',
-			title: 'Are you sure ?',
-			confirmButtonLabel: 'Remove',
-			onConfirm: removeUserFromWorkspace,
-			description: 'Are you sure you want to remove this user from the workspace?',
-		});
+		removeUserFromWorkspace();
 	}
 
 	const revokeButtonDisabled =
@@ -54,9 +44,15 @@ export function UserDetails(props: { workspaceId: string; user: User }) {
 			</table>
 
 			<div className='float-right mt-4'>
-				<Button size='small' variant='danger' onClick={handleRemoveUserFromWorkspace} disabled={revokeButtonDisabled}>
-					Remove user from workspace
-				</Button>
+				<AlertDialog
+					title='Are you sure?'
+					confirmAction={handleRemoveUserFromWorkspace}
+					description='Are you sure you want to remove this user from the workspace?'
+				>
+					<Button size='small' variant='danger' disabled={revokeButtonDisabled}>
+						Remove user from workspace
+					</Button>
+				</AlertDialog>
 			</div>
 		</div>
 	);

@@ -24,10 +24,11 @@ export function Tooltip(props: TooltipProps) {
 	}
 
 	return (
-		<div onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}>
+		<div onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)} onClick={() => setShow(false)}>
 			<div ref={domRef} className='cursor-pointer'>
 				{props.children}
 			</div>
+
 			{createPortal(
 				show ? (
 					<div style={getTooltipStyles()} className='absolute z-30 rounded-md border border-gray-200 bg-white px-2 py-1 text-sm shadow-md'>
