@@ -10,7 +10,7 @@ import (
 const verificationSenderEmail = "coold1741@gmail.com"
 const verificationHeloDomain = "gmail.com"
 
-func VerifyEmailExists(targetEmail string) bool {
+func VerifyEmailValid(targetEmail string) bool {
 	parts := strings.Split(targetEmail, "@")
 	if len(parts) != 2 {
 		return false
