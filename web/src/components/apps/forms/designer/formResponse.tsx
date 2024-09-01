@@ -30,7 +30,7 @@ export function FormResponsesTable(props: FormResponseTableProps) {
 				data={formResponses.data?.docs || []}
 				columns={formResponses.tableData || []}
 				title={`Form Responses (${formRes?.data.title})`}
-				tableExportprops={{ mutationKeys: [], formId: props.formId, tableName: 'form_response_table', workspaceId: props.workspaceId }}
+				// tableExportprops={{ mutationKeys: [], formId: props.formId, tableName: 'form_response_table', workspaceId: props.workspaceId }}
 				otherActions={
 					<Link href={`/${props.workspaceId}/forms/${props.formId}/analytics`}>
 						<Button size='small' LeftIcon={<ChartBarIcon className='h-4 w-4' />}>

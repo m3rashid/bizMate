@@ -75,7 +75,7 @@ func createNewForm(ctx *fiber.Ctx) error {
 			"title": reqBody.Title,
 		},
 	)
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(id, "Form Created Successfully"))
+	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(id, "Form created successfully, you can now add fields to the form"))
 }
 
 func paginateForms(ctx *fiber.Ctx) error {

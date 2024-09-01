@@ -27,9 +27,14 @@ export default async function FormPreview(props: NextjsPageProps<{ workspaceId: 
 	return (
 		<HydrationBoundary state={dehydrate(queryClient)}>
 			<PageContainer workspaceId={props.params.workspaceId} bodyClassName='flex flex-col items-center gap-4'>
-				<div className='flex w-full min-w-80 max-w-[650px] justify-end'>
+				<div className='flex w-full min-w-80 max-w-[650px] justify-between'>
+					<Link href={`/${props.params.workspaceId}/forms`}>
+						<Button size='small' variant='simple'>
+							Back to Forms
+						</Button>
+					</Link>
 					<Link href={`/${props.params.workspaceId}/forms/${props.params.formId}/designer`}>
-						<Button size='small'>Go to Desginer</Button>
+						<Button size='small'>Go to Designer</Button>
 					</Link>
 				</div>
 
