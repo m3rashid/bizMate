@@ -1,13 +1,11 @@
 import './globals.css';
 import TanstackQueryProvider from '@/api/provider';
 import { RecoilProvider } from '@/atoms/provider';
-import { PopupContainer } from '@/components/lib/popups';
 import { getTailwindColor } from '@/utils/helpers';
 import CheckCircleIcon from '@heroicons/react/20/solid/CheckCircleIcon';
 import ExclamationTriangleIcon from '@heroicons/react/20/solid/ExclamationTriangleIcon';
 import InformationCircleIcon from '@heroicons/react/20/solid/InformationCircleIcon';
 import XCircleIcon from '@heroicons/react/20/solid/XCircleIcon';
-import XMarkIcon from '@heroicons/react/20/solid/XMarkIcon';
 import type { Metadata } from 'next';
 import { ViewTransitions } from 'next-view-transitions';
 import { Inter } from 'next/font/google';
@@ -53,7 +51,6 @@ export default async function RootLayout({ children }: Readonly<PropsWithChildre
 									},
 								}}
 							/>
-							<PopupContainer />
 							{children}
 						</RecoilProvider>
 					</TanstackQueryProvider>
