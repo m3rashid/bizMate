@@ -8,7 +8,7 @@ import { usePermission } from '@/hooks/permission';
 import { PERMISSION_READ } from '@/utils/constants';
 import { cn } from '@/utils/helpers';
 import { Activity } from '@/utils/types';
-import dayjs from 'dayjs';
+import { format } from 'date-fns';
 
 export function ActivityTab(props: { workspaceId: string }) {
 	const { hasPermission } = usePermission();
@@ -26,7 +26,7 @@ export function ActivityTab(props: { workspaceId: string }) {
 		{
 			dataKey: 'time',
 			title: 'Time',
-			render: ({ row }) => dayjs(row.time).format('DD MMM YYYY HH:mm A'),
+			render: ({ row }) => format(new Date(row.time), 'DD MMM YYYY HH:mm A'),
 		},
 		{ dataKey: 'userEmail', title: 'User' },
 		{ dataKey: 'objectType', title: 'Object Type' },

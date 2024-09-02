@@ -1,7 +1,7 @@
 import { cn } from '@/utils/helpers';
 import { ButtonHTMLAttributes, ReactNode } from 'react';
 
-const buttonVariants = {
+export const buttonVariants = {
 	primary: 'bg-primary hover:bg-primary focus-visible:outline-primary',
 	danger: 'bg-danger hover:bg-danger focus-visible:outline-danger',
 	secondary: 'bg-secondary hover:bg-secondary focus-visible:outline-secondary',
@@ -13,7 +13,7 @@ const buttonVariants = {
 export type ButtonVariant = keyof typeof buttonVariants;
 export type ButtonSize = keyof typeof buttonSizes;
 
-const buttonSizes = {
+export const buttonSizes = {
 	small: 'px-3 py-1.5 text-sm',
 	medium: 'px-5 py-2 text-base',
 	large: 'px-7 py-2 text-base',

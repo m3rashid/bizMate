@@ -7,7 +7,7 @@ import { usePermission } from '@/hooks/permission';
 import { PERMISSION_DELETE } from '@/utils/constants';
 import { snakeCaseToSentenceCase } from '@/utils/helpers';
 import { User } from '@/utils/types';
-import dayjs from 'dayjs';
+import { format } from 'date-fns';
 import { toast } from 'sonner';
 
 export function UserDetails(props: { workspaceId: string; user: User }) {
@@ -36,7 +36,7 @@ export function UserDetails(props: { workspaceId: string; user: User }) {
 						return (
 							<tr key={key}>
 								<td className='py-0.5 pr-2 font-semibold'>{snakeCaseToSentenceCase(key)}</td>
-								<td className='py-0.5 pl-2'>{key === 'created_at' ? dayjs(value as any).format('DD MMM YYYY HH:mm A') : value}</td>
+								<td className='py-0.5 pl-2'>{key === 'created_at' ? format(new Date(value as string), 'DD MMM YYYY HH:mm A') : value}</td>
 							</tr>
 						);
 					})}

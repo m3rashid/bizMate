@@ -13,7 +13,7 @@ import InformationCircleIcon from '@heroicons/react/24/outline/InformationCircle
 import LockOpenIcon from '@heroicons/react/24/outline/LockOpenIcon';
 import PencilSquareIcon from '@heroicons/react/24/outline/PencilSquareIcon';
 import TrashIcon from '@heroicons/react/24/outline/TrashIcon';
-import dayjs from 'dayjs';
+import { format } from 'date-fns';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -49,9 +49,7 @@ export function FormCard(props: Form & { onEdit: () => void; workspaceId: string
 				</Tooltip>
 			</div>
 
-			<div className='mb-2 text-xs text-disabled'>
-				{t('Created')}: {dayjs(props.created_at).format('DD MMM, YYYY - HH:mm A')}
-			</div>
+			<div className='mb-2 text-xs text-disabled'>{`${t('Created')}: ${format(new Date(props.created_at), 'DD MMM, YYYY - HH:mm A')}`}</div>
 			{props.description ? <div className='text-sm'>{props.description}</div> : null}
 
 			<div className='absolute right-1 top-1'>

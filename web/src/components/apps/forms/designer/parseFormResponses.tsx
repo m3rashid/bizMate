@@ -5,7 +5,7 @@ import { Modal } from '@/components/lib/modal';
 import { ShowRichText } from '@/components/lib/showRichText';
 import { TableColumn } from '@/components/lib/table';
 import { CreatedBy, Form, FormResponse, PaginationResponse } from '@/utils/types';
-import dayjs from 'dayjs';
+import { format } from 'date-fns';
 import { useState } from 'react';
 
 export type FormResponsesType = {
@@ -77,7 +77,7 @@ export function parseFormResponses(
 					...acc,
 				],
 				[
-					{ title: 'Created At', dataKey: 'createdAt', render: ({ row }) => dayjs(row.createdAt).format('DD MMM, YYYY - HH:mm A') },
+					{ title: 'Created At', dataKey: 'createdAt', render: ({ row }) => format(new Date(row.createdAt), 'DD MMM, YYYY - HH:mm A') },
 					...(!form.allow_anonymous_responses
 						? [
 								{
