@@ -1,5 +1,4 @@
 import { cn } from '@/utils/helpers';
-import { filterBykeys } from '@/utils/helpers';
 import { ButtonHTMLAttributes, ReactNode } from 'react';
 
 const buttonVariants = {
@@ -28,21 +27,21 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 	size?: ButtonSize;
 };
 
-export function Button(props: ButtonProps) {
+export function Button({ LeftIcon, RightIcon, variant, label, size, ...props }: ButtonProps) {
 	return (
 		<button
-			{...filterBykeys(props, ['LeftIcon', 'RightIcon', 'variant', 'label', 'size'])}
+			{...props}
 			className={cn(
 				'inline-flex items-center justify-center gap-x-2 rounded-md font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2',
-				buttonVariants[props.variant ?? 'primary'],
-				buttonSizes[props.size ?? 'medium'],
+				buttonVariants[variant ?? 'primary'],
+				buttonSizes[size ?? 'medium'],
 				props.disabled ? `${buttonVariants['disabled']} cursor-not-allowed` : '',
 				props.className
 			)}
 		>
-			{props.LeftIcon ? props.LeftIcon : null}
-			{props.label ? props.label : props.children}
-			{props.RightIcon ? props.RightIcon : null}
+			{LeftIcon ? LeftIcon : null}
+			{label ? label : props.children}
+			{RightIcon ? RightIcon : null}
 		</button>
 	);
 }

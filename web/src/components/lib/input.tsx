@@ -1,14 +1,13 @@
 'use client';
 
 import { cn } from '@/utils/helpers';
-import { filterBykeys } from '@/utils/helpers';
 import EyeOpen from '@heroicons/react/20/solid/EyeIcon';
 import EyeClosed from '@heroicons/react/20/solid/EyeSlashIcon';
 import { ChangeEvent, FC, InputHTMLAttributes, useState } from 'react';
 
 export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
 	label?: string;
-	icon?: FC<any>;
+	Icon?: FC<any>;
 	errorText?: string;
 	labelClassName?: string;
 	descriptionText?: string;
@@ -16,36 +15,36 @@ export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
 	onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 };
 
-export function Input(props: InputProps) {
+export function Input({ label, Icon, errorText, labelClassName, descriptionText, rootClassName, ...props }: InputProps) {
 	const [inputType, setInputType] = useState(props.type);
 
 	return (
-		<div className={cn('w-full', props.rootClassName)}>
-			{props.label ? (
-				<label htmlFor={props.name} className={cn('block text-sm font-medium leading-6 text-gray-900', props.labelClassName)}>
-					{props.label}&nbsp;
+		<div className={cn('w-full', rootClassName)}>
+			{label ? (
+				<label htmlFor={props.name} className={cn('block text-sm font-medium leading-6 text-gray-900', labelClassName)}>
+					{label}&nbsp;
 					<span className='text-danger'>{props.required ? '*' : ''}</span>
 				</label>
 			) : null}
 
-			{props.errorText ? <p className='mt-1 text-sm text-red-500'>{props.errorText}</p> : null}
+			{errorText ? <p className='mt-1 text-sm text-red-500'>{errorText}</p> : null}
 
 			<div className='relative rounded-md shadow-sm'>
-				{props.icon ? (
+				{Icon ? (
 					<div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3'>
-						<props.icon className='h-5 w-5 text-gray-400' aria-hidden='true' />
+						<Icon className='h-5 w-5 text-gray-400' aria-hidden='true' />
 					</div>
 				) : null}
 
 				<input
-					{...filterBykeys(props, ['label', 'icon', 'errorText', 'labelClassName', 'descriptionText', 'rootClassName'])}
+					{...props}
 					id={props.name}
 					type={props.type === 'password' ? inputType : props.type}
 					className={cn(
 						'block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-disabled sm:text-sm sm:leading-6',
-						!props.icon ? '' : 'pl-10',
+						!Icon ? '' : 'pl-10',
 						props.type === 'password' ? 'pr-10' : '',
-						props.errorText ? 'text-red-500 ring-1 ring-inset ring-red-300 placeholder:text-red-300' : '',
+						errorText ? 'text-red-500 ring-1 ring-inset ring-red-300 placeholder:text-red-300' : '',
 						props.className
 					)}
 				/>
@@ -64,7 +63,7 @@ export function Input(props: InputProps) {
 				) : null}
 			</div>
 
-			{props.descriptionText ? <p className='mt-1 text-sm text-gray-500'>{props.descriptionText}</p> : null}
+			{descriptionText ? <p className='mt-1 text-sm text-gray-500'>{descriptionText}</p> : null}
 		</div>
 	);
 }

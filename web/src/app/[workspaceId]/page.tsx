@@ -1,6 +1,7 @@
 import { getSessionCookie } from '@/actions/auth';
 import { getQueryClientForServer } from '@/api/config';
 import { prefetchUserPermissions } from '@/api/permissions/server';
+import { DatePicker } from '@/components/lib/datePicker';
 import { PageNotFound } from '@/components/lib/notFound';
 import { PageContainer } from '@/components/pageContainer';
 import { createDefaultMeta, isUuid } from '@/utils/helpers';
@@ -26,6 +27,8 @@ export default async function WorkspaceHome(props: NextjsPageProps<{ workspaceId
 			<PageContainer workspaceId={props.params.workspaceId}>
 				<h1>Workspace Home</h1>
 				<p>WorkspaceID: {props.params.workspaceId}</p>
+
+				<DatePicker />
 			</PageContainer>
 		</HydrationBoundary>
 	);

@@ -1,5 +1,4 @@
 import { cn } from '@/utils/helpers';
-import { filterBykeys } from '@/utils/helpers';
 import { AnchorHTMLAttributes, FC, HTMLAttributes, ImgHTMLAttributes, createElement } from 'react';
 
 export type ParagraphProps = Omit<HTMLAttributes<HTMLParagraphElement>, 'children'> & {
@@ -42,13 +41,13 @@ export const headingVariants: Record<HeadingType, string> = {
 	h6: 'my-1 text-md ',
 } as const;
 export type HeadingProps = Omit<HTMLAttributes<HTMLHeadingElement>, 'children'> & { text: string; type?: HeadingType };
-export const Heading: FC<HeadingProps> = (props) => {
-	const type = props.type && headingTypes.includes(props.type) ? props.type : headingTypes[0];
+export const Heading: FC<HeadingProps> = ({ text, type, className, ...props }) => {
+	const _type = type && headingTypes.includes(type) ? type : headingTypes[0];
 
-	return createElement(type, {
-		...filterBykeys(props, ['text', 'type', 'className']),
-		className: cn('mx-0 block font-bold', headingVariants[type], props.className),
-		...{ ...props, children: props.text },
+	return createElement(_type, {
+		...props,
+		className: cn('mx-0 block font-bold', headingVariants[_type], className),
+		...{ ...props, children: text },
 	});
 };
 
