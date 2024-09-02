@@ -1,5 +1,5 @@
 import { Props } from '@/components/apps/forms/renderer/types';
-import { headingTypes } from '@/components/lib/extras';
+import { textTypes } from '@/components/lib/extras';
 
 export const phoneNumberInputProps: Props = {
 	name: [true, 'Name of the input element', 'string'],
@@ -11,11 +11,7 @@ export const phoneNumberInputProps: Props = {
 export const inputProps: Props = {
 	name: [true, 'Name of the input element', 'string'],
 	label: [true, 'Label of this field', 'string'],
-	type: [
-		true,
-		'Type of the input field',
-		['text', 'color', 'time', 'datetime-local', 'email', 'month', 'number', 'password', 'tel', 'url', 'week', 'date'],
-	],
+	type: [true, 'Type of the input field', ['text', 'color', 'email', 'number', 'password', 'tel', 'url']],
 	required: [false, 'It is required by the user to fill this field', 'boolean'],
 	descriptionText: [false, 'Describe more about this field', 'string'],
 };
@@ -27,12 +23,12 @@ export const textAreaInputProps: Props = {
 	descriptionText: [false, 'Describe more about this field', 'string'],
 };
 
-export const richTextInputProps: Props = {
-	name: [true, 'Name of the input element', 'string'],
-	label: [true, 'Label of this field', 'string'],
-	required: [false, 'It is required by the user to fill this field', 'boolean'],
-	descriptionText: [false, 'Describe more about this field', 'string'],
-};
+// export const richTextInputProps: Props = {
+// 	name: [true, 'Name of the input element', 'string'],
+// 	label: [true, 'Label of this field', 'string'],
+// 	required: [false, 'It is required by the user to fill this field', 'boolean'],
+// 	descriptionText: [false, 'Describe more about this field', 'string'],
+// };
 
 export const selectInputProps: Props = {
 	name: [true, 'Name of the input field', 'string'],
@@ -52,11 +48,14 @@ export const radioInputProps: Props = {
 	options: [false, 'Options for this select field', 'selectOptions'],
 };
 
-// Extra components (Native web to react components mapping)
-export const paragraphProps: Props = {
-	text: [false, 'Paragraph text you want to show', 'textarea'],
+export const dateInputProps: Props = {
+	name: [true, 'Name of the date field', 'string'],
+	label: [true, 'Label of this field', 'string'],
+	required: [false, 'It is required by the user to fill this field', 'boolean'],
+	descriptionText: [false, 'Describe more about this field', 'string'],
 };
 
+// Extra components (Native web to react components mapping)
 export const imageProps: Props = {
 	src: [true, 'URL of the image you want to show', 'string'],
 };
@@ -67,9 +66,9 @@ export const linkProps: Props = {
 	target: [false, 'Where should the link open: _blank(new tab), _self(same tab)', ['_blank', '_self']],
 };
 
-export const headingProps: Props = {
+export const textProps: Props = {
 	text: [false, 'Text you want to show', 'string'],
-	type: [false, 'Type of heading', headingTypes as any],
+	type: [false, 'Type of heading', textTypes as any],
 };
 
 export const codeProps: Props = {

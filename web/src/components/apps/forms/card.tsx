@@ -49,7 +49,7 @@ export function FormCard(props: Form & { onEdit: () => void; workspaceId: string
 				</Tooltip>
 			</div>
 
-			<div className='mb-2 text-xs text-disabled'>{`${t('Created')}: ${format(new Date(props.created_at), 'DD MMM, YYYY - HH:mm A')}`}</div>
+			<div className='mb-2 text-xs text-disabled'>{`${t('Created')}: ${format(new Date(props.created_at), 'dd MMM, yyyy - hh:mm aa')}`}</div>
 			{props.description ? <div className='text-sm'>{props.description}</div> : null}
 
 			<div className='absolute right-1 top-1'>
