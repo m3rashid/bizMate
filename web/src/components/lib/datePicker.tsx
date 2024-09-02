@@ -146,8 +146,8 @@ export const DatePicker = (props: DatePickerProps) => {
 						</ListboxButton>
 
 						<Transition show={open} as={Fragment} leave='transition ease-in duration-100' leaveFrom='opacity-100' leaveTo='opacity-0'>
-							<ListboxOptions className='absolute z-10 mt-1 w-fit min-w-[100px] overflow-auto rounded-md bg-white text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
-								<div className={cn('h-fit w-fit bg-white p-2 sm:p-3', props.className)}>
+							<ListboxOptions className='absolute z-10 mt-1 w-fit min-w-[300px] overflow-auto rounded-md bg-white text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
+								<div className={cn('h-fit w-full bg-white p-2 sm:p-3', props.className)}>
 									{/* header */}
 									<div className='mb-3 flex items-center justify-between py-2'>
 										<button
