@@ -43,7 +43,7 @@ function AddEditForm(props: AddEditFormProps) {
 	const { mutate: createForm } = useCreateFormMutation(props.workspaceId, {
 		onSuccess: (data) => {
 			props.onClose();
-			router.push(`/${props.workspaceId}/forms/${data.data}/designer`);
+			router.push(`/app/${props.workspaceId}/forms/${data.data}/designer`);
 		},
 	});
 

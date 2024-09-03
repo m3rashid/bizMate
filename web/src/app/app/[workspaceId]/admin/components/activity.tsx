@@ -26,7 +26,7 @@ export function ActivityTab(props: { workspaceId: string }) {
 		{
 			dataKey: 'time',
 			title: 'Time',
-			render: ({ row }) => format(new Date(row.time), 'DD MMM YYYY HH:mm A'),
+			render: ({ row }) => format(new Date(row.time), 'dd MMM, yyyy - hh:mm aa'),
 		},
 		{ dataKey: 'userEmail', title: 'User' },
 		{ dataKey: 'objectType', title: 'Object Type' },

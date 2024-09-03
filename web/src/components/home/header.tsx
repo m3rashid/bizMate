@@ -19,7 +19,7 @@ export async function Header(props: { workspaceId?: string }) {
 				</Link>
 			</div>
 
-			{!!props.workspaceId && user?.userId ? (
+			{!!props.workspaceId && !!user ? (
 				<>
 					<Search />
 					<PopoverMenu position='left' trigger='Actions' popoverPanelClassName='min-w-56 p-2'>

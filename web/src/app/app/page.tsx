@@ -8,17 +8,12 @@ import { WorkspaceInvites } from '@/components/workspaceInvite';
 import { createDefaultMeta } from '@/utils/helpers';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Metadata } from 'next';
-import { redirect } from 'next/navigation';
 
 export default async function ChooseWorkspace() {
 	const queryClient = getQueryClientForServer();
 	const sessionCookie = await getSessionCookie();
 	const user = await getUserFromCookie();
-
-	if (!sessionCookie || !user) {
-		// TODO: handle redirect
-		redirect('/auth/login');
-	}
+	if (!sessionCookie || !user) return null;
 
 	await prefetchWorkspacesList(queryClient, sessionCookie);
 	await prefetchWorkspaceInviteList(queryClient, sessionCookie);
@@ -34,7 +29,7 @@ export default async function ChooseWorkspace() {
 					</div>
 
 					<div className='m-1 flex h-full max-h-[500px] min-w-72 items-center justify-center overflow-auto overflow-x-hidden rounded-lg bg-white p-4 shadow-lg ring-2 ring-gray-100 hover:ring-primary sm:min-w-96 md:max-w-lg'>
-						<WorkspaceInvites currentUserId={user.userId} />
+						<WorkspaceInvites currentUserId={user?.userId} />
 					</div>
 				</div>
 			</PageContainer>

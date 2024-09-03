@@ -32,7 +32,7 @@ export function WorkspaceCard(workspace: Workspace) {
 
 	function handleSelectWorkspace() {
 		if (!isUuid(workspace.id)) return;
-		router.push('/' + workspace.id);
+		router.push('/app/' + workspace.id);
 	}
 
 	return (

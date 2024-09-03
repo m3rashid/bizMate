@@ -36,7 +36,7 @@ export function UserDetails(props: { workspaceId: string; user: User }) {
 						return (
 							<tr key={key}>
 								<td className='py-0.5 pr-2 font-semibold'>{snakeCaseToSentenceCase(key)}</td>
-								<td className='py-0.5 pl-2'>{key === 'created_at' ? format(new Date(value as string), 'DD MMM YYYY HH:mm A') : value}</td>
+								<td className='py-0.5 pl-2'>{key === 'created_at' ? format(new Date(value as string), 'dd MMM, yyyy - hh:mm aa') : value}</td>
 							</tr>
 						);
 					})}

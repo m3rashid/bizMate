@@ -2,7 +2,6 @@
 
 import { CookieUser } from '@/utils/types';
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
 
 export async function getSessionCookie() {
 	const cookie = cookies().get('token');
@@ -20,5 +19,4 @@ export async function getUserFromCookie(): Promise<CookieUser | null> {
 
 export async function logout() {
 	cookies().delete('token');
-	redirect('/auth/login');
 }

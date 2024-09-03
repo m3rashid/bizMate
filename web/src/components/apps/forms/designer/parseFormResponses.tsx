@@ -77,7 +77,7 @@ export function parseFormResponses(
 					...acc,
 				],
 				[
-					{ title: 'Created At', dataKey: 'createdAt', render: ({ row }) => format(new Date(row.createdAt), 'DD MMM, YYYY - HH:mm A') },
+					{ title: 'Created At', dataKey: 'createdAt', render: ({ row }) => format(new Date(row.createdAt), 'dd MMM, yyyy - hh:mm aa') },
 					...(!form.allow_anonymous_responses
 						? [
 								{

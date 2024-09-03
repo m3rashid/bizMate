@@ -22,10 +22,10 @@ export function FormDesignerTopBar(props: FormDesignerTopBarProps) {
 	const router = useRouter();
 	const { t } = useTranslation();
 	const { hasPermission } = usePermission();
-	const { viewType, changeViewType, formBody, rootProps } = useFormDesigner();
+	const { viewType, changeViewType, formBody } = useFormDesigner();
 
 	const { isPending, mutate: saveForm } = useUpdateFormBodyMutation(props.workspaceId, props.formId, {
-		onSuccess: () => router.push(`/${props.workspaceId}/forms/${props.formId}/preview?page=1`),
+		onSuccess: () => router.push(`/app/${props.workspaceId}/forms/${props.formId}/preview?page=1`),
 	});
 
 	function handleSaveForm() {
@@ -39,7 +39,6 @@ export function FormDesignerTopBar(props: FormDesignerTopBarProps) {
 			return;
 		}
 
-		console.log(rootProps, formBody);
 		const checkCondition = (val?: StringBoolean | undefined) => (val && val === 'on' ? true : false);
 		const form_body: FormElementType[] = formBody.map((el) => ({
 			...el,

@@ -26,7 +26,7 @@ export function FormCard(props: Form & { onEdit: () => void; workspaceId: string
 		<div className='relative h-min select-none rounded-lg p-2.5 shadow-lg ring-2 ring-gray-100 hover:ring-primary'>
 			<div className='flex flex-grow gap-2'>
 				<Link
-					href={`/${props.workspaceId}/forms/${props.id}/preview`}
+					href={`/app/${props.workspaceId}/forms/${props.id}/preview`}
 					className={cn('font-semibold underline', props.active ? 'text-success' : 'text-danger')}
 				>
 					{props.title}
@@ -69,14 +69,14 @@ export function FormCard(props: Form & { onEdit: () => void; workspaceId: string
 					<ClipboardIcon
 						className='h-7 w-7 cursor-pointer rounded-lg bg-secondary p-1.5 text-white'
 						onClick={() => {
-							navigator.clipboard.writeText(`${window.location.host}/${props.workspaceId}/forms/${props.id}`);
+							navigator.clipboard.writeText(`${window.location.host}/app/${props.workspaceId}/forms/${props.id}`);
 							toast.success('Copied Form URL to clipboard');
 						}}
 					/>
 				</Tooltip>
 
 				<Tooltip label='Show Form preview' position='right'>
-					<Link href={`/${props.workspaceId}/forms/${props.id}/preview`}>
+					<Link href={`/app/${props.workspaceId}/forms/${props.id}/preview`}>
 						<Chip>
 							<EyeIcon className='h-4 w-4' />
 						</Chip>
@@ -84,13 +84,13 @@ export function FormCard(props: Form & { onEdit: () => void; workspaceId: string
 				</Tooltip>
 
 				<Tooltip label='Show form Responses' position='right'>
-					<Link href={`/${props.workspaceId}/forms/${props.id}/responses`}>
+					<Link href={`/app/${props.workspaceId}/forms/${props.id}/responses`}>
 						<Chip>Responses</Chip>
 					</Link>
 				</Tooltip>
 
 				<Tooltip label='Show form Analytics' position='right'>
-					<Link href={`/${props.workspaceId}/forms/${props.id}/analytics`}>
+					<Link href={`/app/${props.workspaceId}/forms/${props.id}/analytics`}>
 						<Chip>Analytics</Chip>
 					</Link>
 				</Tooltip>

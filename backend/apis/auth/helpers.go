@@ -3,10 +3,12 @@ package auth
 import (
 	"bizMate/repository"
 	"bizMate/utils"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const user_login = "user_login"
@@ -84,4 +86,21 @@ func setTokenCookie(ctx *fiber.Ctx, token string) {
 
 func removeCookie(ctx *fiber.Ctx) {
 	ctx.ClearCookie("token")
+}
+
+func comparePasswords(hashedPassword string, password string) bool {
+	if err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password)); err != nil {
+		fmt.Println(err)
+		return false
+	}
+	return true
+}
+
+func hashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	if err != nil {
+		return "", err
+	}
+
+	return string(bytes), nil
 }
