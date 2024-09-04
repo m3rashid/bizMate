@@ -38,6 +38,7 @@ export function parseFormResponses(
 			formFields[form.form_body[i].props.name] = [
 				form.form_body[i].props.label || form.form_body[i].props.name,
 				form.form_body[i].props.required || false,
+				// @ts-ignore - TODO: Fix this
 				form.form_body[i].name === 'richTextInput',
 			];
 		}
