@@ -73,10 +73,8 @@ export function getTailwindColor(name: string) {
 	return colors[name];
 }
 
-export async function checkWorkspace(workspaceId: string, sessionCookie: any) {
-	const res = await apiClient<ApiResponse<Workspace>>(`/auth/${workspaceId}/check-workspace`, {
-		headers: { Authorization: sessionCookie },
-	});
+export async function checkWorkspace(workspaceId: string) {
+	const res = await apiClient<ApiResponse<Workspace>>(`/auth/${workspaceId}/check-workspace`);
 	return res;
 }
 
