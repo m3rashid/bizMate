@@ -10,17 +10,11 @@ import { PERMISSION_READ } from '@/utils/constants';
 import { isUuid } from '@/utils/helpers';
 import { NextjsPageProps } from '@/utils/types';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
-import { redirect } from 'next/navigation';
 
 export default async function FormAnalytics(props: NextjsPageProps<{ workspaceId: string; formId: string }>) {
 	const queryClient = getQueryClientForServer();
 	const sessionCookie = await getSessionCookie();
-	if (!sessionCookie) {
-		// TODO: handle redirect
-		redirect('/auth/login');
-	}
-
-	if (!isUuid(props.params.workspaceId) || !isUuid(props.params.formId)) return <PageNotFound />;
+	if (!isUuid(props.params.formId)) return <PageNotFound />;
 
 	const permissions = await getUserPermissionsOnServer(queryClient, props.params.workspaceId, sessionCookie);
 	if (!permissions || permissions.data.length === 0) return <UnAuthorizedPage />;

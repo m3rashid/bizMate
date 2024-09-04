@@ -1,8 +1,8 @@
-import { sessionTokenExpired } from './utils/helpers';
+import { checkWorkspace, isUuid, sessionTokenExpired } from './utils/helpers';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
 	const path = request.nextUrl.pathname;
 	const sessionCookie = request.cookies.get('token')?.value || null;
 	const isUserLoggedIn = !!sessionCookie && !sessionTokenExpired(sessionCookie);
@@ -11,11 +11,20 @@ export function middleware(request: NextRequest) {
 	const publicPaths = ['/', '/about', '/changelogs', '/feedback', '/pricing', '/terms', '/privacy', '/contact'];
 
 	if (isUserLoggedIn) {
-		if (loggedOutPaths.includes(path)) {
-			return NextResponse.redirect(new URL('/app', request.url));
+		if (loggedOutPaths.includes(path)) return NextResponse.redirect(new URL('/app', request.url));
+		if (path.includes('/app')) {
+			const pathParams = path.split('/app')[1];
+			if (!pathParams) {
+				//
+				// it is the /app route
+			} else {
+				const workspaceId = pathParams.split('/')[1];
+				if (!isUuid(workspaceId)) return NextResponse.rewrite(new URL('/app/not-found', request.url));
+				const res = await checkWorkspace(workspaceId, sessionCookie);
+				if (!res) return NextResponse.rewrite(new URL('/app/not-found', request.url));
+			}
 		}
 
-		// check workspaces and all that shit
 		return NextResponse.next();
 	} else {
 		if (!publicPaths.includes(path)) {
@@ -41,17 +50,6 @@ export const config = {
 		'/auth/register',
 		//
 		'/app',
-		'/app/:workspaceId',
-		//
-		'/app/:workspaceId/admin',
-		'/app/:workspaceId/admin/add-role',
-		'/app/:workspaceId/admin/edit-role/:roleId',
-		//
-		'/app/:workspaceId/forms',
-		'/app/:workspaceId/forms/:formId',
-		'/app/:workspaceId/forms/:formId/analytics',
-		'/app/:workspaceId/forms/:formId/designer',
-		'/app/:workspaceId/forms/:formId/preview',
-		'/app/:workspaceId/forms/:formId/responses',
+		'/app/:workspaceId*',
 	],
 };

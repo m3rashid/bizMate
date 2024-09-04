@@ -11,19 +11,13 @@ import { createDefaultMeta, isUuid } from '@/utils/helpers';
 import { ApiResponse, Form, NextjsPageProps } from '@/utils/types';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Metadata } from 'next';
-import { redirect } from 'next/navigation';
 
 export default async function FormDesigner(props: NextjsPageProps<{ workspaceId: string; formId: string }>) {
 	const queryClient = getQueryClientForServer();
 	const sessionCookie = await getSessionCookie();
-	if (!sessionCookie) {
-		// TODO: handle redirect
-		redirect('/auth/login');
-	}
+	if (!isUuid(props.params.formId)) return <PageNotFound />;
 
-	if (!isUuid(props.params.workspaceId) || !isUuid(props.params.formId)) return <PageNotFound />;
-
-	const permissions = await getUserPermissionsOnServer(queryClient, sessionCookie, props.params.workspaceId);
+	const permissions = await getUserPermissionsOnServer(queryClient, props.params.workspaceId, sessionCookie);
 	if (!permissions || permissions.data.length === 0) return <UnAuthorizedPage />;
 	if (!checkPermission(permissions.data, { object_type: 'form', level: PERMISSION_UPDATE })) return <UnAuthorizedPage />;
 

@@ -1,4 +1,3 @@
-import { getSessionCookie } from '@/actions/auth';
 import { apiClient, getQueryClientForServer } from '@/api/config';
 import { perfetchSingleFormById } from '@/api/forms/server';
 import { PreviewForm } from '@/components/apps/forms/designer/previewForm';
@@ -10,17 +9,10 @@ import { ApiResponse, Form, NextjsPageProps } from '@/utils/types';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 
 export default async function FormPreview(props: NextjsPageProps<{ workspaceId: string; formId: string }>) {
 	const queryClient = getQueryClientForServer();
-	const sessionCookie = await getSessionCookie();
-	if (!sessionCookie) {
-		// TODO: handle redirect
-		redirect('/auth/login');
-	}
-
-	if (!isUuid(props.params.workspaceId) || !isUuid(props.params.formId)) return <PageNotFound />;
+	if (!isUuid(props.params.formId)) return <PageNotFound />;
 
 	await perfetchSingleFormById(queryClient, props.params.workspaceId, props.params.formId);
 

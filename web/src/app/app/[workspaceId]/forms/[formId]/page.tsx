@@ -12,7 +12,7 @@ export default async function FillForm(props: NextjsPageProps<{ workspaceId: str
 	const queryClient = getQueryClientForServer();
 	const sessionCookie = await getSessionCookie();
 
-	if (!isUuid(props.params.workspaceId) || !isUuid(props.params.formId)) return <PageNotFound />;
+	if (!isUuid(props.params.formId)) return <PageNotFound />;
 
 	await perfetchSingleFormById(queryClient, props.params.workspaceId, props.params.formId);
 
