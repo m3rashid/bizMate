@@ -1,10 +1,10 @@
 import FormRenderer from '@/components/apps/forms/renderer/renderer';
 import { FormBuilder as FormBuilderType, SupportedWidgetName } from '@/components/apps/forms/renderer/types';
-import { Code, Heading, Image, Link, Paragraph } from '@/components/lib/extras';
+import { DatePicker } from '@/components/lib/datePicker';
+import { Code, Text, Image, Link } from '@/components/lib/extras';
 import { Input } from '@/components/lib/input';
 import { PhoneNumberInput } from '@/components/lib/phoneNumberInput';
 import { RadioInput } from '@/components/lib/radioInput';
-import { RichTextInput } from '@/components/lib/richTextInput';
 import { SelectListInput } from '@/components/lib/selectListInput';
 import { SingleSelectInput } from '@/components/lib/singleSelectInput';
 import { TextAreaInput } from '@/components/lib/textAreaInput';
@@ -16,16 +16,15 @@ export const widgetMap: Record<ExplicitAndAll<string, SupportedWidgetName>, { wi
 	togglerInput: { widget: TogglerInput },
 	input: { widget: Input },
 	textareaInput: { widget: TextAreaInput },
-	richTextInput: { widget: RichTextInput },
 	phoneNumberInput: { widget: PhoneNumberInput as any },
-	paragraph: { widget: Paragraph as any },
 	image: { widget: Image },
 	link: { widget: Link },
 	code: { widget: Code },
-	heading: { widget: Heading },
+	text: { widget: Text },
 	singleSelectInput: { widget: SingleSelectInput },
 	selectListInput: { widget: SelectListInput },
 	radioInput: { widget: RadioInput },
+	dateInput: { widget: DatePicker },
 };
 
 const FormBuilder: FormBuilderType = (props) => {

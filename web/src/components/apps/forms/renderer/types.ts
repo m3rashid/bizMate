@@ -3,14 +3,13 @@ import {
 	linkProps,
 	imageProps,
 	inputProps,
-	headingProps,
-	paragraphProps,
+	textProps,
 	radioInputProps,
 	selectInputProps,
 	togglerInputProps,
 	textAreaInputProps,
-	richTextInputProps,
 	phoneNumberInputProps,
+	dateInputProps,
 } from '@/components/apps/forms/renderer/exposedProps';
 import { Option } from '@/utils/types';
 import { FC, PropsWithChildren, SVGProps } from 'react';
@@ -20,15 +19,14 @@ export type SupportedWidget =
 	| { name: 'input'; props: GetProps<typeof inputProps> }
 	| { name: 'textareaInput'; props: GetProps<typeof textAreaInputProps> }
 	| { name: 'phoneNumberInput'; props: GetProps<typeof phoneNumberInputProps> }
-	| { name: 'richTextInput'; props: GetProps<typeof richTextInputProps> }
-	| { name: 'paragraph'; props: GetProps<typeof paragraphProps> }
 	| { name: 'image'; props: GetProps<typeof imageProps> }
 	| { name: 'link'; props: GetProps<typeof linkProps> }
-	| { name: 'heading'; props: GetProps<typeof headingProps> }
+	| { name: 'text'; props: GetProps<typeof textProps> }
 	| { name: 'code'; props: GetProps<typeof codeProps> }
 	| { name: 'togglerInput'; props: GetProps<typeof togglerInputProps> }
 	| { name: 'singleSelectInput'; props: GetProps<typeof selectInputProps> }
 	| { name: 'radioInput'; props: GetProps<typeof radioInputProps> }
+	| { name: 'dateInput'; props: GetProps<typeof dateInputProps> }
 	// these items are not for showing in left sidebar, just helper components
 	| { name: 'selectListInput'; props: any };
 

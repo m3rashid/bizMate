@@ -73,11 +73,28 @@ export function getTailwindColor(name: string) {
 	return colors[name];
 }
 
-export async function checkWorkspace(workspaceId: string, sessionCookie: any) {
-	const res = await apiClient<ApiResponse<Workspace>>(`/auth/${workspaceId}/check-workspace`, {
-		headers: { Authorization: sessionCookie },
-	});
+export async function checkWorkspace(workspaceId: string) {
+	const res = await apiClient<ApiResponse<Workspace>>(`/auth/${workspaceId}/check-workspace`);
 	return res;
+}
+
+function tokenTimeToDate(tokenTime: number) {
+	const date = new Date(0);
+	date.setUTCSeconds(tokenTime);
+	return date;
+}
+
+export function sessionTokenExpired(sessionCookie: string) {
+	try {
+		const token = sessionCookie.split('Bearer ')[1];
+		const tokenPayload = token.split('.')[1];
+		const payload = JSON.parse(atob(tokenPayload));
+		const tokenTime = tokenTimeToDate(payload.exp);
+		const currentTime = new Date();
+		return currentTime > tokenTime;
+	} catch (err) {
+		return true;
+	}
 }
 
 export function createDefaultMeta(_title: string, _description?: string): Metadata {
@@ -87,20 +104,20 @@ export function createDefaultMeta(_title: string, _description?: string): Metada
 		title,
 		description,
 		robots: 'index, follow',
-		icons: [
-			{ rel: 'icon', url: '/logo.png', type: 'image/png' },
-			{ rel: 'apple', url: '/logo.png', type: 'image/png' },
-		],
-		openGraph: {
-			title,
-			description,
-			images: [{ url: '/logo.png', alt: 'Bizmate Logo', width: 100, height: 100, type: 'image/png' }],
-		},
-		twitter: {
-			title,
-			description,
-			creator: '@m3_rashid',
-			images: [{ url: '/logo.png', alt: 'Bizmate Logo', width: 100, height: 100, type: 'image/png' }],
-		},
+		// icons: [
+		// 	{ rel: 'icon', url: '/logo.png', type: 'image/png' },
+		// 	{ rel: 'apple', url: '/logo.png', type: 'image/png' },
+		// ],
+		// openGraph: {
+		// 	title,
+		// 	description,
+		// 	images: [{ url: '/logo.png', alt: 'Bizmate Logo', width: 100, height: 100, type: 'image/png' }],
+		// },
+		// twitter: {
+		// 	title,
+		// 	description,
+		// 	creator: '@m3_rashid',
+		// 	images: [{ url: '/logo.png', alt: 'Bizmate Logo', width: 100, height: 100, type: 'image/png' }],
+		// },
 	};
 }

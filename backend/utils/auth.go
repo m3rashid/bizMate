@@ -7,7 +7,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type Claims struct {
@@ -15,6 +14,86 @@ type Claims struct {
 	UserID string `json:"userId"`
 	Avatar string `json:"avatar"`
 	jwt.RegisteredClaims
+}
+
+func GetUserEmailFromCtx(ctx *fiber.Ctx) string {
+	email := ctx.Locals("email")
+	if email == nil {
+		return ""
+	}
+	return email.(string)
+}
+
+func GetUserAndWorkspaceIdsOrZero(ctx *fiber.Ctx) (userId uuid.UUID, workspaceId uuid.UUID) {
+	return getId("userId", ctx), getId("workspaceId", ctx)
+}
+
+func GenerateJWT(userId uuid.UUID, email string, avatar string) (string, error) {
+	expirationTime := time.Now().Add(24 * time.Hour)
+	claims := &Claims{
+		Email:  email,
+		Avatar: avatar,
+		UserID: userId.String(),
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(expirationTime),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString([]byte(Env.SessionSecret))
+	if err != nil {
+		return "", err
+	}
+
+	return tokenString, nil
+}
+
+func CheckAuthMiddlewareWithWorkspace(ctx *fiber.Ctx) error {
+	claims := getClaims(ctx)
+	if claims == nil {
+		return ctx.SendStatus(fiber.StatusUnauthorized)
+	}
+
+	userId, workspaceId := parseAndGetAuthLocals(claims, ctx)
+	if userId == uuid.Nil || workspaceId == uuid.Nil {
+		return ctx.SendStatus(fiber.StatusUnauthorized)
+	}
+
+	setAuthLocals(ctx, claims.Email, userId, workspaceId, true)
+	return ctx.Next()
+}
+
+func CheckAuthMiddlewareButAllowUnauthorized(ctx *fiber.Ctx) error {
+	claims := getClaims(ctx)
+	if claims == nil {
+		return ctx.Next()
+	}
+
+	userId, workspaceId := parseAndGetAuthLocals(claims, ctx)
+	if userId == uuid.Nil {
+		return ctx.SendStatus(fiber.StatusUnauthorized)
+	}
+
+	authorized := userId != uuid.Nil && workspaceId != uuid.Nil
+	setAuthLocals(ctx, claims.Email, userId, workspaceId, authorized)
+
+	return ctx.Next()
+}
+
+func CheckAuthMiddlewareWithoutWorkspace(ctx *fiber.Ctx) error {
+	claims := getClaims(ctx)
+	if claims == nil {
+		return ctx.SendStatus(fiber.StatusUnauthorized)
+	}
+
+	userId, _ := parseAndGetAuthLocals(claims, ctx)
+	if userId == uuid.Nil {
+		return ctx.SendStatus(fiber.StatusUnauthorized)
+	}
+
+	setAuthLocals(ctx, claims.Email, userId, uuid.Nil, true)
+	return ctx.Next()
 }
 
 func parseAndGetAuthLocals(claims *Claims, ctx *fiber.Ctx) (uuid.UUID, uuid.UUID) {
@@ -67,56 +146,10 @@ func getClaims(ctx *fiber.Ctx) *Claims {
 
 	claims, err := parseTokenToClaims(token)
 	if err != nil {
+		fmt.Println("parseTokenToClaims(token): ", err)
 		return nil
 	}
 	return claims
-}
-
-func CheckAuthMiddlewareWithoutWorkspace(ctx *fiber.Ctx) error {
-	claims := getClaims(ctx)
-	if claims == nil {
-		return ctx.SendStatus(fiber.StatusUnauthorized)
-	}
-
-	userId, _ := parseAndGetAuthLocals(claims, ctx)
-	if userId == uuid.Nil {
-		return ctx.SendStatus(fiber.StatusUnauthorized)
-	}
-
-	setAuthLocals(ctx, claims.Email, userId, uuid.Nil, true)
-	return ctx.Next()
-}
-
-func CheckAuthMiddlewareWithWorkspace(ctx *fiber.Ctx) error {
-	claims := getClaims(ctx)
-	if claims == nil {
-		return ctx.SendStatus(fiber.StatusUnauthorized)
-	}
-
-	userId, workspaceId := parseAndGetAuthLocals(claims, ctx)
-	if userId == uuid.Nil || workspaceId == uuid.Nil {
-		return ctx.SendStatus(fiber.StatusUnauthorized)
-	}
-
-	setAuthLocals(ctx, claims.Email, userId, workspaceId, true)
-	return ctx.Next()
-}
-
-func CheckAuthMiddlewareButAllowUnauthorized(ctx *fiber.Ctx) error {
-	claims := getClaims(ctx)
-	if claims == nil {
-		return ctx.Next()
-	}
-
-	userId, workspaceId := parseAndGetAuthLocals(claims, ctx)
-	if userId == uuid.Nil {
-		return ctx.SendStatus(fiber.StatusUnauthorized)
-	}
-
-	authorized := userId != uuid.Nil && workspaceId != uuid.Nil
-	setAuthLocals(ctx, claims.Email, userId, workspaceId, authorized)
-
-	return ctx.Next()
 }
 
 func getId(key string, ctx *fiber.Ctx) uuid.UUID {
@@ -130,56 +163,6 @@ func getId(key string, ctx *fiber.Ctx) uuid.UUID {
 		return uuid.Nil
 	}
 	return id
-}
-
-func GetUserEmailFromCtx(ctx *fiber.Ctx) string {
-	email := ctx.Locals("email")
-	if email == nil {
-		return ""
-	}
-	return email.(string)
-}
-
-func GetUserAndWorkspaceIdsOrZero(ctx *fiber.Ctx) (userId uuid.UUID, workspaceId uuid.UUID) {
-	return getId("userId", ctx), getId("workspaceId", ctx)
-}
-
-func GenerateJWT(userId uuid.UUID, email string, avatar string) (string, error) {
-	expirationTime := time.Now().Add(24 * time.Hour)
-	claims := &Claims{
-		Email:  email,
-		Avatar: avatar,
-		UserID: userId.String(),
-		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(expirationTime),
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte(Env.SessionSecret))
-	if err != nil {
-		return "", err
-	}
-
-	return tokenString, nil
-}
-
-func ComparePasswords(hashedPassword string, password string) bool {
-	if err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password)); err != nil {
-		fmt.Println(err)
-		return false
-	}
-	return true
-}
-
-func HashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
-	if err != nil {
-		return "", err
-	}
-
-	return string(bytes), nil
 }
 
 func parseTokenToClaims(tokenString string) (*Claims, error) {

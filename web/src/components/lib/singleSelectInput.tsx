@@ -6,7 +6,7 @@ import { Option } from '@/utils/types';
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from '@headlessui/react';
 import CheckIcon from '@heroicons/react/20/solid/CheckIcon';
 import ChevronUpDownIcon from '@heroicons/react/20/solid/ChevronUpDownIcon';
-import { useState, Fragment, FC, useMemo } from 'react';
+import { useState, Fragment, FC, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 export type SingleSelectInputProps = {
@@ -24,6 +24,8 @@ export type SingleSelectInputProps = {
 	required?: boolean;
 	labelClassName?: string;
 	descriptionText?: string;
+	buttonClassName?: string;
+	noIcon?: boolean;
 };
 
 export function SingleSelectInput(props: SingleSelectInputProps) {
@@ -42,6 +44,11 @@ export function SingleSelectInput(props: SingleSelectInputProps) {
 	}, [props.options]);
 
 	const [selectedOptionValue, setSelectedOptionValue] = useState<string>(props.value || props.default || options[0]?.value || '');
+
+	useEffect(() => {
+		setSelectedOptionValue(options.find((option) => option.value === props.value)?.value || '');
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [props.value]);
 
 	return (
 		<Listbox
@@ -64,7 +71,13 @@ export function SingleSelectInput(props: SingleSelectInputProps) {
 					{props.errorText ? <p className='mt-1 text-sm text-red-500'>{props.errorText}</p> : null}
 
 					<div className='relative w-full'>
-						<ListboxButton className='text-labelColor relative min-h-9 w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm sm:leading-6'>
+						<ListboxButton
+							className={cn(
+								'text-labelColor relative min-h-9 w-full cursor-default rounded-md bg-white py-1.5 pl-3 text-left shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm sm:leading-6',
+								!props.noIcon ? 'pr-10' : 'pr-3',
+								props.buttonClassName
+							)}
+						>
 							{props.render ? (
 								<props.render
 									focus={false}
@@ -75,13 +88,15 @@ export function SingleSelectInput(props: SingleSelectInputProps) {
 								<div className='w-full'>{options.find((option) => option.value === selectedOptionValue)?.label || props.default}</div>
 							)}
 
-							<span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
-								<ChevronUpDownIcon className='h-5 w-5 text-gray-400' aria-hidden='true' />
-							</span>
+							{!props.noIcon ? (
+								<span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
+									<ChevronUpDownIcon className='h-5 w-5 text-gray-400' aria-hidden='true' />
+								</span>
+							) : null}
 						</ListboxButton>
 
 						<Transition show={open} as={Fragment} leave='transition ease-in duration-100' leaveFrom='opacity-100' leaveTo='opacity-0'>
-							<ListboxOptions className='absolute z-20 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
+							<ListboxOptions className='absolute z-20 mt-1 max-h-60 w-full min-w-[100px] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
 								{options.map((option) => (
 									<ListboxOption
 										key={option.value}

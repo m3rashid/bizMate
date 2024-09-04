@@ -22,7 +22,8 @@ export function getFormAnalyticsByFormId(workspaceId: string, formId: string, se
 		});
 }
 
-export function perfetchFormAnalytics(queryClient: QueryClient, workspaceId: string, formId: string, sessionCookie: string) {
+export function perfetchFormAnalytics(queryClient: QueryClient, workspaceId: string, formId: string, sessionCookie?: string) {
+	if (!sessionCookie) return;
 	return queryClient.prefetchQuery({
 		queryKey: [queryKeys.formAnalytics],
 		queryFn: getFormAnalyticsByFormId(workspaceId, formId, sessionCookie),

@@ -46,12 +46,12 @@ function propsToFormBody({ _props, values }: PropsToFormBodyProps): FormElementT
 					defaultChecked: values[key] ? values[key] === 'on' : false,
 				},
 			});
-		} else if (value === 'richText') {
-			formBody.push({
-				id,
-				name: 'richTextInput',
-				props: { required, name: key, defaultValue: values[key], descriptionText: description, label: camelCaseToSentenceCase(key) },
-			});
+			// } else if (value === 'richText') {
+			// 	formBody.push({
+			// 		id,
+			// 		name: 'richTextInput',
+			// 		props: { required, name: key, defaultValue: values[key], descriptionText: description, label: camelCaseToSentenceCase(key) },
+			// 	});
 		} else if (Array.isArray(value)) {
 			formBody.push({
 				id,

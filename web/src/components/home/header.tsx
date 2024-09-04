@@ -19,7 +19,7 @@ export async function Header(props: { workspaceId?: string }) {
 				</Link>
 			</div>
 
-			{!!props.workspaceId && user?.userId ? (
+			{!!props.workspaceId && !!user ? (
 				<>
 					<Search />
 					<PopoverMenu position='left' trigger='Actions' popoverPanelClassName='min-w-56 p-2'>
@@ -27,15 +27,13 @@ export async function Header(props: { workspaceId?: string }) {
 
 						<Logout handleClick={logout} />
 
-						<Link href='/auth/choose-workspace' className='m-0 block cursor-pointer rounded-lg px-2 py-1 hover:bg-gray-100 hover:font-semibold'>
+						<Link href='/app' className='m-0 block cursor-pointer rounded-lg px-2 py-1 hover:bg-gray-100 hover:font-semibold'>
 							Change Workspace
 						</Link>
 					</PopoverMenu>
 				</>
 			) : (
-				<div className='flex gap-2'>
-					{user && user.userId ? <Link href='/auth/choose-workspace'>Goto App</Link> : <Link href='/auth/login'>Login</Link>}
-				</div>
+				<div className='flex gap-2'>{user && user.userId ? <Link href='/app'>Goto App</Link> : <Link href='/auth/login'>Login</Link>}</div>
 			)}
 		</div>
 	);

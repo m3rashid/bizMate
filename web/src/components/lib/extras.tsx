@@ -1,5 +1,4 @@
 import { cn } from '@/utils/helpers';
-import { filterBykeys } from '@/utils/helpers';
 import { AnchorHTMLAttributes, FC, HTMLAttributes, ImgHTMLAttributes, createElement } from 'react';
 
 export type ParagraphProps = Omit<HTMLAttributes<HTMLParagraphElement>, 'children'> & {
@@ -30,25 +29,26 @@ export function Link(props: LinkProps) {
 	);
 }
 
-export const headingTypes = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] as const;
-type HeadingType = (typeof headingTypes)[number];
+export const textTypes = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p'] as const;
+type TextType = (typeof textTypes)[number];
 
-export const headingVariants: Record<HeadingType, string> = {
-	h1: 'my-2 text-4xl',
-	h2: 'my-2 text-3xl',
-	h3: 'my-2 text-2xl',
-	h4: 'my-1 text-xl',
-	h5: 'my-1 text-lg',
-	h6: 'my-1 text-md ',
+export const textVariants: Record<TextType, string> = {
+	h1: 'my-2 text-4xl font-bold',
+	h2: 'my-2 text-3xl font-bold',
+	h3: 'my-2 text-2xl font-bold',
+	h4: 'my-1 text-xl font-bold',
+	h5: 'my-1 text-lg font-bold',
+	h6: 'my-1 text-md font-bold',
+	p: 'my-1 text-md',
 } as const;
-export type HeadingProps = Omit<HTMLAttributes<HTMLHeadingElement>, 'children'> & { text: string; type?: HeadingType };
-export const Heading: FC<HeadingProps> = (props) => {
-	const type = props.type && headingTypes.includes(props.type) ? props.type : headingTypes[0];
+export type HeadingProps = Omit<HTMLAttributes<HTMLHeadingElement>, 'children'> & { text: string; type?: TextType };
+export const Text: FC<HeadingProps> = ({ text, type, className, ...props }) => {
+	const _type = type && textTypes.includes(type) ? type : textTypes[0];
 
-	return createElement(type, {
-		...filterBykeys(props, ['text', 'type', 'className']),
-		className: cn('mx-0 block font-bold', headingVariants[type], props.className),
-		...{ ...props, children: props.text },
+	return createElement(_type, {
+		...props,
+		className: cn('mx-0 block', textVariants[_type], className),
+		...{ ...props, children: text },
 	});
 };
 

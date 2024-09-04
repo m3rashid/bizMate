@@ -111,7 +111,7 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusUnauthorized, "User not found")
 	}
 
-	if !utils.ComparePasswords(user.Password, reqBody.Password) {
+	if !comparePasswords(user.Password, reqBody.Password) {
 		go utils.LogError(user_login, user.Email, uuid.Nil, repository.UserObjectType)
 		return fiber.NewError(fiber.StatusUnauthorized, "Invalid credentials")
 	}
@@ -152,7 +152,7 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
-	password, err := utils.HashPassword(reqBody.Password)
+	password, err := hashPassword(reqBody.Password)
 	if err != nil {
 		go utils.LogError(
 			user_register,
@@ -163,11 +163,6 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 				"error": err.Error(),
 			},
 		)
-		return fiber.NewError(fiber.StatusInternalServerError)
-	}
-
-	id, err := utils.GenerateUuidV7()
-	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
@@ -183,6 +178,11 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 			},
 		)
 		return fiber.NewError(fiber.StatusBadRequest, "Invalid email")
+	}
+
+	id, err := utils.GenerateUuidV7()
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
 	newUser := repository.CreateUserParams{

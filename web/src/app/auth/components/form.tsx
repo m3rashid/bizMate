@@ -32,10 +32,10 @@ export function CredentialsAuthForm(props: CredentialsAuthFormProps) {
 			});
 
 			const data = await res.json();
-			console.log(data);
 			if (data && data.success) {
 				toast.success(props.type === 'login' ? 'Successfully Logged in' : 'Successfully Created account');
-				router.replace('/auth/choose-workspace');
+				router.refresh();
+				// router.replace('/auth/choose-workspace');
 			} else throw new Error(data.message || ('Failed to ' + props.type === 'login' ? 'login' : 'create account'));
 			// TODO: handle redirects
 		} catch (err: any) {
