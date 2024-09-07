@@ -23,7 +23,7 @@ WHERE ce.deleted = false
   AND ce.is_private = false OR sqlc.arg(is_private)::bool = true
   AND ce.workspace_id = $1
   AND cep.user_id = $2 -- Current user ID
-	AND ce.start_time >= sqlc.arg(start_time)::pgtype.Timestamptz -- yyyy-mm-dd format
-  AND ce.start_time <= sqlc.arg(end_time)::pgtype.Timestamptz -- yyyy-mm-dd format
-  AND ce.end_time >= sqlc.arg(start_time)::pgtype.Timestamptz
-  AND ce.end_time <= sqlc.arg(end_time)::pgtype.Timestamptz;
+	AND ce.start_time >= sqlc.arg(start_time)::TIMESTAMP WITH TIME ZONE -- yyyy-mm-dd format
+  AND ce.start_time <= sqlc.arg(end_time)::TIMESTAMP WITH TIME ZONE -- yyyy-mm-dd format
+  AND ce.end_time >= sqlc.arg(start_time)::TIMESTAMP WITH TIME ZONE
+  AND ce.end_time <= sqlc.arg(end_time)::TIMESTAMP WITH TIME ZONE;

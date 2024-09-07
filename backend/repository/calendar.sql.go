@@ -86,18 +86,18 @@ WHERE ce.deleted = false
   AND ce.is_private = false OR $3::bool = true
   AND ce.workspace_id = $1
   AND cep.user_id = $2 -- Current user ID
-	AND ce.start_time >= $4::pgtype.Timestamptz -- yyyy-mm-dd format
-  AND ce.start_time <= $5::pgtype.Timestamptz -- yyyy-mm-dd format
-  AND ce.end_time >= $4::pgtype.Timestamptz
-  AND ce.end_time <= $5::pgtype.Timestamptz
+	AND ce.start_time >= $4::TIMESTAMP WITH TIME ZONE -- yyyy-mm-dd format
+  AND ce.start_time <= $5::TIMESTAMP WITH TIME ZONE -- yyyy-mm-dd format
+  AND ce.end_time >= $4::TIMESTAMP WITH TIME ZONE
+  AND ce.end_time <= $5::TIMESTAMP WITH TIME ZONE
 `
 
 type GetCalendarEventsInRangeByWorkspaceParams struct {
-	WorkspaceID uuid.UUID   `json:"workspace_id"`
-	UserID      uuid.UUID   `json:"user_id"`
-	IsPrivate   bool        `json:"is_private"`
-	StartTime   interface{} `json:"start_time"`
-	EndTime     interface{} `json:"end_time"`
+	WorkspaceID uuid.UUID          `json:"workspace_id"`
+	UserID      uuid.UUID          `json:"user_id"`
+	IsPrivate   bool               `json:"is_private"`
+	StartTime   pgtype.Timestamptz `json:"start_time"`
+	EndTime     pgtype.Timestamptz `json:"end_time"`
 }
 
 func (q *Queries) GetCalendarEventsInRangeByWorkspace(ctx context.Context, arg GetCalendarEventsInRangeByWorkspaceParams) ([]CalendarEvent, error) {

@@ -20,7 +20,7 @@ function safeStringToNumber(str?: string) {
 	return isNaN(num) ? undefined : num;
 }
 
-type CalendarParamsReturnType = { view: CalendarViewType; day?: number; month?: number; week?: number; year?: number };
+export type CalendarParamsReturnType = { view: CalendarViewType; day?: number; month?: number; week?: number; year?: number };
 export function getCalendarParams(params: CalendarPossibleQueryParams): CalendarParamsReturnType {
 	return {
 		view: params.view && calendarViewTypes.includes(params.view) ? params.view : 'week',
