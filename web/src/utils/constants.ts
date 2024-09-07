@@ -12,6 +12,7 @@ export const permissionObjectTypes = [
 	'permission',
 	'role',
 	'activity',
+	'calendar_event',
 ] as const;
 
 export const PERMISSION_NONE = 1;

@@ -18,6 +18,43 @@ type BarePermission struct {
 	Level       PermissionLevel `json:"level"`
 }
 
+type CalendarEvent struct {
+	ID             uuid.UUID          `json:"id"`
+	Deleted        *bool              `json:"deleted"`
+	CreatedAt      pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt      pgtype.Timestamptz `json:"updated_at"`
+	Name           string             `json:"name"`
+	IsPrivate      *bool              `json:"is_private"`
+	StartTime      pgtype.Timestamptz `json:"start_time"`
+	EndTime        pgtype.Timestamptz `json:"end_time"`
+	RecurrenceRule *string            `json:"recurrence_rule"`
+	Description    *string            `json:"description"`
+	CreatedByID    uuid.UUID          `json:"created_by_id"`
+	WorkspaceID    uuid.UUID          `json:"workspace_id"`
+}
+
+type CalendarEventException struct {
+	ID             uuid.UUID          `json:"id"`
+	EventID        uuid.UUID          `json:"event_id"`
+	OccurrenceTime pgtype.Timestamptz `json:"occurrence_time"`
+	Action         int32              `json:"action"`
+	CreatedByID    uuid.UUID          `json:"created_by_id"`
+}
+
+type CalendarEventInvite struct {
+	ID          uuid.UUID          `json:"id"`
+	EventID     uuid.UUID          `json:"event_id"`
+	UserID      uuid.UUID          `json:"user_id"`
+	Status      int32              `json:"status"`
+	CreatedByID uuid.UUID          `json:"created_by_id"`
+	CreatedAt   pgtype.Timestamptz `json:"created_at"`
+}
+
+type CalendarEventParticipant struct {
+	UserID  uuid.UUID `json:"user_id"`
+	EventID uuid.UUID `json:"event_id"`
+}
+
 type Form struct {
 	ID                      uuid.UUID          `json:"id"`
 	Deleted                 *bool              `json:"deleted"`

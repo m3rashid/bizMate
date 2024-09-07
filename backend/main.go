@@ -3,6 +3,7 @@ package main
 import (
 	"bizMate/apis/activity"
 	"bizMate/apis/auth"
+	"bizMate/apis/calendar"
 	"bizMate/apis/export"
 	"bizMate/apis/forms"
 	"bizMate/apis/payments"
@@ -57,6 +58,7 @@ func main() {
 	payments.Setup("/api/:workspaceId/payments", app)
 	permissions.Setup("/api/:workspaceId/permissions", app)
 	activity.Setup("/api/:workspaceId/activity", app)
+	calendar.Setup("/api/:workspaceId/calendar", app)
 
 	log.Println("Server is running in "+utils.Env.ServerMode+" mode on port:", utils.Env.Port)
 	app.Listen(":" + utils.Env.Port)

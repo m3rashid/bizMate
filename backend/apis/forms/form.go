@@ -9,8 +9,8 @@ import (
 )
 
 func createNewForm(ctx *fiber.Ctx) error {
-	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	userEmail := utils.GetUserEmailFromCtx(ctx)
+	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	if userId == uuid.Nil || workspaceId == uuid.Nil {
 		return fiber.NewError(fiber.StatusBadRequest, "User or Workspace not present")
 	}

@@ -12,4 +12,5 @@ export const queryKeys = {
 	barePermissions: 'barePermissions',
 	userActivity: 'userActivity',
 	workspaceActivity: 'workspaceActivity',
+	calendarEvents: 'calendarEvents',
 } as const;

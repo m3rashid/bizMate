@@ -26,6 +26,7 @@ const (
 	PermissionObjectType      ObjectType = "permission"
 	RoleObjectType            ObjectType = "role"
 	ActivityObjectType        ObjectType = "activity"
+	CalendarEventObjectType   ObjectType = "calendar_event"
 )
 
 type SingleRolePermission struct {

@@ -36,6 +36,19 @@ export const apps: App[] = [
 		],
 	},
 	{
+		name: 'Calendar',
+		description: "Manage your workspace's calendar",
+		routes: [
+			{
+				name: 'Calendar',
+				objectType: 'calendar_event',
+				icon: PresentationChartLineIcon,
+				description: 'Manage your workspace calendar',
+				link: `/app/${workspaceKey}/calendar`,
+			},
+		],
+	},
+	{
 		name: 'Admin',
 		description: "Manage your workspace's settings",
 		routes: [
