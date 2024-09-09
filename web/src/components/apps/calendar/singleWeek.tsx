@@ -49,7 +49,7 @@ const getEventStyles = (event: (typeof events)[number]) => {
 };
 
 export function SingleWeekCalendar(props: SingleWeekCalendarProps) {
-	const { calendar, getActiveDate, changeCalendarDay, setCalendar } = useCalendar();
+	const { getActiveDate, changeCalendarDay, setCalendar } = useCalendar();
 
 	const daysInWeek = eachDayOfInterval({
 		start: startOfWeek(getActiveDate()),
@@ -99,7 +99,7 @@ export function SingleWeekCalendar(props: SingleWeekCalendarProps) {
 			))}
 
 			{events.map((event) => (
-				<div key={event.id} className='absolute rounded bg-blue-300 p-2 text-white' style={getEventStyles(event)}>
+				<div key={event.id} className='absolute rounded bg-blue-400 p-2 text-white' style={getEventStyles(event)}>
 					{event.title}
 				</div>
 			))}

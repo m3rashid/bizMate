@@ -22,10 +22,10 @@ export function SmallCalendar() {
 						key={day.toString()}
 						onClick={() => changeCalendarDay(day.getDate())}
 						className={cn(
-							'select-none rounded-full p-2 text-center',
-							isToday(day) ? 'cursor-pointer ring-2 ring-primary' : '',
-							isSameDay(day, getActiveDate()) ? 'bg-primaryLight text-white' : '',
-							isSameMonth(day, getActiveDate()) ? 'cursor-pointer text-gray-800 hover:bg-primaryLight' : 'text-gray-400'
+							'flex h-8 w-8 select-none items-center justify-center rounded-full text-center ring-2 ring-white',
+							isSameMonth(day, getActiveDate()) ? 'cursor-pointer text-gray-800 hover:bg-primaryLight hover:ring-primaryLight' : 'text-gray-400',
+							isSameDay(day, getActiveDate()) ? 'bg-primary text-white' : '',
+							isToday(day) ? 'cursor-pointer ring-primary' : ''
 						)}
 					>
 						{format(day, 'd')}
