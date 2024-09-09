@@ -10,11 +10,12 @@ export function CalendarHeader() {
 	const { openAddEditModal, calendar, changeCalendarView } = useCalendar();
 
 	return (
-		<div className='flex items-center justify-between gap-4'>
+		<div className='flex flex-col items-center justify-between gap-4 p-2 sm:flex-row sm:p-3'>
 			<h1 className='text-xl font-semibold'>Calendar events</h1>
 
 			<div className='flex items-center gap-2'>
 				<SingleSelectInput
+					buttonClassName='min-h-7 max-h-[34px]'
 					value={calendar.currentView}
 					onChange={(value) => changeCalendarView(value as any)}
 					options={calendarViewTypes.map((val) => ({ label: toSentenceCase(val), value: val }))}

@@ -21,7 +21,7 @@ export function Search() {
 			</div>
 
 			<Modal open={open} setOpen={setOpen} title='Search Anything'>
-				<div className=''>hello</div>
+				<div className='p-4 text-center'>Search coming soon</div>
 			</Modal>
 		</div>
 	);

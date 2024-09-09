@@ -12,6 +12,8 @@ export type CalendarGlobalState = {
 	activeWeek: number;
 	currentView: CalendarViewType;
 	editEvent: CalendarEvent | null;
+	activeHour: number;
+	activeMinute: number;
 };
 
 const calendarDefaultState: CalendarGlobalState = {
@@ -22,6 +24,8 @@ const calendarDefaultState: CalendarGlobalState = {
 	activeWeek: defaultToday.week,
 	currentView: defaultToday.view,
 	editEvent: null,
+	activeHour: 0,
+	activeMinute: 0,
 };
 
 const calendarAtom = atom<CalendarGlobalState>({
@@ -75,12 +79,33 @@ export function useCalendar() {
 		setCalendar((prev) => ({ ...prev, activeMonth: month }));
 	}
 
+	function previousMonth() {
+		setCalendar((prev) => {
+			const newMonth = prev.activeMonth === 0 ? 11 : prev.activeMonth - 1;
+			const newYear = prev.activeMonth === 0 ? prev.activeYear - 1 : prev.activeYear;
+			return { ...prev, activeMonth: newMonth, activeYear: newYear };
+		});
+	}
+
+	function nextMonth() {
+		setCalendar((prev) => {
+			const newMonth = prev.activeMonth === 11 ? 0 : prev.activeMonth + 1;
+			const newYear = prev.activeMonth === 11 ? prev.activeYear + 1 : prev.activeYear;
+			return { ...prev, activeMonth: newMonth, activeYear: newYear };
+		});
+	}
+
 	function changeCalendarWeek(week: number) {
 		setCalendar((prev) => ({ ...prev, activeWeek: week }));
 	}
 
 	function changeCalendarYear(year: number) {
 		setCalendar((prev) => ({ ...prev, activeYear: year }));
+	}
+
+	function getActiveDate() {
+		const date = new Date(calendar.activeYear, calendar.activeMonth, calendar.activeDay, calendar.activeHour, calendar.activeMinute);
+		return date;
 	}
 
 	return {
@@ -97,5 +122,8 @@ export function useCalendar() {
 		closeAddEditModal,
 		setEditEvent,
 		clearEditEvent,
+		getActiveDate,
+		previousMonth,
+		nextMonth,
 	};
 }

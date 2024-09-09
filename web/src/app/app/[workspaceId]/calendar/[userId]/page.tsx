@@ -21,7 +21,7 @@ export default async function CalendarPage(props: NextjsPageProps<{ workspaceId:
 
 	return (
 		<HydrationBoundary state={dehydrate(queryClient)}>
-			<PageContainer workspaceId={props.params.workspaceId}>
+			<PageContainer workspaceId={props.params.workspaceId} bodyClassName='overflow-hidden p-0 sm:p-0'>
 				<Calendar />
 			</PageContainer>
 		</HydrationBoundary>

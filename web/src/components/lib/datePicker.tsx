@@ -7,8 +7,8 @@ import { CalendarDaysIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/
 import { addMonths, format, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, isSameMonth, isToday, isSameDay } from 'date-fns';
 import React, { Fragment, useReducer } from 'react';
 
-const daysOfWeek = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
-const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+export const daysOfWeek = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+export const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const minutes = Array.from({ length: 60 }, (_, i) => i.toFixed().padStart(2, '0'));
 const hours24 = Array.from({ length: 24 }, (_, i) => i.toFixed().padStart(2, '0'));
 const hours12 = Array.from({ length: 12 }, (_, i) => i.toFixed().padStart(2, '0'));
@@ -16,7 +16,7 @@ const hours12 = Array.from({ length: 12 }, (_, i) => i.toFixed().padStart(2, '0'
 const am_pm = ['AM', 'PM'] as const;
 type AmPm = (typeof am_pm)[number];
 
-function getYearRange() {
+export function getYearRange() {
 	const currentYear = new Date().getFullYear();
 	const endYear = currentYear + 40;
 	const startYear = currentYear - 60;
@@ -33,16 +33,6 @@ type State = {
 	selectedHour: string;
 	selectedMinute: string;
 	selectedAmPm: AmPm;
-};
-
-const initialState: State = {
-	currentMonth: new Date(),
-	selectedDate: new Date(),
-	currentMonthValue: months[new Date().getMonth()],
-	currentYearValue: new Date().getFullYear().toString(),
-	selectedHour: '00',
-	selectedMinute: '00',
-	selectedAmPm: 'AM',
 };
 
 type Action =
@@ -118,10 +108,19 @@ export type DatePickerProps = {
 	required?: boolean;
 	labelClassName?: string;
 	descriptionText?: string;
+	defaultValue?: Date;
 };
 
 export const DatePicker = (props: DatePickerProps) => {
-	const [state, dispatch] = useReducer(datePickerReducer, initialState);
+	const [state, dispatch] = useReducer(datePickerReducer, {
+		currentMonth: props.defaultValue || new Date(),
+		selectedDate: props.defaultValue || new Date(),
+		currentMonthValue: months[new Date().getMonth()],
+		currentYearValue: (props.defaultValue || new Date()).getFullYear().toString(),
+		selectedHour: (props.defaultValue || new Date()).getHours().toFixed().padStart(2, '0'),
+		selectedMinute: (props.defaultValue || new Date()).getMinutes().toFixed().padStart(2, '0'),
+		selectedAmPm: 'AM',
+	});
 
 	function renderDates() {
 		const endDate = endOfWeek(endOfMonth(state.currentMonth));
@@ -137,7 +136,7 @@ export const DatePicker = (props: DatePickerProps) => {
 						className={cn(
 							'select-none rounded-full p-2 text-center',
 							isToday(day) ? 'cursor-pointer ring-2 ring-primary' : '',
-							isSameDay(day, state.selectedDate) ? 'bg-primary text-white' : '',
+							isSameDay(day, state.selectedDate) ? 'bg-primaryLight text-white' : '',
 							isSameMonth(day, state.currentMonth) ? 'cursor-pointer hover:bg-primaryLight' : 'text-gray-400'
 						)}
 					>

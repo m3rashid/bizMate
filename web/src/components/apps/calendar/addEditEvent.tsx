@@ -9,8 +9,8 @@ import { FormEvent } from 'react';
 
 export type CreateEditEventProps = {};
 
-export function CreateEditEvent(props: CreateEditEventProps) {
-	const { calendar, closeAddEditModal } = useCalendar();
+export function AddEditEvent(props: CreateEditEventProps) {
+	const { calendar, closeAddEditModal, getActiveDate } = useCalendar();
 
 	function handleCreateEditEvent(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();
@@ -36,8 +36,8 @@ export function CreateEditEvent(props: CreateEditEventProps) {
 					<TogglerInput name='is_private' label='Is this event private on your calendar?' />
 
 					<div className='flex flex-col gap-4 sm:flex-row'>
-						<DatePicker hour24Clock showTime required name='start_time' label='Start time' className='flex-grow' />
-						<DatePicker showTime required name='end_time' label='End time' className='flex-grow' />
+						<DatePicker defaultValue={getActiveDate()} hour24Clock showTime required name='start_time' label='Start time' className='flex-grow' />
+						<DatePicker defaultValue={getActiveDate()} showTime required name='end_time' label='End time' className='flex-grow' />
 					</div>
 				</div>
 
