@@ -69,7 +69,7 @@ export function FormDesignerComponentInner(form: Form) {
 					</div>
 				</div>
 
-				<div className='flex w-full flex-col items-center overflow-auto bg-white p-4 pb-10'>
+				<div className='flex w-full flex-col items-center overflow-hidden bg-white p-4 pb-10 hover:overflow-auto'>
 					<FormDesignerTopBar workspaceId={form.workspace_id} formId={form.id} />
 					<FormDesignerCore />
 				</div>

@@ -1,9 +1,10 @@
 import { getSessionCookie } from '@/actions/auth';
-import { CalendarPossibleQueryParams, getCalendarParams, prefetchCalendarEvents } from '@/api/calendar/server';
+import { prefetchCalendarEvents } from '@/api/calendar/server';
 import { getQueryClientForServer } from '@/api/config';
-import { Button } from '@/components/lib/button';
+import { Calendar } from '@/components/apps/calendar';
 import { PageNotFound } from '@/components/lib/notFound';
 import { PageContainer } from '@/components/pageContainer';
+import { CalendarPossibleQueryParams, getCalendarParams } from '@/hooks/calendarHelpers';
 import { isUuid } from '@/utils/helpers';
 import { NextjsPageProps } from '@/utils/types';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
@@ -21,14 +22,7 @@ export default async function CalendarPage(props: NextjsPageProps<{ workspaceId:
 	return (
 		<HydrationBoundary state={dehydrate(queryClient)}>
 			<PageContainer workspaceId={props.params.workspaceId}>
-				<div className='flex items-center justify-between gap-4'>
-					<h1 className='text-xl font-semibold'>Calendar events</h1>
-					<Button size='small'>Add Event</Button>
-				</div>
-
-				<h1>
-					Hello user :: {props.params.userId} from {props.params.workspaceId}
-				</h1>
+				<Calendar />
 			</PageContainer>
 		</HydrationBoundary>
 	);

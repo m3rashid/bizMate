@@ -116,12 +116,38 @@ export type Role = BaseModel &
 	};
 
 export type Activity = {
-	id: string;
+	id: ID;
 	time: string;
 	userEmail?: string;
 	logLevel: number;
-	workspaceId: string;
+	workspaceId: ID;
 	objectType: string;
 	code: string;
 	data: Record<string, any>;
+};
+
+export type CalendarEvent = BaseModel &
+	CreatedBy &
+	WorkspaceScope & {
+		name: string;
+		is_private: boolean;
+		start_time: Date;
+		end_time: Date;
+		recurrence_rule: string;
+		description: string;
+	};
+
+export type CalendarEventException = Required<CreatedBy> & {
+	id: ID;
+	event_id: ID;
+	occurrence_time: Date;
+	action: 0 | 1 | 2; // 0:skip, 1:modify, 2:cancel
+};
+
+export type CalendarEventInvite = Required<CreatedBy> & {
+	id: ID;
+	event_id: ID;
+	user_id: ID;
+	status: 0 | 1 | 2; // 0:pending, 1:accepted, 2:rejected
+	created_at: Date;
 };

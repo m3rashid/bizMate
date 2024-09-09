@@ -10,7 +10,7 @@
 	background: white;
 }
 *::-webkit-scrollbar-thumb {
-	background-color: gray;
+	background-color: lightgray;
 	border-radius: 20px;
 }
 

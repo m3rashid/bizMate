@@ -1,5 +1,5 @@
 import { getUserFromCookie } from '@/actions/auth';
-import { CalendarPossibleQueryParams, getCalendarParams, getCalendarUrlQuery } from '@/api/calendar/server';
+import { CalendarPossibleQueryParams, getCalendarParams, getCalendarUrlQuery } from '@/hooks/calendarHelpers';
 import { NextjsPageProps } from '@/utils/types';
 import { redirect } from 'next/navigation';
 

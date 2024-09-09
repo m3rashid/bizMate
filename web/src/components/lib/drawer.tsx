@@ -38,7 +38,12 @@ export function Drawer(props: DrawerProps) {
 							leaveFrom='translate-x-0'
 							leaveTo={props.from === 'left' ? '-translate-x-full' : 'translate-x-full'}
 						>
-							<DialogPanel className={cn('pointer-events-auto h-screen w-screen max-w-md overflow-auto bg-white shadow-xl', props.className)}>
+							<DialogPanel
+								className={cn(
+									'pointer-events-auto h-screen w-screen max-w-md overflow-hidden bg-white shadow-xl hover:overflow-auto',
+									props.className
+								)}
+							>
 								<div className='flex w-full items-center justify-between gap-4 border-b border-borderColor p-3'>
 									{props.title ? (
 										<DialogTitle as='h3' className='text-base font-semibold leading-6 text-gray-900'>

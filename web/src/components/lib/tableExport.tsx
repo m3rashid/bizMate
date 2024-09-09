@@ -70,7 +70,7 @@ export function TableExport(props: TableExportProps) {
 
 						<label className='block px-4 text-sm font-medium leading-6 text-gray-900'>{t('Select Columns to include')}</label>
 
-						<div className='grid max-h-80 grid-cols-1 gap-2 overflow-auto p-4 pt-0 md:grid-cols-2 md:gap-4'>
+						<div className='grid max-h-80 grid-cols-1 gap-2 overflow-hidden p-4 pt-0 hover:overflow-auto md:grid-cols-2 md:gap-4'>
 							{result.data.fields.map((field) => (
 								<TogglerInput key={field.name} name={field.name} label={field.label} defaultChecked />
 							))}

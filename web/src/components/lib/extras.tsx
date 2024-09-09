@@ -55,7 +55,12 @@ export const Text: FC<HeadingProps> = ({ text, type, className, ...props }) => {
 export type CodeProps = { code: string; className?: string };
 export function Code(props: CodeProps) {
 	return (
-		<pre className={cn('mx-0 my-2 block overflow-auto whitespace-pre rounded-md bg-gray-800 p-2 font-mono text-gray-50', props.className)}>
+		<pre
+			className={cn(
+				'mx-0 my-2 block overflow-hidden whitespace-pre rounded-md bg-gray-800 p-2 font-mono text-gray-50 hover:overflow-auto',
+				props.className
+			)}
+		>
 			{props.code}
 		</pre>
 	);

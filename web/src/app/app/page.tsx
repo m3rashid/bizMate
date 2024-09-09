@@ -28,7 +28,7 @@ export default async function ChooseWorkspace() {
 						<CreateWorkspace />
 					</div>
 
-					<div className='m-1 flex h-full max-h-[500px] min-w-72 items-center justify-center overflow-auto overflow-x-hidden rounded-lg bg-white p-4 shadow-lg ring-2 ring-gray-100 hover:ring-primary sm:min-w-96 md:max-w-lg'>
+					<div className='m-1 flex h-full max-h-[500px] min-w-72 items-center justify-center overflow-hidden overflow-x-hidden rounded-lg bg-white p-4 shadow-lg ring-2 ring-gray-100 hover:overflow-auto hover:ring-primary sm:min-w-96 md:max-w-lg'>
 						<WorkspaceInvites currentUserId={user?.userId} />
 					</div>
 				</div>
