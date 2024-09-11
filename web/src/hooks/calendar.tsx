@@ -2,6 +2,8 @@
 
 import { CalendarParamsReturnType, CalendarViewType, defaultToday } from './calendarHelpers';
 import { CalendarEvent } from '@/utils/types';
+import { addWeeks } from 'date-fns';
+import { MouseEvent, useMemo } from 'react';
 import { atom, useRecoilState } from 'recoil';
 
 export type CalendarGlobalState = {
@@ -95,6 +97,46 @@ export function useCalendar() {
 		});
 	}
 
+	function previousWeek() {
+		setCalendar((prev) => {
+			const newDate = addWeeks(new Date(prev.activeYear, prev.activeMonth, prev.activeDay), -1);
+			return { ...prev, activeYear: newDate.getFullYear(), activeMonth: newDate.getMonth(), activeDay: newDate.getDate() };
+		});
+	}
+
+	function nextWeek() {
+		setCalendar((prev) => {
+			const newDate = addWeeks(new Date(prev.activeYear, prev.activeMonth, prev.activeDay), 1);
+			return { ...prev, activeYear: newDate.getFullYear(), activeMonth: newDate.getMonth(), activeDay: newDate.getDate() };
+		});
+	}
+
+	function previousYear() {
+		setCalendar((prev) => ({ ...prev, activeYear: prev.activeYear - 1 }));
+	}
+
+	function nextYear() {
+		setCalendar((prev) => ({ ...prev, activeYear: prev.activeYear + 1 }));
+	}
+
+	function previousDay() {
+		setCalendar((prev) => {
+			const newDay = prev.activeDay === 1 ? 31 : prev.activeDay - 1;
+			const newMonth = prev.activeDay === 1 ? prev.activeMonth - 1 : prev.activeMonth;
+			const newYear = prev.activeDay === 1 ? prev.activeYear : prev.activeYear;
+			return { ...prev, activeDay: newDay, activeMonth: newMonth, activeYear: newYear };
+		});
+	}
+
+	function nextDay() {
+		setCalendar((prev) => {
+			const newDay = prev.activeDay === 31 ? 1 : prev.activeDay + 1;
+			const newMonth = prev.activeDay === 31 ? prev.activeMonth + 1 : prev.activeMonth;
+			const newYear = prev.activeDay === 31 ? prev.activeYear : prev.activeYear;
+			return { ...prev, activeDay: newDay, activeMonth: newMonth, activeYear: newYear };
+		});
+	}
+
 	function changeCalendarWeek(week: number) {
 		setCalendar((prev) => ({ ...prev, activeWeek: week }));
 	}
@@ -106,6 +148,21 @@ export function useCalendar() {
 	function getActiveDate() {
 		const date = new Date(calendar.activeYear, calendar.activeMonth, calendar.activeDay, calendar.activeHour, calendar.activeMinute);
 		return date;
+	}
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const nexts: Record<CalendarViewType, () => void> = useMemo(() => ({ month: nextMonth, week: nextWeek, day: nextDay }), []);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const prevs: Record<CalendarViewType, () => void> = useMemo(() => ({ month: previousMonth, week: previousWeek, day: previousDay }), []);
+
+	function handlePrevious(e: MouseEvent<HTMLButtonElement>) {
+		e.preventDefault();
+		prevs[calendar.currentView]();
+	}
+
+	function handleNext(e: MouseEvent<HTMLButtonElement>) {
+		e.preventDefault();
+		nexts[calendar.currentView]();
 	}
 
 	return {
@@ -125,5 +182,15 @@ export function useCalendar() {
 		getActiveDate,
 		previousMonth,
 		nextMonth,
+		previousWeek,
+		nextWeek,
+		previousYear,
+		nextYear,
+		previousDay,
+		nextDay,
+		nexts,
+		prevs,
+		handlePrevious,
+		handleNext,
 	};
 }

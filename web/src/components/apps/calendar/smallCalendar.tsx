@@ -1,19 +1,20 @@
 'use client';
 
-import { daysOfWeek, getYearRange, months } from '@/components/lib/datePicker';
-import { SingleSelectInput } from '@/components/lib/singleSelectInput';
+import { daysOfWeek, months } from '@/components/lib/datePicker';
 import { useCalendar } from '@/hooks/calendar';
 import { cn } from '@/utils/helpers';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import ChevronLeftIcon from '@heroicons/react/24/outline/ChevronLeftIcon';
+import ChevronRightIcon from '@heroicons/react/24/outline/ChevronRightIcon';
 import { eachDayOfInterval, endOfMonth, endOfWeek, format, isSameDay, isSameMonth, isToday, startOfMonth, startOfWeek } from 'date-fns';
 
 export function SmallCalendar() {
-	const { calendar, getActiveDate, changeCalendarYear, changeCalendarDay, previousMonth, changeCalendarMonth, nextMonth } = useCalendar();
+	const { calendar, getActiveDate, changeCalendarDay, handlePrevious, handleNext } = useCalendar();
 
 	function renderDates() {
-		const endDate = endOfWeek(endOfMonth(getActiveDate()));
-		const startDate = startOfWeek(startOfMonth(getActiveDate()));
-		const days = eachDayOfInterval({ start: startDate, end: endDate });
+		const days = eachDayOfInterval({
+			start: startOfWeek(startOfMonth(getActiveDate())),
+			end: endOfWeek(endOfMonth(getActiveDate())),
+		});
 
 		return (
 			<div className='grid grid-cols-7 gap-1'>
@@ -37,42 +38,18 @@ export function SmallCalendar() {
 
 	return (
 		<div className='h-fit w-full bg-white'>
-			<div className='mb-3 flex items-center justify-between py-2'>
-				<button
-					onClick={(e) => {
-						e.preventDefault();
-						previousMonth();
-					}}
-					className='h-6 cursor-pointer rounded-md p-1 outline-none ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-primary'
-				>
-					<ChevronLeftIcon className='h-4 w-4 text-gray-400' />
-				</button>
+			<div className='flex items-center justify-between py-2'>
+				<div className='mx-2 flex items-center justify-center gap-1 font-semibold'>{`${months[calendar.activeMonth]} ${calendar.activeYear}`}</div>
 
-				<div className='mx-2 flex items-center justify-center gap-1'>
-					<SingleSelectInput
-						options={months}
-						buttonClassName='min-h-6 py-0.5'
-						value={months[calendar.activeMonth]}
-						onChange={(newMonth) => changeCalendarMonth(months.findIndex((month) => month === newMonth))}
-					/>
+				<div className='flex items-center justify-between gap-4'>
+					<button onClick={handlePrevious} className='h-6 cursor-pointer rounded-md p-1 outline-none focus:ring-2 focus:ring-primary'>
+						<ChevronLeftIcon className='h-4 w-4 text-gray-600' />
+					</button>
 
-					<SingleSelectInput
-						options={getYearRange()}
-						buttonClassName='min-h-6 py-0.5'
-						value={calendar.activeYear.toString()}
-						onChange={(nextYear) => changeCalendarYear(parseInt(nextYear, 10))}
-					/>
+					<button onClick={handleNext} className='h-6 cursor-pointer rounded-md p-1 outline-none focus:ring-2 focus:ring-primary'>
+						<ChevronRightIcon className='h-4 w-4 text-gray-600' />
+					</button>
 				</div>
-
-				<button
-					onClick={(e) => {
-						e.preventDefault();
-						nextMonth();
-					}}
-					className='h-6 cursor-pointer rounded-md p-1 outline-none ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-primary'
-				>
-					<ChevronRightIcon className='h-4 w-4 text-gray-400' />
-				</button>
 			</div>
 
 			<div className='grid grid-cols-7 text-center text-gray-400'>

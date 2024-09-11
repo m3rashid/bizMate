@@ -13,15 +13,13 @@ export function FullSizeCalendar() {
 	const { calendar } = useCalendar();
 
 	const calenderPerView: Record<CalendarViewType, ReactNode> = useMemo(
-		() => ({
-			month: <SingleMonthCalendar />,
-			week: <SingleWeekCalendar />,
-			day: <SingleDayCalendar />,
-		}),
+		() => ({ month: <SingleMonthCalendar />, week: <SingleWeekCalendar />, day: <SingleDayCalendar /> }),
 		[]
 	);
 
 	return (
-		<div className='flex-grow overflow-y-hidden p-2 pt-0 shadow-lg hover:overflow-auto sm:p-3 sm:pt-0'>{calenderPerView[calendar.currentView]}</div>
+		<div className='flex-grow overflow-y-hidden p-2 pb-8 pt-0 shadow-lg hover:overflow-auto sm:p-3 sm:pb-8 sm:pt-0'>
+			{calenderPerView[calendar.currentView]}
+		</div>
 	);
 }
