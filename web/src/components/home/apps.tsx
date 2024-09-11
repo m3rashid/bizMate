@@ -26,7 +26,7 @@ export function RenderApp(props: { app: App; workspaceId: string }) {
 
 			<div className='mt-1.5 flex flex-col gap-2'>
 				{props.app.routes.map((route) => {
-					if (!route.objectType || (route.objectType && hasPermission(route.objectType, PERMISSION_READ)))
+					if (!route.objectType || (route.objectType && hasPermission(route.objectType, PERMISSION_READ))) {
 						return (
 							<Link
 								key={route.link}
@@ -41,6 +41,7 @@ export function RenderApp(props: { app: App; workspaceId: string }) {
 								</div>
 							</Link>
 						);
+					}
 				})}
 			</div>
 		</div>

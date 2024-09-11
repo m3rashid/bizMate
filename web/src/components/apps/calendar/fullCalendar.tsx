@@ -19,7 +19,7 @@ export function FullSizeCalendar() {
 
 	return (
 		<div className='flex-grow overflow-y-hidden p-2 pb-8 pt-0 shadow-lg hover:overflow-auto sm:p-3 sm:pb-8 sm:pt-0'>
-			{calenderPerView[calendar.currentView]}
+			{calenderPerView[calendar.view]}
 		</div>
 	);
 }

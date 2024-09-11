@@ -9,7 +9,7 @@ import { useState } from 'react';
 export function AppDrawer(props: { workspaceId: string }) {
 	const [open, setOpen] = useState(false);
 	return (
-		<>
+		<div tabIndex={0} role='button'>
 			<Squares2X2Icon onClick={() => setOpen(true)} className='h-10 w-10 cursor-pointer rounded-md p-2 hover:bg-gray-200' />
 			<Drawer className='z-[99] max-w-80' from='left' title='Apps and Services' open={open} setOpen={setOpen}>
 				<div className='flex flex-col gap-6 p-3'>
@@ -19,6 +19,6 @@ export function AppDrawer(props: { workspaceId: string }) {
 					<RenderApp app={sideApp} workspaceId={props.workspaceId} />
 				</div>
 			</Drawer>
-		</>
+		</div>
 	);
 }

@@ -39,7 +39,7 @@ export function SmallCalendar() {
 	return (
 		<div className='h-fit w-full bg-white'>
 			<div className='flex items-center justify-between py-2'>
-				<div className='mx-2 flex items-center justify-center gap-1 font-semibold'>{`${months[calendar.activeMonth]} ${calendar.activeYear}`}</div>
+				<div className='mx-2 flex items-center justify-center gap-1 font-semibold'>{`${months[calendar.month]} ${calendar.year}`}</div>
 
 				<div className='flex items-center justify-between gap-4'>
 					<button onClick={handlePrevious} className='h-6 cursor-pointer rounded-md p-1 outline-none focus:ring-2 focus:ring-primary'>

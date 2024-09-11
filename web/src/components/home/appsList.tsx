@@ -66,20 +66,6 @@ export const apps: App[] = [
 				description: 'Manage roles and permissions',
 				link: `/app/${workspaceKey}/admin?tab=roles&page=1`,
 			},
-			{
-				name: 'Workspace Invitations',
-				objectType: 'workspace_invite',
-				icon: PresentationChartLineIcon,
-				description: 'Manage invites to workspace',
-				link: `/app/${workspaceKey}/admin?tab=invitations&page=1`,
-			},
-			{
-				name: 'Activity',
-				objectType: 'activity',
-				description: 'Manage roles',
-				icon: PresentationChartLineIcon,
-				link: `/app/${workspaceKey}/admin?tab=activity&page=1`,
-			},
 		],
 	},
 ];

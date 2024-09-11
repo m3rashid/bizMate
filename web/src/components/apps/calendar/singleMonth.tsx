@@ -25,9 +25,9 @@ export function SingleMonthCalendar(props: SingleMonthCalendarProps) {
 		setCalendar((prev) => ({
 			...prev,
 			addEditModalOpen: true,
-			activeDay: date.getDate(),
-			activeMonth: date.getMonth(),
-			activeYear: date.getFullYear(),
+			day: date.getDate(),
+			month: date.getMonth(),
+			year: date.getFullYear(),
 		}));
 	}
 

@@ -53,6 +53,17 @@ export function safeJsonParse(content: string, defaultReturn: any, validations?:
 	}
 }
 
+export function safeParseNumber(num: string | undefined, defaultReturn: number) {
+	try {
+		if (!num) return defaultReturn;
+		const res = parseInt(num, 10);
+		if (isNaN(res)) throw new Error('NaN');
+		return res;
+	} catch (err) {
+		return defaultReturn;
+	}
+}
+
 export function shuffleArray(arr: Array<any>) {
 	const newArr = [...arr];
 	return newArr.sort(() => Math.random() - 0.5);

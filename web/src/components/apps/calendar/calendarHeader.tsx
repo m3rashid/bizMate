@@ -28,7 +28,7 @@ export function CalendarHeader() {
 
 				<SingleSelectInput
 					buttonClassName='min-h-7 max-h-[34px]'
-					value={calendar.currentView}
+					value={calendar.view}
 					onChange={(value) => changeCalendarView(value as any)}
 					options={calendarViewTypes.map((val) => ({ label: toSentenceCase(val), value: val }))}
 				/>

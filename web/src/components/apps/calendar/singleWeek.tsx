@@ -64,7 +64,7 @@ export function SingleWeekCalendar(props: SingleWeekCalendarProps) {
 
 		const dayOfWeek = Math.floor(clickX / (bounds.width / 7));
 		const day = daysInWeek[dayOfWeek].getDate();
-		setCalendar((prev) => ({ ...prev, activeDay: day, activeHour: hour, activeMinute: 0, addEditModalOpen: true }));
+		setCalendar((prev) => ({ ...prev, day: day, hour: hour, minute: 0, addEditModalOpen: true }));
 	}
 
 	return (
