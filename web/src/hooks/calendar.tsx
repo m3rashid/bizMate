@@ -3,6 +3,7 @@
 import { CalendarParamsReturnType, CalendarViewType, defaultToday } from './calendarHelpers';
 import { CalendarEvent } from '@/utils/types';
 import { addWeeks } from 'date-fns';
+import { useSearchParams } from 'next/navigation';
 import { MouseEvent, useMemo } from 'react';
 import { atom, useRecoilState } from 'recoil';
 
@@ -37,6 +38,7 @@ const calendarAtom = atom<CalendarGlobalState>({
 
 export function useCalendar() {
 	const [calendar, setCalendar] = useRecoilState(calendarAtom);
+	const searchParams = useSearchParams();
 
 	function initializeCalendar(params: CalendarParamsReturnType) {
 		setCalendar((prev) => ({

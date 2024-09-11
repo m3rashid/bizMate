@@ -23,7 +23,7 @@ export function SmallCalendar() {
 						key={day.toString()}
 						onClick={() => changeCalendarDay(day.getDate())}
 						className={cn(
-							'flex h-8 w-8 select-none items-center justify-center rounded-full text-center ring-2 ring-white',
+							'my-1 flex h-8 w-8 select-none items-center justify-center rounded-full text-center ring-2 ring-white',
 							isSameMonth(day, getActiveDate()) ? 'cursor-pointer text-gray-800 hover:bg-primaryLight hover:ring-primaryLight' : 'text-gray-400',
 							isSameDay(day, getActiveDate()) ? 'bg-primary text-white' : '',
 							isToday(day) ? 'cursor-pointer ring-primary' : ''
