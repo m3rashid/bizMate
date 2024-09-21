@@ -8,12 +8,12 @@ sudo apt update
 sudo apt install caddy
 
 # Copy the required files (Run locally)
-scp -i ~/Downloads/bizmateec2sshkey.pem -r ./backend/bin/backend ubuntu@ec2-13-201-73-93.ap-south-1.compute.amazonaws.com:/home/ubuntu/app
-scp -i ~/Downloads/bizmateec2sshkey.pem -r ./backend/public ubuntu@ec2-13-201-73-93.ap-south-1.compute.amazonaws.com:/home/ubuntu/app/public
-scp -i ~/Downloads/bizmateec2sshkey.pem -r ./backend/i18n ubuntu@ec2-13-201-73-93.ap-south-1.compute.amazonaws.com:/home/ubuntu/app/i18n
-scp -i ~/Downloads/bizmateec2sshkey.pem -r ./backend/Caddyfile ubuntu@ec2-13-201-73-93.ap-south-1.compute.amazonaws.com:/etc/caady
-scp -i ~/Downloads/bizmateec2sshkey.pem -r ./backend/bizmateapi.service ubuntu@ec2-13-201-73-93.ap-south-1.compute.amazonaws.com:/etc/systemd/system
-scp -i ~/Downloads/bizmateec2sshkey.pem -r ./backend/.env.prod ubuntu@ec2-13-201-73-93.ap-south-1.compute.amazonaws.com:/home/ubuntu/app/.env.local
+scp -i bizmate.pem -r ./bin/backend ubuntu@ec2-13-126-206-180.ap-south-1.compute.amazonaws.com:/home/ubuntu/app
+scp -i bizmate.pem -r ./public ubuntu@ec2-13-126-206-180.ap-south-1.compute.amazonaws.com:/home/ubuntu/app/public
+scp -i bizmate.pem -r ./i18n ubuntu@ec2-13-126-206-180.ap-south-1.compute.amazonaws.com:/home/ubuntu/app/i18n
+scp -i bizmate.pem -r ./Caddyfile ubuntu@ec2-13-126-206-180.ap-south-1.compute.amazonaws.com:/etc/caady
+scp -i bizmate.pem -r ./bizmateapi.service ubuntu@ec2-13-126-206-180.ap-south-1.compute.amazonaws.com:/etc/systemd/system
+scp -i bizmate.pem -r ./.env.prod ubuntu@ec2-13-126-206-180.ap-south-1.compute.amazonaws.com:/home/ubuntu/app/.env.local
 
 # Start the caddy server (Run on the server)
 sudo systemctl daemon-reload

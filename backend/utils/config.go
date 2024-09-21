@@ -59,7 +59,7 @@ func getEnv(key string, defaultValue ...string) string {
 func SetupEnv() {
 	err := godotenv.Load(".env.local") // this will fail in production because we set environment variables in the server directly
 	if err != nil {
-		fmt.Println("Error loading .env file")
+		fmt.Println("Error loading .env file", err)
 	}
 
 	serverMode := getEnv("SERVER_MODE", "development")
