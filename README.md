@@ -40,6 +40,7 @@ docker-compose up --build
 ```bash
 # You can configure the environment variables in the .env file.
 # Make sure to set up your database configurations properly depending on your development or production environment.
+cp .env.sample .env.local
 ```
 
 #### Contributions
