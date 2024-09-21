@@ -33,7 +33,7 @@ cd bizMate
 
 3. Build and run the app using Docker Compose:
 ```bash
-docker-compose up --build
+docker-compose up
 ```
 
 4. Configuration
