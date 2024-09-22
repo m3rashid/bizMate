@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"bizMate/mailer"
 	"bizMate/repository"
 	"bizMate/utils"
 	"fmt"
@@ -167,19 +166,19 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	isEmailValid := mailer.VerifyEmailValid(reqBody.Email)
-	if !isEmailValid {
-		go utils.LogError(
-			user_register,
-			reqBody.Email,
-			uuid.Nil,
-			repository.UserObjectType,
-			repository.LogData{
-				"error": "Invalid email",
-			},
-		)
-		return fiber.NewError(fiber.StatusBadRequest, "Invalid email")
-	}
+	// isEmailValid := mailer.VerifyEmailValid(reqBody.Email)
+	// if !isEmailValid {
+	// 	go utils.LogError(
+	// 		user_register,
+	// 		reqBody.Email,
+	// 		uuid.Nil,
+	// 		repository.UserObjectType,
+	// 		repository.LogData{
+	// 			"error": "Invalid email",
+	// 		},
+	// 	)
+	// 	return fiber.NewError(fiber.StatusBadRequest, "Invalid email")
+	// }
 
 	id, err := utils.GenerateUuidV7()
 	if err != nil {
