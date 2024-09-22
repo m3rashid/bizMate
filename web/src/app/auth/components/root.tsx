@@ -23,10 +23,10 @@ export function AuthRoot(props: AuthRootProps) {
 					{props.type === 'login' ? "Don't have an account? Register Instead" : 'Already have an account? Login Instead'}
 				</Link>
 
-				<div className='flex w-full flex-col'>
+				{/* <div className='flex w-full flex-col'>
 					<p className='mb-1 text-center text-sm text-gray-500'>Login in with a different method</p>
-					{/* <LoginWithGoogle /> */}
-				</div>
+					<LoginWithGoogle />
+				</div> */}
 			</div>
 		</div>
 	);
