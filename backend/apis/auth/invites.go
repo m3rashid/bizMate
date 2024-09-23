@@ -36,7 +36,6 @@ func acceptOrRejectWorkspaceInvite(ctx *fiber.Ctx) error {
 
 	pgConn, err := utils.GetPostgresDB()
 	if err != nil {
-		fmt.Println("not getting db")
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
@@ -190,7 +189,6 @@ func sendWorkspaceInvite(ctx *fiber.Ctx) error {
 
 	pgConn, err := utils.GetPostgresDB()
 	if err != nil {
-		fmt.Println("not getting db")
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
@@ -252,7 +250,6 @@ func revokeWorkspaceInvite(ctx *fiber.Ctx) error {
 
 	pgConn, err := utils.GetPostgresDB()
 	if err != nil {
-		fmt.Println("not getting db")
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
@@ -290,7 +287,6 @@ func getWorkspaceInvites(ctx *fiber.Ctx) error {
 
 	pgConn, err := utils.GetPostgresDB()
 	if err != nil {
-		fmt.Println("not getting db")
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 

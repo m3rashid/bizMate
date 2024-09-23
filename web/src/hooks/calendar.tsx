@@ -4,7 +4,7 @@ import { CalendarParamsReturnType, CalendarViewType, defaultToday } from './cale
 import { useSearchParams } from './searchParams';
 import { CalendarEvent } from '@/utils/types';
 import { addWeeks } from 'date-fns';
-import { MouseEvent, useMemo } from 'react';
+import { MouseEvent, useEffect, useMemo, useTransition } from 'react';
 import { atom, useRecoilState } from 'recoil';
 
 export type CalendarGlobalState = {
@@ -12,6 +12,7 @@ export type CalendarGlobalState = {
 	editEvent: CalendarEvent | null;
 	hour: number;
 	minute: number;
+	initialized: boolean;
 };
 
 const calendarDefaultState: CalendarGlobalState = {
@@ -19,6 +20,7 @@ const calendarDefaultState: CalendarGlobalState = {
 	editEvent: null,
 	hour: 0,
 	minute: 0,
+	initialized: false,
 };
 
 const calendarAtom = atom<CalendarGlobalState>({
@@ -26,13 +28,22 @@ const calendarAtom = atom<CalendarGlobalState>({
 	default: calendarDefaultState,
 });
 
-export function useCalendar() {
+export type UseCalendarProps = {
+	initParams?: CalendarParamsReturnType;
+};
+
+export function useCalendar(props?: UseCalendarProps) {
 	const [calendar, setCalendar] = useRecoilState(calendarAtom);
+	// const [isPending, startTransition] = useTransition()
 	const { searchParams, init, updateSearchParams } = useSearchParams();
 
-	function initializeCalendar(params: CalendarParamsReturnType) {
-		init(params as any);
-	}
+	useEffect(() => {
+		if (calendar.initialized) return;
+		init(props?.initParams || defaultToday);
+		setCalendar((prev) => ({ ...prev, initialized: true }));
+		console.log('Calendar initialized');
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	function setEditEvent(event: CalendarEvent) {
 		setCalendar((prev) => ({ ...prev, editEvent: event, addEditModalOpen: true }));
@@ -121,6 +132,10 @@ export function useCalendar() {
 	}
 
 	function getActiveDate() {
+		if (!searchParams) {
+			// console.log("No search params found, using today's date");
+			return new Date();
+		}
 		const date = new Date(searchParams.year, searchParams.month, searchParams.day, searchParams.hour, searchParams.minute);
 		return date;
 	}
@@ -149,7 +164,6 @@ export function useCalendar() {
 		changeCalendarYear,
 		changeCalendarView,
 		resetCalendar,
-		initializeCalendar,
 		openAddEditModal,
 		closeAddEditModal,
 		setEditEvent,

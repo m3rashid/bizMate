@@ -13,7 +13,6 @@ export const useSearchParams = () => {
 
 	const init = useCallback((initialParams: CalendarParamsReturnType) => {
 		const urlSearchParams = new URLSearchParams(_params);
-		console.log({ urlSearchParams });
 		let params: CalendarParamsReturnType = { ...(initialParams || {}) };
 
 		if (urlSearchParams.has('year')) params.year = safeParseNumber(urlSearchParams.get('year')!, initialParams.year);
@@ -25,7 +24,6 @@ export const useSearchParams = () => {
 			if (!calendarViewTypes.includes(view as any)) params.view = initialParams.view;
 			params.view = view as any;
 		}
-
 		setSearchParams(params);
 		for (const key in params) urlSearchParams.set(key, (params as any)[key].toString());
 		router.replace(path + '?' + urlSearchParams.toString());

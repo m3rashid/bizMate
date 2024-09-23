@@ -6,14 +6,11 @@ import { FullSizeCalendar } from './fullCalendar';
 import { LeftCalendarSidebar } from './leftCalendarSidebar';
 import { useCalendar } from '@/hooks/calendar';
 import { CalendarParamsReturnType } from '@/hooks/calendarHelpers';
-import { useEffect } from 'react';
 
 export type FullSizeCalendarProps = CalendarParamsReturnType & {};
 
 export function Calendar(params: CalendarParamsReturnType) {
-	const { initializeCalendar } = useCalendar();
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	useEffect(() => initializeCalendar(params), []);
+	useCalendar({ initParams: params });
 
 	return (
 		<>

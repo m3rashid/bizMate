@@ -1,6 +1,7 @@
 import { getSessionCookie } from '@/actions/auth';
 import { getQueryClientForServer } from '@/api/config';
 import { prefetchUserPermissions } from '@/api/permissions/server';
+import { ComingSoon } from '@/components/lib/notFound';
 import { PageContainer } from '@/components/pageContainer';
 import { createDefaultMeta } from '@/utils/helpers';
 import { NextjsPageProps } from '@/utils/types';
@@ -15,8 +16,18 @@ export default async function WorkspaceHome(props: NextjsPageProps<{ workspaceId
 	return (
 		<HydrationBoundary state={dehydrate(queryClient)}>
 			<PageContainer workspaceId={props.params.workspaceId}>
-				<h1>Workspace Home</h1>
-				<p>WorkspaceID: {props.params.workspaceId}</p>
+				<ComingSoon
+					title='Workspace Dashboard'
+					description='Workspace dashboards will be coming very soon'
+					customExtras={
+						<div className='mt-6 text-disabled'>
+							<h2>Workspace Home</h2>
+							<p>WorkspaceID: {props.params.workspaceId}</p>
+
+							<p className='mt-8 text-gray-700'>Explore features by clicking on the apps icon on the top left</p>
+						</div>
+					}
+				/>
 			</PageContainer>
 		</HydrationBoundary>
 	);

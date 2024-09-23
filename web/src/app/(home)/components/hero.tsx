@@ -6,7 +6,7 @@ import Link from 'next/link';
 export function Hero() {
 	return (
 		<HomeBackgroundWithSvg>
-			<div className='mx-auto h-[calc(100vh-48px)] max-w-7xl px-6 py-20 lg:flex lg:px-8'>
+			<div className='mx-auto max-h-[160vh] min-h-[calc(100vh-48px)] max-w-7xl px-6 py-20 lg:flex lg:px-8'>
 				<div className='mx-auto max-w-2xl flex-shrink-0 lg:mx-0 lg:max-w-xl lg:pt-8'>
 					<BrandLogo className='w-fit' imgClassName='h-20 w-20' />
 
@@ -27,16 +27,30 @@ export function Hero() {
 							<ArrowRightIcon className='h-4 animate-pulse' />
 						</Link>
 					</div>
-				</div>
-				{/* <div className='mx-auto mt-16 flex max-w-2xl sm:mt-24 lg:ml-10 lg:mr-0 lg:mt-0 lg:max-w-none lg:flex-none xl:ml-32'>
-					<div className='max-w-3xl flex-none sm:max-w-5xl lg:max-w-none'>
-						<img
-							alt='App screenshot'
-							src='https://tailwindui.com/img/component-images/dark-project-app-screenshot.png'
-							className='w-[76rem] rounded-md bg-white/5 shadow-2xl ring-1 ring-white/10'
-						/>
+
+					<div className='mt-4'>
+						<a
+							target='_blank'
+							href='https://www.producthunt.com/posts/bizmate-2?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-bizmate&#0045;2'
+						>
+							{/* eslint-disable-next-line @next/next/no-img-element */}
+							<img
+								width={250}
+								height={54}
+								style={{ width: '250px', height: '54px' }}
+								alt='Bizmate - Streamline&#0032;your&#0032;organization&#0032;workflow | Product Hunt'
+								src='https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=491314&theme=light'
+							/>
+						</a>
 					</div>
-				</div> */}
+				</div>
+
+				<div className='mx-auto mt-16 flex max-w-2xl sm:mt-24 lg:ml-10 lg:mr-0 lg:mt-0 lg:max-w-none lg:flex-none xl:ml-32'>
+					<div className='max-w-3xl flex-none sm:max-w-5xl lg:max-w-none'>
+						{/* eslint-disable-next-line @next/next/no-img-element */}
+						<img alt='App screenshot' src='/formsScreenshot.png' className='w-[50rem] rounded-md bg-white/5 shadow-2xl ring-1 ring-white/10' />
+					</div>
+				</div>
 			</div>
 		</HomeBackgroundWithSvg>
 	);
