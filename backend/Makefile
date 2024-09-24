@@ -1,3 +1,5 @@
+include $(PWD)/.env.local
+
 .PHONY: up down gen new-migration migrate-up migrate-down clean build
 
 up:
@@ -13,10 +15,10 @@ new-migration:
 	goose -dir db/migrations create $(name) sql
 
 migrate-up:
-	goose -dir db/migrations postgres postgres://genos:genos@localhost:5432/bizmatedb?sslmode=disable up
+	goose -dir db/migrations postgres $(POSTGRES_URI) up
 
 migrate-down:
-	goose -dir db/migrations postgres postgres://genos:genos@localhost:5432/bizmatedb?sslmode=disable down
+	goose -dir db/migrations postgres $(POSTGRES_URI) down
 
 clean:
 	docker compose down && sudo rm -rf data tmp repository && sqlc generate

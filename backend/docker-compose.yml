@@ -17,37 +17,37 @@ services:
     ports:
       - 4000:4000
     command: air -c air.toml
-    depends_on:
-      - postgresdb
-      - mongodb
-
-  postgresdb:
-    image: postgres:16
-    restart: always
-    environment:
-      POSTGRES_USER: genos
-      POSTGRES_PASSWORD: genos
-      POSTGRES_DB: bizmatedb
-    ports:
-      - 5432:5432
-    volumes:
-      - ./.data/postgresDb:/var/lib/postgresql/data
     # depends_on:
-    #   - redis
+    #   - postgresdb
+    #   - mongodb
 
-  mongodb:
-    image: mongo
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: genos
-      MONGO_INITDB_ROOT_PASSWORD: genos
-      MONGO_INITDB_DATABASE: bizmatedb
-    ports:
-      - 27017:27017
-    volumes:
-      - ./.data/mongoDb:/data/db
-    # depends_on:
-    #   - redis
+  # postgresdb:
+  #   image: postgres:16
+  #   restart: always
+  #   environment:
+  #     POSTGRES_USER: genos
+  #     POSTGRES_PASSWORD: genos
+  #     POSTGRES_DB: bizmatedb
+  #   ports:
+  #     - 5432:5432
+  #   volumes:
+  #     - ./.data/postgresDb:/var/lib/postgresql/data
+  # depends_on:
+  #   - redis
+
+  # mongodb:
+  #   image: mongo
+  #   restart: always
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: genos
+  #     MONGO_INITDB_ROOT_PASSWORD: genos
+  #     MONGO_INITDB_DATABASE: bizmatedb
+  #   ports:
+  #     - 27017:27017
+  #   volumes:
+  #     - ./.data/mongoDb:/data/db
+  # depends_on:
+  #   - redis
 
   # redis:
   #   image: redis:latest
