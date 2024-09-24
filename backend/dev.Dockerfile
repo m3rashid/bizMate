@@ -1,4 +1,4 @@
-FROM golang:1.22.2-alpine
+FROM golang:1.23-alpine
 
 RUN go install github.com/cosmtrek/air@latest
 

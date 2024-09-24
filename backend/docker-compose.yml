@@ -32,8 +32,8 @@ services:
       - 5432:5432
     volumes:
       - ./.data/postgresDb:/var/lib/postgresql/data
-    depends_on:
-      - redis
+    # depends_on:
+    #   - redis
 
   mongodb:
     image: mongo
@@ -46,13 +46,13 @@ services:
       - 27017:27017
     volumes:
       - ./.data/mongoDb:/data/db
-    depends_on:
-      - redis
+    # depends_on:
+    #   - redis
 
-  redis:
-    image: redis:latest
-    restart: always
-    volumes:
-      - ./.data:/data
-    ports:
-      - 6379:6379
+  # redis:
+  #   image: redis:latest
+  #   restart: always
+  #   volumes:
+  #     - ./.data:/data
+  #   ports:
+  #     - 6379:6379

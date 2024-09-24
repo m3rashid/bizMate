@@ -41,21 +41,21 @@ git clone https://github.com/m3rashid/bizMate.git
 2. Navigate to the project directory:
 
 ```bash
-cd bizMate
+cd bizMate/backend
 ```
 
-3. Build and run the app using Docker Compose:
-
-```bash
-docker compose up
-```
-
-4. Configuration
+3. Configuration
 
 ```bash
 # You can configure the environment variables in the .env file.
 # Make sure to set up your database configurations properly depending on your development or production environment.
 cp .env.sample .env.local
+```
+
+4. Build and run the app using Docker Compose:
+
+```bash
+docker compose up
 ```
 
 #### Contributions
