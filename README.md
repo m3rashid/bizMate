@@ -52,7 +52,16 @@ cd bizMate/backend
 cp .env.sample .env.local
 ```
 
-4. Build and run the app using Docker Compose:
+4. Setup tools
+
+```bash
+go install github.com/pressly/goose/v3/cmd/goose@latest # install goose for migrations
+# or if you have a mac, you can do `brew install goose`
+
+go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest # install sqlc for query-building
+```
+
+5. Build and run the app using Docker Compose:
 
 ```bash
 docker compose up

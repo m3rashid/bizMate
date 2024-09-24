@@ -67,3 +67,4 @@ node-mailer
 web-tailwind
 web-shadcn
 *.pem
+!web/.env.local
