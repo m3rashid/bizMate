@@ -54,7 +54,7 @@ func (q *Queries) CreateCalendarEvent(ctx context.Context, arg CreateCalendarEve
 }
 
 const getCalendarEventById = `-- name: GetCalendarEventById :one
-select id, deleted, created_at, updated_at, name, is_private, start_time, end_time, recurrence_rule, description, created_by_id, workspace_id from calendar_event where id = $1 and deleted = false
+select id, deleted, created_at, name, is_private, start_time, end_time, recurrence_rule, description, created_by_id, workspace_id from calendar_event where id = $1 and deleted = false
 `
 
 func (q *Queries) GetCalendarEventById(ctx context.Context, id uuid.UUID) (CalendarEvent, error) {
@@ -64,7 +64,6 @@ func (q *Queries) GetCalendarEventById(ctx context.Context, id uuid.UUID) (Calen
 		&i.ID,
 		&i.Deleted,
 		&i.CreatedAt,
-		&i.UpdatedAt,
 		&i.Name,
 		&i.IsPrivate,
 		&i.StartTime,
@@ -78,7 +77,7 @@ func (q *Queries) GetCalendarEventById(ctx context.Context, id uuid.UUID) (Calen
 }
 
 const getCalendarEventsInRangeByWorkspace = `-- name: GetCalendarEventsInRangeByWorkspace :many
-SELECT ce.id, ce.deleted, ce.created_at, ce.updated_at, ce.name, ce.is_private, ce.start_time, ce.end_time, ce.recurrence_rule, ce.description, ce.created_by_id, ce.workspace_id
+SELECT ce.id, ce.deleted, ce.created_at, ce.name, ce.is_private, ce.start_time, ce.end_time, ce.recurrence_rule, ce.description, ce.created_by_id, ce.workspace_id
 FROM calendar_event ce
 JOIN calendar_event_participants cep
   ON ce.id = cep.event_id
@@ -119,7 +118,6 @@ func (q *Queries) GetCalendarEventsInRangeByWorkspace(ctx context.Context, arg G
 			&i.ID,
 			&i.Deleted,
 			&i.CreatedAt,
-			&i.UpdatedAt,
 			&i.Name,
 			&i.IsPrivate,
 			&i.StartTime,

@@ -9,6 +9,8 @@ import (
 
 var postgresDbPool *pgxpool.Pool
 
+const NoRowsInResultSet = "no rows in result set"
+
 func GetPostgresDB() (*pgxpool.Pool, error) {
 	if postgresDbPool == nil {
 		_db, err := getPostgresDbConnection()

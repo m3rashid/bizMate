@@ -24,7 +24,7 @@ export async function Header(props: { workspaceId?: string }) {
 
 			{!!props.workspaceId && !!user ? (
 				<>
-					<Search />
+					{/* <Search /> */}
 					<PopoverMenu position='left' trigger='Actions' popoverPanelClassName='min-w-56 p-2'>
 						<div className='cursor-not-allowed p-2 text-disabled'>{user.email}</div>
 						<Logout handleClick={logout} />

@@ -22,7 +22,6 @@ type CalendarEvent struct {
 	ID             uuid.UUID          `json:"id"`
 	Deleted        *bool              `json:"deleted"`
 	CreatedAt      pgtype.Timestamptz `json:"created_at"`
-	UpdatedAt      pgtype.Timestamptz `json:"updated_at"`
 	Name           string             `json:"name"`
 	IsPrivate      *bool              `json:"is_private"`
 	StartTime      pgtype.Timestamptz `json:"start_time"`

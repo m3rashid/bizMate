@@ -13,4 +13,5 @@ export const queryKeys = {
 	userActivity: 'userActivity',
 	workspaceActivity: 'workspaceActivity',
 	calendarEvents: 'calendarEvents',
+	workspaceDashboard: 'workspaceDashboard'
 } as const;
