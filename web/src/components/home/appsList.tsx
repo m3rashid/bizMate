@@ -1,14 +1,14 @@
 import { workspaceKey } from '@/utils/constants';
 import { PermissionObjectType } from '@/utils/types';
-import ShieldCheckIcon from '@heroicons/react/24/outline/ShieldCheckIcon';
+import ArrowPathIcon from '@heroicons/react/24/outline/ArrowPathIcon';
 import CogIcon from '@heroicons/react/24/outline/CogIcon';
-import ListBulletIcon from '@heroicons/react/24/outline/ListBulletIcon';
 import EnvelopeOpenIcon from '@heroicons/react/24/outline/EnvelopeOpenIcon';
+import ListBulletIcon from '@heroicons/react/24/outline/ListBulletIcon';
 import PresentationChartLineIcon from '@heroicons/react/24/outline/PresentationChartLineIcon';
+import ShieldCheckIcon from '@heroicons/react/24/outline/ShieldCheckIcon';
+import ShieldExclamationIcon from '@heroicons/react/24/outline/ShieldExclamationIcon';
 import UsersIcon from '@heroicons/react/24/outline/UsersIcon';
 import { FC } from 'react';
-import ShieldExclamationIcon from '@heroicons/react/24/outline/ShieldExclamationIcon';
-import ArrowPathIcon from '@heroicons/react/24/outline/ArrowPathIcon';
 
 export type Route = {
 	name: string;
@@ -98,14 +98,14 @@ export const sideApp: App = {
 	name: 'Platform',
 	description: 'About the platform',
 	routes: [
-		{ 
+		{
 			name: 'About',
 			icon: CogIcon,
 			link: '/about',
 			hideInSidebar: false,
 			description: 'About the platform',
 		},
-		{ 
+		{
 			name: 'Changelogs',
 			icon: ArrowPathIcon,
 			link: '/changelogs',
