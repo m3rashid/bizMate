@@ -1,27 +1,35 @@
 'use client';
 
-import { ActivityTab } from './activity';
+import { Roles } from './roles';
+import { Users } from './users';
+import { WorkspaceInviteSettings } from './workspaceInviteSettings';
 import { Tab, Tabs } from '@/components/lib/tabs';
 import { useSearchParamsState } from '@/hooks/helpers';
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 
-export function AdminTabs(props: { currentUserId: string; workspaceId: string }) {
+export function HrTabs(props: { currentUserId: string; workspaceId: string }) {
 	const params = useSearchParams();
 
 	const tabList: Tab<any>[] = useMemo(
 		() => [
 			{
-				id: 'activity',
-				label: 'Workspace Activity',
-				Component: ActivityTab,
+				id: 'users',
+				label: 'Users',
+				Component: Users,
 				componentProps: { workspaceId: props.workspaceId },
 			},
 			{
-				id: 'settings',
-				label: 'Workspace Settings',
-				Component: () => <div>Hello from Settings</div>,
+				id: 'roles',
+				label: 'Roles',
+				Component: Roles,
 				componentProps: { workspaceId: props.workspaceId },
+			},
+			{
+				id: 'invitations',
+				label: 'Invitations',
+				Component: WorkspaceInviteSettings,
+				componentProps: { currentUserId: props.currentUserId },
 			},
 		],
 		// eslint-disable-next-line react-hooks/exhaustive-deps
