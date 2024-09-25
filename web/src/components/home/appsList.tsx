@@ -75,7 +75,7 @@ export const apps: App[] = [
 				link: `/app/${workspaceKey}/hr?tab=roles&page=1`,
 			},
 			{
-				hideInSidebar: true,
+				hideInSidebar: false,
 				icon: EnvelopeOpenIcon,
 				name: 'Workspace Invitations',
 				objectType: 'workspace_invite',
@@ -89,7 +89,7 @@ export const apps: App[] = [
 		description: 'Admin controls for the workspace',
 		routes: [
 			{
-				hideInSidebar: true,
+				hideInSidebar: false,
 				icon: ShieldExclamationIcon,
 				objectType: 'activity',
 				name: 'Workspace Activity',

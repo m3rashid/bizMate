@@ -1,6 +1,7 @@
 'use client';
 
 import { ActivityTab } from './activity';
+import { WorkspaceSettings } from './settings';
 import { Tab, Tabs } from '@/components/lib/tabs';
 import { useSearchParamsState } from '@/hooks/helpers';
 import { useSearchParams } from 'next/navigation';
@@ -20,7 +21,7 @@ export function AdminTabs(props: { currentUserId: string; workspaceId: string })
 			{
 				id: 'settings',
 				label: 'Workspace Settings',
-				Component: () => <div>Hello from Settings</div>,
+				Component: WorkspaceSettings,
 				componentProps: { workspaceId: props.workspaceId },
 			},
 		],

@@ -27,7 +27,7 @@ export function HrTabs(props: { currentUserId: string; workspaceId: string }) {
 			},
 			{
 				id: 'invitations',
-				label: 'Invitations',
+				label: 'Workspace Invitations',
 				Component: WorkspaceInviteSettings,
 				componentProps: { currentUserId: props.currentUserId },
 			},
