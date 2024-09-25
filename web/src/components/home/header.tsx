@@ -1,7 +1,7 @@
 import { getUserFromCookie, logout } from '@/actions/auth';
 import { AppDrawer } from '@/components/home/appDrawer';
 import { Logout } from '@/components/home/logout';
-import { Search } from '@/components/home/search';
+// import { Search } from '@/components/home/search';
 import { BrandLogo } from '@/components/lib/brandLogo';
 import { PopoverMenu } from '@/components/lib/popoverMenu';
 import { Link } from 'next-view-transitions';
@@ -24,7 +24,7 @@ export async function Header(props: { workspaceId?: string }) {
 
 			{!!props.workspaceId && !!user ? (
 				<>
-					<Search />
+					{/* <Search /> */}
 					<PopoverMenu position='left' trigger='Actions' popoverPanelClassName='min-w-56 p-2'>
 						<div className='cursor-not-allowed p-2 text-disabled'>{user.email}</div>
 						<Logout handleClick={logout} />
