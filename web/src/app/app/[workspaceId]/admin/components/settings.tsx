@@ -1,5 +1,5 @@
 'use client';
 
 export function WorkspaceSettings(props: { workspaceId: string }) {
-	return <div>Hello from Settings</div>;
+	return <div>Workspace global settings coming soon</div>;
 }
