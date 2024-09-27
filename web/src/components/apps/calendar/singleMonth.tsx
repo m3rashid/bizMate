@@ -8,7 +8,7 @@ import { MouseEvent } from 'react';
 export type SingleMonthCalendarProps = {};
 
 export function SingleMonthCalendar(props: SingleMonthCalendarProps) {
-	const { getActiveDate, changeCalendarDay, setCalendar } = useCalendar();
+	const { getActiveDate, setCalendar } = useCalendar();
 
 	const days = eachDayOfInterval({
 		start: startOfWeek(startOfMonth(getActiveDate())),

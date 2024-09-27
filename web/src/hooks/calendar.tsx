@@ -1,26 +1,24 @@
 'use client';
 
 import { CalendarParamsReturnType, CalendarViewType, defaultToday } from './calendarHelpers';
-import { useSearchParams } from './searchParams';
 import { CalendarEvent } from '@/utils/types';
 import { addWeeks } from 'date-fns';
-import { MouseEvent, useEffect, useMemo, useTransition } from 'react';
+import { MouseEvent, useMemo } from 'react';
 import { atom, useRecoilState } from 'recoil';
 
-export type CalendarGlobalState = {
-	addEditModalOpen: boolean;
-	editEvent: CalendarEvent | null;
+export type CalendarGlobalState = CalendarParamsReturnType & {
 	hour: number;
 	minute: number;
-	initialized: boolean;
+	addEditModalOpen: boolean;
+	editEvent: CalendarEvent | null;
 };
 
 const calendarDefaultState: CalendarGlobalState = {
-	addEditModalOpen: false,
-	editEvent: null,
 	hour: 0,
 	minute: 0,
-	initialized: false,
+	editEvent: null,
+	addEditModalOpen: false,
+	...defaultToday,
 };
 
 const calendarAtom = atom<CalendarGlobalState>({
@@ -34,16 +32,6 @@ export type UseCalendarProps = {
 
 export function useCalendar(props?: UseCalendarProps) {
 	const [calendar, setCalendar] = useRecoilState(calendarAtom);
-	// const [isPending, startTransition] = useTransition()
-	const { searchParams, init, updateSearchParams } = useSearchParams();
-
-	useEffect(() => {
-		if (calendar.initialized) return;
-		init(props?.initParams || defaultToday);
-		setCalendar((prev) => ({ ...prev, initialized: true }));
-		console.log('Calendar initialized');
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
 
 	function setEditEvent(event: CalendarEvent) {
 		setCalendar((prev) => ({ ...prev, editEvent: event, addEditModalOpen: true }));
@@ -66,7 +54,7 @@ export function useCalendar(props?: UseCalendarProps) {
 	}
 
 	function changeCalendarView(view: CalendarViewType) {
-		updateSearchParams({ view });
+		setCalendar((prev) => ({ ...prev, view }));
 	}
 
 	function changeCalendarDay(day: number) {
@@ -78,49 +66,59 @@ export function useCalendar(props?: UseCalendarProps) {
 	}
 
 	function previousMonth() {
-		updateSearchParams({
-			month: searchParams.month === 0 ? 11 : searchParams.month - 1,
-			year: searchParams.month === 0 ? searchParams.year - 1 : searchParams.year,
-		});
+		setCalendar((prev) => ({
+			...prev,
+			month: prev.month === 0 ? 11 : prev.month - 1,
+			year: prev.month === 0 ? prev.year - 1 : prev.year,
+		}));
 	}
 
 	function nextMonth() {
-		updateSearchParams({
-			month: searchParams.month === 11 ? 0 : searchParams.month + 1,
-			year: searchParams.month === 11 ? searchParams.year + 1 : searchParams.year,
-		});
+		setCalendar((prev) => ({
+			...prev,
+			month: prev.month === 11 ? 0 : prev.month + 1,
+			year: prev.month === 11 ? prev.year + 1 : prev.year,
+		}));
 	}
 
 	function previousWeek() {
-		const newDate = addWeeks(new Date(searchParams.year, searchParams.month, searchParams.day), -1);
-		updateSearchParams({ year: newDate.getFullYear(), month: newDate.getMonth(), day: newDate.getDate() });
+		setCalendar((prev) => {
+			const newDate = addWeeks(new Date(prev.year, prev.month, prev.day), -1);
+			return { ...prev, year: newDate.getFullYear(), month: newDate.getMonth(), day: newDate.getDate() };
+		});
 	}
 
 	function nextWeek() {
-		const newDate = addWeeks(new Date(searchParams.year, searchParams.month, searchParams.day), 1);
-		updateSearchParams({ year: newDate.getFullYear(), month: newDate.getMonth(), day: newDate.getDate() });
+		setCalendar((prev) => {
+			const newDate = addWeeks(new Date(prev.year, prev.month, prev.day), 1);
+			return { ...prev, year: newDate.getFullYear(), month: newDate.getMonth(), day: newDate.getDate() };
+		});
 	}
 
 	function previousYear() {
-		updateSearchParams({ year: searchParams.year - 1 });
+		setCalendar((prev) => ({ ...prev, year: prev.year - 1 }));
 	}
 
 	function nextYear() {
-		updateSearchParams({ year: searchParams.year + 1 });
+		setCalendar((prev) => ({ ...prev, year: prev.year + 1 }));
 	}
 
 	function previousDay() {
-		const newDay = searchParams.day === 1 ? 31 : searchParams.day - 1;
-		const newMonth = searchParams.day === 1 ? searchParams.month - 1 : searchParams.month;
-		const newYear = searchParams.day === 1 ? searchParams.year : searchParams.year;
-		updateSearchParams({ day: newDay, month: newMonth, year: newYear });
+		setCalendar((prev) => ({
+			...prev,
+			day: prev.day === 1 ? 31 : prev.day - 1,
+			month: prev.day === 1 ? prev.month - 1 : prev.month,
+			year: prev.day === 1 ? prev.year : prev.year,
+		}));
 	}
 
 	function nextDay() {
-		const newDay = searchParams.day === 31 ? 1 : searchParams.day + 1;
-		const newMonth = searchParams.day === 31 ? searchParams.month + 1 : searchParams.month;
-		const newYear = searchParams.day === 31 ? searchParams.year : searchParams.year;
-		updateSearchParams({ day: newDay, month: newMonth, year: newYear });
+		setCalendar((prev) => ({
+			...prev,
+			day: prev.day === 31 ? 1 : prev.day + 1,
+			month: prev.day === 31 ? prev.month + 1 : prev.month,
+			year: prev.day === 31 ? prev.year : prev.year,
+		}));
 	}
 
 	function changeCalendarWeek(week: number) {
@@ -132,11 +130,7 @@ export function useCalendar(props?: UseCalendarProps) {
 	}
 
 	function getActiveDate() {
-		if (!searchParams) {
-			// console.log("No search params found, using today's date");
-			return new Date();
-		}
-		const date = new Date(searchParams.year, searchParams.month, searchParams.day, searchParams.hour, searchParams.minute);
+		const date = new Date(calendar.year, calendar.month, calendar.day, calendar.hour, calendar.minute);
 		return date;
 	}
 
@@ -147,12 +141,12 @@ export function useCalendar(props?: UseCalendarProps) {
 
 	function handlePrevious(e: MouseEvent<HTMLButtonElement>) {
 		e.preventDefault();
-		(prevs as any)[searchParams.view]();
+		(prevs as any)[calendar.view]();
 	}
 
 	function handleNext(e: MouseEvent<HTMLButtonElement>) {
 		e.preventDefault();
-		(nexts as any)[searchParams.view]();
+		(nexts as any)[calendar.view]();
 	}
 
 	return {

@@ -8,6 +8,7 @@ export type ModalProps = PropsWithChildren & {
 	title?: ReactNode;
 	setOpen: (val: boolean) => void;
 	className?: string;
+	titleClassName?: string;
 };
 
 export function Modal(props: ModalProps) {
@@ -45,7 +46,7 @@ export function Modal(props: ModalProps) {
 							>
 								{props.title ? (
 									<div className='flex w-full items-center justify-between gap-4 border-b border-borderColor p-3'>
-										<DialogTitle as='h3' className='text-base font-semibold leading-6 text-gray-900'>
+										<DialogTitle as='h3' className={cn('text-base font-semibold leading-6 text-gray-900', props.titleClassName)}>
 											{props.title}
 										</DialogTitle>
 										<XMarkIcon className='h-6 w-6 cursor-pointer hover:text-gray-600' onClick={() => props.setOpen(false)} />
