@@ -1,17 +1,17 @@
 'use client';
 
-import { CalendarParamsReturnType, calendarViewTypes } from './calendarHelpers';
+import { CalendarParamsReturnType, calendarViewTypes, defaultToday } from './calendarHelpers';
 import { safeParseNumber } from '@/utils/helpers';
-import { usePathname, useRouter, useSearchParams as useSearchParamsNextJs } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useState, useCallback } from 'react';
 
-export const useSearchParams = () => {
+export const useCalendarSearchParams = () => {
 	const router = useRouter();
 	const path = usePathname();
-	const [searchParams, setSearchParams] = useState<CalendarParamsReturnType | any>(null);
-	const _params = useSearchParamsNextJs();
+	const [searchParams, setSearchParams] = useState<CalendarParamsReturnType>(defaultToday);
+	const _params = useSearchParams();
 
-	const init = useCallback((initialParams: CalendarParamsReturnType) => {
+	const getInitialUrlSearchParams = useCallback((initialParams: CalendarParamsReturnType) => {
 		const urlSearchParams = new URLSearchParams(_params);
 		let params: CalendarParamsReturnType = { ...(initialParams || {}) };
 
@@ -24,9 +24,7 @@ export const useSearchParams = () => {
 			if (!calendarViewTypes.includes(view as any)) params.view = initialParams.view;
 			params.view = view as any;
 		}
-		setSearchParams(params);
-		for (const key in params) urlSearchParams.set(key, (params as any)[key].toString());
-		router.replace(path + '?' + urlSearchParams.toString());
+		return params;
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -56,9 +54,9 @@ export const useSearchParams = () => {
 	);
 
 	return {
-		init,
 		searchParams,
-		updateSearchParams,
 		removeSearchParam,
+		updateSearchParams,
+		getInitialUrlSearchParams,
 	};
 };
