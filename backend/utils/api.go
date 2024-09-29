@@ -1,12 +1,15 @@
 package utils
 
 import (
+	"fmt"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 )
 
 func ParseBodyAndValidate[T interface{}](ctx *fiber.Ctx, str *T) error {
 	if err := ctx.BodyParser(str); err != nil {
+		fmt.Println(err)
 		return err
 	}
 
@@ -19,6 +22,8 @@ func ParseBodyAndValidate[T interface{}](ctx *fiber.Ctx, str *T) error {
 }
 
 func GetDeviceIP(ctx *fiber.Ctx) string {
+	// https://api.ipify.org/?format=json
+	// use this api to get the ip address of the device from the client side
 	return ctx.Get("X-Forwarded-For")
 }
 
