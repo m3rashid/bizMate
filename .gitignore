@@ -68,3 +68,4 @@ web-tailwind
 web-shadcn
 *.pem
 !web/.env.local
+backend/deploy.sh
