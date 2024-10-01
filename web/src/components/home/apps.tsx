@@ -7,7 +7,7 @@ import { PERMISSION_READ, workspaceKey } from '@/utils/constants';
 import InformationCircleIcon from '@heroicons/react/24/outline/InformationCircleIcon';
 import { Link } from 'next-view-transitions';
 
-export function RenderApp(props: { app: App; workspaceId: string }) {
+export function RenderApp(props: { app: App; workspaceId: string; closeDrawer: () => void }) {
 	const { hasPermission } = usePermission();
 
 	const overallPermitted = props.app.routes.some(
@@ -30,6 +30,7 @@ export function RenderApp(props: { app: App; workspaceId: string }) {
 						return (
 							<Link
 								key={route.link}
+								onClick={props.closeDrawer}
 								href={route.link.replace(workspaceKey, props.workspaceId)}
 								className='group flex cursor-pointer items-center gap-2 rounded-md px-2 py-0.5 hover:bg-primaryLight hover:shadow-md'
 							>

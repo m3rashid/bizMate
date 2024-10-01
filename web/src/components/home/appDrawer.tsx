@@ -14,9 +14,9 @@ export function AppDrawer(props: { workspaceId: string }) {
 			<Drawer className='z-[99] max-w-80' from='left' title='Apps and Services' open={open} setOpen={setOpen}>
 				<div className='flex flex-col gap-6 p-3'>
 					{apps.map((app) => (
-						<RenderApp key={app.name} app={app} workspaceId={props.workspaceId} />
+						<RenderApp key={app.name} app={app} workspaceId={props.workspaceId} closeDrawer={() => setOpen(false)} />
 					))}
-					<RenderApp app={sideApp} workspaceId={props.workspaceId} />
+					<RenderApp app={sideApp} workspaceId={props.workspaceId} closeDrawer={() => setOpen(false)} />
 				</div>
 			</Drawer>
 		</div>

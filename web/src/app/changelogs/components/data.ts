@@ -7,6 +7,16 @@ export type ChangeLog = {
 
 export const changelogs: ChangeLog[] = [
 	{
+		id: 6,
+		date: 'Oct 1, 2024',
+		tldr: 'New features and improvements',
+		changes: [
+			'Calendar is now available, only to view (not functional)',
+			'Improved workspace dashboard gives basic form-analytics',
+			'Modules are segregated logically into HR and platform-settings',
+		],
+	},
+	{
 		id: 5,
 		date: 'Sep 23, 2024',
 		tldr: "We're live! and open-source",
