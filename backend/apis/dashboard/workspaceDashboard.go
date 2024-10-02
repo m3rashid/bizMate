@@ -1,6 +1,7 @@
 package dashboard
 
 import (
+	"bizMate/i18n"
 	"bizMate/repository"
 	"bizMate/utils"
 
@@ -11,11 +12,13 @@ import (
 func getWorkspaceDashboard(ctx *fiber.Ctx) error {
 	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	if userId == uuid.Nil || workspaceId == uuid.Nil {
-		return fiber.NewError(fiber.StatusBadRequest, "User or Workspace not present")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "User or Workspace not present"))
 	}
 
 	if dashboardResponse, ok := getDashboardFromLocalCache(workspaceId.String()); ok {
-		return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(dashboardResponse, "Dashboard data fetched successfully"))
+		return ctx.Status(fiber.StatusOK).JSON(
+			utils.SendResponse(dashboardResponse, i18n.ToLocalString(ctx, "Dashboard data fetched successfully")),
+		)
 	}
 
 	pgConn, err := utils.GetPostgresDB()
@@ -40,7 +43,9 @@ func getWorkspaceDashboard(ctx *fiber.Ctx) error {
 
 	go addDashboardToLocalCache(workspaceId.String(), dashboardResponse)
 
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(dashboardResponse, "Dashboard data fetched successfully"))
+	return ctx.Status(fiber.StatusOK).JSON(
+		utils.SendResponse(dashboardResponse, i18n.ToLocalString(ctx, "Dashboard data fetched successfully")),
+	)
 }
 
 func getFormCounts(dashboardResponse *DashboardResponse, formCounts []repository.CountFormsInWorkspaceRow) {

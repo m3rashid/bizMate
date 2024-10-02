@@ -9,6 +9,7 @@ import (
 	"bizMate/apis/forms"
 	"bizMate/apis/payments"
 	"bizMate/apis/permissions"
+	"bizMate/i18n"
 	"bizMate/utils"
 	"log"
 	"os"
@@ -50,7 +51,7 @@ func main() {
 	utils.InitLogsLocalPubSub()
 
 	app.Get("/api", func(ctx *fiber.Ctx) error {
-		return ctx.SendString(utils.TranslateToLocalLanguage(ctx, "Hello, World!"))
+		return ctx.SendString(i18n.ToLocalString(ctx, "Hello, World!"))
 	})
 
 	auth.Setup("/api/auth", app)

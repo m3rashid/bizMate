@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"bizMate/i18n"
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/go-playground/validator/v10"
@@ -16,7 +18,7 @@ const (
 	_phone    string = "phone"
 )
 
-func formatValidatorError(valErrors validator.ValidationErrors) string {
+func formatValidatorError(ctx *fiber.Ctx, valErrors validator.ValidationErrors) string {
 	allErrors := []string{}
 	for _, validationErr := range valErrors {
 		tagName := validationErr.Tag()
@@ -26,36 +28,48 @@ func formatValidatorError(valErrors validator.ValidationErrors) string {
 		errorMsg := ""
 		switch tagName {
 		case _required:
-			errorMsg = fieldName + " is required"
+			errorMsg = fmt.Sprintf("%s %s", fieldName, i18n.ToLocalString(ctx, "is required"))
 		case _min:
-			errorMsg = fieldName + " length must be greater than " + validationParam
+			errorMsg = fmt.Sprintf(
+				"%s %s %s %s",
+				fieldName,
+				i18n.ToLocalString(ctx, "length must be greater than"),
+				validationParam,
+				i18n.ToLocalString(ctx, "characters"),
+			)
 		case _max:
-			errorMsg = fieldName + " length must be less than " + validationParam
+			errorMsg = fmt.Sprintf(
+				"%s %s %s %s",
+				fieldName,
+				i18n.ToLocalString(ctx, "length must be less than"),
+				validationParam,
+				i18n.ToLocalString(ctx, "characters"),
+			)
 		case _email:
-			errorMsg = fieldName + " must be a valid email address"
+			errorMsg = fmt.Sprintf("%s %s", fieldName, i18n.ToLocalString(ctx, "must be a valid email address"))
 		case _phone:
-			errorMsg = fieldName + " must be a valid phone number"
+			errorMsg = fmt.Sprintf("%s %s", fieldName, i18n.ToLocalString(ctx, "must be a valid phone number"))
 		default:
-			errorMsg = fieldName + " is invalid"
+			errorMsg = fmt.Sprintf("%s %s", fieldName, i18n.ToLocalString(ctx, "is invalid"))
 		}
 
 		allErrors = append(allErrors, errorMsg)
 	}
 
-	return strings.Join(allErrors, ", ")
+	return strings.Join(allErrors, "\n")
 }
 
 func ParseBodyAndValidate[T interface{}](ctx *fiber.Ctx, str *T) error {
 	if err := ctx.BodyParser(str); err != nil {
-		return errors.New("invalid data provided")
+		return errors.New(i18n.ToLocalString(ctx, "invalid data provided"))
 	}
 
 	validate := validator.New()
 	if err := validate.Struct(str); err != nil {
 		if validationErrors, ok := err.(validator.ValidationErrors); ok {
-			return errors.New(formatValidatorError(validationErrors))
+			return errors.New(formatValidatorError(ctx, validationErrors))
 		}
-		return errors.New("invalid data provided")
+		return errors.New(i18n.ToLocalString(ctx, "invalid data provided"))
 	}
 
 	return nil
