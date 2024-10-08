@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"bizMate/i18n"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -147,7 +148,7 @@ func getFiberConfig() fiber.Config {
 			return ctx.Status(code).JSON(fiber.Map{
 				"data":    nil,
 				"success": false,
-				"message": Ternary(err.Error() != "", err.Error(), "Something went wrong!"),
+				"message": Ternary(*Env.IsProduction, i18n.ToLocalString(ctx, "Something went wrong!"), err.Error()),
 			})
 		},
 	}

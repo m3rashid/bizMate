@@ -1,6 +1,7 @@
 package forms
 
 import (
+	"bizMate/i18n"
 	"bizMate/repository"
 	"bizMate/utils"
 
@@ -25,9 +26,7 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 			userEmail,
 			uuid.Nil,
 			repository.FormResponsesObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
@@ -47,9 +46,7 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 			userEmail,
 			uuid.Nil,
 			repository.FormResponsesObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
@@ -59,11 +56,11 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 	}
 
 	if !*form.Active {
-		return fiber.NewError(fiber.StatusTooEarly, "form is not active")
+		return fiber.NewError(fiber.StatusTooEarly, i18n.ToLocalString(ctx, "Form is not active"))
 	}
 
 	if !*form.AllowAnonymousResponses && userId == uuid.Nil {
-		return fiber.NewError(fiber.StatusUnauthorized, "unauthorized")
+		return fiber.NewError(fiber.StatusUnauthorized, i18n.ToLocalString(ctx, "Unauthorized"))
 	}
 
 	mongoDb, err := utils.GetMongoDB()
@@ -88,12 +85,9 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 			userEmail,
 			form.WorkspaceID,
 			repository.FormResponsesObjectType,
-			repository.LogData{
-				"error":   err.Error(),
-				"form_id": form.ID.String(),
-			},
+			repository.LogData{"error": err.Error(), "form_id": form.ID.String()},
 		)
-		return fiber.NewError(fiber.StatusInternalServerError, "Could not save response")
+		return fiber.NewError(fiber.StatusInternalServerError, i18n.ToLocalString(ctx, "Could not save response"))
 	}
 
 	go utils.LogInfo(
@@ -101,13 +95,10 @@ func submitFormResponse(ctx *fiber.Ctx) error {
 		userEmail,
 		form.WorkspaceID,
 		repository.FormResponsesObjectType,
-		repository.LogData{
-			"formId":      form.ID.String(),
-			"response_id": createResponseRes.InsertedID,
-		},
+		repository.LogData{"formId": form.ID.String(), "response_id": createResponseRes.InsertedID},
 	)
 	return ctx.Status(fiber.StatusCreated).JSON(
-		utils.SendResponse(createResponseRes.InsertedID, "Response submitted successfully"),
+		utils.SendResponse(createResponseRes.InsertedID, i18n.ToLocalString(ctx, "Response submitted successfully")),
 	)
 }
 
@@ -132,28 +123,30 @@ func getFormResponseCount(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(formResponsesCount, "Response count fetched successfully"))
+	return ctx.Status(fiber.StatusOK).JSON(
+		utils.SendResponse(formResponsesCount, i18n.ToLocalString(ctx, "Response count fetched successfully")),
+	)
 }
 
 func getFormResponseAnalysis(ctx *fiber.Ctx) error {
 	_formId := ctx.Params("formId")
 	if _formId == "" {
-		return fiber.NewError(fiber.StatusBadRequest, "Invalid form id")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "Invalid form id"))
 	}
 
 	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	if workspaceId == uuid.Nil || userId == uuid.Nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Unauthorized")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "Unauthorized"))
 	}
 
 	formId, err := utils.StringToUuid(_formId)
 	if err != nil || formId == uuid.Nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Invalid form id")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "Invalid form id"))
 	}
 
 	if formAnalysisResponse, ok := getFormAnalyticsFromCache(formId); ok {
 		return ctx.Status(fiber.StatusOK).JSON(
-			utils.SendResponse(formAnalysisResponse, "Form analysis fetched successfully"),
+			utils.SendResponse(formAnalysisResponse, i18n.ToLocalString(ctx, "Form analysis fetched successfully")),
 		)
 	}
 
@@ -169,7 +162,10 @@ func getFormResponseAnalysis(ctx *fiber.Ctx) error {
 	}
 
 	if *form.Active {
-		return fiber.NewError(fiber.StatusTooEarly, "Form is active now, analysis is available once the form is inactive/complete its duration")
+		return fiber.NewError(
+			fiber.StatusTooEarly,
+			i18n.ToLocalString(ctx, "Form is active now, analysis is available once the form is inactive/complete its duration"),
+		)
 	}
 
 	mongoDb, err := utils.GetMongoDB()
@@ -197,7 +193,7 @@ func getFormResponseAnalysis(ctx *fiber.Ctx) error {
 	}
 	go addFormAnalyticsToCache(formId, response)
 	return ctx.Status(fiber.StatusOK).JSON(
-		utils.SendResponse(response, "Form analysis fetched successfully"),
+		utils.SendResponse(response, i18n.ToLocalString(ctx, "Form analysis fetched successfully")),
 	)
 }
 
@@ -210,12 +206,12 @@ func paginateFormResponses(ctx *fiber.Ctx) error {
 
 	_, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	if workspaceId == uuid.Nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Unknown workspace")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "Unknown workspace"))
 	}
 
 	paginationRes := utils.PaginationResponse[repository.FormResponse]{}
 	if err := paginationRes.ParseQuery(ctx, 50); err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Incorrect Parameters")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "Incorrect Parameters"))
 	}
 
 	mongoConn, err := utils.GetMongoDB()
@@ -245,5 +241,7 @@ func paginateFormResponses(ctx *fiber.Ctx) error {
 	paginationRes.TotalDocs = formResponsesCount
 	paginationRes.BuildPaginationResponse()
 
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(paginationRes, "Got form responses successfully"))
+	return ctx.Status(fiber.StatusOK).JSON(
+		utils.SendResponse(paginationRes, i18n.ToLocalString(ctx, "Form responses fetched successfully")),
+	)
 }

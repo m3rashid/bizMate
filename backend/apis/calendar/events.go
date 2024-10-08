@@ -1,6 +1,7 @@
 package calendar
 
 import (
+	"bizMate/i18n"
 	"bizMate/repository"
 	"bizMate/utils"
 	"time"
@@ -12,7 +13,7 @@ import (
 func getCalendarEventsByMonth(ctx *fiber.Ctx) error {
 	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	if userId == uuid.Nil || workspaceId == uuid.Nil {
-		return fiber.NewError(fiber.StatusBadRequest, "User or Workspace not present")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "User or Workspace not present"))
 	}
 
 	_monthNumber := ctx.Query("month", "")
@@ -21,17 +22,17 @@ func getCalendarEventsByMonth(ctx *fiber.Ctx) error {
 
 	requestedUserId, err := requestedUserIdToUuid(_requestedUserId, userId)
 	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Invalid user id")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "Invalid user id"))
 	}
 
 	monthNumber, err := monthOrYearStringToNumber(_monthNumber, int(time.Now().Month()))
 	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Invalid month number")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "Invalid month number"))
 	}
 
 	yearNumber, err := monthOrYearStringToNumber(_yearNumber, time.Now().Year())
 	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Invalid year number")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "Invalid year number"))
 	}
 
 	startTime, endTime := getMonthStartAndEnd(yearNumber, monthNumber)
@@ -56,14 +57,14 @@ func getCalendarEventsByMonth(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(
-		utils.SendResponse(events, "Calendar events fetched successfully"),
+		utils.SendResponse(events, i18n.ToLocalString(ctx, "Calendar events fetched successfully")),
 	)
 }
 
 func getCalendarEventsByWeek(ctx *fiber.Ctx) error {
 	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	if userId == uuid.Nil || workspaceId == uuid.Nil {
-		return fiber.NewError(fiber.StatusBadRequest, "User or Workspace not present")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "User or Workspace not present"))
 	}
 
 	_yearNumber := ctx.Query("year", "")
@@ -72,17 +73,17 @@ func getCalendarEventsByWeek(ctx *fiber.Ctx) error {
 
 	requestedUserId, err := requestedUserIdToUuid(_requestedUserId, userId)
 	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Invalid user id")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "Invalid user id"))
 	}
 
 	yearNumber, err := monthOrYearStringToNumber(_yearNumber, time.Now().Year())
 	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Invalid year number")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "Invalid year number"))
 	}
 
 	weekNumber, err := monthOrYearStringToNumber(_weekNumber, int(time.Now().Weekday()))
 	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Invalid week number")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "Invalid week number"))
 	}
 
 	startTime, endTime := getWeekStartAndEnd(yearNumber, weekNumber)
@@ -106,14 +107,14 @@ func getCalendarEventsByWeek(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(
-		utils.SendResponse(events, "Calendar events fetched successfully"),
+		utils.SendResponse(events, i18n.ToLocalString(ctx, "Calendar events fetched successfully")),
 	)
 }
 
 func getCalendarEventsByDay(ctx *fiber.Ctx) error {
 	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	if userId == uuid.Nil || workspaceId == uuid.Nil {
-		return fiber.NewError(fiber.StatusBadRequest, "User or Workspace not present")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "User or Workspace not present"))
 	}
 
 	_yearNumber := ctx.Query("year", "")
@@ -123,22 +124,22 @@ func getCalendarEventsByDay(ctx *fiber.Ctx) error {
 
 	requestedUserId, err := requestedUserIdToUuid(_requestedUserId, userId)
 	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Invalid user id")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "Invalid user id"))
 	}
 
 	yearNumber, err := monthOrYearStringToNumber(_yearNumber, time.Now().Year())
 	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Invalid year number")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "Invalid year number"))
 	}
 
 	monthNumber, err := monthOrYearStringToNumber(_monthNumber, int(time.Now().Month()))
 	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Invalid month number")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "Invalid month number"))
 	}
 
 	dayNumber, err := monthOrYearStringToNumber(_dayNumber, time.Now().Day())
 	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Invalid day number")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "Invalid day number"))
 	}
 
 	startTime, endTime := getDayStartAndEnd(yearNumber, monthNumber, dayNumber)
@@ -162,24 +163,24 @@ func getCalendarEventsByDay(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(
-		utils.SendResponse(events, "Calendar events fetched successfully"),
+		utils.SendResponse(events, i18n.ToLocalString(ctx, "Calendar events fetched successfully")),
 	)
 }
 
 func getSingleCalendarEventById(ctx *fiber.Ctx) error {
 	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	if userId == uuid.Nil || workspaceId == uuid.Nil {
-		return fiber.NewError(fiber.StatusBadRequest, "User or Workspace not present")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "User or Workspace not present"))
 	}
 
 	eventId := ctx.Params("eventId")
 	if eventId == "" {
-		return fiber.NewError(fiber.StatusBadRequest, "Event id not present")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "Invalid event id"))
 	}
 
 	eventIdUuid, err := uuid.Parse(eventId)
 	if err != nil || eventIdUuid == uuid.Nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Invalid event id")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "Invalid event id"))
 	}
 
 	pgConn, err := utils.GetPostgresDB()
@@ -194,7 +195,7 @@ func getSingleCalendarEventById(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(
-		utils.SendResponse(event, "Calendar event fetched successfully"),
+		utils.SendResponse(event, i18n.ToLocalString(ctx, "Calendar event fetched successfully")),
 	)
 }
 
@@ -202,7 +203,7 @@ func createCalendarEvent(ctx *fiber.Ctx) error {
 	userEmail := utils.GetUserEmailFromCtx(ctx)
 	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	if userId == uuid.Nil || workspaceId == uuid.Nil {
-		return fiber.NewError(fiber.StatusBadRequest, "User or Workspace not present")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "User or Workspace not present"))
 	}
 
 	reqBody := createCalendarEventReqBody{}
@@ -212,9 +213,7 @@ func createCalendarEvent(ctx *fiber.Ctx) error {
 			userEmail,
 			workspaceId,
 			repository.CalendarEventObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
@@ -236,9 +235,7 @@ func createCalendarEvent(ctx *fiber.Ctx) error {
 			userEmail,
 			workspaceId,
 			repository.CalendarEventObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
@@ -248,10 +245,9 @@ func createCalendarEvent(ctx *fiber.Ctx) error {
 		userEmail,
 		workspaceId,
 		repository.CalendarEventObjectType,
-		repository.LogData{
-			"id":   id.String(),
-			"name": reqBody.Name,
-		},
+		repository.LogData{"id": id.String(), "name": reqBody.Name},
 	)
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(id, "Calendar event created successfully"))
+	return ctx.Status(fiber.StatusOK).JSON(
+		utils.SendResponse(id, i18n.ToLocalString(ctx, "Calendar event created successfully")),
+	)
 }

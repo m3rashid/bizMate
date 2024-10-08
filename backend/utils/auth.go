@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -146,7 +145,6 @@ func getClaims(ctx *fiber.Ctx) *Claims {
 
 	claims, err := parseTokenToClaims(token)
 	if err != nil {
-		fmt.Println("parseTokenToClaims(token): ", err)
 		return nil
 	}
 	return claims

@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"bizMate/i18n"
 	"bizMate/repository"
 	"bizMate/utils"
 	"encoding/json"
@@ -75,10 +76,7 @@ func authCallback(ctx *fiber.Ctx) error {
 				authCallbackUser.Email,
 				uuid.Nil,
 				repository.UserObjectType,
-				repository.LogData{
-					"provider": "google",
-					"error":    err.Error(),
-				},
+				repository.LogData{"provider": "google", "error": err.Error()},
 			)
 			return ctx.Redirect(getRedirectUrl(false, "error=internal_server_error"))
 		}
@@ -87,9 +85,7 @@ func authCallback(ctx *fiber.Ctx) error {
 			authCallbackUser.Email,
 			newUser.ID,
 			repository.UserObjectType,
-			repository.LogData{
-				"provider": "google",
-			},
+			repository.LogData{"provider": "google"},
 		)
 		dbUser = newUser
 	}
@@ -116,9 +112,7 @@ func logout(ctx *fiber.Ctx) error {
 			userEmail,
 			uuid.Nil,
 			repository.UserObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		log.Fatal(err)
 	}
@@ -126,6 +120,6 @@ func logout(ctx *fiber.Ctx) error {
 	removeCookie(ctx)
 	go utils.LogInfo(user_logout, userEmail, uuid.Nil, repository.UserObjectType)
 	return ctx.Status(fiber.StatusOK).JSON(
-		utils.SendResponse(nil, "Logged out successfully"),
+		utils.SendResponse(nil, i18n.ToLocalString(ctx, "Logged out successfully")),
 	)
 }

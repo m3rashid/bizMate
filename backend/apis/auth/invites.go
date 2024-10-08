@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"bizMate/i18n"
 	"bizMate/repository"
 	"bizMate/utils"
 	"fmt"
@@ -23,9 +24,7 @@ func acceptOrRejectWorkspaceInvite(ctx *fiber.Ctx) error {
 			userEmail,
 			uuid.Nil,
 			repository.UserObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
@@ -48,9 +47,7 @@ func acceptOrRejectWorkspaceInvite(ctx *fiber.Ctx) error {
 			userEmail,
 			uuid.Nil,
 			repository.UserObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
@@ -77,15 +74,12 @@ func acceptOrRejectWorkspaceInvite(ctx *fiber.Ctx) error {
 			WorkspaceID: invite.WorkspaceID,
 		}); err != nil {
 			fmt.Println("error adding user to workspace", err)
-
 			go utils.LogError(
 				accept_workspace_invite,
 				userEmail,
 				uuid.Nil,
 				repository.WorkspaceInviteObjectType,
-				repository.LogData{
-					"error": err.Error(),
-				},
+				repository.LogData{"error": err.Error()},
 			)
 			tx.Rollback(ctx.Context())
 			return fiber.NewError(fiber.StatusInternalServerError)
@@ -97,9 +91,7 @@ func acceptOrRejectWorkspaceInvite(ctx *fiber.Ctx) error {
 				userEmail,
 				uuid.Nil,
 				repository.WorkspaceInviteObjectType,
-				repository.LogData{
-					"error": err.Error(),
-				},
+				repository.LogData{"error": err.Error()},
 			)
 			tx.Rollback(ctx.Context())
 			return fiber.NewError(fiber.StatusInternalServerError)
@@ -111,9 +103,7 @@ func acceptOrRejectWorkspaceInvite(ctx *fiber.Ctx) error {
 				userEmail,
 				uuid.Nil,
 				repository.WorkspaceInviteObjectType,
-				repository.LogData{
-					"error": err.Error(),
-				},
+				repository.LogData{"error": err.Error()},
 			)
 			tx.Rollback(ctx.Context())
 			return fiber.NewError(fiber.StatusInternalServerError)
@@ -123,9 +113,7 @@ func acceptOrRejectWorkspaceInvite(ctx *fiber.Ctx) error {
 			accept_workspace_invite,
 			userEmail, uuid.Nil,
 			repository.WorkspaceInviteObjectType,
-			repository.LogData{
-				"invite_id": reqBody.InviteID.String(),
-			},
+			repository.LogData{"invite_id": reqBody.InviteID.String()},
 		)
 	} else {
 		if err := queries.DeleteWorkspaceInvite(ctx.Context(), userId); err != nil {
@@ -134,9 +122,7 @@ func acceptOrRejectWorkspaceInvite(ctx *fiber.Ctx) error {
 				userEmail,
 				uuid.Nil,
 				repository.WorkspaceInviteObjectType,
-				repository.LogData{
-					"error": err.Error(),
-				},
+				repository.LogData{"error": err.Error()},
 			)
 			return fiber.NewError(fiber.StatusInternalServerError)
 		}
@@ -146,17 +132,18 @@ func acceptOrRejectWorkspaceInvite(ctx *fiber.Ctx) error {
 			userEmail,
 			uuid.Nil,
 			repository.WorkspaceInviteObjectType,
-			repository.LogData{
-				"invite_id": reqBody.InviteID.String(),
-				"email":     userEmail,
-			},
+			repository.LogData{"invite_id": reqBody.InviteID.String(), "email": userEmail},
 		)
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(
 		utils.SendResponse(
 			nil,
-			utils.Ternary(*reqBody.Accepted, "Invite accepted successfully", "Invite rejected successfully"),
+			utils.Ternary(
+				*reqBody.Accepted,
+				i18n.ToLocalString(ctx, "Invite accepted successfully"),
+				i18n.ToLocalString(ctx, "Invite rejected successfully"),
+			),
 		),
 	)
 }
@@ -175,9 +162,7 @@ func sendWorkspaceInvite(ctx *fiber.Ctx) error {
 			userEmail,
 			workspaceId,
 			repository.WorkspaceInviteObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
@@ -205,10 +190,7 @@ func sendWorkspaceInvite(ctx *fiber.Ctx) error {
 			userEmail,
 			uuid.Nil,
 			repository.WorkspaceInviteObjectType,
-			repository.LogData{
-				"error": err.Error(),
-				"email": reqBody.Email,
-			},
+			repository.LogData{"error": err.Error(), "email": reqBody.Email},
 		)
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
@@ -218,12 +200,10 @@ func sendWorkspaceInvite(ctx *fiber.Ctx) error {
 		userEmail,
 		workspaceId,
 		repository.WorkspaceInviteObjectType,
-		repository.LogData{
-			"email": reqBody.Email,
-		},
+		repository.LogData{"email": reqBody.Email},
 	)
 	return ctx.Status(fiber.StatusOK).JSON(
-		utils.SendResponse(nil, "Invite sent successfully"),
+		utils.SendResponse(nil, i18n.ToLocalString(ctx, "Invite sent successfully")),
 	)
 }
 
@@ -237,9 +217,7 @@ func revokeWorkspaceInvite(ctx *fiber.Ctx) error {
 			userEmail,
 			workspaceId,
 			repository.WorkspaceInviteObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
@@ -260,9 +238,7 @@ func revokeWorkspaceInvite(ctx *fiber.Ctx) error {
 			userEmail,
 			workspaceId,
 			repository.WorkspaceInviteObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
@@ -272,11 +248,11 @@ func revokeWorkspaceInvite(ctx *fiber.Ctx) error {
 		userEmail,
 		workspaceId,
 		repository.WorkspaceInviteObjectType,
-		repository.LogData{
-			"invite_id": reqBody.InviteID.String(),
-		},
+		repository.LogData{"invite_id": reqBody.InviteID.String()},
 	)
-	return nil
+	return ctx.Status(fiber.StatusOK).JSON(
+		utils.SendResponse(nil, i18n.ToLocalString(ctx, "Invite revoked successfully")),
+	)
 }
 
 func getWorkspaceInvites(ctx *fiber.Ctx) error {
@@ -308,7 +284,7 @@ func getWorkspaceInvites(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(
 		utils.SendResponse(
 			utils.Ternary(len(invites) > 0, invites, make([]repository.GetWorkspaceInviteByEmailRow, 0)),
-			"Workspace invites fetched successfully",
+			i18n.ToLocalString(ctx, "Workspace invites fetched successfully"),
 		),
 	)
 }

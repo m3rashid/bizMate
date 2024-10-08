@@ -1,6 +1,7 @@
 package permissions
 
 import (
+	"bizMate/i18n"
 	"bizMate/repository"
 	"bizMate/utils"
 	"context"
@@ -17,12 +18,12 @@ func getUserBarePermissionsOnly(ctx *fiber.Ctx) error {
 
 	userId := ctx.Params("userId")
 	if userId == "" {
-		return fiber.NewError(fiber.StatusBadRequest, "User ID is required")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "User ID is required"))
 	}
 
 	userIdUuidV7, err := utils.StringToUuid(userId)
 	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Invalid User ID")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "Invalid User ID"))
 	}
 
 	pgConn, err := utils.GetPostgresDB()
@@ -43,7 +44,7 @@ func getUserBarePermissionsOnly(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(
-		utils.SendResponse(barePermissions, "Bare permissions found successfully"),
+		utils.SendResponse(barePermissions, i18n.ToLocalString(ctx, "Bare permissions fetched successfully")),
 	)
 }
 
@@ -105,6 +106,6 @@ func getUserPermissions(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(
-		utils.SendResponse(permissions, "Permissions found successfully"),
+		utils.SendResponse(permissions, i18n.ToLocalString(ctx, "Permissions fetched successfully")),
 	)
 }
