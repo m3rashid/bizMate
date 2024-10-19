@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"bizMate/i18n"
 	"bizMate/repository"
 	"bizMate/utils"
 
@@ -26,7 +27,9 @@ func checkWorkspace(ctx *fiber.Ctx) error {
 	var workspace repository.Workspace
 	workspaces, ok := getWorkSpaceFromCache(workspaceUuid)
 	if ok {
-		return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(workspaces, "Valid Workspace"))
+		return ctx.Status(fiber.StatusOK).JSON(
+			utils.SendResponse(workspaces, i18n.ToLocalString(ctx, "Valid Workspace")),
+		)
 	}
 
 	pgConn, err := utils.GetPostgresDB()
@@ -41,7 +44,9 @@ func checkWorkspace(ctx *fiber.Ctx) error {
 	}
 
 	go addWorkSpaceToCache(workspace)
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(workspace, "Valid Workspace"))
+	return ctx.Status(fiber.StatusOK).JSON(
+		utils.SendResponse(workspace, i18n.ToLocalString(ctx, "Valid Workspace")),
+	)
 }
 
 func getWorkspaces(ctx *fiber.Ctx) error {
@@ -65,14 +70,16 @@ func getWorkspaces(ctx *fiber.Ctx) error {
 		workspaces = []repository.Workspace{}
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(workspaces, "Workspaces retrieved successfully"))
+	return ctx.Status(fiber.StatusOK).JSON(
+		utils.SendResponse(workspaces, i18n.ToLocalString(ctx, "Users workspaces fetched successfully")),
+	)
 }
 
 func createWorkspace(ctx *fiber.Ctx) error {
 	userId, _ := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	userEmail := utils.GetUserEmailFromCtx(ctx)
 	if userId == uuid.Nil {
-		return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized")
+		return fiber.NewError(fiber.StatusUnauthorized, i18n.ToLocalString(ctx, "Unauthorized"))
 	}
 	reqBody := createWorkspaceReq{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
@@ -81,9 +88,7 @@ func createWorkspace(ctx *fiber.Ctx) error {
 			userEmail,
 			uuid.Nil,
 			repository.WorkspaceObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
@@ -125,9 +130,7 @@ func createWorkspace(ctx *fiber.Ctx) error {
 			userEmail,
 			newWorkspaceId,
 			repository.WorkspaceObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		return tx.Rollback(ctx.Context())
 	}
@@ -141,9 +144,7 @@ func createWorkspace(ctx *fiber.Ctx) error {
 			userEmail,
 			newWorkspaceId,
 			repository.WorkspaceObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		return tx.Rollback(ctx.Context())
 	}
@@ -160,9 +161,7 @@ func createWorkspace(ctx *fiber.Ctx) error {
 			userEmail,
 			newWorkspaceId,
 			repository.WorkspaceObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		return tx.Rollback(ctx.Context())
 	}
@@ -174,9 +173,7 @@ func createWorkspace(ctx *fiber.Ctx) error {
 			userEmail,
 			newWorkspaceId,
 			repository.WorkspaceObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
@@ -186,18 +183,18 @@ func createWorkspace(ctx *fiber.Ctx) error {
 		userEmail,
 		newWorkspaceId,
 		repository.WorkspaceObjectType,
-		repository.LogData{
-			"name": workspace.Name,
-		},
+		repository.LogData{"name": workspace.Name},
 	)
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(workspace, "Workspace created successfully"))
+	return ctx.Status(fiber.StatusOK).JSON(
+		utils.SendResponse(workspace, i18n.ToLocalString(ctx, "Workspace created successfully")),
+	)
 }
 
 func removeUserFromWorkspace(ctx *fiber.Ctx) error {
 	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	userEmail := utils.GetUserEmailFromCtx(ctx)
 	if userId == uuid.Nil {
-		return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized")
+		return fiber.NewError(fiber.StatusUnauthorized, i18n.ToLocalString(ctx, "Unauthorized"))
 	}
 	reqBody := removeUserFromWorkspaceReqBody{}
 	if err := utils.ParseBodyAndValidate(ctx, &reqBody); err != nil {
@@ -206,9 +203,7 @@ func removeUserFromWorkspace(ctx *fiber.Ctx) error {
 			userEmail,
 			workspaceId,
 			repository.WorkspaceObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
@@ -228,9 +223,7 @@ func removeUserFromWorkspace(ctx *fiber.Ctx) error {
 			userEmail,
 			workspaceId,
 			repository.WorkspaceObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
@@ -240,11 +233,9 @@ func removeUserFromWorkspace(ctx *fiber.Ctx) error {
 		userEmail,
 		workspaceId,
 		repository.WorkspaceObjectType,
-		repository.LogData{
-			"userId": reqBody.UserID.String(),
-		},
+		repository.LogData{"userId": reqBody.UserID.String()},
 	)
 	return ctx.Status(fiber.StatusOK).JSON(
-		utils.SendResponse(nil, "User removed from workspace successfully"),
+		utils.SendResponse(nil, i18n.ToLocalString(ctx, "User removed from workspace successfully")),
 	)
 }

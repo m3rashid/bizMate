@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"bizMate/i18n"
 	"bizMate/repository"
 	"bizMate/utils"
 
@@ -37,7 +38,7 @@ func checkAuth(ctx *fiber.Ctx) error {
 		utils.SendResponse(fiber.Map{
 			"user":  toPartialUser(user),
 			"token": "Bearer " + token,
-		}, "User authenticated successfully"),
+		}, i18n.ToLocalString(ctx, "User authenticated successfully")),
 	)
 }
 
@@ -73,9 +74,7 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 			"",
 			uuid.Nil,
 			repository.UserObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
@@ -93,24 +92,21 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 			reqBody.Email,
 			uuid.Nil,
 			repository.UserObjectType,
-			repository.LogData{
-				"error": err.Error(),
-				"email": reqBody.Email,
-			},
+			repository.LogData{"error": err.Error(), "email": reqBody.Email},
 		)
-		return fiber.NewError(fiber.StatusNotFound, "User not found")
+		return fiber.NewError(fiber.StatusNotFound, i18n.ToLocalString(ctx, "User not found"))
 	}
 
 	go addUserToCache(user)
 
 	if user.Provider != repository.PROVIDER_CREDENTIALS {
 		go utils.LogError(user_login, user.Email, uuid.Nil, repository.UserObjectType)
-		return fiber.NewError(fiber.StatusUnauthorized, "User not found")
+		return fiber.NewError(fiber.StatusUnauthorized, i18n.ToLocalString(ctx, "User not found"))
 	}
 
 	if !comparePasswords(user.Password, reqBody.Password) {
 		go utils.LogError(user_login, user.Email, uuid.Nil, repository.UserObjectType)
-		return fiber.NewError(fiber.StatusUnauthorized, "Invalid credentials")
+		return fiber.NewError(fiber.StatusUnauthorized, i18n.ToLocalString(ctx, "Invalid credentials"))
 	}
 
 	token, err := utils.GenerateJWT(user.ID, user.Email, user.Avatar)
@@ -120,9 +116,7 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 			user.Email,
 			uuid.Nil,
 			repository.UserObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
@@ -130,7 +124,7 @@ func credentialsLogin(ctx *fiber.Ctx) error {
 	setTokenCookie(ctx, token)
 	go utils.LogInfo(user_login, user.Email, uuid.Nil, repository.UserObjectType)
 	return ctx.Status(fiber.StatusOK).JSON(
-		utils.SendResponse(toPartialUser(user), "User logged in successfully"),
+		utils.SendResponse(toPartialUser(user), i18n.ToLocalString(ctx, "User logged in successfully")),
 	)
 }
 
@@ -142,9 +136,7 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 			"",
 			uuid.Nil,
 			repository.UserObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
@@ -156,9 +148,7 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 			reqBody.Email,
 			uuid.Nil,
 			repository.UserObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
@@ -206,11 +196,12 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 			reqBody.Email,
 			uuid.Nil,
 			repository.UserObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
-		return fiber.NewError(fiber.StatusInternalServerError, "User account creation failed")
+		return fiber.NewError(
+			fiber.StatusInternalServerError,
+			i18n.ToLocalString(ctx, "User account creation failed"),
+		)
 	}
 
 	go addUserToCache(user)
@@ -222,9 +213,7 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 			user.Email,
 			uuid.Nil,
 			repository.UserObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
@@ -232,7 +221,10 @@ func credentialsRegister(ctx *fiber.Ctx) error {
 	go utils.LogInfo(user_register, user.Email, uuid.Nil, repository.UserObjectType)
 	setTokenCookie(ctx, token)
 	return ctx.Status(fiber.StatusOK).JSON(
-		utils.SendResponse(toPartialUser(user), "User account created successfully"),
+		utils.SendResponse(
+			toPartialUser(user),
+			i18n.ToLocalString(ctx, "User account created successfully"),
+		),
 	)
 }
 
@@ -241,7 +233,7 @@ func paginateWorkspaceUsers(ctx *fiber.Ctx) error {
 
 	paginationRes := utils.PaginationResponse[repository.PaginateUsersInWorkspaceRow]{}
 	if err := paginationRes.ParseQuery(ctx, 50); err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Incorrect Parameters")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "Incorrect Parameters"))
 	}
 
 	pgConn, err := utils.GetPostgresDB()
@@ -269,6 +261,9 @@ func paginateWorkspaceUsers(ctx *fiber.Ctx) error {
 	paginationRes.BuildPaginationResponse()
 
 	return ctx.Status(fiber.StatusOK).JSON(
-		utils.SendResponse(paginationRes, "Got workspace users successfully"),
+		utils.SendResponse(
+			paginationRes,
+			i18n.ToLocalString(ctx, "Users workspaces fetched successfully"),
+		),
 	)
 }

@@ -1,6 +1,7 @@
 package forms
 
 import (
+	"bizMate/i18n"
 	"bizMate/repository"
 	"bizMate/utils"
 
@@ -12,7 +13,7 @@ func createNewForm(ctx *fiber.Ctx) error {
 	userEmail := utils.GetUserEmailFromCtx(ctx)
 	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	if userId == uuid.Nil || workspaceId == uuid.Nil {
-		return fiber.NewError(fiber.StatusBadRequest, "User or Workspace not present")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "User or Workspace not present"))
 	}
 
 	reqBody := CreateFormReqBody{}
@@ -22,9 +23,7 @@ func createNewForm(ctx *fiber.Ctx) error {
 			userEmail,
 			workspaceId,
 			repository.FormObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
@@ -58,9 +57,7 @@ func createNewForm(ctx *fiber.Ctx) error {
 			userEmail,
 			workspaceId,
 			repository.FormObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
@@ -70,23 +67,25 @@ func createNewForm(ctx *fiber.Ctx) error {
 		userEmail,
 		workspaceId,
 		repository.FormObjectType,
-		repository.LogData{
-			"id":    id.String(),
-			"title": reqBody.Title,
-		},
+		repository.LogData{"id": id.String(), "title": reqBody.Title},
 	)
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(id, "Form created successfully, you can now add fields to the form"))
+	return ctx.Status(fiber.StatusOK).JSON(
+		utils.SendResponse(
+			id,
+			i18n.ToLocalString(ctx, "Form created successfully, you can now add fields to the form"),
+		),
+	)
 }
 
 func paginateForms(ctx *fiber.Ctx) error {
 	_, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	if workspaceId == uuid.Nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Unknown workspace")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "Unknown workspace"))
 	}
 
 	paginationRes := utils.PaginationResponse[repository.PaginateFormsRow]{}
 	if err := paginationRes.ParseQuery(ctx, 50); err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "Incorrect Parameters")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "Incorrect Parameters"))
 	}
 
 	pgConn, err := utils.GetPostgresDB()
@@ -114,14 +113,14 @@ func paginateForms(ctx *fiber.Ctx) error {
 	paginationRes.TotalDocs = formsCount
 	paginationRes.BuildPaginationResponse()
 	return ctx.Status(fiber.StatusOK).JSON(
-		utils.SendResponse(paginationRes, "Got forms successfully"),
+		utils.SendResponse(paginationRes, i18n.ToLocalString(ctx, "Forms fetched successfully")),
 	)
 }
 
 func getOneForm(ctx *fiber.Ctx) error {
 	_formId := ctx.Params("formId")
 	if _formId == "" {
-		return fiber.NewError(fiber.StatusBadRequest, "Unknown form")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "Unknown form"))
 	}
 
 	formId, err := utils.StringToUuid(_formId)
@@ -140,14 +139,16 @@ func getOneForm(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(form, "Form received successfully"))
+	return ctx.Status(fiber.StatusOK).JSON(
+		utils.SendResponse(form, i18n.ToLocalString(ctx, "Form received successfully")),
+	)
 }
 
 func updateFormById(ctx *fiber.Ctx) error {
 	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	userEmail := utils.GetUserEmailFromCtx(ctx)
 	if userId == uuid.Nil || workspaceId == uuid.Nil {
-		return fiber.NewError(fiber.StatusBadRequest, "User or Workspace not present")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "User or Workspace not present"))
 	}
 
 	reqBody := UpdateFormReqBody{}
@@ -157,9 +158,7 @@ func updateFormById(ctx *fiber.Ctx) error {
 			userEmail,
 			workspaceId,
 			repository.FormObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
@@ -186,9 +185,7 @@ func updateFormById(ctx *fiber.Ctx) error {
 			userEmail,
 			workspaceId,
 			repository.FormObjectType,
-			repository.LogData{
-				"error": err.Error(),
-			},
+			repository.LogData{"error": err.Error()},
 		)
 		return fiber.NewError(fiber.StatusBadRequest)
 	}
@@ -198,23 +195,23 @@ func updateFormById(ctx *fiber.Ctx) error {
 		userEmail,
 		workspaceId,
 		repository.FormObjectType,
-		repository.LogData{
-			"id": reqBody.ID.String(),
-		},
+		repository.LogData{"id": reqBody.ID.String()},
 	)
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(reqBody.ID, "Form updated successfully"))
+	return ctx.Status(fiber.StatusOK).JSON(
+		utils.SendResponse(reqBody.ID, i18n.ToLocalString(ctx, "Form updated successfully")),
+	)
 }
 
 func deleteFormById(ctx *fiber.Ctx) error {
 	userId, workspaceId := utils.GetUserAndWorkspaceIdsOrZero(ctx)
 	userEmail := utils.GetUserEmailFromCtx(ctx)
 	if userId == uuid.Nil || workspaceId == uuid.Nil {
-		return fiber.NewError(fiber.StatusBadRequest, "User or Workspace not present")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "User or Workspace not present"))
 	}
 
 	_formId := ctx.Params("formId")
 	if _formId == "" {
-		return fiber.NewError(fiber.StatusBadRequest, "Unknown form")
+		return fiber.NewError(fiber.StatusBadRequest, i18n.ToLocalString(ctx, "Unknown form"))
 	}
 
 	formId, err := utils.StringToUuid(_formId)
@@ -234,10 +231,7 @@ func deleteFormById(ctx *fiber.Ctx) error {
 			userEmail,
 			workspaceId,
 			repository.FormObjectType,
-			repository.LogData{
-				"error":  err.Error(),
-				"formId": formId.String(),
-			},
+			repository.LogData{"error": err.Error(), "formId": formId.String()},
 		)
 		return fiber.NewError(fiber.StatusInternalServerError)
 	}
@@ -246,9 +240,9 @@ func deleteFormById(ctx *fiber.Ctx) error {
 		userEmail,
 		workspaceId,
 		repository.FormObjectType,
-		repository.LogData{
-			"formId": formId.String(),
-		},
+		repository.LogData{"formId": formId.String()},
 	)
-	return ctx.Status(fiber.StatusOK).JSON(utils.SendResponse(formId, "Form deleted successfully"))
+	return ctx.Status(fiber.StatusOK).JSON(
+		utils.SendResponse(formId, i18n.ToLocalString(ctx, "Form deleted successfully")),
+	)
 }
